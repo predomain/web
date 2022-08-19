@@ -87,7 +87,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   timeCommitFulfilled = 0;
   registrationPreviousStatus;
   registrationUpdateGasPrice;
-  registrationCurrentTrackedPayment;
+  registrationCurrentTrackedPayment: PaymentModel;
 
   bulkSearchOpen = false;
   bulkSearchAdvancedOpen = false;
@@ -185,6 +185,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               registrationStatusAssessment.trackedPayment.paymentDate;
             this.registrationCurrentTrackedPayment =
               registrationStatusAssessment.trackedPayment;
+            this.domainConfigurationForm.controls.duration.setValue(
+              parseFloat(
+                (
+                  ethers.BigNumber.from(
+                    this.registrationCurrentTrackedPayment.paymentRawRecord[0]
+                      .duration
+                  ).toNumber() / YEARS_IN_SECONDS
+                ).toFixed(2)
+              )
+            );
           }
         })
       )
@@ -384,7 +394,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       'FORM_LABELS.ENTER_DURATION',
       'FORM_ERRORS.INVALID_DURATION',
       (p) => {
-        if (p === undefined || p === null || p < 0.1) {
+        if (
+          p === undefined ||
+          p === null ||
+          p < 0.1 ||
+          p > generalConfigurations.maxYearsRegistration
+        ) {
           return of(false);
         }
         this.domainConfigurationForm.controls.duration.setValue(p);
@@ -444,9 +459,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.registrationDomains.filter((d) => d.labelName === domain)[0]
     );
     if (
-      (this.registrationDomains.length <= 1 &&
-        this.registrationPreviousStatus ===
-          ENSRegistrationStepsEnum.BEFORE_COMMIT) ||
+      this.registrationPreviousStatus ===
+        ENSRegistrationStepsEnum.BEFORE_COMMIT ||
+      this.registrationPreviousStatus ===
+        ENSRegistrationStepsEnum.COMMIT_SENT ||
       this.registrationPreviousStatus ===
         ENSRegistrationStepsEnum.BEFORE_REGISTRATION
     ) {
@@ -463,7 +479,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       .sort((a, b) => b.paymentDate - a.paymentDate)[0];
     if (
       lastPayment.paymentType === PaymentTypesEnum.COMMIT &&
-      lastPayment.paymentRawRecord.length < 1
+      lastPayment.paymentRawRecord.length <= 1
     ) {
       this.checkoutService.showCartEmptyDialog();
       this.paymentFacade.removePayment(lastPayment);
@@ -471,10 +487,15 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       lastPayment.paymentType === PaymentTypesEnum.COMMIT &&
       lastPayment.paymentRawRecord.length > 1
     ) {
-      delete lastPayment.paymentRawRecord.filter(
-        (d) => d.name === domainToRemove
-      )[0];
-      this.paymentFacade.upsertPayment(lastPayment);
+      const newValidPaymentRecords = Object.keys(lastPayment.paymentRawRecord)
+        .filter((d) => lastPayment.paymentRawRecord[d].name !== domainToRemove)
+        .map((vp) => lastPayment.paymentRawRecord[vp]);
+      const paymentUpdated = {
+        ...lastPayment,
+        paymentRawRecord: newValidPaymentRecords,
+      };
+      this.paymentFacade.upsertPayment(paymentUpdated);
+      this.registrationCurrentTrackedPayment = paymentUpdated;
     }
   }
 

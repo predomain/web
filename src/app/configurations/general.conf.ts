@@ -17,6 +17,7 @@ export const generalConfigurations = {
   maxCheckoutRetryUntilRehydrateProcessId: 5,
   maxIpfsSubscriptionRetries: 5,
   maxDomainsToRegister: 50,
+  maxYearsRegistration: 1000,
   defaultCurrency: 'ETH',
   docsLink: 'https://predomain.gitbook.io/predomain-docs/',
   blockscanLink: 'https://chat.blockscan.com/index?a=',
