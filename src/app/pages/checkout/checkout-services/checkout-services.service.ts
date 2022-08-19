@@ -411,7 +411,7 @@ export class CheckoutServicesService {
       Math.abs(
         parseInt((60000 - (dateNow - timeSince) / (60 / 100)).toString(), 10) -
           60000
-      ) / 1000;
+      ) / 1030;
     return timeToWait;
   }
 

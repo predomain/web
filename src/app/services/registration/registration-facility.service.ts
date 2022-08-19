@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BigNumber, Contract } from 'ethers';
-import { Observable } from 'rxjs';
+import { BigNumber, Contract, ethers } from 'ethers';
+import { Observable, of } from 'rxjs';
 import {
   bulkRegistrationMainnet,
   bulkRegistrationTestnet,
@@ -135,7 +135,9 @@ export class RegistrationFacilityService {
           observer.next([
             {
               commitments: commitmentResult[0],
-              priceRanges: commitmentResult[1],
+              priceRanges: commitmentResult[1].map((pr) =>
+                pr.mul(generalConfigurations.maxTotalCostBuffer).div(100)
+              ),
             } as ENSRegistrationCommmitmentRequestResultModel,
             gasLimit,
           ]);
@@ -247,23 +249,34 @@ export class RegistrationFacilityService {
     );
     return new Observable((observer) => {
       if (providerFunction === false) {
-        c.estimateGas[method](...params).then((r) => {
-          if (r === null) {
+        c.estimateGas[method](...params)
+          .then((r) => {
+            if (r === null) {
+              observer.next(false);
+              observer.complete();
+            }
             observer.next(r);
             observer.complete();
-          }
-          observer.next(r);
-          observer.complete();
-        });
+          })
+          .catch((e) => {
+            observer.next(false);
+            observer.complete();
+          });
       } else {
-        provider.estimateGas(params).then((r) => {
-          if (r === null) {
+        provider
+          .estimateGas(params)
+          .then((r) => {
+            if (r === null) {
+              observer.next(false);
+              observer.complete();
+            }
             observer.next(r);
             observer.complete();
-          }
-          observer.next(r);
-          observer.complete();
-        });
+          })
+          .catch((e) => {
+            observer.next(false);
+            observer.complete();
+          });
       }
     });
   }

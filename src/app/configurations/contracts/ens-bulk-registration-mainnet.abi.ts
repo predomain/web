@@ -1,5 +1,22 @@
 export const ENSBulkRegistrationContractMainnetABI = [
   {
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    stateMutability: 'payable',
+    type: 'receive',
+    payable: true,
+  },
+  {
+    inputs: [],
+    name: 'recoverStuckETH',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         components: [
