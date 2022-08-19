@@ -1,0 +1,524 @@
+<div
+  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  fxFlex
+  fxLayout="row"
+  class="co-sandbox-container cos-fluid-width cos-fluid-height"
+>
+  <div
+    class="cos-pos-fixed cos-pos-top-reset cos-pos-right-reset cos-padding-2"
+  >
+    <div
+      fxLayout="row"
+      fxLayoutGap="10px"
+      class="co-grid-select cos-pointer cos-border-radius-4 cos-bg-gray cos-padding-2"
+      [matMenuTriggerFor]="gridMenu"
+    >
+      <div class="cos-body-4">
+        {{ "LABELS.LAYOUT" | translate }}: {{ gridSize }} x
+        {{ gridSize }}
+      </div>
+      <div fxFlex="0 0 auto" fxLayoutAlign="center center">
+        <img
+          class="mat-menu-submenu-icon-custom active"
+          src="./assets/menu-arrow-icon.svg"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div
+    fxFlex="25"
+    fxLayout="column"
+    fxLayoutGap="20px"
+    id="co-sidenav"
+    class="cos-padding-2"
+  >
+    <div
+      id="canvas_size_guide"
+      class="cos-fluid-width cos-no-margin-bottom"
+      [style.visibility]="'hidden'"
+      [style.width]="'100%'"
+      [style.height]="'0px'"
+    ></div>
+    <div>
+      <div
+        fxFlex
+        fxLayoutAlign="start center"
+        fxLayoutGap="10px"
+        (click)="goToHome()"
+      >
+        <mat-icon class="cos-icon-can-activate" color="primary"
+          >arrow_back_ios</mat-icon
+        >
+        <a class="cos-disappear-on-mobile">
+          {{ "HEADER.BACK_TO_HOME" | translate }}
+        </a>
+      </div>
+      <app-main-header
+        fxFlex
+        [show]="{
+          showBasket: false,
+          showCanvas: false,
+          showBookmark: false,
+          showSearch: false
+        }"
+        [cuatomUserNameAddress]="ethNameBlockAddress"
+        [customUserName]="ethName"
+      ></app-main-header>
+    </div>
+    <div
+      fxFlex="0 0 auto"
+      fxLayoutAlign="end start"
+      class="co-image-container cos-fluid-width"
+    >
+      <div
+        fxLayout="row"
+        fxLayoutGap="10px"
+        class="cos-pos-absolute cos-padding-0"
+      >
+        <div
+          fxLayout="row"
+          fxLayoutGap="10px"
+          class="co-displayed-image-tools cos-bg-gray cos-border-radius-2 cos-padding-0"
+        >
+          <mat-icon
+            *ngIf="downloading === false"
+            class="cos-pointer cos-gray-text cos-icon-can-activate"
+            (click)="
+              capture(
+                'canvas_image_displayed',
+                canvasServices.getWidthOfDiv('canvas_size_guide'),
+                canvasServices.getWidthOfDiv('canvas_size_guide')
+              )
+            "
+            >file_download</mat-icon
+          >
+
+          <div fxFlex="0 0 auto" *ngIf="downloading === true">
+            <app-spinner
+              [padded]="false"
+              [lightColour]="true"
+              [spinnerSize]="10"
+              [showText]="false"
+            ></app-spinner>
+          </div>
+          <mat-icon
+            #priceSettingsTrigger
+            [matMenuTriggerFor]="priceSettingsMenu"
+            class="cos-pointer cos-gray-text cos-icon-can-activate"
+            >sell</mat-icon
+          >
+          <mat-icon
+            class="cos-pointer cos-gray-text cos-icon-can-activate"
+            [matMenuTriggerFor]="qrSettingsMenu"
+            >qr_code</mat-icon
+          >
+        </div>
+      </div>
+      <app-preview-image
+        *ngIf="selectedDomain === undefined || displayImageLoaded === false"
+        id="canvas_preview_image"
+        [fxFlex]="canvasServices.getWidthOfDiv('canvas_size_guide') + 'px'"
+        [style.opacity]="0.5"
+        [loading]="displayImageLoaded"
+        [preview]="'assets/img-blank.png'"
+        [src]="'assets/img-blank.png'"
+        [dontLoad]="true"
+        [style.height]="
+          canvasServices.getWidthOfDiv('canvas_size_guide') + 6 + 'px'
+        "
+        class="cos-border-radius-2"
+      ></app-preview-image>
+      <div
+        [fxFlex]="
+          selectedDomain === undefined || displayImageLoaded === false
+            ? '0 0 auto'
+            : canvasServices.getWidthOfDiv('canvas_size_guide') + 'px'
+        "
+        id="canvas_image_displayed"
+        class="cos-border-radius-2"
+        [style.width]="
+          displayImageLoaded === false
+            ? '0px'
+            : canvasServices.getWidthOfDiv('canvas_size_guide') + 'px'
+        "
+        [style.visibility]="displayImageLoaded === false ? 'hidden' : 'visible'"
+      ></div>
+    </div>
+    <div fxFlex="0 0 auto" fxLayoutGap="10px" style="margin-bottom: 10px">
+      <button mat-button fxFlex (click)="capture()">
+        <div
+          fxLayout="row"
+          fxLayoutAlign="center center"
+          fxLayoutGap="10px"
+          class="cos-fluid-width"
+        >
+          <ng-container *ngIf="downloading === true">
+            <div fxFlex="0 0 auto">
+              <app-spinner
+                [padded]="false"
+                [lightColour]="true"
+                [spinnerSize]="10"
+                [showText]="false"
+              ></app-spinner>
+            </div>
+            <div fxFlex="0 0 auto">
+              <b> {{ "LABELS.PROCESSING" | translate }}... </b>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="downloading === false">
+            <div fxFlex="0 0 auto">
+              <b> {{ "BUTTON.DOWNLOAD" | translate }} </b>
+            </div>
+          </ng-container>
+        </div>
+      </button>
+    </div>
+
+    <div
+      fxFlex="0 0 auto"
+      class="cos-padding-0 cos-no-padding-left cos-no-padding-bottom cos-fluid-width cos-body-4"
+      fxLayout="row"
+    >
+      <div fxFlex="150px">
+        <b> {{ "LABELS.YOUR_DOMAINS" | translate }}: </b>
+      </div>
+      <div fxFlex fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px">
+        <a (click)="showSelected = !showSelected">
+          {{
+            (showSelected === true ? "BUTTON.SHOW_ALL" : "BUTTON.SHOW_SELCTED")
+              | translate
+          }}
+        </a>
+        <a (click)="hideAll()">{{ "BUTTON.DESELECT_ALL" | translate }}</a>
+      </div>
+    </div>
+
+    <div
+      fxFlex="0 0 auto"
+      fxLayout="row"
+      fxLayoutALign="center center"
+      class="cos-fluid-width cos-body-4 cos-no-margin-bottom"
+    >
+      <form fxFlex [formGroup]="searchForm" class="co-domain-filter-search">
+        <mat-form-field
+          class="cos-fluid-width cos-body-0 cos-input-field-no-label"
+        >
+          <input
+            class="cos-fluid-width cos-bg-gray"
+            matInput
+            type="text"
+            placeholder="Search..."
+            (input)="triggerFilterCheck()"
+            autocomplete="off"
+            formControlName="search"
+          />
+          <mat-icon
+            matSuffix
+            [style.visibility]="
+              searchForm.controls.search.value !== '' ? 'visible' : 'hidden'
+            "
+            color="primary"
+            (click)="searchForm.controls.search.setValue('')"
+          >
+            clear
+          </mat-icon>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div
+      fxFlex
+      cdkDropList
+      class="co-list co-scrollable-table cos-overflow-y-x-hidden"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div
+        class="co-row cos-padding-0 cos-no-padding-left"
+        *ngFor="let d of sortDomainsBySearchFilter()"
+        cdkDrag
+      >
+        <div class="co-custom-placeholder" *cdkDragPlaceholder></div>
+        <div class="co-row-content cos-fluid-width" fxLayout="column">
+          <div
+            fxFlex
+            fxLayoutGap="10px"
+            fxLayout="row"
+            (click)="selectDomain(d)"
+          >
+            <div fxFlex="0 0 auto" fxLayoutAlign="start center">
+              {{ d.labelName }}.eth
+            </div>
+            <div
+              fxFlex
+              fxLayoutAlign="start center"
+              class="cos-body-5 cos-gray-text"
+            >
+              <div
+                *ngIf="isPriceAvailableForDomain(d.labelhash)"
+                fxLayoutAlign="center center"
+                fxLayoutGap="5px"
+                class="co-domain-price cos-chip-regular cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+              >
+                <span fxFlex>
+                  {{ canvasServices.getDomainPrice(d.labelhash, prices) }}
+                </span>
+                <div
+                  fxFlex="15px"
+                  class="co-domain-price-color"
+                  [style.backgroundColor]="getDomainPriceColor(d.labelhash)"
+                ></div>
+              </div>
+            </div>
+            <div
+              fxFlex="0 0 auto"
+              fxLayoutAlign="end center"
+              fxLayoutGap="10px"
+            >
+              <mat-icon
+                [color]="
+                  selectedDomain !== undefined &&
+                  selectedDomain.labelName === d.labelName
+                    ? 'primary'
+                    : ''
+                "
+                (click)="selectDomain(d)"
+                [ngClass]="
+                  selectedDomain !== undefined &&
+                  selectedDomain.labelName === d.labelName
+                    ? ''
+                    : 'cos-gray-text'
+                "
+                class="cos-icon-can-activate"
+                >visibility</mat-icon
+              >
+              <mat-icon
+                (click)="
+                  canvasServices.isImageInDisplayed(
+                    d.labelhash,
+                    displayedImages
+                  ) === true
+                    ? removeDisplayed(d.labelhash)
+                    : addDisplayed(d.labelhash)
+                "
+                [color]="
+                  canvasServices.isImageInDisplayed(
+                    d.labelhash,
+                    displayedImages
+                  ) === true
+                    ? 'primary'
+                    : ''
+                "
+                [ngClass]="
+                  canvasServices.isImageInDisplayed(
+                    d.labelhash,
+                    displayedImages
+                  ) === true
+                    ? ''
+                    : 'cos-gray-text'
+                "
+                class="cos-icon-can-activate"
+                >{{
+                  canvasServices.isImageInDisplayed(
+                    d.labelhash,
+                    displayedImages
+                  ) === true
+                    ? "close"
+                    : "add"
+                }}</mat-icon
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="co-list-fade cos-fluid-width cos-no-margin-bottom"></div>
+  </div>
+  <div fxFlex fxLayout="column" fxLayoutAlign="center center">
+    <div
+      id="canvas_ht"
+      class="cos-fluid-width cos-fluid-height cos-box-shadow"
+      fxLayoutAlign="center center"
+    ></div>
+  </div>
+</div>
+
+<mat-menu #qrLinkMenu="matMenu" class="cos-menu" xPosition="after">
+  <button mat-menu-item (click)="setOpenSeaQrLink()">
+    <mat-icon
+      [style.visibility]="detectQrLink() === 'opensea' ? 'visible' : 'hidden'"
+      color="primary"
+      >check</mat-icon
+    >
+    OpenSea {{ "BUTTON.LINK" | translate }}
+  </button>
+  <button mat-menu-item (click)="setLooksrareQrLink()">
+    <mat-icon
+      [style.visibility]="detectQrLink() === 'looksrare' ? 'visible' : 'hidden'"
+      color="primary"
+      >check</mat-icon
+    >
+    LooksRare {{ "BUTTON.LINK" | translate }}
+  </button>
+  <button mat-menu-item (click)="openQrLinkSettingDialog()">
+    <mat-icon
+      [style.visibility]="
+        detectQrLink() !== '' &&
+        detectQrLink() !== 'looksrare' &&
+        detectQrLink() !== 'opensea'
+          ? 'visible'
+          : 'hidden'
+      "
+      color="primary"
+      >check</mat-icon
+    >
+    {{ "BUTTON.CUSTOM_LINK" | translate }}
+  </button>
+</mat-menu>
+
+<mat-menu #qrLinkAllMenu="matMenu" class="cos-menu" xPosition="after">
+  <button mat-menu-item (click)="setOpenSeaQrLink(true)">
+    <mat-icon
+      [style.visibility]="detectQrLink() === 'opensea' ? 'visible' : 'hidden'"
+      color="primary"
+      >check</mat-icon
+    >
+    OpenSea {{ "BUTTON.LINK" | translate }}
+  </button>
+  <button mat-menu-item (click)="setLooksrareQrLink(true)">
+    <mat-icon
+      [style.visibility]="detectQrLink() === 'looksrare' ? 'visible' : 'hidden'"
+      color="primary"
+      >check</mat-icon
+    >
+    LooksRare {{ "BUTTON.LINK" | translate }}
+  </button>
+</mat-menu>
+
+<mat-menu #gridMenu="matMenu" class="cos-menu" xPosition="before">
+  <button mat-menu-item (click)="gridSet(1)">4 x 4</button>
+  <button mat-menu-item (click)="gridSet(2)">3 x 3</button>
+  <button mat-menu-item (click)="gridSet(3)">2 x 2</button>
+</mat-menu>
+
+<mat-menu #qrSettingsMenu="matMenu" class="cos-menu" xPosition="after">
+  <button
+    mat-menu-item
+    (click)="toggleQrCode()"
+    [disabled]="selectedDomain === undefined"
+  >
+    {{
+      (isQrCodeEnabled() === true
+        ? "BUTTON.DISABLE_QR_CODE"
+        : "BUTTON.ENABLE_QR_CODE"
+      ) | translate
+    }}
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="qrLinkMenu">
+    {{ "BUTTON.SET_QR_LINK" | translate }}
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="qrLinkAllMenu">
+    {{ "BUTTON.SET_QR_LINK_ALL" | translate }}
+  </button>
+  <button
+    mat-menu-item
+    (click)="toggleQrCode(true, false)"
+    [disabled]="selectedDomain === undefined"
+  >
+    {{ "BUTTON.DISABLE_ALL" | translate }}
+  </button>
+  <button
+    mat-menu-item
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="space-inbetwen center"
+    ngx-colors-trigger
+    [hideTextInput]="true"
+    (change)="changeCurrentQrColor($event)"
+    (click)="$event.stopPropagation()"
+  >
+    <div fxFlex>{{ "BUTTON.SET_QR_COLOR" | translate }}</div>
+    <div
+      fxFlex="20px"
+      class="co-price-color"
+      [style.backgroundColor]="currentQrColor"
+    ></div>
+  </button>
+  <button
+    mat-menu-item
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="space-inbetwen center"
+    ngx-colors-trigger
+    [hideTextInput]="true"
+    (change)="changeAllQrColor($event)"
+    (click)="$event.stopPropagation()"
+  >
+    <div fxFlex>{{ "BUTTON.SET_ALL_COLORS" | translate }}</div>
+    <div
+      fxFlex="20px"
+      class="co-price-color"
+      [style.backgroundColor]="currentQrColor"
+    ></div>
+  </button>
+</mat-menu>
+
+<mat-menu #priceSettingsMenu="matMenu" class="cos-menu" xPosition="after">
+  <button mat-menu-item (click)="openPriceSettingDialog()">
+    {{ "BUTTON.SET_PRICE" | translate }}
+  </button>
+  <button mat-menu-item (click)="openPriceSettingDialog(true)">
+    {{ "BUTTON.SET_PRICE_ALL" | translate }}
+  </button>
+  <button
+    mat-menu-item
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="space-inbetwen center"
+    ngx-colors-trigger
+    [hideTextInput]="true"
+    (change)="changeCurrentPriceColor($event)"
+    (click)="$event.stopPropagation()"
+  >
+    <div fxFlex>{{ "BUTTON.SET_COLOR" | translate }}</div>
+    <div
+      fxFlex="20px"
+      class="co-price-color"
+      [style.backgroundColor]="currentPriceColor"
+    ></div>
+  </button>
+  <button
+    mat-menu-item
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="space-inbetwen center"
+    ngx-colors-trigger
+    [hideTextInput]="true"
+    (change)="changeAllPriceColor($event)"
+    (click)="$event.stopPropagation()"
+  >
+    <div fxFlex>{{ "BUTTON.SET_ALL_COLORS" | translate }}</div>
+    <div
+      fxFlex="20px"
+      class="co-price-color"
+      [style.backgroundColor]="currentPriceColor"
+    ></div>
+  </button>
+</mat-menu>
+
+<div class="cos-visibility-hidden">
+  <qrcode
+    *ngFor="let d of filterSearchOptions(null, true)"
+    id="qr-code-{{ d.labelhash }}"
+    class="qrcode cos-border-radius-2 cos-overflow-hidden"
+    [errorCorrectionLevel]="'L'"
+    [qrdata]="getQrLink(d)"
+    [width]="150"
+    [colorLight]="'#628bf300'"
+    [colorDark]="qrColors[d.labelhash] || currentQrColor"
+  >
+  </qrcode>
+</div>

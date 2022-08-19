@@ -1,0 +1,85 @@
+@import "~@angular/material/theming";
+// Plus imports for other components in your app.
+
+/* fallback */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url(assets/fonts/angular-material-icons.woff2) format("woff2");
+}
+
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+$cos_palette_primary: (
+  50: #e0f0fd,
+  100: #b3d9fa,
+  200: #80bff6,
+  300: #4da5f2,
+  400: #2692f0,
+  500: #2692f0,
+  600: #0077eb,
+  700: #006ce8,
+  800: #0062e5,
+  900: #004fe0,
+  A100: #ffffff,
+  A200: yellow,
+  A400: #a1bcff,
+  A700: #88aaff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$cos-app-primary: mat-palette($cos_palette_primary);
+$cos-app-accent: mat-palette($cos_palette_primary, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$cos-app-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$cos-app-theme: mat-light-theme(
+  $cos-app-primary,
+  $cos-app-accent,
+  $cos-app-warn
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($cos-app-theme);

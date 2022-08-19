@@ -1,0 +1,62 @@
+<div class="shooting_star" *ngFor="let s of starCount"></div>
+<div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
+  <div
+    fxFlex="90"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="30px"
+    class="co-profile-header cos-fluid-width"
+  >
+    <span fxLayoutAlign="center center" fxLayoutGap="10px" (click)="goToHome()">
+      <mat-icon class="cos-icon-can-activate" color="primary"
+        >arrow_back_ios</mat-icon
+      >
+      <a class="co-back-button cos-disappear-on-mobile">
+        {{ "HEADER.BACK_TO_HOME" | translate }}
+      </a>
+    </span>
+  </div>
+  <app-main-header
+    [show]="{
+      showBasket: true,
+      showBookmark: true,
+      showCanvas: true,
+      showSearch: true
+    }"
+  ></app-main-header>
+</div>
+<div
+  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  class="cos-moon cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  #fadeTop
+  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
+  fxLayout="row"
+  fxLayoutAlign="center end"
+></div>
+
+<div
+  class="cos-fluid-width cos-fluid-height"
+  fxLayout="column"
+  fxLayoutAlign="center center"
+>
+  <ng-container *ngIf="(hasCriticalErrorOccured | async) === false">
+    <span class="co-404"> 404 </span>
+    <span class="cos-body-0 cos-center-text cos-padding-2"
+      ><b>
+        {{ sillyDescription }}
+      </b>
+    </span>
+  </ng-container>
+  <ng-container *ngIf="(hasCriticalErrorOccured | async) === true">
+    <span class="co-404"> 503 </span>
+    <span class="cos-body-0 cos-center-text cos-padding-2"
+      ><b>
+        {{ sillyCriticalDescription }}
+      </b>
+    </span>
+  </ng-container>
+</div>

@@ -1,0 +1,273 @@
+@import "../../../app-root.scss";
+
+:host {
+  height: 100%;
+  width: 100%;
+}
+
+.co-bg {
+  background: url(/assets/stars.webp);
+  opacity: 0.2;
+  z-index: 998;
+}
+
+.co-banner {
+  background-image: linear-gradient(
+    0deg,
+    rgb(0, 0, 0, 0) 0%,
+    rgb(0, 0, 0, 1) 50%,
+    rgb(0, 0, 0, 1) 100%
+  );
+  height: 300px;
+  top: 0;
+  z-index: 999;
+}
+
+.co-logo {
+  z-index: 1000;
+  width: 25px;
+  margin-right: 15px;
+}
+
+.co-payment-processing {
+  filter: grayscale(1);
+  pointer-events: none;
+}
+
+.co-registran-input-form-container {
+  width: calc(25% + 10px);
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
+  }
+}
+
+.co-see-receipt {
+  margin-bottom: 30px;
+}
+
+.co-bulk-search-title {
+  z-index: 1000;
+  font-size: 25px;
+  @media only screen and (max-width: 1000px) {
+    display: none !important;
+  }
+}
+
+.co-bulk-search-results {
+  z-index: 1001;
+}
+
+.co-bulk-search {
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  .co-close-large {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 30px !important;
+  }
+}
+
+.co-bulk-search-container {
+  @media only screen and (max-width: 1000px) {
+    flex-direction: column-reverse !important;
+  }
+}
+
+.co-bulk-search-header {
+  z-index: 1000;
+}
+
+.co-bulk-search-header-fade {
+  height: 180px;
+  z-index: 999;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 80%,
+    rgba(0, 0, 0, 0.4) 90%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.co-bulk-search-item-container {
+  width: calc(25% - 10px);
+  height: 70px;
+  margin-bottom: 10px;
+
+  &:nth-of-type(4n) {
+    margin-right: 0 !important;
+  }
+
+  @media only screen and (max-width: 1000px) {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+  &.co-bulk-search-item-not-available {
+    .co-bulk-search-item-expiration-bar {
+      opacity: 0.3;
+    }
+    .co-bulk-search-item {
+      opacity: 0.25;
+    }
+  }
+  &:hover {
+    .co-bulk-search-item-expiration-bar {
+      opacity: 1 !important;
+    }
+    .co-bulk-search-item {
+      opacity: 1 !important;
+      box-shadow: 0px 0px 15px 7px var(--co-main-color);
+    }
+  }
+}
+
+.co-bulk-search-item-expiration-bar {
+  border-top-left-radius: var(--cos-border-radius-1);
+  border-top-right-radius: var(--cos-border-radius-1);
+  position: relative;
+  margin-bottom: -4px;
+}
+.co-bulk-search-item {
+  &.cos-bulk-sarch-item-full-width {
+    width: 100% !important;
+  }
+  cursor: pointer;
+  background: url("/assets/ens.svg");
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: 24px center;
+  padding-left: 60px;
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  .co-market-icon {
+    width: 24px;
+    height: 24px;
+    filter: grayscale(1);
+    &:hover {
+      filter: grayscale(0);
+    }
+  }
+}
+
+.co-bulk-search-loading {
+  margin-top: -100px;
+}
+
+.co-total-cost {
+  z-index: 1000;
+  font-size: 23px;
+  align-items: flex-end;
+  justify-content: flex-end;
+  @media only screen and (max-width: 1000px) {
+    display: none !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
+.co-duration {
+  z-index: 1000;
+
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.co-gas-price {
+  z-index: 1000;
+  align-items: flex-end;
+  justify-content: flex-end;
+  @media only screen and (max-width: 1000px) {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.co-total-cost-content {
+  z-index: 1000;
+  align-items: flex-end;
+  justify-content: flex-end;
+  @media only screen and (max-width: 1000px) {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
+.co-controls {
+  font-size: var(--co-font-size-3);
+  @media only screen and (max-width: 1000px) {
+    font-size: var(--co-font-size-5);
+  }
+  z-index: 1000;
+}
+
+.co-resolved-address {
+  color: var(--co-main-color);
+  text-overflow: ellipsis;
+  place-content: center flex-start;
+  align-items: center;
+  margin-left: 15px;
+  @media only screen and (max-width: 1000px) {
+    font-size: var(--co-font-size-5);
+    align-items: start;
+    place-content: start flex-start;
+    margin-top: 5px;
+    text-overflow: ellipsis;
+    height: 20px;
+    overflow: hidden;
+  }
+}
+
+.co-error-resolved-address {
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+  margin-top: 2px;
+}
+
+.co-bulk-search-title-mobile {
+  z-index: 1001;
+  font-size: 24px;
+  display: none !important;
+  @media only screen and (max-width: 1000px) {
+    display: flex !important;
+  }
+}
+
+.co-bulk-search-cost-breakdown {
+  flex-direction: column;
+  @media only screen and (max-width: 1000px) {
+    flex-direction: row !important;
+  }
+}
+
+.co-cancel-button-mobile {
+  display: none;
+  @media only screen and (max-width: 1000px) {
+    display: flex;
+  }
+}
+
+.co-duration-control {
+  font-size: 12px;
+}
+
+.co-reset-button-input {
+  top: -30px !important;
+  position: relative !important;
+  right: 15px !important;
+  &.co-spinner {
+    top: -28px !important;
+    right: -5px !important;
+  }
+}
+
+.co-disabled-inputs {
+  pointer-events: none !important;
+  opacity: 0.25;
+}
+
+.co-set-resolver-toggle {
+  margin-left: 20px;
+}

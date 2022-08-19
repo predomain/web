@@ -1,0 +1,51 @@
+<div mat-dialog-content class="cos-overflow-hidden">
+  <div>{{ data.label | translate }}:</div>
+  <div class="cos-margin-1 cos-no-margin-left cos-no-margin-right">
+    <form fxFlex [formGroup]="addressForm">
+      <mat-form-field
+        class="cos-fluid-width cos-body-0 cos-input-field-no-label"
+      >
+        <input
+          *ngIf="data.inputType === inputTypes.NUMERIC"
+          class="cos-fluid-width"
+          matInput
+          blur="true"
+          type="text"
+          autocomplete="off"
+          oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+          placeholder="Enter input..."
+          formControlName="address"
+          (input)="formLock = false"
+        />
+        <input
+          *ngIf="data.inputType !== inputTypes.NUMERIC"
+          class="cos-fluid-width"
+          matInput
+          blur="true"
+          type="text"
+          autocomplete="off"
+          placeholder="Enter input..."
+          formControlName="address"
+          (input)="formLock = false"
+        />
+        <mat-icon matSuffix style="visibility: hidden"> clear </mat-icon>
+      </mat-form-field>
+    </form>
+  </div>
+  <div *ngIf="invalidEntry" class="cos-fluid-width">
+    <mat-error>{{ data.errorLabel | translate }} </mat-error>
+  </div>
+</div>
+<div mat-dialog-actions fxLayoutAlign="end center">
+  <a
+    (click)="closeDialog()"
+    class="cos-body-4 cos-padding-2 cos-no-padding-top cos-no-padding-bottom"
+    >Cancel</a
+  >
+  <a
+    [ngClass]="formLock === true ? 'cos-anchor-disabled' : ''"
+    (click)="formLock === false ? apply() : ''"
+    class="cos-body-4 cos-padding-2 cos-no-padding-top cos-no-padding-left cos-no-padding-bottom"
+    >Apply</a
+  >
+</div>

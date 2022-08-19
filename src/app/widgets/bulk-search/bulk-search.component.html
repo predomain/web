@@ -1,0 +1,363 @@
+<ng-container *ngTemplateOutlet="advancedSearchBox"></ng-container>
+<div
+  *ngIf="bulkSearchOpen === true"
+  fxLayout="column"
+  class="co-bulk-search cos-pos-fixed cos-pos-top-reset cos-pos-left-reset cos-fluid-width cos-fluid-height cos-bg-transparent"
+>
+  <div
+    class="co-bulk-search-header-fade cos-fluid-width cos-pos-absolute cos-pos-top-reset cos-pos-left-reset"
+  ></div>
+  <ng-container *ngTemplateOutlet="bulkSearchHeader"></ng-container>
+  <ng-container *ngTemplateOutlet="bulkSearchContents"></ng-container>
+</div>
+
+<!-- BULK SEARCH CONTENTS -->
+<ng-template #bulkSearchContents>
+  <div
+    fxFlex
+    fxLayout="row wrap"
+    fxLayoutGap="10px"
+    [fxLayoutAlign]="
+      bulkSearchComplete === false && bulkSearchBookmarksShow === false
+        ? 'start stretched'
+        : 'start start'
+    "
+    class="co-bulk-search-results cos-overflow-y cos-padding-3 cos-fluid-width cos-fluid-height"
+  >
+    <div
+      *ngIf="bulkSearchComplete === false && bulkSearchBookmarksShow === false"
+      fxFlex
+      class="co-bulk-search-loading cos-fluid-width cos-fluid-height"
+      fxLayoutAlign="center center"
+    >
+      <div fxFlex="0 0 auto">
+        <app-custom-spinner
+          [spinnerText]="'SPINNER.PERFORMING_SEARCH'"
+          [spinnerSize]="150"
+          [mode]="spinnerModes.LOADING"
+          [customIcon]="'spin'"
+        >
+        </app-custom-spinner>
+      </div>
+    </div>
+    <div
+      *ngIf="
+        (bulkSearchComplete === true &&
+          bulkSearchAvailableOnly === true &&
+          bulkSearchAvailableCount === 0 &&
+          bulkSearchBookmarksShow === false &&
+          registrationListOpen === false) ||
+        (bulkSearchBookmarksShow === true &&
+          bulkSearchComplete === true &&
+          countBookmarks() === 0) ||
+        (registrationListOpen === true &&
+          bulkSearchComplete === true &&
+          countRegistrations() === 0)
+      "
+      fxFlex
+      class="co-bulk-search-loading cos-fluid-width cos-fluid-height"
+      fxLayoutAlign="center center"
+    >
+      <div fxFlex="0 0 auto">
+        <app-custom-spinner
+          [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
+          [spinnerSize]="150"
+          [mode]="spinnerModes.LOADING"
+          [customIcon]="'llayers'"
+        >
+        </app-custom-spinner>
+      </div>
+    </div>
+    <ng-container *ngFor="let d of bulkSearchResults">
+      <div
+        *ngIf="
+          (bulkSearchAvailableOnly === true && d.isAvailable === false) ||
+          bulkSearchAvailableOnly === false
+        "
+        class="co-bulk-search-item-container"
+        [ngClass]="
+          d.isAvailable === true ? 'co-bulk-search-item-not-available' : ''
+        "
+      >
+        <mat-progress-bar
+          *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
+          class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
+          mode="determinate"
+          [value]="d.gracePeriodPercent"
+        ></mat-progress-bar>
+        <div
+          class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
+          [ngClass]="
+            d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
+              ? ''
+              : 'co-bulk-search-item-fill-progress-bar-gap'
+          "
+          fxLayoutGap="15px"
+          fxLayoutAlign="center center"
+        >
+          <div
+            fxFlex
+            fxLayoutAlign="start center"
+            class="cos-wallet-address-text-cut"
+          >
+            {{ d.labelName }}.eth
+          </div>
+          <a
+            *ngIf="d.isAvailable === true && registrationListOpen === false"
+            href="{{ getDomainLink(d.labelName + '.eth') }}"
+            target="_blank"
+            class="cos-body-3"
+          >
+            {{ "BUTTON.VIEW_DETAILS" | translate }}
+          </a>
+          <mat-icon
+            (click)="toggleBookmark(d)"
+            [color]="
+              bookmarksService.isDomainBookmarked(
+                bulkSearchBookmarks,
+                d.labelName
+              )
+                ? 'primary'
+                : ''
+            "
+            fxFlex="24px"
+            class="cos-icon-can-activate"
+            >bookmark_add</mat-icon
+          >
+          <mat-icon
+            *ngIf="d.isAvailable === false || registrationListOpen === true"
+            (click)="
+              registrationService.isDomainOnRegistrationList(
+                registrationDomains,
+                d.labelName
+              ) === true
+                ? removeRegistrations(d.labelName)
+                : addToRegistration(d)
+            "
+            [color]="
+              registrationService.isDomainOnRegistrationList(
+                registrationDomains,
+                d.labelName
+              ) === true
+                ? 'primary'
+                : ''
+            "
+            fxFlex="24px"
+            class="cos-icon-can-activate"
+          >
+            {{ registrationListOpen === true ? "clear" : "shopping_cart" }}
+          </mat-icon>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- ADVANCED SEARCH BOX -->
+<ng-template #advancedSearchBox>
+  <div
+    *ngIf="bulkSearchAdvancedOpen === true"
+    fxLayout="row"
+    fxLayoutAlign="center center"
+    class="co-advanced-input-container cos-pos-fixed cos-fluid-height cos-fluid-width cos-pos-top-reset cos-pos-left-reset cos-bg-transparent"
+  >
+    <div
+      fxLayoutGap="20px"
+      fxLayout="column"
+      class="co-advanced-input-content cos-bg-darker-gray cos-box-shadow cos-padding-3 cos-border-radius-2"
+    >
+      <div
+        fxLayout="row"
+        fxLayoutAlign="space-between start"
+        class="cos-body-3 cos-padding-3 cos-no-padding-left cos-no-padding-bottom cos-no-padding-top cos-no-padding-right"
+      >
+        <div class="co-bulk-search-title" fxLayoutGap="10px" fxLayout="column">
+          <b> {{ "LABELS.ADVANCED_SEARCH" | translate }} </b>
+        </div>
+        <div fxLayoutGap="50px">
+          <a
+            class="cos-body-3 cos-disappear-on-mobile"
+            (click)="toggleBulkSearch(true)"
+            >{{ "BUTTON.CLOSE_WINDOW" | translate }}</a
+          >
+          <a
+            class="cos-body-3 cos-show-on-mobile"
+            (click)="toggleBulkSearch(true)"
+            ><mat-icon>close</mat-icon></a
+          >
+        </div>
+      </div>
+      <textarea
+        id="co-bulk-advance-input"
+        class="co-advanced-input cos-inner-box-sadow cos-body-1"
+      ></textarea>
+      <div fxFlex fxLayout="row" fxLayoutGap="20px" class="cos-fluid-width">
+        <mat-form-field
+          fxFlex
+          fxFlexAlign="center"
+          class="cos-body-0 cos-input-field-no-label cos-input-field-large"
+        >
+          <input
+            #prefix
+            class="cos-fluid-width cos-bg-gray"
+            matInput
+            type="text"
+            placeholder="{{ 'LABELS.ENTER_PREFIX' | translate }}..."
+            autocomplete="off"
+            maxlength="77"
+            value=""
+          />
+        </mat-form-field>
+        <mat-form-field
+          fxFlex
+          fxFlexAlign="center"
+          class="cos-body-0 cos-input-field-no-label cos-input-field-large"
+        >
+          <input
+            #suffix
+            class="cos-fluid-width cos-bg-gray"
+            matInput
+            type="text"
+            placeholder="{{ 'LABELS.ENTER_SUFFIX' | translate }}..."
+            autocomplete="off"
+            maxlength="77"
+            value=""
+          />
+        </mat-form-field>
+      </div>
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayoutGap="20px"
+        fxLayoutAlign="end center"
+        class="cos-fluid-width"
+      >
+        <div fxFlex class="cos-gray-text cos-body-3">
+          <b>{{ "LABELS.TIP" | translate }}:</b>
+          {{ "LABELS.ADVANCED_SEARCH_TIP" | translate }}
+        </div>
+        <div fxFlex fxLayoutAlign="end center">
+          <mat-slide-toggle
+            class="cos-body-3"
+            [checked]="bulkSearchAvailableOnly"
+            (change)="bulkSearchAvailableOnly = $event.checked"
+          >
+            {{ "BUTTON.SHOW_AVAILABLE_ONLY" | translate }}</mat-slide-toggle
+          >
+        </div>
+      </div>
+      <button
+        mat-button
+        (click)="bulkSearchOpen === false ? performOnlyBulkSearch() : ''"
+      >
+        {{ "BUTTON.PROCEED_SEARCH" | translate }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- BULK SEARCH HEADER -->
+<ng-template #bulkSearchHeader>
+  <div
+    fxLayout="row"
+    fxLayoutAlign="stretched stretched"
+    class="co-bulk-search-header-container cos-fluid-width cos-padding-3 cos-body-0"
+  >
+    <div
+      fxLayout="column"
+      fxLayoutGap="5px"
+      class="co-bulk-search-header cos-fluid-width cos-body-3"
+    >
+      <div
+        fxFlex
+        fxLayoutAlign="start center"
+        fxLayoutGap="20px"
+        class="co-bulk-search-title"
+      >
+        <b>
+          {{ searchResultTitle | translate }}
+        </b>
+      </div>
+      <div
+        fxFlex
+        class="cos-padding-1 cos-no-padding-left cos-no-padding-bottom"
+      >
+        <mat-slide-toggle
+          *ngIf="
+            bulkSearchBookmarksShow === true ||
+            (registrationListOpen === false &&
+              bulkSearchBookmarksShow === false)
+          "
+          [checked]="bulkSearchAvailableOnly"
+          (change)="bulkSearchAvailableOnly = $event.checked"
+        >
+          <span class="cos-disappear-on-mobile">
+            {{ "BUTTON.SHOW_AVAILABLE_ONLY" | translate }}
+          </span>
+          <span class="cos-show-on-mobile">
+            {{ "BUTTON.SHOW_AVAILABLE" | translate }}
+          </span>
+        </mat-slide-toggle>
+        <a
+          *ngIf="
+            registrationListOpen === true && bulkSearchBookmarksShow === false
+          "
+          (click)="goToRegistration()"
+          >{{ "LABELS.PROCEED_TO_REGISTRATION" | translate }}</a
+        >
+      </div>
+    </div>
+    <div
+      fxFlex="0 0 auto"
+      fxLayout="column"
+      fxLayoutGap="30px"
+      fxLayoutAlign="start end"
+      class="co-bulk-search-header-bookmark"
+    >
+      <div fxFlex="0 0 auto" class="cos-body-2">
+        <a
+          class="cos-body-3 cos-disappear-on-mobile"
+          (click)="toggleBulkSearch()"
+          >{{ "BUTTON.CLOSE_WINDOW" | translate }}</a
+        >
+        <a class="cos-body-3 cos-show-on-mobile" (click)="toggleBulkSearch()"
+          ><mat-icon>close</mat-icon></a
+        >
+      </div>
+      <div
+        fxFlex="0 0 auto"
+        fxLayout="row"
+        fxLayoutAlign="end center"
+        fxLayoutGap="10px"
+        class="cos-fluid-width cos-body-3"
+      >
+        <div
+          fxFlex
+          fxLayout="row"
+          fxLayoutAlign="center center"
+          fxLayoutGap="10px"
+          class="cos-body-0 cos-pointer"
+          (click)="showBookmarks(false)"
+        >
+          <div>
+            {{ countBookmarks() }}
+          </div>
+          <mat-icon class="cos-icon-can-activate"> bookmark </mat-icon>
+        </div>
+        <div
+          fxFlex
+          fxLayout="row"
+          fxLayoutAlign="center center"
+          fxLayoutGap="10px"
+          class="cos-body-0 cos-pointer"
+          (click)="showRegistrations(false)"
+        >
+          <div>
+            {{ countRegistrations() }}
+          </div>
+          <mat-icon class="cos-icon-can-activate"> shopping_cart </mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

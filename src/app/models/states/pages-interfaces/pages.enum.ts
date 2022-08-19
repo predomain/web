@@ -1,0 +1,11 @@
+export enum PagesEnum {
+  BOOTSTRAP = 'BOOTSTRAP',
+  HOME = 'HOME',
+  CANVAS = 'CANVAS',
+  CHECKOUT = 'CHECKOUT',
+  ERROR = 'ERROR',
+  SUCCESS = 'SUCCESS',
+  PROFILE = 'PROFILE',
+  DOMAIN = 'DOMAIN',
+  NOTFOUND = 'NOTFOUND',
+}

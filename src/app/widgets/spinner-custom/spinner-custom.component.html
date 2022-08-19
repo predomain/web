@@ -1,0 +1,94 @@
+<div
+  fxLayoutAlign="center center"
+  fxLayout="column"
+  fxFlex
+  class="co-spinner-container cos-fluid-width cos-fluid-height"
+>
+  <ng-container *ngIf="mode === spinnerModes.LOADING">
+    <ng-container *ngIf="spinnerSize >= 150">
+      <app-icon
+        *ngIf="lightColour === true"
+        [iconSize]="spinnerSize"
+        class="co-icon"
+      >
+        <ng-container *ngIf="customIcon === ''"> lspin </ng-container>
+        <ng-container *ngIf="customIcon !== ''">
+          {{ customIcon }}
+        </ng-container>
+      </app-icon>
+      <app-icon
+        *ngIf="lightColour === false"
+        [iconSize]="spinnerSize"
+        class="co-icon"
+      >
+        <ng-container *ngIf="customIcon === ''"> spin </ng-container>
+        <ng-container *ngIf="customIcon !== ''">
+          {{ customIcon }}
+        </ng-container>
+      </app-icon>
+    </ng-container>
+    <ng-container *ngIf="!(spinnerSize >= 150)">
+      <div
+        class="co-spinner-inner-container"
+        [ngClass]="padded === false ? 'co-unpadded' : ''"
+      >
+        <div
+          class="co-spinner"
+          [ngClass]="lightColour === true ? 'co-spinner-grey' : ''"
+          [style.height]="spinnerSize + 'px'"
+          [style.width]="spinnerSize + 'px'"
+          [style.border-width]="spinnerSize > 20 ? '4px' : '2px'"
+        ></div>
+      </div>
+    </ng-container>
+    <div
+      *ngIf="showText === true"
+      class="cos-margin-3 cos-center-text cos-body-2 cos-line-height-2"
+    >
+      {{ spinnerText | translate }}
+    </div>
+  </ng-container>
+  <ng-container *ngIf="mode === spinnerModes.SUCCEEDED">
+    <app-icon [iconSize]="spinnerSize" class="co-spinner-failure-icon">
+      {{ successIcon }}
+    </app-icon>
+    <div class="cos-margin-3 cos-center-text cos-body-2 cos-line-height-2">
+      {{
+        successType === undefined || successType === null
+          ? (successText | translate)
+          : (getSuccessText(successType) | translate)
+      }}
+    </div>
+  </ng-container>
+  <ng-container *ngIf="mode === spinnerModes.FAILED">
+    <app-icon [iconSize]="spinnerSize" class="co-spinner-failure-icon">
+      {{ failureIcon }}
+    </app-icon>
+    <div class="cos-margin-3 cos-center-text cos-body-2 cos-line-height-2">
+      {{
+        errorType === undefined || errorType === null
+          ? (failureText | translate)
+          : (getErrorText(errorType) | translate)
+      }}
+    </div>
+    <div
+      *ngIf="(pagesFacade.pageErrorCode$ | async) !== undefined"
+      class="cos-gray-text-chipped cos-center-text cos-body-4 cos-gray-text cos-line-height-2"
+    >
+      {{ "SPINNER.ERROR_CODE" | translate }}
+      {{ pagesFacade.pageErrorCode$ | async }}
+    </div>
+
+    <div
+      *ngIf="subText !== ''"
+      class="cos-gray-text-chipped cos-center-text cos-body-4 cos-gray-text cos-line-height-2"
+    >
+      <ng-container *ngIf="subTextTranslated">
+        {{ subText | translate }}
+      </ng-container>
+      <ng-container *ngIf="subTextTranslated === false">
+        {{ subText }}
+      </ng-container>
+    </div>
+  </ng-container>
+</div>

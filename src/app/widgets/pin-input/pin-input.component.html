@@ -1,0 +1,230 @@
+<div
+  fxLayout="column"
+  class="co-pin-input-container cos-fluid-width cos-fluid-height"
+  [ngClass]="fluidSize ? 'co-pin-input-container-fluid' : ''"
+  [fxLayoutAlign]="showPinPad === true ? 'center center' : 'start center'"
+>
+  <div
+    *ngIf="inputValueIsShown"
+    fxFlex="0 0 auto"
+    fxLayout="row"
+    [fxLayoutGap]="inputValueIsShown === true ? '5%' : '9%'"
+    fxLayoutAlign="center center"
+    class="co-pin-input-fields cos-padding-3 cos-no-padding-top cos-no-padding-bottom cos-fluid-width cos-fluid-height"
+  >
+    <input
+      #mobilityInput
+      [value]="pinInput.length > 0 ? pinInput[0] : ''"
+      [ngClass]="getFieldInputClassMobility(0)"
+      class="cos-fluid-height cos-center-text co-mobility-input"
+      [disabled]="showPinPad === true"
+      (keydown.backspace)="detectBackSpace($event, 0)"
+      matInput
+      autocomplete="off"
+      inputmode="numeric"
+      type="number"
+      pattern="[0-9]"
+      (input)="addPinMobility($event, 0)"
+    />
+    <input
+      #mobilityInput
+      [value]="pinInput.length > 1 ? pinInput[1] : ''"
+      [ngClass]="getFieldInputClassMobility(1)"
+      class="cos-fluid-height cos-center-text co-mobility-input"
+      [disabled]="showPinPad === true"
+      (keydown.backspace)="detectBackSpace($event, 1)"
+      matInput
+      autocomplete="off"
+      inputmode="numeric"
+      type="number"
+      pattern="[0-9]"
+      (input)="addPinMobility($event, 1)"
+    />
+    <input
+      #mobilityInput
+      [value]="pinInput.length > 2 ? pinInput[2] : ''"
+      [ngClass]="getFieldInputClassMobility(2)"
+      class="cos-fluid-height cos-center-text co-mobility-input"
+      [disabled]="showPinPad === true"
+      (keydown.backspace)="detectBackSpace($event, 2)"
+      matInput
+      autocomplete="off"
+      inputmode="numeric"
+      type="number"
+      pattern="[0-9]"
+      (input)="addPinMobility($event, 2)"
+    />
+    <input
+      #mobilityInput
+      [value]="pinInput.length > 3 ? pinInput[3] : ''"
+      [ngClass]="getFieldInputClassMobility(3)"
+      class="cos-fluid-height cos-center-text co-mobility-input"
+      [disabled]="showPinPad === true"
+      (keydown.backspace)="detectBackSpace($event, 3)"
+      matInput
+      autocomplete="off"
+      inputmode="numeric"
+      type="number"
+      pattern="[0-9]"
+      (input)="addPinMobility($event, 3)"
+    />
+    <input
+      #mobilityInput
+      [value]="pinInput.length > 4 ? pinInput[4] : ''"
+      [ngClass]="getFieldInputClassMobility(4)"
+      class="cos-fluid-height cos-center-text co-mobility-input"
+      [disabled]="showPinPad === true"
+      (keydown.backspace)="detectBackSpace($event, 4)"
+      matInput
+      autocomplete="off"
+      inputmode="numeric"
+      type="number"
+      pattern="[0-9]"
+      (input)="addPinMobility($event, 4)"
+    />
+
+    <input
+      #mobilityInput
+      [value]="pinInput.length > 5 ? pinInput[5] : ''"
+      [ngClass]="getFieldInputClassMobility(5)"
+      class="cos-fluid-height cos-center-text co-mobility-input"
+      [disabled]="showPinPad === true"
+      (keydown.backspace)="detectBackSpace($event, 5)"
+      matInput
+      autocomplete="off"
+      inputmode="numeric"
+      type="number"
+      (input)="addPinMobility($event, 5)"
+    />
+  </div>
+  <div
+    *ngIf="!inputValueIsShown"
+    fxFlex="0 0 auto"
+    fxLayout="row"
+    [fxLayoutGap]="inputValueIsShown === true ? '5%' : '9%'"
+    fxLayoutAlign="center center"
+    class="co-pin-input-fields cos-padding-3 cos-no-padding-top cos-no-padding-bottom cos-fluid-width cos-fluid-height"
+  >
+    <input
+      [value]="pinInput.length > 0 ? pinInput[0] : ''"
+      [ngClass]="getFieldInputClass(0)"
+      class="cos-fluid-height cos-center-text"
+      [disabled]="showPinPad === true"
+      matInput
+    />
+    <input
+      [value]="pinInput.length > 1 ? pinInput[1] : ''"
+      [ngClass]="getFieldInputClass(1)"
+      class="cos-fluid-height cos-center-text"
+      [disabled]="showPinPad === true"
+      matInput
+    />
+    <input
+      [value]="pinInput.length > 2 ? pinInput[2] : ''"
+      [ngClass]="getFieldInputClass(2)"
+      class="cos-fluid-height cos-center-text"
+      [disabled]="showPinPad === true"
+      matInput
+    />
+    <input
+      [value]="pinInput.length > 3 ? pinInput[3] : ''"
+      [ngClass]="getFieldInputClass(3)"
+      class="cos-fluid-height cos-center-text"
+      [disabled]="showPinPad === true"
+      matInput
+    />
+    <input
+      [value]="pinInput.length > 4 ? pinInput[4] : ''"
+      [ngClass]="getFieldInputClass(4)"
+      class="cos-fluid-height cos-center-text"
+      [disabled]="showPinPad === true"
+      matInput
+    />
+
+    <input
+      [value]="pinInput.length > 5 ? pinInput[5] : ''"
+      [ngClass]="getFieldInputClass(5)"
+      class="cos-fluid-height cos-center-text"
+      [disabled]="showPinPad === true"
+      matInput
+    />
+  </div>
+  <div
+    *ngIf="pinClickableSubtextEnabled !== ''"
+    fxFlex="50px"
+    class="cos-body-3 cos-padding-0 cos-center-text"
+    fxLayoutAlign="center center"
+    [ngClass]="
+      pinClickableSubtextIsLink === true
+        ? 'cos-fluid-width'
+        : 'co-tooltip-container'
+    "
+  >
+    <ng-container *ngIf="pinClickableSubtextIsLink === true">
+      <a (click)="subtextClick()" *ngIf="subtextIsLoadingIcon === false">
+        {{ pinClickableSubtextEnabled | translate }}
+      </a>
+      <div fxFlex *ngIf="subtextIsLoadingIcon === true">
+        <app-spinner [spinnerText]="''"> </app-spinner>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="pinClickableSubtextIsLink === false">
+      <span [matTooltip]="'2'">
+        <mat-icon *ngIf="pinClickableSubtextToolTip !== ''" color="primary"
+          >info</mat-icon
+        >
+      </span>
+      &nbsp;
+      {{ pinClickableSubtextEnabled | translate }}
+    </ng-container>
+  </div>
+  <div
+    *ngIf="showPinPad"
+    fxLayout="column"
+    class="cos-padding-0 cos-fluid-width cos-fluid-height"
+    fxFlex
+  >
+    <div class="co-pin-input-row">
+      <button (click)="addPin('1')" class="co-pin-input-item" mat-button>
+        1
+      </button>
+      <button (click)="addPin('2')" class="co-pin-input-item" mat-button>
+        2
+      </button>
+      <button (click)="addPin('3')" class="co-pin-input-item" mat-button>
+        3
+      </button>
+    </div>
+    <div class="co-pin-input-row">
+      <button (click)="addPin('4')" class="co-pin-input-item" mat-button>
+        4
+      </button>
+      <button (click)="addPin('5')" class="co-pin-input-item" mat-button>
+        5
+      </button>
+      <button (click)="addPin('6')" class="co-pin-input-item" mat-button>
+        6
+      </button>
+    </div>
+    <div class="co-pin-input-row">
+      <button (click)="addPin('7')" class="co-pin-input-item" mat-button>
+        7
+      </button>
+      <button (click)="addPin('8')" class="co-pin-input-item" mat-button>
+        8
+      </button>
+      <button (click)="addPin('9')" class="co-pin-input-item" mat-button>
+        9
+      </button>
+    </div>
+    <div class="co-pin-input-row">
+      <button class="co-pin-input-item" mat-button>&nbsp;</button>
+      <button (click)="addPin('0')" class="co-pin-input-item" mat-button>
+        0
+      </button>
+      <button (click)="removeLastPin()" class="co-pin-input-item" mat-button>
+        <mat-icon>backspace</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

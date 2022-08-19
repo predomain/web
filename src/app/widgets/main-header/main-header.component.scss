@@ -1,0 +1,82 @@
+@import "../../../app-root.scss";
+
+:host {
+  height: 40px;
+  width: 100%;
+}
+
+.co-pending-registration {
+  color: var(--co-main-color);
+}
+
+.co-spinner-failure-icon {
+  width: 80px !important;
+  height: 80px !important;
+  font-size: 80px;
+  color: var(--co-main-color) !important;
+}
+
+.co-spinner-inner-container {
+  position: absolute;
+  height: auto;
+  width: 100%;
+  display: block;
+  color: white;
+}
+
+.co-spinner {
+  margin: 0px auto;
+  -webkit-animation: rotation 0.6s infinite linear;
+  -moz-animation: rotation 0.6s infinite linear;
+  -o-animation: rotation 0.6s infinite linear;
+  animation: rotation 0.6s infinite linear;
+  border-style: solid;
+  border-color: var(--co-bg-neutral-color) !important;
+  border-top-color: var(--co-main-color) !important;
+  border-radius: 100%;
+  &.co-light-spinner {
+    border-color: rgb(255, 255, 255, 0.5) !important;
+    border-top-color: white !important;
+  }
+}
+
+.co-registration-button,
+.co-canvas-button,
+.co-bookmark-button {
+  @media only screen and (max-width: 1000px) {
+    display: none !important;
+  }
+}
+
+@-webkit-keyframes rotation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+@-moz-keyframes rotation {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(359deg);
+  }
+}
+@-o-keyframes rotation {
+  from {
+    -o-transform: rotate(0deg);
+  }
+  to {
+    -o-transform: rotate(359deg);
+  }
+}
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}

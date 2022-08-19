@@ -1,0 +1,76 @@
+<div
+  fxLayoutGap="7px"
+  class="co-navigator cos-fluid-width cos-fluid-height cos-center-text cos-padding-2 cos-no-padding-top cos-no-padding-bottom"
+  fxLayoutAlign="center center"
+>
+  <ng-container *ngIf="pagesState?.currentPageId === pages.ERROR">
+    <app-navigator-button
+      fxFlex="50%"
+      *ngIf="showButtonIfnotDisabled(navigationButtons.TRY_AGAIN)"
+      [buttonText]="'BUTTON.TRY_AGAIN'"
+      [buttonId]="navigationButtons.TRY_AGAIN"
+      (click)="navigationButtonClicked(navigationButtons.TRY_AGAIN)"
+      mat-button
+      color="primary"
+    >
+    </app-navigator-button>
+  </ng-container>
+
+  <!-- Back button -->
+  <ng-container *ngIf="pagesState?.currentPageId === pages.HOME">
+    <app-navigator-button
+      fxFlex="50%"
+      *ngIf="showButtonIfnotDisabled(navigationButtons.BACK)"
+      [buttonText]="'BUTTON.BACK'"
+      [buttonId]="navigationButtons.BACK"
+      [isDisabled]="true"
+      (click)="navigationButtonClicked(navigationButtons.BACK)"
+      mat-button
+      color="primary"
+    >
+    </app-navigator-button>
+  </ng-container>
+
+  <!-- Next button -->
+  <ng-container
+    *ngIf="
+      pagesState?.currentPageId === pages.SUCCESS ||
+      pagesState?.currentPageId === pages.HOME
+    "
+  >
+    <app-navigator-button
+      fxFlex="50%"
+      *ngIf="showButtonIfnotDisabled(navigationButtons.NEXT)"
+      [buttonText]="'BUTTON.NEXT'"
+      [buttonId]="navigationButtons.NEXT"
+      (click)="navigationButtonClicked(navigationButtons.NEXT)"
+      mat-button
+      color="primary"
+    >
+    </app-navigator-button>
+  </ng-container>
+
+  <!-- Approve / Deny -->
+  <ng-container *ngIf="pagesState?.currentPageId === pages.HOME">
+    <app-navigator-button
+      fxFlex="50%"
+      *ngIf="showButtonIfnotDisabled(navigationButtons.APPROVE)"
+      [buttonText]="'BUTTON.APPROVE'"
+      [buttonId]="navigationButtons.APPROVE"
+      (click)="navigationButtonClicked(navigationButtons.APPROVE)"
+      mat-button
+      color="primary"
+    >
+    </app-navigator-button>
+    <app-navigator-button
+      fxFlex="50%"
+      *ngIf="showButtonIfnotDisabled(navigationButtons.DECLINE)"
+      [buttonText]="'BUTTON.DECLINE'"
+      [buttonId]="navigationButtons.DECLINE"
+      (click)="navigationButtonClicked(navigationButtons.DECLINE)"
+      mat-button
+      color="primary"
+    >
+    </app-navigator-button>
+  </ng-container>
+</div>

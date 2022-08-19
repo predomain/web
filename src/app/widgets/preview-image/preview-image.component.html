@@ -1,0 +1,25 @@
+<img
+  *ngIf="loaded === false && errored === false"
+  class="co-preview cos-fluid-width cos-border-radius-2"
+  [src]="preview"
+/>
+<app-spinner
+  *ngIf="loaded === false && errored === false"
+  class="co-spinner"
+  [padded]="false"
+  [lightColour]="true"
+  [spinnerSize]="30"
+  [showText]="false"
+></app-spinner>
+<img
+  [hidden]="loaded === false || errored === true"
+  class="cos-fluid-width cos-border-radius-2"
+  (load)="loaded = dontLoad === true ? false : true"
+  (error)="setError()"
+  [src]="src"
+/>
+<img
+  [hidden]="errored === false"
+  class="cos-fluid-width cos-border-radius-2"
+  [src]="error"
+/>

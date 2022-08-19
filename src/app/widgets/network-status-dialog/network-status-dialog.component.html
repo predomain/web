@@ -1,0 +1,17 @@
+<div mat-dialog-content>
+	<div
+		class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right"
+	>
+		{{ 'ERRORS.YOU_NEED_NETWORK_TO_CREATE_TRANSACTIONS' | translate }}
+	</div>
+</div>
+<div mat-dialog-actions fxLayoutAlign="end center">
+	<button
+		(click)="closeDialog()"
+		mat-button
+		class="cos-body-4"
+		cdkFocusInitial
+	>
+		{{ 'BUTTON.UNDERSTOOD' | translate }}
+	</button>
+</div>

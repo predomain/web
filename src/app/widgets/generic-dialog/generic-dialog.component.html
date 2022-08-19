@@ -1,0 +1,59 @@
+<div mat-dialog-content>
+  <ng-container *ngIf="data.showSpinner === true">
+    <app-icon
+      *ngIf="data.lightColour === true"
+      [iconSize]="data.spinnerSize"
+      class="cos-padding-3"
+    >
+      <ng-container *ngIf="data.customIcon === ''"> lspin </ng-container>
+      <ng-container *ngIf="data.customIcon !== ''">
+        {{ data.customIcon }}
+      </ng-container>
+    </app-icon>
+    <!-- *ngIf="data.lightColour === false" -->
+    <app-icon [iconSize]="data.spinnerSize" class="cos-padding-3">
+      <ng-container *ngIf="data.customIcon === ''"> spin </ng-container>
+      <ng-container *ngIf="data.customIcon !== ''">
+        {{ data.customIcon }}
+      </ng-container>
+    </app-icon>
+  </ng-container>
+  <div
+    [ngClass]="textAlign"
+    *ngIf="data.titleText !== undefined && data.titleText !== ''"
+    class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-body-0"
+  >
+    <b>
+      {{ data.titleText | translate }}
+    </b>
+  </div>
+  <div
+    *ngIf="data.titleText === undefined || data.titleText === ''"
+    [ngClass]="textAlign"
+    class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right"
+  >
+    {{ data.message | translate }}
+  </div>
+  <div
+    [ngClass]="textAlign"
+    *ngIf="data.subText !== ''"
+    class="cos-margin-4 cos-no-margin-top cos-no-margin-left cos-no-margin-right"
+  >
+    {{ data.subText | translate }}
+  </div>
+</div>
+<div
+  mat-dialog-actions
+  [fxLayoutAlign]="data.textAlign === 'center' ? 'center center' : 'end center'"
+>
+  <button (click)="goToLink()" mat-button class="cos-body-4">
+    <b>
+      {{
+        (data.buttonTitle !== undefined && data.buttonTitle !== ""
+          ? data.buttonTitle
+          : "BUTTON.CLOSE"
+        ) | translate
+      }}
+    </b>
+  </button>
+</div>

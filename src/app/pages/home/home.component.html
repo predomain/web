@@ -1,0 +1,169 @@
+<div class="shooting_star" *ngFor="let s of starCount"></div>
+<div
+  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  class="cos-moon cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div class="co-main-header cos-pos-fixed cos-fluid-width cos-padding-2">
+  <app-main-header
+    #mainHeader
+    [show]="{
+      showBasket: true,
+      showBookmark: true,
+      showCanvas: true,
+      showSearch: false
+    }"
+    [searchKeyword]="mainSearchForm.controls.search.value"
+  ></app-main-header>
+</div>
+<div
+  class="co-signin cos-pos-fixed cos-fluid-width cos-fluid-height"
+  fxLayoutAlign="center center"
+  fxLayout="row"
+>
+  <div
+    fxFlex
+    class="co-signin-content cos-fluid-width cos-fluid-height cos-body-3"
+    fxLayout="column"
+    fxLayoutGap="30px"
+  >
+    <div
+      fxFlex="0 0 auto"
+      class="co-landing-text-container cos-fluid-width cos-body-4"
+      fxLayout="column"
+      fxLayoutALign="center center"
+    >
+      <div
+        fxFlex
+        fxLayoutAlign="center center"
+        class="co-landing-text cos-center-text"
+      >
+        <div class="co-carousel-element">
+          <div class="co-text-carousel-vertical cos-fluid-width">
+            <div class="co-carousel-inner">
+              <div class="co-carousel-element-item">Search for</div>
+              <div class="co-carousel-element-item">Register</div>
+              <div class="co-carousel-element-item">Manage</div>
+              <div class="co-carousel-element-item">Collect</div>
+            </div>
+          </div>
+        </div>
+        <span class="co-eth-text"><b>.eth</b></span>
+        <div class="co-carousel-element">domains</div>
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        class="cos-center-text cos-margin-3 cos-no-margin-top"
+        fxLayoutGap="20px"
+      >
+        <div
+          fxFlex
+          class="cos-center-text cos-body-0 cos-padding-2 cos-no-padding-bottom cos-no-paddnig-top cos-disappear-on-mobile"
+        >
+          Open-source, decentralised, ENS domains search, registration &
+          marketplace.
+        </div>
+      </div>
+
+      <form
+        fxFlex
+        fxLayoutAlign="center center"
+        fxFlexAlign="center"
+        [formGroup]="mainSearchForm"
+        class="co-main-form"
+      >
+        <mat-form-field
+          fxFlexAlign="center"
+          class="co-main-search cos-body-0 cos-input-field-no-label cos-input-field-large cos-gray-placeholder"
+        >
+          <input
+            #autoCompleteTrigger="matAutocompleteTrigger"
+            class="cos-fluid-width cos-bg-darker-gray"
+            matInput
+            type="text"
+            placeholder="{{ 'LABELS.FIND_AND_REGISTER' | translate }}"
+            autocomplete="off"
+            maxlength="50"
+            formControlName="search"
+            [matAutocomplete]="auto"
+            (keydown.enter)="
+              autoCompleteTrigger.closePanel();
+              mainHeader?.bulksearch?.bulkSearchOpen === false
+                ? performSearch()
+                : ''
+            "
+          />
+          <mat-icon matSuffix color="primary"> search </mat-icon>
+          <div fxLayout="row" fxLayoutAlign="end start" class="cos-fluid-width">
+            <div
+              *ngIf="mainSearchForm.controls.search.value !== ''"
+              class="co-enter-key cos-body-5 cos-box-shadow cos-pos-absolute cos-gray-text cos-padding-0 cos-bg-darker-gray cos-border-radius-1"
+            >
+              <div fxFlex="0 0 auto" class="co-enter-arrow">↵</div>
+              <div fxFlex>{{ "BUTTON.PRESS_ENTER" | translate }}</div>
+            </div>
+            <div class="co-advanced-mode cos-body-3 cos-pos-absolute">
+              <a (click)="mainHeader?.bulksearch?.toggleBulkSearch(true)">
+                {{ "LABELS.ADVANCED_MODE" | translate }}
+              </a>
+            </div>
+          </div>
+        </mat-form-field>
+      </form>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option
+          *ngFor="let d of mainHeader?.quickSearchKeysToChunk"
+          class="cos-box-shadow"
+          (click)="mainHeader?.goToProfile(d)"
+        >
+          <div
+            fxLayout="row"
+            fxLayoutGap="10px"
+            class="cos-fluid-width cos-padding-1"
+          >
+            <div
+              fxFlex
+              fxLayoutAlign="start center"
+              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+            >
+              {{ d }}
+            </div>
+            <div fxflex fxLayout="column" fxLayoutAlign="center end">
+              <div
+                fxFlex="30px"
+                fxLayoutAlign="center center"
+                class="cos-body-5 cos-chip-regular cos-chip-dark cos-chip-padded cos-gray-text"
+              >
+                {{ "LABELS.PROFILE" | translate }}
+              </div>
+            </div>
+          </div>
+        </mat-option>
+        <ng-container *ngFor="let d of mainHeader?.quickSearchKeysToChunk">
+          <mat-option
+            *ngIf="miscUtilsService?.checksumEtheruemAddress(d) === false"
+            class="cos-box-shadow"
+            (click)="mainHeader?.goToDomain(d)"
+          >
+            <div fxLayout="row" class="cos-fluid-width cos-padding-1">
+              <div
+                fxFlex
+                fxLayoutAlign="start center"
+                class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+              >
+                {{ d }}
+              </div>
+              <div
+                fxflex
+                fxLayout="column"
+                fxLayoutAlign="center end"
+              ></div></div
+          ></mat-option>
+        </ng-container>
+      </mat-autocomplete>
+    </div>
+  </div>
+</div>

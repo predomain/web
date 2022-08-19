@@ -1,0 +1,630 @@
+@font-face {
+  font-family: "os";
+  font-style: normal;
+  font-weight: 400;
+  src: url(assets/fonts/os.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: "osbold";
+  font-style: normal;
+  font-weight: 400;
+  src: url(assets/fonts/osbold.woff2) format("woff2");
+}
+
+* {
+  outline: none !important;
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: var(--cos-border-radius-1);
+  background-color: var(--co-gray-bg);
+}
+::-webkit-scrollbar {
+  width: 4px;
+  background-color: var(--co-gray-bg);
+}
+::-webkit-scrollbar-thumb {
+  border-radius: var(--cos-border-radius-1);
+  background-color: var(--co-main-color) !important;
+}
+
+::placeholder {
+  color: var(--co-placeholder-text-color) !important;
+  opacity: 0.4 !important;
+}
+
+div,
+span {
+  font-family: "os";
+}
+
+input {
+  -webkit-user-select: auto !important;
+  -khtml-user-select: auto !important;
+  -moz-user-select: auto !important;
+  -ms-user-select: auto !important;
+  user-select: auto !important;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: normal;
+}
+
+ul {
+  padding-right: 2.5em !important;
+}
+
+*:focus {
+  outline: 0 !important;
+}
+
+b {
+  font-family: "osbold";
+  font-weight: bold;
+}
+
+html,
+body,
+app-root {
+  color: var(--co-default-text-color);
+  background-color: var(--co-bg-neutral-color);
+  top: 0;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden !important;
+  font-family: "Roboto", sans-serif !important;
+}
+
+a {
+  color: var(--co-anchor-color);
+  cursor: pointer;
+  text-decoration: none;
+  &.cos-anchor-danger {
+    color: var(--co-danger-color) !important;
+  }
+  &.cos-anchor-disabled {
+    color: var(--co-placeholder-text-color) !important;
+    cursor: none;
+    pointer-events: none;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+a:hover {
+  color: white;
+}
+
+p {
+  margin-block-start: 0.5em;
+  margin-block-end: 0.5em;
+}
+
+textarea {
+  font-family: "os";
+  background-color: var(--co-gray-bg) !important;
+  color: white;
+  width: calc(100% - 40px) !important;
+  padding: 20px !important;
+  border: solid 1px var(--co-darker-border-color) !important;
+  border-radius: var(--cos-border-radius-1) !important;
+}
+
+/*-------------------------------------------
+  Float Styles
+---------------------------------------------*/
+.cos-fl-right {
+  float: right;
+}
+
+.cos-fl-left {
+  float: left;
+}
+
+/*-------------------------------------------
+  Position Relative Styles
+---------------------------------------------*/
+.cos-relative-right {
+  right: 0;
+}
+
+.cos-relative-left {
+  left: 0;
+}
+
+/*-------------------------------------------
+  Font styles
+---------------------------------------------*/
+.cos-body-0 {
+  font-size: var(--co-font-size-0) !important;
+}
+
+.cos-body-1 {
+  font-size: var(--co-font-size-1) !important;
+}
+
+.cos-body-2 {
+  font-size: var(--co-font-size-2) !important;
+}
+
+.cos-body-3 {
+  font-size: var(--co-font-size-3) !important;
+}
+
+.cos-body-4 {
+  font-size: var(--co-font-size-4) !important;
+}
+
+.cos-body-5 {
+  font-size: var(--co-font-size-5) !important;
+}
+
+.cos-body-6 {
+  font-size: var(--co-font-size-6) !important;
+}
+
+.cos-body-7 {
+  font-size: var(--co-font-size-7) !important;
+}
+
+/*-------------------------------------------
+  Margin Styles
+---------------------------------------------*/
+.cos-margin-0 {
+  margin: 0.5em !important;
+}
+
+.cos-margin-1 {
+  margin: 1em !important;
+}
+
+.cos-margin-2 {
+  margin: 1.5em !important;
+}
+
+.cos-margin-3 {
+  margin: 2em !important;
+}
+
+.cos-margin-4 {
+  margin: 2.5em !important;
+}
+
+.cos-margin-5 {
+  margin: 3em !important;
+}
+
+.cos-no-margin {
+  margin: 0 !important;
+}
+
+.cos-no-margin-top {
+  margin-top: 0 !important;
+}
+
+.cos-no-margin-bottom {
+  margin-bottom: 0 !important;
+}
+
+.cos-no-margin-left {
+  margin-left: 0 !important;
+}
+
+.cos-no-margin-right {
+  margin-right: 0 !important;
+}
+
+.cos-no-margin {
+  margin: 0 !important;
+}
+
+/*-------------------------------------------
+  Border/-radius Styles
+---------------------------------------------*/
+.cos-border {
+  border: solid 1px var(--co-border-color) !important;
+}
+
+.cos-border-darker {
+  border: solid 1px var(--co-darker-border-color) !important;
+}
+
+.cos-no-border {
+  border: 0 !important;
+}
+
+.cos-no-border-left {
+  border-left: none !important;
+}
+
+.cos-no-border-right {
+  border-right: none !important;
+}
+
+.cos-no-border-top {
+  border-top: none !important;
+}
+
+.cos-no-border-bottom {
+  border-bottom: none !important;
+}
+
+.cos-border-radius-1 {
+  border-radius: var(--cos-border-radius-1);
+}
+
+.cos-border-radius-2 {
+  border-radius: var(--cos-border-radius-2);
+}
+
+.cos-border-radius-3 {
+  border-radius: var(--cos-border-radius-3);
+}
+
+.cos-border-radius-4 {
+  border-radius: var(--cos-border-radius-4);
+}
+
+.cos-no-border-radius-bottom-left {
+  border-bottom-left-radius: 0 !important;
+}
+.cos-no-border-radius-bottom-right {
+  border-bottom-right-radius: 0 !important;
+}
+.cos-no-border-radius-top-left {
+  border-top-left-radius: 0 !important;
+}
+.cos-no-border-radius-top-right {
+  border-top-right-radius: 0 !important;
+}
+/*-------------------------------------------
+  Line-height Styles
+---------------------------------------------*/
+.cos-line-height-1 {
+  line-height: 1em;
+}
+
+.cos-line-height-2 {
+  line-height: 1.5em;
+}
+
+.cos-line-height-3 {
+  line-height: 2em;
+}
+
+.cos-line-height-4 {
+  line-height: 2.5em;
+}
+
+/*-------------------------------------------
+  Padding Styles
+---------------------------------------------*/
+.cos-padding-0 {
+  padding: 0.5em;
+  box-sizing: border-box;
+}
+
+.cos-padding-1 {
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.cos-padding-2 {
+  padding: 1.5em;
+  box-sizing: border-box;
+}
+
+.cos-padding-3 {
+  padding: 2em;
+  box-sizing: border-box;
+}
+
+.cos-padding-4 {
+  padding: 2.5em;
+  box-sizing: border-box;
+}
+.cos-padding-px-30 {
+  padding: var(--co-font-size-30);
+  box-sizing: border-box;
+}
+.cos-padding-px-40 {
+  padding: var(--co-font-size-40);
+  box-sizing: border-box;
+}
+
+.cos-padding-px-0 {
+  padding: var(--co-font-size-7);
+  box-sizing: border-box;
+  &.cos-border,
+  &.cos-border-darker {
+    padding: calc(var(--co-font-size-7) - 0.5px) !important;
+  }
+}
+
+.cos-padding-px-1 {
+  padding: var(--co-font-size-3);
+  box-sizing: border-box;
+  &.cos-border,
+  &.cos-border-darker {
+    padding: calc(var(--co-font-size-7) - 0.5px) !important;
+  }
+}
+
+.cos-padding-px-2 {
+  padding: var(--co-font-size-1);
+  box-sizing: border-box;
+  &.cos-border,
+  &.cos-border-darker {
+    padding: calc(var(--co-font-size-7) - 0.5px) !important;
+  }
+}
+
+.cos-padding-px-3 {
+  padding: var(--co-font-size-0);
+  box-sizing: border-box;
+  &.cos-border,
+  &.cos-border-darker {
+    padding: calc(var(--co-font-size-7) - 0.5px) !important;
+  }
+}
+
+.cos-no-padding {
+  padding: 0;
+}
+
+.cos-no-padding-top {
+  padding-top: 0;
+}
+
+.cos-no-padding-bottom {
+  padding-bottom: 0;
+}
+
+.cos-no-padding-left {
+  padding-left: 0;
+}
+
+.cos-no-padding-right {
+  padding-right: 0;
+}
+
+.cos-no-padding {
+  padding: 0;
+}
+
+/*-------------------------------------------
+  Text Styles
+---------------------------------------------*/
+.cos-center-text {
+  text-align: center !important;
+}
+
+.cos-left-text {
+  text-align: left !important;
+}
+
+.cos-right-text {
+  text-align: right !important;
+}
+
+.cos-justify-text {
+  text-align: justify !important;
+}
+
+.cos-capitalized-text {
+  text-transform: capitalize !important;
+}
+
+.cos-anchor-text {
+  color: var(--co-anchor-color) !important;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.cos-gray-text {
+  color: gray !important;
+}
+
+.cos-light-text {
+  color: white !important;
+}
+
+.cos-gray-text-chipped {
+  padding: 3px 15px;
+  background-color: var(--co-button-disabled-color);
+  border-radius: 5px;
+}
+
+/*-------------------------------------------
+  Fluid Styles
+---------------------------------------------*/
+.cos-fluid-width {
+  width: 100% !important;
+}
+
+.cos-fluid-height {
+  height: 100% !important;
+}
+
+.cos-min-fluid-width {
+  min-width: 100% !important;
+}
+
+.cos-min-fluid-height {
+  min-height: 100% !important;
+}
+
+.cos-fluid-width-half {
+  width: 50% !important;
+}
+
+.cos-fluid-height-half {
+  height: 50% !important;
+}
+
+.cos-fluid-width-third {
+  width: 33% !important;
+}
+
+.cos-fluid-height-third {
+  height: 33% !important;
+}
+
+.cos-fluid-width-three-fourth {
+  width: 75% !important;
+}
+
+.cos-fluid-height-three-fourth {
+  height: 75% !important;
+}
+
+.cos-fluid-width-two-third {
+  width: 66% !important;
+}
+
+.cos-fluid-height-two-third {
+  height: 66% !important;
+}
+
+.cos-overflow-hidden {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+}
+
+.cos-overflow-y-x-hidden {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.cos-overflow-x-y-hidden {
+  overflow-y: hidden !important;
+  overflow-x: auto !important;
+}
+
+.cos-overflow-y {
+  overflow-y: auto !important;
+}
+
+.cos-overflow-x {
+  overflow-x: auto !important;
+}
+
+/*-------------------------------------------
+  Visibility Styles
+---------------------------------------------*/
+.cos-visibility-hidden {
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+/*-------------------------------------------
+  Position Styles
+---------------------------------------------*/
+.cos-pos-fixed {
+  position: fixed;
+}
+
+.cos-pos-absolute {
+  position: absolute;
+}
+
+.cos-pos-relative {
+  position: relative;
+}
+
+.cos-pos-top-reset {
+  top: 0;
+}
+
+.cos-pos-left-reset {
+  left: 0;
+}
+
+.cos-pos-right-reset {
+  right: 0;
+}
+
+.cos-pos-bottom-reset {
+  bottom: 0;
+}
+
+.cos-zindex-1 {
+  z-index: 2;
+}
+
+.cos-zindex-2 {
+  z-index: 3;
+}
+
+.cos-zindex-3 {
+  z-index: 4;
+}
+
+.cos-prop {
+  border: solid 1px red;
+}
+
+.cos-bg-neutral {
+  background-color: var(--co-bg-neutral-color) !important;
+}
+
+.cos-bg-main {
+  background-color: var(--co-main-color) !important;
+}
+
+.cos-bg-gray {
+  background-color: var(--co-gray-bg) !important;
+}
+
+.cos-bg-darker-gray {
+  background-color: var(--co-darker-gray-bg) !important;
+}
+
+.cos-bg-transparent {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.cos-box-sadow {
+  box-shadow: -1px 0 2px 0 rgb(41 52 67 / 12%), 1px 0 2px 0 rgb(41 52 67 / 7%),
+    0 1px 2px 0 rgb(41 52 67 / 10%) !important;
+}
+.cos-inner-box-sadow {
+  box-shadow: inset -1px 0 2px 0 rgb(41 52 67 / 12%),
+    1px 0 2px 0 rgb(41 52 67 / 7%), 0 1px 2px 0 rgb(41 52 67 / 10%) !important;
+}
+
+.cos-pointer {
+  cursor: pointer;
+}
+
+.cos-slow-fade-in {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s linear;
+}
+
+.cos-slow-fade-out {
+  display: visible;
+  opacity: 1;
+  transition: visibility 0s, opacity 0.5s linear;
+}
+
+/*-------------------------------------------
+  Word Break Styles
+---------------------------------------------*/
+.cos-word-break-all {
+  word-break: break-all;
+}

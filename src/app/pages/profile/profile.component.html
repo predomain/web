@@ -1,0 +1,580 @@
+<div class="shooting_star" *ngFor="let s of starCount"></div>
+<div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
+  <div
+    fxFlex="90"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="30px"
+    class="co-profile-header cos-fluid-width"
+  >
+    <span fxLayoutAlign="center center" fxLayoutGap="10px" (click)="goToHome()">
+      <mat-icon class="cos-icon-can-activate" color="primary"
+        >arrow_back_ios</mat-icon
+      >
+      <a class="co-back-button">
+        {{ "HEADER.BACK_TO_HOME" | translate }}
+      </a>
+    </span>
+  </div>
+  <app-main-header
+    [show]="{
+      showBasket: true,
+      showBookmark: true,
+      showCanvas: true
+    }"
+  ></app-main-header>
+</div>
+<div
+  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  class="cos-moon cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  #fadeTop
+  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
+  fxLayout="row"
+  fxLayoutAlign="center end"
+></div>
+<div
+  appGetScrollableXy
+  (scrollPosition)="
+    $event[1] > 100
+      ? (fadeTop.style.display = 'flex')
+      : (fadeTop.style.display = 'none');
+    $event[1] > 300
+      ? (filters.style.position = 'sticky')
+      : (filters.style.position = 'static');
+    $event[1] > 300
+      ? (filters.style.top = '130px')
+      : (filters.style.top = 'none')
+  "
+  class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
+>
+  <div
+    fxLayout="row"
+    fxLayoutAlign="center start"
+    class="co-banner cos-pos-fixed cos-fluid-width"
+  ></div>
+  <div
+    fxLayout="row"
+    fxLayoutAlign="center start"
+    class="co-profile-content-container cos-pos-absolute cos-fluid-width cos-fluid-height"
+  >
+    <div
+      fxFlex="90"
+      fxLayout="column"
+      fxLayoutGap="10px"
+      class="co-profile-content"
+    >
+      <div
+        fxLayout="row"
+        fxFlex="90"
+        class="cos-fluid-width cos-overflow-hidden"
+      >
+        <div fxLayout="column" fxFlex="20" class="co-avatar-container">
+          <div
+            id="canvas_size_guide"
+            class="cos-fluid-width cos-no-margin-bottom"
+            [style.visibility]="'hidden'"
+            [style.width]="'100%'"
+            [style.height]="'0px'"
+          ></div>
+          <div
+            fxLayoutAlign="stretch stretch"
+            class="cos-fluid-height cos-fluid-width cos-border-radius-2"
+          >
+            <app-preview-image
+              *ngIf="ethNameData === undefined"
+              fxFlex
+              [preview]="'assets/img-blank.png'"
+              [error]="'assets/profile-blank.png'"
+              [style.height]="
+                canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
+              "
+              class="cos-border-radius-2"
+            ></app-preview-image>
+            <app-preview-image
+              *ngIf="ethNameData !== undefined"
+              fxFlex
+              [preview]="'assets/img-blank.png'"
+              [error]="'assets/profile-blank.png'"
+              [src]="
+                ensMetadataAPI +
+                hashToBigIntString(ethNameData.labelhash) +
+                '/image'
+              "
+              [style.height]="
+                canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
+              "
+              class="cos-border-radius-2"
+            ></app-preview-image>
+          </div>
+        </div>
+        <div fxFlex fxLayout="column" fxLayoutAlign="end start">
+          <div
+            fxLayout="column"
+            fxLayoutGap="10px"
+            class="co-info-container cos-padding-2 cos-no-padding-top"
+          >
+            <div fxFlex class="co-title-text">
+              {{ userName }}
+            </div>
+            <div fxLayoutAlign="start center" fxLayoutGap="5px">
+              <div>
+                {{
+                  profileTexts?.description === undefined
+                    ? "Ethereum Name service"
+                    : profileTexts.description
+                }}
+              </div>
+            </div>
+          </div>
+          <div
+            fxLayout="row"
+            fxLayoutGap="20px"
+            class="co-info-container cos-padding-2 cos-body-2 cos-no-padding-top"
+          >
+            <div fxLayout="row" fxLayoutGap="10px" class="cos-body-3">
+              <div
+                class="co-external-link"
+                (click)="copyShareLink()"
+                matTooltip="Share Link"
+              >
+                <mat-icon>share</mat-icon>
+              </div>
+              <div
+                class="co-external-link"
+                (click)="goToBlockscan()"
+                matTooltip="Contact user on Blockscan.com"
+              >
+                <mat-icon>chat</mat-icon>
+              </div>
+              <div
+                class="co-external-link"
+                (click)="goToEtherscan()"
+                matTooltip="View user's Etherscan page"
+              >
+                <img src="assets/etherscan-logo-light-circle.png" />
+              </div>
+              <div
+                *ngIf="profileTexts?.telegram !== undefined"
+                [matTooltip]="profileTexts?.telegram"
+                class="co-external-link"
+              >
+                <img src="assets/social/telegram.png" />
+              </div>
+              <div
+                *ngIf="profileTexts?.discord !== undefined"
+                [matTooltip]="profileTexts?.discord"
+                class="co-external-link"
+              >
+                <img src="assets/social/discord.png" />
+              </div>
+              <div
+                *ngIf="profileTexts?.reddit !== undefined"
+                [matTooltip]="profileTexts?.reddit"
+                class="co-external-link"
+              >
+                <img src="assets/social/reddit.png" />
+              </div>
+              <div
+                *ngIf="profileTexts?.twitter !== undefined"
+                [matTooltip]="profileTexts?.twitter"
+                class="co-external-link"
+              >
+                <img src="assets/social/twitter.png" />
+              </div>
+            </div>
+          </div>
+          <div
+            fxLayout="row"
+            fxLayoutGap="20px"
+            class="co-info-container cos-padding-2 cos-body-2 cos-no-padding-top"
+          >
+            <div>
+              <div class="cos-body-0">
+                {{ userDomains === undefined ? "..." : userDomains?.length }}
+              </div>
+              <div class="cos-gray-text">
+                {{ "LABELS.DOMAINS" | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        fxLayout="row"
+        fxFlex="90"
+        fxLayoutGap="20px"
+        class="cos-fluid-width"
+      >
+        <div class="co-filters">
+          <div #filters fxLayout="column" class="co-filters-content">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap="10px"
+              class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right"
+            >
+              <mat-icon>filter_alt</mat-icon>
+              <span>
+                <b> {{ "LABELS.FILTERS" | translate }} </b>
+              </span>
+            </div>
+            <div
+              fxLayoutGap="10px"
+              class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right"
+            >
+              <form
+                fxFlex
+                fxLayout="column"
+                fxLayoutAlign="start stretch"
+                [formGroup]="filterForm"
+                class="cos-fluid-width cos-body-4 cos-gray-text"
+              >
+                <div class="co-form-label">
+                  {{ "LABELS.CONTAINING_KEYWORDS" | translate }}
+                </div>
+                <mat-form-field class="co-main-search cos-body-0">
+                  <input
+                    class="cos-fluid-width cos-bg-darker-gray"
+                    matInput
+                    type="text"
+                    autocomplete="off"
+                    maxlength="50"
+                    formControlName="contains"
+                    (input)="doUpdateInterface()"
+                  />
+                </mat-form-field>
+
+                <div class="co-form-label">
+                  {{ "LABELS.REGISTRATION_DATE" | translate }}
+                </div>
+                <mat-form-field class="co-main-search cos-body-0">
+                  <input
+                    class="cos-fluid-width cos-bg-darker-gray"
+                    matInput
+                    type="text"
+                    autocomplete="off"
+                    maxlength="15"
+                    formControlName="registration"
+                    [matDatepicker]="registrationPicker"
+                  />
+                  <mat-icon
+                    matSuffix
+                    class="cos-small-icon cos-icon-can-activate"
+                    (click)="openRegistrationPicker()"
+                    >calendar_month</mat-icon
+                  >
+                  <mat-datepicker #registrationPicker></mat-datepicker>
+                </mat-form-field>
+                <div class="co-form-label">
+                  {{ "LABELS.EXPIRATION_DATE" | translate }}
+                </div>
+                <mat-form-field class="co-main-search cos-body-0">
+                  <input
+                    class="cos-fluid-width cos-bg-darker-gray"
+                    matInput
+                    type="text"
+                    autocomplete="off"
+                    maxlength="15"
+                    formControlName="expiration"
+                    [matDatepicker]="expiredPicker"
+                  />
+                  <mat-icon
+                    matSuffix
+                    class="cos-small-icon cos-icon-can-activate"
+                    (click)="openExpiredPicker()"
+                    >calendar_month</mat-icon
+                  >
+                  <mat-datepicker #expiredPicker></mat-datepicker>
+                </mat-form-field>
+
+                <div class="co-form-label">
+                  {{ "LABELS.MIN_LENGTH" | translate }}
+                </div>
+                <mat-slider
+                  thumbLabel
+                  [displayWith]="formatLabel"
+                  tickInterval="1"
+                  step="1"
+                  min="3"
+                  max="20"
+                  aria-label="units"
+                  [value]="filterForm.controls.minLength.value"
+                  (change)="
+                    filterForm.controls.minLength.setValue($event.value)
+                  "
+                ></mat-slider>
+
+                <div class="co-form-label">
+                  {{ "LABELS.MAX_LENGTH" | translate }}
+                </div>
+                <mat-slider
+                  thumbLabel
+                  [displayWith]="formatLabel"
+                  tickInterval="1"
+                  step="1"
+                  min="3"
+                  max="20"
+                  aria-label="units"
+                  [value]="filterForm.controls.maxLength.value"
+                  (change)="
+                    filterForm.controls.maxLength.setValue($event.value)
+                  "
+                ></mat-slider>
+
+                <div fxLayout="column" fxLayoutGap="10px" class="cos-padding-1">
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.alphabet"
+                      (change)="
+                        typesFilter.alphabet = $event.checked;
+                        typesFilter.emoji = false
+                      "
+                    >
+                      {{ "LABELS.CONTAIN_ALPHABET" | translate }}
+                    </mat-slide-toggle>
+                  </div>
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.numbers"
+                      (change)="
+                        typesFilter.numbers = $event.checked;
+                        typesFilter.emoji = false
+                      "
+                    >
+                      {{ "LABELS.CONTAIN_NUMBERS" | translate }}
+                    </mat-slide-toggle>
+                  </div>
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.emoji"
+                      (change)="
+                        typesFilter.emoji = $event.checked;
+                        typesFilter.numbers = false;
+                        typesFilter.alphabet = false
+                      "
+                    >
+                      {{ "LABELS.CONTAIN_EMOJI" | translate }}
+                    </mat-slide-toggle>
+                  </div>
+                  `
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="stretch stretch"
+          fxLayoutGap="10px"
+        >
+          <div
+            fxFlex="0 0 auto"
+            class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2"
+          >
+            <div fxFlex>
+              <b> {{ "LABELS.DOMAINS" | translate }} </b>
+            </div>
+            <div fxFlex fxLayoutGap="10px" fxLayoutAlign="end center">
+              <mat-icon
+                class="cos-icon-can-activate"
+                (click)="downloadDomainList()"
+              >
+                download
+              </mat-icon>
+              <span class="cos-gray-text"> | </span>
+              <mat-icon
+                class="cos-icon-can-activate"
+                [color]="displayMode === displayModes.CHUNK ? 'primary' : ''"
+                (click)="setDisplayMode(displayModes.CHUNK)"
+              >
+                view_agenda
+              </mat-icon>
+              <mat-icon
+                class="cos-icon-can-activate"
+                [color]="displayMode === displayModes.AVATAR ? 'primary' : ''"
+                (click)="setDisplayMode(displayModes.AVATAR)"
+              >
+                grid_view
+              </mat-icon>
+              <mat-icon
+                class="cos-icon-can-activate cos-disappear-on-mobile"
+                [color]="displayMode === displayModes.LINEAR ? 'primary' : ''"
+                (click)="setDisplayMode(displayModes.LINEAR)"
+              >
+                sort
+              </mat-icon>
+            </div>
+          </div>
+          <div
+            *ngIf="
+              hasDomainsListLoaded === true &&
+              !(filterSearchDomains(searchKeyword).length > 0)
+            "
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            class="cos-fluid-width cos-fluid-height"
+          >
+            <div fxFlex="0 0 auto">
+              <app-custom-spinner
+                [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
+                [spinnerSize]="150"
+                [mode]="spinnerModes.LOADING"
+                [customIcon]="'llayers'"
+              >
+              </app-custom-spinner>
+            </div>
+          </div>
+          <div
+            *ngIf="hasDomainsListLoaded === false"
+            fxFlex
+            class="cos-fluid-width cos-fluid-height"
+            fxLayoutAlign="center center"
+          >
+            <div fxFlex="0 0 auto">
+              <app-custom-spinner
+                [spinnerText]="'SPINNER.LOADING_DATA'"
+                [spinnerSize]="150"
+                [mode]="spinnerModes.LOADING"
+                [customIcon]="'spin'"
+              >
+              </app-custom-spinner>
+            </div>
+          </div>
+          <div
+            fxFlex
+            fxLayout="row wrap"
+            *ngIf="hasDomainsListLoaded === true"
+            fxLayoutAlign="start start"
+          >
+            <ng-container *ngIf="displayMode === displayModes.LINEAR">
+              <ng-container *ngTemplateOutlet="linearDomainTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="displayMode === displayModes.AVATAR">
+              <ng-container *ngTemplateOutlet="avatarDomainTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="displayMode === displayModes.CHUNK">
+              <ng-container *ngTemplateOutlet="chunkDomainTemplate">
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #avatarDomainTemplate>
+  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
+    <app-preview-image
+      [preview]="'assets/img-blank.png'"
+      [error]="'assets/profile-blank.png'"
+      [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
+      [style.height]="'auto'"
+      class="co-item-with-avatar cos-border-radius-2 cos-pointer"
+      (click)="goToDomain(d.labelName)"
+    ></app-preview-image>
+  </ng-container>
+</ng-template>
+
+<ng-template #linearDomainTemplate>
+  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
+    <div
+      class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer"
+      (click)="goToDomain(d.labelName)"
+    >
+      <mat-progress-bar
+        *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
+        class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
+        mode="determinate"
+        [value]="d.gracePeriodPercent"
+      ></mat-progress-bar>
+      <div
+        class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
+        [ngClass]="
+          d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
+            ? ''
+            : 'co-bulk-search-item-fill-progress-bar-gap'
+        "
+        fxLayoutGap="15px"
+        fxLayoutAlign="center center"
+      >
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          class="cos-wallet-address-text-cut"
+        >
+          {{ d.labelName }}.eth
+        </div>
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          class="cos-disappear-on-mobile"
+        >
+          <span class="cos-gray-text">
+            <b> {{ "LABELS.REGISTRATION_DATE" | translate }} </b>
+          </span>
+          {{ d.registrationDate | timeAgo }}
+        </div>
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          class="cos-disappear-on-mobile"
+        >
+          <span class="cos-gray-text">
+            <b> {{ "LABELS.EXPIRATION_DATE" | translate }} </b>
+          </span>
+          {{ d.expiry | timeAgo }}
+        </div>
+        <a
+          href="{{ getDomainLink(d.labelName + '.eth') }}"
+          target="_blank"
+          class="cos-body-3"
+        >
+          {{ "BUTTON.VIEW_DETAILS" | translate }}
+        </a>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #chunkDomainTemplate>
+  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
+    <div
+      class="co-bulk-search-item-container"
+      (click)="goToDomain(d.labelName)"
+    >
+      <mat-progress-bar
+        *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
+        class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
+        mode="determinate"
+        [value]="d.gracePeriodPercent"
+      ></mat-progress-bar>
+      <div
+        class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
+        [ngClass]="
+          d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
+            ? ''
+            : 'co-bulk-search-item-fill-progress-bar-gap'
+        "
+        fxLayoutGap="15px"
+        fxLayoutAlign="center center"
+      >
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          class="cos-wallet-address-text-cut"
+        >
+          {{ d.labelName }}.eth
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

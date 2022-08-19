@@ -1,0 +1,13 @@
+<button
+  class="co-navigator-button cos-fluid-width"
+  mat-button
+  color="primary"
+  [disabled]="isDisabled"
+  *ngIf="isHidden === false"
+>
+  {{
+    buttonTextModified !== undefined
+      ? (buttonTextModified | translate)
+      : (buttonText | translate)
+  }}
+</button>

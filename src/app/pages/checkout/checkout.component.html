@@ -1,0 +1,364 @@
+<div fxLayoutAlign="start start" fxLayout="column" fxFlex>
+  <ng-container *ngTemplateOutlet="bulkSearchHeader"></ng-container>
+</div>
+<div
+  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<!-- BULK SEARCH CONTENTS -->
+<ng-template #bulkSearchContents>
+  <div
+    fxFlex
+    fxLayout="row wrap"
+    fxLayoutGap="10px"
+    [fxLayoutAlign]="
+      bulkSearchComplete === false && bulkSearchBookmarksShow === false
+        ? 'start stretched'
+        : 'start start'
+    "
+    class="co-bulk-search-results cos-overflow-y cos-padding-3 cos-fluid-width cos-fluid-height"
+  >
+    <div
+      *ngIf="bulkSearchComplete === false && bulkSearchBookmarksShow === false"
+      fxFlex
+      class="co-bulk-search-loading cos-fluid-width cos-fluid-height"
+      fxLayoutAlign="center center"
+    >
+      <div fxFlex="0 0 auto">
+        <app-custom-spinner
+          [spinnerText]="'SPINNER.PERFORMING_SEARCH'"
+          [spinnerSize]="150"
+          [mode]="spinnerModes.LOADING"
+          [customIcon]="'spin'"
+        >
+        </app-custom-spinner>
+      </div>
+    </div>
+    <div
+      *ngIf="bulkSearchComplete === true && countRegistrations() === 0"
+      fxFlex
+      class="co-bulk-search-loading cos-fluid-width cos-fluid-height"
+      fxLayoutAlign="center center"
+    >
+      <div fxFlex="0 0 auto">
+        <app-custom-spinner
+          [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
+          [spinnerSize]="150"
+          [mode]="spinnerModes.LOADING"
+          [customIcon]="'llayers'"
+        >
+        </app-custom-spinner>
+      </div>
+    </div>
+    <ng-container *ngFor="let d of bulkSearchResults">
+      <div
+        *ngIf="
+          countRegistrations() > 0 &&
+          ((bulkSearchAvailableOnly === true && d.isAvailable === false) ||
+            bulkSearchAvailableOnly === false)
+        "
+        class="co-bulk-search-item-container"
+        [ngClass]="
+          d.isAvailable === true ? 'co-bulk-search-item-not-available' : ''
+        "
+      >
+        <div
+          class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
+          [ngClass]="
+            d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
+              ? ''
+              : 'co-bulk-search-item-fill-progress-bar-gap'
+          "
+          fxLayoutGap="15px"
+          fxLayoutAlign="center center"
+        >
+          <div
+            fxFlex
+            fxLayoutAlign="start center"
+            class="cos-wallet-address-text-cut"
+          >
+            {{ d.labelName }}.eth
+          </div>
+          <a
+            *ngIf="d.isAvailable === true"
+            target="_blank"
+            href="https://app.ens.domains/name/{{ d.labelName }}.eth/details"
+            class="cos-body-3"
+          >
+            {{ "BUTTON.VIEW_DETAILS" | translate }}
+          </a>
+          <mat-icon
+            (click)="removeRegistrations(d.labelName)"
+            fxFlex="24px"
+            [ngClass]="
+              registrationStatus !== registrationStatusTypes.BEFORE_COMMIT &&
+              registrationStatus !== registrationStatusTypes.BEFORE_REGISTRATION
+                ? 'co-disabled-inputs'
+                : ''
+            "
+            class="cos-icon-can-activate"
+          >
+            clear
+          </mat-icon>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div
+    fxLayout="row"
+    fxLayoutAlign="center start"
+    class="co-banner cos-pos-fixed cos-fluid-width"
+  ></div>
+</ng-template>
+
+<!-- BULK SEARCH HEADER -->
+<ng-template #bulkSearchHeader>
+  <div
+    fxLayout="row"
+    fxLayoutAlign="stretched stretched"
+    class="co-bulk-search-container cos-fluid-width cos-padding-3 cos-body-0"
+  >
+    <div
+      fxLayout="column"
+      fxLayoutAlign="center start"
+      fxFlexAlign="start"
+      fxLayoutGap="50px"
+      class="co-bulk-search-header cos-fluid-width cos-body-3"
+    >
+      <div
+        fxFlex="0 0 auto"
+        fxLayoutAlign="start center"
+        class="co-bulk-search-title"
+      >
+        <img class="co-logo" src="assets/logo.png" />
+        <b>
+          {{ "LABELS.REGISTER_DOMAINS" | translate }}
+        </b>
+        <div
+          fxFlex="0 0 auto"
+          fxLayout="row"
+          fxLayoutGap="30px"
+          fxLayoutAlign="center center"
+          class="cos-body-2 cos-margin-3 cos-no-margin-top cos-no-margin-bottom"
+        >
+          <a (click)="goToHome()">{{ "HEADER.BACK_TO_HOME" | translate }}</a>
+          <a>{{ "HEADER.HELP_SUPPORT" | translate }}</a>
+        </div>
+      </div>
+      <div
+        fxLayout="column"
+        fxLayoutGap="10px"
+        fxFlexAlign="start"
+        [ngClass]="
+          registrationStatus !== registrationStatusTypes.BEFORE_COMMIT
+            ? 'co-disabled-inputs'
+            : ''
+        "
+        class="co-registran-input-form-container cos-margin-1 cos-no-margin-left cos-no-margin-bottom"
+      >
+        <form
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="start start"
+          [formGroup]="domainConfigurationForm"
+        >
+          <mat-form-field
+            fxFlex
+            fxLayoutGap="5px"
+            floatLabel="always"
+            class="cos-fluid-width co-main-search cos-body-0 cos-input-field"
+          >
+            <mat-label>{{
+              "LABELS.REGISTER_DOMAINS_TO" | translate
+            }}</mat-label>
+            <input
+              class="cos-fluid-width cos-bg-darker-gray"
+              matInput
+              type="text"
+              autocomplete="off"
+              maxlength="50"
+              formControlName="registrant"
+              (input)="resolveRegistrantAddressInput()"
+            />
+            <div
+              *ngIf="resolvingRegistrantAddress === false || registrant === ''"
+              matSuffix
+            >
+              <div
+                *ngIf="registrant === ''"
+                class="co-reset-button-input cos-body-5"
+              >
+                <a (click)="resetRegistrantInput()">{{
+                  "BUTTON.RESET" | translate
+                }}</a>
+              </div>
+              <app-spinner
+                *ngIf="registrant !== ''"
+                [padded]="false"
+                [lightColour]="true"
+                [spinnerSize]="10"
+                [showText]="false"
+                class="co-reset-button-input co-spinner"
+              ></app-spinner>
+            </div>
+          </mat-form-field>
+          <div fxLayout="column" fxLayoutGap="10px" class="cos-body-4">
+            <div
+              *ngIf="
+                (registrantIdIsEth === true &&
+                  resolvingRegistrantAddress === true) ||
+                registrant === ''
+              "
+              class="co-resolved-address cos-word-break-all"
+              fxLayoutAlign="column"
+            >
+              &#x21B3;
+              <ng-template #resolvedAddressText let-ra="ra">
+                <ng-container *ngIf="ra === false">
+                  {{ "LABELS.NO_ADDRESS_DETECTED" | translate }}
+                  <mat-icon class="co-error-resolved-address" color="error"
+                    >warning</mat-icon
+                  >
+                </ng-container>
+                <ng-container *ngIf="ra !== false">
+                  {{ checkoutService.truncateResolvedAddress(ra) }}
+                </ng-container>
+              </ng-template>
+              <ng-template
+                [ngTemplateOutlet]="resolvedAddressText"
+                [ngTemplateOutletContext]="{
+                  ra: domainConfigurationForm?.controls?.registrantAddress.value
+                }"
+              ></ng-template>
+            </div>
+            <mat-slide-toggle
+              color="primary"
+              class="co-set-resolver-toggle cos-gray-text cos-padding-0 cos-no-padding-left cos-no-padding-bottom"
+              formControlName="resolverSet"
+            >
+              {{ "LABELS.SET_RESOLVER" | translate }}</mat-slide-toggle
+            >
+          </div>
+        </form>
+      </div>
+    </div>
+    <div
+      fxFlex="0 0 auto"
+      fxLayout="column"
+      fxLayoutGap="30px"
+      fxLayoutAlign="start end"
+    >
+      <div
+        fxFlex="0 0 auto"
+        fxLayout="column"
+        fxLayoutGap="10px"
+        class="cos-fluid-width cos-body-2 co-bulk-search-cost-breakdown"
+      >
+        <div fxFlex class="co-total-cost">
+          <b> {{ "LABELS.TOTAL_COST" | translate }} </b>
+        </div>
+        <div fxFlex fxLayout="column" class="cos-body-5 co-total-cost-content">
+          <div fxFlex class="cos-body-1">
+            <b> {{ totalCostTruncated }} ETH </b>
+          </div>
+          <div fxFlex class="cos-gray-text">
+            ${{
+              checkoutService.calculateTotalInUsd(
+                ethUsdPrice | async,
+                totalCost
+              )
+            }}
+            USD
+          </div>
+        </div>
+        <div fxFlex fxLayout="column" class="co-gas-price cos-body-5">
+          <div fxFlex class="cos-body-1">
+            <ng-container *ngIf="(gasPrice | async) === 0"> ... </ng-container>
+            <ng-container *ngIf="(gasPrice | async) !== 0">
+              {{ gasPrice | async }} Gwei
+            </ng-container>
+          </div>
+          <div fxFlex class="cos-gray-text">
+            <b>{{ "LABELS.GAS_PRICE" | translate }}</b>
+          </div>
+        </div>
+        <div
+          fxFlex
+          fxLayout="column"
+          [ngClass]="
+            registrationStatus !== registrationStatusTypes.BEFORE_COMMIT
+              ? 'co-disabled-inputs'
+              : ''
+          "
+          class="co-duration cos-body-3"
+        >
+          <div fxFlex class="cos-body-1">
+            <a (click)="openDurationSettingDialog()">
+              {{ duration }}
+              {{ duration > 1 ? "Years" : "Year" }}
+            </a>
+          </div>
+          <div fxFlex class="cos-gray-text cos-body-5">
+            {{ "LABELS.DURATION" | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      fxFlex="0 0 auto"
+      fxLayoutAlign="start center"
+      class="co-bulk-search-title-mobile cos-padding-2 cos-no-padding-top cos-no-padding-left cos-no-padding-right"
+    >
+      <b>
+        {{ "LABELS.REGISTER" | translate }}
+      </b>
+      <div fxFlex fxLayoutAlign="end end" class="cos-right-text">
+        <a href="" class="co-cancel-button-mobile cos-body-3">{{
+          "BUTTON.CANCEL" | translate
+        }}</a>
+      </div>
+    </div>
+  </div>
+  <div fxFlex fxLayout="column" class="co-content-container cos-fluid-width">
+    <div fxFlex="0 0 auto" fxLayout="column" class="cos-fluid-width">
+      <div
+        fxFlex="0 0 auto"
+        fxLayout="row"
+        class="co-controls cos-padding-1 cos-bg-darker-gray cos-gray-text"
+      >
+        <div
+          fxFlex
+          class="cos-margin-3 cos-no-margin-top cos-no-margin-bottom cos-no-margin-right"
+        >
+          {{ registrationStatus | translate }}
+        </div>
+        <div
+          *ngIf="
+            registrationStatus !== registrationStatusTypes.COMMIT_SENT &&
+            registrationStatus !== registrationStatusTypes.REGISTRATION_SENT &&
+            registrationStatus !== registrationStatusTypes.AWAIT &&
+            resolvingRegistrantAddress === true &&
+            domainConfigurationForm.controls.registrantAddress.value !== false
+          "
+          fxFlex
+          fxLayoutAlign="end center"
+          fxLayoutGap="5px"
+          class="cos-right-text cos-margin-3 cos-no-margin-left cos-no-margin-top cos-no-margin-bottom"
+        >
+          <a
+            [disabled]="nextAction() === null"
+            [ngClass]="nextAction() === null ? 'cos-grey-text' : ''"
+            (click)="nextAction()()"
+            >{{ "BUTTON.PROCEED" | translate }}</a
+          >
+        </div>
+      </div>
+      <mat-progress-bar
+        class="co-bulk-search-item-expiration-bar"
+        [mode]="progressLoaderMode"
+        [value]="progressLoaderValue"
+      ></mat-progress-bar>
+    </div>
+    <ng-container *ngTemplateOutlet="bulkSearchContents"></ng-container>
+  </div>
+</ng-template>

@@ -1,0 +1,178 @@
+<div mat-dialog-content>
+  <ng-container
+    *ngIf="(userFacadeService.userState$ | async)?.loading === true"
+  >
+    <div
+      fxFlex
+      fxLayoutAlign="center center"
+      fxLayout="column"
+      class="cos-fluid-height cos-fluid-width"
+    >
+      <img
+        class="co-connecter-in-progress-icon"
+        fxFlex="0 0 auto"
+        [src]="loadingProgressImage"
+      />
+      <app-spinner
+        [spinnerText]="'SPINNER.FOLLOW_THE_INSTRUCTIONS_ON_YOUR_WALLET'"
+        [spinnerSize]="200"
+      >
+      </app-spinner>
+    </div>
+  </ng-container>
+
+  <ng-container
+    *ngIf="(userFacadeService.userState$ | async)?.loading === false"
+  >
+    <div
+      class="co-failed-box cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
+      fxLayoutAlign="start start"
+      fxLayout="column"
+      fxLayoutGap="10px"
+      *ngIf="(hasErrorOccured | async) === true"
+    >
+      <app-spinner
+        [failureText]="'GENERIC.NETWORK_CHANGED_INCOMPATIBLE'"
+        [spinnerSize]="200"
+        [mode]="spinnerModes.FAILED"
+      >
+      </app-spinner>
+    </div>
+    <div
+      class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
+      fxLayoutAlign="start start"
+      fxLayout="column"
+      fxLayoutGap="10px"
+      *ngIf="(hasErrorOccured | async) === false"
+    >
+      <div
+        fxFlex
+        fxLayoutAlign="center center"
+        class="cos-fluid-width cos-padding-1 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
+      >
+        <div fxFlex class="cos-body-0">
+          <b>
+            {{ "BUTTON.CONNECT" | translate }}
+          </b>
+        </div>
+        <div fxFlex class="cos-right-text">
+          <a (click)="closeDialog()" class="cos-body-4">
+            {{ "BUTTON.CLOSE" | translate }}
+          </a>
+        </div>
+      </div>
+
+      <mat-card
+        class="cos-box-generic cos-box-generic-togglable co-wallet-container cos-fluid-width cos-disappear-on-mobile"
+        fxLayoutAlign="start center"
+        (click)="openMetamaskConnect()"
+      >
+        <div fxFlex="0 0 auto">
+          <div
+            fxFlex="0 0 auto"
+            class="co-wallet-icon"
+            fxLayoutAlign="center center"
+          >
+            <img
+              class="co-wallet"
+              fxFlex="0 0 auto"
+              src="assets/icn-metamask.svg"
+            />
+          </div>
+          <div
+            class="cos-body-3"
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="center center"
+          >
+            <span>MetaMask</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card
+        class="cos-box-generic cos-box-generic-togglable co-wallet-container cos-fluid-width"
+        fxLayoutAlign="start center"
+        (click)="openWalletConnect()"
+      >
+        <div fxFlex="0 0 auto">
+          <div
+            fxFlex="0 0 auto"
+            class="co-wallet-icon"
+            fxLayoutAlign="center center"
+          >
+            <img
+              class="co-wallet"
+              fxFlex="0 0 auto"
+              src="assets/wallet-connect-logo.png"
+            />
+          </div>
+          <div
+            class="cos-body-3"
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="center center"
+          >
+            <span>Wallet Connect</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card
+        class="cos-box-generic cos-box-generic-togglable co-wallet-container cos-fluid-width cos-disappear-on-mobile"
+        fxLayoutAlign="start center"
+        (click)="openLedgerConnect()"
+      >
+        <div fxFlex="0 0 auto">
+          <div
+            fxFlex="0 0 auto"
+            class="co-wallet-icon"
+            fxLayoutAlign="center center"
+          >
+            <img
+              class="co-wallet"
+              fxFlex="0 0 auto"
+              src="assets/ledger-logo.png"
+            />
+          </div>
+          <div
+            class="cos-body-3"
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="center center"
+          >
+            <span>Ledger Wallet</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card
+        class="cos-box-generic cos-box-generic-togglable co-wallet-container cos-fluid-width cos-disappear-on-mobile"
+        fxLayoutAlign="start center"
+        (click)="openTrezorConnect()"
+      >
+        <div fxFlex="0 0 auto">
+          <div
+            fxFlex="0 0 auto"
+            class="co-wallet-icon"
+            fxLayoutAlign="center center"
+          >
+            <img
+              class="co-wallet"
+              fxFlex="0 0 auto"
+              src="assets/trezor-logo.png"
+            />
+          </div>
+          <div
+            class="cos-body-3"
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="center center"
+          >
+            <span>Trezor Wallet</span>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,10 @@
+@import "../app-root.scss";
+
+:host {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+.co-progress-bar {
+  z-index: 10002;
+}

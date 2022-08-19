@@ -1,0 +1,13 @@
+<div
+  *ngIf="(pageLoadingState | async) === true"
+  class="co-progress-bar cos-fluid-width cos-pos-fixed cos-pos-top-reset"
+>
+  <mat-progress-bar
+    class="cos-main-progress-bar"
+    mode="indeterminate"
+    [value]="0"
+  ></mat-progress-bar>
+</div>
+<div [style.height]="getHeight()">
+  <router-outlet> </router-outlet>
+</div>

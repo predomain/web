@@ -1,0 +1,452 @@
+<div class="shooting_star" *ngFor="let s of starCount"></div>
+<div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
+  <div
+    fxFlex="90"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="30px"
+    class="co-profile-header cos-fluid-width"
+  >
+    <span fxLayoutAlign="center center" fxLayoutGap="10px" (click)="goToHome()">
+      <mat-icon class="cos-icon-can-activate" color="primary"
+        >arrow_back_ios</mat-icon
+      >
+      <a class="co-back-button">
+        {{ "HEADER.BACK_TO_HOME" | translate }}
+      </a>
+    </span>
+  </div>
+  <app-main-header
+    [show]="{
+      showBasket: true,
+      showBookmark: true,
+      showCanvas: true
+    }"
+  ></app-main-header>
+</div>
+<div
+  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  class="cos-moon cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  #fadeTop
+  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
+  fxLayout="row"
+  fxLayoutAlign="center end"
+></div>
+<div
+  appGetScrollableXy
+  (scrollPosition)="
+    $event[1] > 100
+      ? (fadeTop.style.display = 'flex')
+      : (fadeTop.style.display = 'none');
+    $event[1] > 300
+      ? (filters.style.position = 'fixed')
+      : (filters.style.position = 'static');
+    $event[1] > 300
+      ? (filters.style.top = '130px')
+      : (filters.style.top = 'none');
+    $event[1] > 300
+      ? (filters.style.width = 'calc(20% - 38px)')
+      : (filters.style.width = '100%')
+  "
+  class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
+>
+  <div
+    fxLayout="row"
+    fxLayoutAlign="center start"
+    class="co-banner cos-pos-fixed cos-fluid-width"
+  ></div>
+  <div
+    fxLayout="row"
+    fxLayoutAlign="center start"
+    class="co-profile-content-container cos-pos-absolute cos-fluid-width cos-fluid-height"
+  >
+    <div
+      fxFlex="90"
+      fxLayout="column"
+      fxLayoutGap="10px"
+      class="co-profile-content"
+    >
+      <div fxLayout="row" fxFlex="90" class="cos-fluid-width">
+        <div fxLayout="column" fxFlex="20" class="co-avatar-container">
+          <div
+            id="canvas_size_guide"
+            class="cos-fluid-width cos-no-margin-bottom"
+            [style.visibility]="'hidden'"
+            [style.width]="'100%'"
+            [style.height]="'0px'"
+          ></div>
+          <div
+            fxLayoutAlign="end end"
+            class="cos-fluid-height cos-border-radius-2"
+          >
+            <app-preview-image
+              *ngIf="userDomains === undefined"
+              fxFlex
+              [preview]="'assets/img-blank.png'"
+              [error]="'assets/profile-blank.png'"
+              [style.height]="
+                canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
+              "
+              class="cos-border-radius-2"
+            ></app-preview-image>
+            <app-preview-image
+              *ngIf="userDomains !== undefined"
+              fxFlex
+              [preview]="'assets/img-blank.png'"
+              [error]="'assets/profile-blank.png'"
+              [src]="
+                ensMetadataAPI +
+                hashToBigIntString(userDomains[0].labelHash) +
+                '/image'
+              "
+              [style.height]="
+                canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
+              "
+              class="cos-border-radius-2"
+            ></app-preview-image>
+          </div>
+        </div>
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="end start"
+          class="cos-overflow-hidden"
+        >
+          <div
+            fxLayout="column"
+            class="co-info-container cos-padding-2 cos-fluid-width"
+          >
+            <div
+              fxLayoutAlign="start center"
+              fxLayoutGap="10px"
+              class="co-title-text"
+            >
+              <b> {{ domain }} </b>
+              <mat-icon
+                *ngIf="
+                  domainIsInvalid !== undefined && domainIsInvalid === true
+                "
+                color="accent"
+                class="cos-pointer"
+                matTooltip="{{ metadata.description }}"
+                >warning</mat-icon
+              >
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+              <span> Ethereum Name Service </span>
+              <mat-icon color="primary" class="cos-small-icon"
+                >verified</mat-icon
+              >
+            </div>
+          </div>
+          <div
+            fxLayout="row"
+            fxLayoutGap="20px"
+            class="co-info-container cos-padding-2 cos-body-2 cos-no-padding-top"
+          >
+            <div fxLayout="row" fxLayoutGap="10px" class="cos-body-3">
+              <div
+                class="co-external-link"
+                (click)="toggleBookmark(domainBookable)"
+                [ngClass]="
+                  bookmarksService.isDomainBookmarked(
+                    bookmarks,
+                    domainBookable.labelName
+                  )
+                    ? 'activated'
+                    : ''
+                "
+              >
+                <mat-icon>bookmark</mat-icon>
+              </div>
+              <div class="co-external-link" (click)="copyShareLink()">
+                <mat-icon>share</mat-icon>
+              </div>
+              <div
+                class="co-external-link"
+                (click)="goToEtherscanDomainProfile(domain)"
+              >
+                <img src="assets/etherscan-logo-light-circle.png" />
+              </div>
+              <div
+                class="co-external-link"
+                (click)="goToEnsDomainProfile(domain)"
+              >
+                <img src="assets/social/ens.png" />
+              </div>
+            </div>
+          </div>
+          <div
+            fxLayout="column"
+            class="co-info-container cos-padding-2 cos-fluid-width"
+          >
+            <div class="cos-body-2">
+              <b>Owned by</b>:
+              <a
+                href="/#/profile/{{
+                  userDomainOwner === undefined
+                    ? 'null'
+                    : getDomainHistoryRecordActor(userDomainOwner).name
+                }}"
+                >{{
+                  userDomainOwner === undefined
+                    ? "..."
+                    : getDomainHistoryRecordActor(userDomainOwner).name
+                }}</a
+              >
+            </div>
+          </div>
+          <div
+            *ngIf="false"
+            fxLayout="column"
+            fxLayoutGap="0px"
+            class="co-info-container cos-padding-2 cos-body-2 cos-no-padding-top"
+          >
+            <div class="co-title-text"><b> 0.00 ETH </b></div>
+            <div class="cos-body-3 cos-gray-text">Price</div>
+            <div class="cos-margin-1 cos-no-margin-left cos-no-margin-bottom">
+              <button mat-button>
+                <b> {{ "BUTTONS.BUY_NOW" | translate }} </b>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        fxLayout="row"
+        fxFlex="90"
+        fxLayoutGap="20px"
+        class="cos-fluid-width"
+      >
+        <div class="co-filters">
+          <div #filters fxLayout="column" class="co-filters-content">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap="10px"
+              class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right"
+            >
+              <mat-icon>info</mat-icon>
+              <span>
+                <b> {{ "LABELS.DETAILS" | translate }} </b>
+              </span>
+            </div>
+            <div
+              fxLayoutGap="10px"
+              class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right"
+            >
+              <form
+                fxFlex
+                fxLayout="column"
+                fxLayoutAlign="start stretch"
+                [formGroup]="metadataForm"
+                class="cos-fluid-width cos-body-4 cos-gray-text"
+              >
+                <div class="co-form-label">
+                  {{ "LABELS.CREATION_DATE" | translate }}
+                </div>
+                <mat-form-field class="co-main-search cos-body-0">
+                  <input
+                    class="cos-fluid-width cos-bg-darker-gray"
+                    matInput
+                    type="text"
+                    autocomplete="off"
+                    maxlength="50"
+                    formControlName="creation"
+                  />
+                </mat-form-field>
+                <div class="co-form-label">
+                  {{ "LABELS.REGISTRATION_DATE" | translate }}
+                </div>
+                <mat-form-field class="co-main-search cos-body-0">
+                  <input
+                    class="cos-fluid-width cos-bg-darker-gray"
+                    matInput
+                    type="text"
+                    autocomplete="off"
+                    maxlength="50"
+                    formControlName="registration"
+                  />
+                </mat-form-field>
+                <div class="co-form-label">
+                  {{ "LABELS.EXPIRATION_DATE" | translate }}
+                </div>
+                <mat-form-field class="co-main-search cos-body-0">
+                  <input
+                    class="cos-fluid-width cos-bg-darker-gray"
+                    matInput
+                    type="text"
+                    autocomplete="off"
+                    maxlength="50"
+                    formControlName="expiration"
+                  />
+                </mat-form-field>
+                <div
+                  fxLayout="column"
+                  fxLayoutGap="10px"
+                  class="cos-padding-1"
+                ></div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="stretch stretch"
+          fxLayoutGap="10px"
+          class="cos-fluid-width"
+        >
+          <div
+            fxFlex="0 0 auto"
+            class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2"
+          >
+            <div fxFlex>
+              <b> {{ "LABELS.DOMAIN_HISTORY" | translate }} </b>
+            </div>
+          </div>
+          <div
+            *ngIf="
+              eventActors !== undefined &&
+              resolvedEvents !== undefined &&
+              !(resolvedEvents.length > 0)
+            "
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            class="cos-fluid-width cos-fluid-height"
+          >
+            <div fxFlex="0 0 auto">
+              <app-custom-spinner
+                [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
+                [spinnerSize]="150"
+                [mode]="spinnerModes.LOADING"
+                [customIcon]="'llayers'"
+              >
+              </app-custom-spinner>
+            </div>
+          </div>
+          <div
+            *ngIf="eventActors === undefined"
+            fxFlex
+            class="cos-fluid-width cos-fluid-height"
+            fxLayoutAlign="center center"
+          >
+            <div fxFlex="0 0 auto">
+              <app-custom-spinner
+                [spinnerText]="'SPINNER.LOADING_DATA'"
+                [spinnerSize]="150"
+                [mode]="spinnerModes.LOADING"
+                [customIcon]="'spin'"
+              >
+              </app-custom-spinner>
+            </div>
+          </div>
+          <div
+            fxFlex
+            fxLayout="row wrap"
+            *ngIf="eventActors !== undefined"
+            fxLayoutAlign="start start"
+          >
+            <ng-container *ngFor="let e of resolvedEvents">
+              <div
+                class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right"
+              >
+                <div
+                  fxLayoutGap="15px"
+                  fxLayoutAlign="center center"
+                  class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
+                >
+                  <div
+                    fxFlex
+                    fxLayout="row"
+                    fxLayoutGap="15px"
+                    fxLayoutAlign="start center"
+                  >
+                    <mat-icon class="cos-gray-text cos-disappear-on-mobile">
+                      {{ eventTypeIcons[e.type] }}
+                    </mat-icon>
+                    <div fxFlex="0 0 auto">
+                      {{ e.type | translate }}
+                    </div>
+                    <div
+                      fxFlex="0 0 auto"
+                      *ngIf="e.type === eventTypes.SALE"
+                      class="cos-bg-main cos-border-radius-1 cos-padding-0 cos-body-4"
+                    >
+                      <b> {{ e.value !== "0" ? e.value : "" }} ETH </b>
+                    </div>
+                    <div fxFlexx></div>
+                  </div>
+                  <div
+                    fxFlex
+                    fxLayoutAlign="start center"
+                    class="cos-wallet-address-text-cut cos-right-text cos-disappear-on-mobile"
+                    [ngClass]="
+                      getDomainHistoryRecordActor(e.from).accessible === false
+                        ? 'cos-gray-text'
+                        : 'cos-anchor-text'
+                    "
+                    (click)="
+                      goToEventActorProfile(
+                        getDomainHistoryRecordActor(e.from).name
+                      )
+                    "
+                  >
+                    {{ getDomainHistoryRecordActor(e.from).name }}
+                  </div>
+
+                  <div
+                    fxFlex="0 0 auto"
+                    fxLayoutAlign="start center"
+                    class="cos-wallet-address-text-cut cos-disappear-on-mobile"
+                  >
+                    <span class="cos-gray-text">
+                      <mat-icon class="cos-small-icon">arrow_forward</mat-icon>
+                    </span>
+                  </div>
+
+                  <div
+                    fxFlex
+                    fxLayoutAlign="start center"
+                    class="cos-wallet-address-text-cut cos-disappear-on-mobile"
+                    [ngClass]="
+                      getDomainHistoryRecordActor(e.to).accessible === false
+                        ? 'cos-gray-text'
+                        : 'cos-anchor-text'
+                    "
+                    (click)="
+                      goToEventActorProfile(
+                        getDomainHistoryRecordActor(e.to).name
+                      )
+                    "
+                  >
+                    {{ getDomainHistoryRecordActor(e.to).name }}
+                  </div>
+                  <div
+                    (click)="goToEtherscan(e.txHash)"
+                    fxFlex
+                    fxLayoutAlign="center center"
+                    fxLayoutGap="5px"
+                    class="cos-body-3 cos-anchor-text"
+                  >
+                    <div fxFlex class="cos-right-text">
+                      {{ getEventMsDate(e.date) | timeAgo }}
+                    </div>
+                    <mat-icon fxFlex="0 0 auto" class="cos-small-icon"
+                      >open_in_new</mat-icon
+                    >
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

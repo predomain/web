@@ -1,0 +1,204 @@
+{
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "web": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "./extra-webpack.config.ts"
+            },
+            "outputPath": "dist/web",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": ["src/assets"],
+            "styles": [
+              "src/app-plugin-styles.scss",
+              "src/app-material-setup.scss",
+              "src/app-styles.scss",
+              "src/app-materials.scss",
+              "src/app-material-overrides.scss",
+              "src/app-overrides.scss",
+              "src/app-root.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "100mb",
+                  "maximumError": "100mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "100mb",
+                  "maximumError": "100mb"
+                }
+              ],
+              "outputHashing": "all",
+              "buildOptimizer": true,
+              "optimization": true,
+              "aot": true,
+              "vendorChunk": true,
+              "extractLicenses": true,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "production-test": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.test.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "100mb",
+                  "maximumError": "100mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "100mb",
+                  "maximumError": "100mb"
+                }
+              ],
+              "outputHashing": "all",
+              "buildOptimizer": true,
+              "optimization": true,
+              "aot": true,
+              "vendorChunk": true,
+              "extractLicenses": true,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "test-remote": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.test.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "buildOptimizer": true,
+              "optimization": true,
+              "aot": true,
+              "vendorChunk": true,
+              "extractLicenses": true,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "test": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.test.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": false,
+              "extractLicenses": false,
+              "sourceMap": false,
+              "namedChunks": false
+            },
+            "test-main": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.test-main.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": false,
+              "extractLicenses": false,
+              "sourceMap": false,
+              "namedChunks": false
+            }
+          },
+          "defaultConfiguration": "test"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "sslKey": "certificates/server.key",
+            "sslCert": "certificates/server.cert",
+            "ssl": true
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "web:build:production"
+            },
+            "production-test": {
+              "browserTarget": "web:build:production-test"
+            },
+            "test-remote": {
+              "browserTarget": "web:build:test-remote"
+            },
+            "test": {
+              "browserTarget": "web:build:test"
+            },
+            "test-main": {
+              "browserTarget": "web:build:test-main"
+            }
+          },
+          "defaultConfiguration": "test"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "web:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": ["src/assets"],
+            "styles": [
+              "src/app-plugin-styles.scss",
+              "src/app-material-setup.scss",
+              "src/app-styles.scss",
+              "src/app-materials.scss",
+              "src/app-material-overrides.scss",
+              "src/app-overrides.scss",
+              "src/app-root.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "web"
+}

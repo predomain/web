@@ -1,0 +1,344 @@
+<div
+  fxLayoutAlign="end center"
+  fxLayoutGap="40px"
+  class="cos-fluid-width cos-body-3"
+>
+  <div
+    fxFlex="0 0 auto"
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="end center"
+  >
+    <form
+      *ngIf="show?.showSearch === true || show?.showSearch === undefined"
+      fxFlex
+      fxLayoutAlign="center center"
+      fxFlexAlign="center"
+      class="co-main-form"
+      [formGroup]="quickSearchForm"
+    >
+      <mat-form-field
+        fxLayoutAlign="center center"
+        fxFlexAlign="center"
+        class="co-main-search cos-body-0 cos-input-field-no-label"
+      >
+        <input
+          class="cos-fluid-width cos-bg-darker-gray"
+          matInput
+          type="text"
+          placeholder="{{ 'LABELS.SEARCH' | translate }}..."
+          autocomplete="off"
+          maxlength="50"
+          formControlName="search"
+          [matAutocomplete]="auto"
+          (input)="setSearchKeywordOnInput($event)"
+          (keydown.enter)="
+            bulksearch?.bulkSearchOpen === false
+              ? bulksearch?.performBulkSearch(false, searchKeysToChunk)
+              : ''
+          "
+        />
+        <mat-icon matSuffix color="primary"> search </mat-icon>
+      </mat-form-field>
+    </form>
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      class="autocomplete-for-small-input"
+    >
+      <mat-option
+        *ngFor="let d of quickSearchKeysToChunk"
+        class="cos-box-shadow"
+        (click)="goToProfile(d)"
+      >
+        <div
+          fxLayout="row"
+          fxLayoutGap="10px"
+          class="cos-fluid-width cos-padding-1"
+        >
+          <div
+            fxFlex
+            fxLayoutAlign="start center"
+            class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+          >
+            {{ d }}
+          </div>
+          <div fxflex fxLayout="column" fxLayoutAlign="center end">
+            <div
+              fxFlex="30px"
+              fxLayoutAlign="center center"
+              class="cos-body-5 cos-chip-regular cos-chip-dark cos-chip-padded cos-gray-text"
+            >
+              {{ "LABELS.PROFILE" | translate }}
+            </div>
+          </div>
+        </div>
+      </mat-option>
+      <ng-container *ngFor="let d of quickSearchKeysToChunk">
+        <mat-option
+          *ngIf="miscUtilsService?.checksumEtheruemAddress(d) === false"
+          class="cos-box-shadow"
+          (click)="goToDomain(d)"
+        >
+          <div fxLayout="row" class="cos-fluid-width cos-padding-1">
+            <div
+              fxFlex
+              fxLayoutAlign="start center"
+              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+            >
+              {{ d }}
+            </div>
+            <div fxflex fxLayout="column" fxLayoutAlign="center end"></div></div
+        ></mat-option>
+      </ng-container>
+    </mat-autocomplete>
+    <ng-container
+      *ngIf="(userData | async) === false || (userData | async) === undefined"
+    >
+      <div
+        class="cos-chip-regular cos-pointer cos-chip-primary co-address-chip cos-padding-px-0 cos-disappear-on-mobile"
+        fxFlex="0 0 auto"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        (click)="openConnect()"
+      >
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          fxLayout="row"
+          class="cos-padding-px-0 cos-no-padding-bottom cos-no-padding-top"
+        >
+          <div class="cos-body-3">
+            {{ "BUTTON.CONNECT_TO_PROCEED" | translate }}
+          </div>
+        </div>
+      </div>
+      <div
+        fxFlex="0 0 auto"
+        class="co-registration-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        [matBadge]="
+          registrationCount === undefined || registrationCount === 0
+            ? undefined
+            : registrationCount
+        "
+        matBadgeColor="primary"
+        (click)="openConnect()"
+      >
+        <mat-icon>shopping_cart</mat-icon>
+      </div>
+      <div
+        fxFlex="0 0 auto"
+        class="co-bookmark-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        [matBadge]="
+          bookmarksCount === undefined || bookmarksCount === 0
+            ? undefined
+            : bookmarksCount
+        "
+        (click)="showBookmarks()"
+      >
+        <mat-icon>bookmark</mat-icon>
+      </div>
+      <div
+        *ngIf="
+          show === undefined || (show !== undefined && show.showCanvas === true)
+        "
+        fxFlex="0 0 auto"
+        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        (click)="openConnect()"
+      >
+        <mat-icon>layers</mat-icon>
+      </div>
+      <div
+        fxFlex="0 0 auto"
+        class="cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        [matMenuTriggerFor]="menu"
+      >
+        <img src="assets/logo.png" fxFlex="20px" />
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="(userData | async) !== false && (userData | async) !== undefined"
+    >
+      <div
+        class="cos-chip-regular co-address-chip cos-padding-px-0 cos-disappear-on-mobile"
+        fxFlex="150px"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+      >
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          fxLayout="row"
+          class="cos-padding-px-0 cos-no-padding-bottom cos-no-padding-right cos-no-padding-top"
+        >
+          <div
+            class="cos-body-3 cos-wallet-address-text-cut"
+            style="width: 95px"
+          >
+            {{
+              customUserName !== undefined ? customUserName : (userData | async)
+            }}
+          </div>
+        </div>
+        <div
+          class="co-blocky-container"
+          fxFlex="0 0 auto"
+          fxLayoutAlign="center center"
+          fxLayout="row"
+        >
+          <app-blocky
+            fxFlex
+            [walletAddress]="
+              cuatomUserNameAddress !== undefined
+                ? cuatomUserNameAddress
+                : (userData | async)
+            "
+            [roundedCorners]="true"
+            class="cos-fluid-width cos-fluid-height"
+          ></app-blocky>
+        </div>
+      </div>
+      <div
+        *ngIf="
+          show === undefined || (show !== undefined && show.showBasket === true)
+        "
+        fxFlex="0 0 auto"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        [matBadge]="
+          registrationCount === undefined || registrationCount === 0
+            ? undefined
+            : registrationCount
+        "
+        matBadgeColor="primary"
+        class="co-registration-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        (click)="
+          hasPendingRegistrations === true ? goToCheckout() : showRegistration()
+        "
+      >
+        <div
+          *ngIf="(pendingRegistrations | async) === true"
+          class="co-spinner-inner-container"
+        >
+          <div
+            class="co-spinner co-light-spinner"
+            [style.height]="'35px'"
+            [style.width]="'35px'"
+            [style.border-width]="'3px'"
+          ></div>
+        </div>
+        <mat-icon>shopping_cart</mat-icon>
+      </div>
+      <div
+        *ngIf="
+          show === undefined ||
+          (show !== undefined && show.showBookmark === true)
+        "
+        fxFlex="0 0 auto"
+        class="co-bookmark-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        [matBadge]="
+          bookmarksCount === undefined || bookmarksCount === 0
+            ? undefined
+            : bookmarksCount
+        "
+        matBadgeColor="primary"
+        (click)="showBookmarks()"
+      >
+        <mat-icon>bookmark</mat-icon>
+      </div>
+      <div
+        *ngIf="
+          show === undefined || (show !== undefined && show.showCanvas === true)
+        "
+        fxFlex="0 0 auto"
+        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        (click)="goToCanvas()"
+      >
+        <mat-icon>layers</mat-icon>
+      </div>
+      <div
+        fxFlex="0 0 auto"
+        class="cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        [matMenuTriggerFor]="menu"
+      >
+        <img src="assets/logo.png" fxFlex="20px" />
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<mat-menu #menu="matMenu" class="cos-menu" xPosition="after">
+  <button
+    *ngIf="(userData | async) !== false && (userData | async) !== undefined"
+    mat-menu-item
+    (click)="openProfile()"
+  >
+    <mat-icon>account_circle</mat-icon>
+    {{ "HEADER.PROFILE" | translate }}
+  </button>
+  <button
+    mat-menu-item
+    (click)="
+      hasPendingRegistrations === true ? goToCheckout() : showRegistration()
+    "
+    class="cos-show-on-mobile"
+  >
+    <mat-icon
+      [matBadge]="
+        registrationCount === undefined || registrationCount === 0
+          ? undefined
+          : registrationCount
+      "
+      matBadgeColor="primary"
+      >shopping_cart</mat-icon
+    >
+    {{ "HEADER.CART" | translate }}
+  </button>
+  <button mat-menu-item (click)="showBookmarks()" class="cos-show-on-mobile">
+    <mat-icon
+      [matBadge]="
+        bookmarksCount === undefined || bookmarksCount === 0
+          ? undefined
+          : bookmarksCount
+      "
+      matBadgeColor="primary"
+      >bookmark</mat-icon
+    >
+    {{ "HEADER.BOOKMARKS" | translate }}
+  </button>
+  <button mat-menu-item (click)="openDocs()">
+    <mat-icon>help</mat-icon>
+    {{ "HEADER.DOCS" | translate }}
+  </button>
+  <button
+    *ngIf="(userData | async) === false || (userData | async) === undefined"
+    mat-menu-item
+    (click)="openConnect()"
+  >
+    <mat-icon>login</mat-icon>
+    {{ "BUTTON.CONNECT" | translate }}
+  </button>
+  <button
+    *ngIf="(userData | async) !== false && (userData | async) !== undefined"
+    mat-menu-item
+    (click)="disconnect()"
+  >
+    <mat-icon>logout</mat-icon>
+    {{ "BUTTON.DISCONNECT" | translate }}
+  </button>
+</mat-menu>
+
+<app-bulk-search #bulksearch [searchKeyword]="searchKeyword"></app-bulk-search>

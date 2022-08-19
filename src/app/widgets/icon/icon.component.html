@@ -1,0 +1,16 @@
+<div #icon style="overflow: hidden; width: 0; height: 0">
+  <ng-content></ng-content>
+</div>
+<div
+  id="canvas-icon-container"
+  class="co-icon"
+  [style.height]="iconSize + 'px'"
+  [style.width]="iconSize + 'px'"
+>
+  <canvas
+    id="{{ 'canvas-icon-' + setIcon + iconId }}"
+    [style.height]="iconSize + 'px'"
+    [style.width]="iconSize + 'px'"
+  >
+  </canvas>
+</div>

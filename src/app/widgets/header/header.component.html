@@ -1,0 +1,189 @@
+<!-- Large headers with back button and cancel -->
+<div
+  *ngIf="isSimple === true && isHidden === false"
+  fxLayoutAlign="center center"
+  [ngClass]="getStyle"
+  class="co-header-large cos-fluid-width cos-fluid-height cos-center-text"
+>
+  <div
+    fxFlex="2.5em"
+    *ngIf="showBackButton"
+    class="co-header-left"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    (click)="showBackButton === true ? backClick.emit(true) : ''"
+  >
+    <ng-container *ngIf="backButtonIsCloseButton === false">
+      <mat-icon class="co-header-back-button"> {{ backButtonIcon }} </mat-icon>
+    </ng-container>
+
+    <ng-container *ngIf="backButtonIsCloseButton === true">
+      <mat-icon class="co-header-back-button"> clear </mat-icon>
+    </ng-container>
+  </div>
+  <div class="co-header-middle" fxFlex fxLayoutAlign="start center">
+    <ng-container *ngIf="showLogo === true"
+      ><img
+        *ngIf="headerBackgroundColor === headerBackgroundColors.PRIMARY"
+        src="assets/logo.png"
+        class="co-logo"
+      />
+      <img
+        *ngIf="headerBackgroundColor !== headerBackgroundColors.PRIMARY"
+        src="assets/logo.png"
+        class="co-logo"
+      />
+    </ng-container>
+    <ng-container *ngIf="isTextBold && showLogo === false"
+      ><div class="co-text-bold">
+        <ng-container *ngIf="translateHeader === true">
+          {{ headerText | translate }}
+        </ng-container>
+        <ng-container *ngIf="translateHeader === false">
+          {{ headerText }}
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isTextBold && !isTextTiny && showLogo === false">
+      <ng-container *ngIf="translateHeader === true">
+        {{ headerText | translate }}
+      </ng-container>
+      <ng-container *ngIf="translateHeader === false">
+        {{ headerText }}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="isTextTiny && showLogo === false">
+      <span class="cos-body-0">
+        <ng-container *ngIf="translateHeader === true">
+          {{ headerText | translate }}
+        </ng-container>
+        <ng-container *ngIf="translateHeader === false">
+          {{ headerText }}
+        </ng-container>
+      </span>
+    </ng-container>
+  </div>
+  <div
+    fxFlex="5em"
+    fxLayout="row"
+    class="co-header-right"
+    fxLayoutAlign="start end"
+  >
+    <button
+      *ngIf="showCancelButton === true"
+      (click)="cancelClick.emit(true)"
+      class="cos-button-cancel cos-right-text"
+      mat-button
+    >
+      {{
+        (cancelText === undefined ? "BUTTON.CANCEL" : cancelText) | translate
+      }}
+    </button>
+    <button
+      *ngIf="showProceedButton === true"
+      (click)="proceedClick.emit(true)"
+      class="cos-button-cancel cos-right-text"
+      mat-button
+    >
+      {{
+        (proceedText === undefined ? "BUTTON.PROCEED" : proceedText) | translate
+      }}
+    </button>
+  </div>
+</div>
+
+<!-- Simple header with settings icon -->
+<div
+  *ngIf="isSimple === false && isHidden === false"
+  fxLayoutAlign="center center"
+  [ngClass]="getStyle"
+  class="co-header cos-fluid-width cos-fluid-height cos-center-text"
+>
+  <div
+    fxFlex="2.5em"
+    *ngIf="showSandwichMenu === false && pullLeft === false"
+    class="co-header-left"
+    (click)="showBackButton === true ? backClick.emit(true) : ''"
+  >
+    <ng-container
+      *ngIf="showBackButton === true && backButtonIsCloseButton === false"
+    >
+      <mat-icon class="co-header-back-button"> {{ backButtonIcon }} </mat-icon>
+    </ng-container>
+
+    <ng-container
+      *ngIf="showBackButton === true && backButtonIsCloseButton === true"
+    >
+      <mat-icon class="co-header-back-button"> clear </mat-icon>
+    </ng-container>
+  </div>
+  <div
+    fxFlex="2.5em"
+    *ngIf="showSandwichMenu === true && pullLeft === false"
+    class="co-header-left"
+    fxLayout="row"
+    (click)="sandwichMenuClick.emit(true)"
+    fxLayoutAlign="start center"
+  >
+    <mat-icon class="co-menu-icon"> menu </mat-icon>
+  </div>
+  <div fxFlex class="co-header-middle" [fxLayoutAlign]="getTextAlignment()">
+    <ng-container *ngIf="showLogo === true">
+      <img
+        *ngIf="headerBackgroundColor === headerBackgroundColors.PRIMARY"
+        src="assets/logo.png"
+        class="co-logo"
+      />
+      <img
+        *ngIf="headerBackgroundColor !== headerBackgroundColors.PRIMARY"
+        src="assets/logo.png"
+        class="co-logo"
+      />
+    </ng-container>
+    <ng-container *ngIf="isTextBold && showLogo === false">
+      <div class="co-text-bold">
+        <ng-container *ngIf="translateHeader === true">
+          {{ headerText | translate }}
+        </ng-container>
+        <ng-container *ngIf="translateHeader === false">
+          {{ headerText }}
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isTextBold && !isTextTiny && showLogo === false">
+      <ng-container *ngIf="translateHeader === true">
+        {{ headerText | translate }}
+      </ng-container>
+      <ng-container *ngIf="translateHeader === false">
+        {{ headerText }}
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="!isTextBold && isTextTiny && showLogo === false">
+      <span class="cos-body-6">
+        <ng-container *ngIf="translateHeader === true">
+          {{ headerText | translate }}
+        </ng-container>
+        <ng-container *ngIf="translateHeader === false">
+          {{ headerText }}
+        </ng-container>
+      </span>
+    </ng-container>
+  </div>
+  <div *ngIf="pullRight === false" fxFlex="2em" class="co-header-right">
+    <mat-icon
+      class="co-settings-button"
+      *ngIf="showSettingsButton"
+      (click)="openUserMenu()"
+    >
+      settings
+    </mat-icon>
+    <mat-icon
+      class="co-settings-button"
+      *ngIf="showAddButton"
+      (click)="openUserMenu()"
+    >
+      add
+    </mat-icon>
+  </div>
+</div>

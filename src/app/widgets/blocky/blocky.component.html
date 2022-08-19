@@ -1,0 +1,10 @@
+<ng-container *ngIf="walletAddress === ''">
+  <mat-icon class="co-blocky"> person </mat-icon>
+</ng-container>
+<ng-container *ngIf="walletAddress !== ''">
+  <img
+    src="{{ blockyData }}"
+    class="co-blocky"
+    [ngClass]="roundedCorners ? 'co-blocky-rounded' : ''"
+  />
+</ng-container>

@@ -1,0 +1,119 @@
+.co-bulk-search-title {
+  font-size: 25px;
+}
+
+.co-bulk-search {
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  .co-close-large {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 30px !important;
+  }
+}
+
+.co-bulk-search-header-container {
+  height: 170px;
+}
+
+.co-bulk-search-header,
+.co-bulk-search-header-bookmark {
+  z-index: 1005;
+}
+.co-bulk-search-header-fade {
+  height: 180px;
+  z-index: 999;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 80%,
+    rgba(0, 0, 0, 0.4) 90%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.co-bulk-search-item-container {
+  width: calc(25% - 10px);
+  height: 70px;
+  margin-bottom: 10px;
+
+  @media only screen and (max-width: 1000px) {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+  &.co-bulk-search-item-not-available {
+    .co-bulk-search-item-expiration-bar {
+      opacity: 0.5;
+    }
+    .co-bulk-search-item {
+      opacity: 0.5;
+    }
+  }
+  &:hover {
+    .co-bulk-search-item-expiration-bar {
+      opacity: 1 !important;
+    }
+    .co-bulk-search-item {
+      opacity: 1 !important;
+      box-shadow: 0px 0px 15px 7px var(--co-main-color);
+    }
+  }
+}
+
+.co-bulk-search-item-expiration-bar {
+  border-top-left-radius: var(--cos-border-radius-1);
+  border-top-right-radius: var(--cos-border-radius-1);
+  position: relative;
+  margin-bottom: -4px;
+}
+.co-bulk-search-item {
+  &.cos-bulk-sarch-item-full-width {
+    width: 100% !important;
+  }
+  cursor: pointer;
+  background: url("/assets/ens.svg");
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: 24px center;
+  padding-left: 60px;
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  .co-market-icon {
+    width: 24px;
+    height: 24px;
+    filter: grayscale(1);
+    &:hover {
+      filter: grayscale(0);
+    }
+  }
+}
+
+.co-bulk-search-loading {
+  margin-top: -100px;
+}
+
+.co-bulk-search-results {
+  margin-top: -25px;
+}
+
+.co-advanced-input-container {
+  z-index: 1001;
+
+  .co-advanced-input {
+    z-index: 1000;
+    height: 300px !important;
+    resize: none;
+    border-radius: var(--cos-border-radius-2) !important;
+  }
+
+  .co-advanced-input-content {
+    max-width: 1050px;
+    @media only screen and (max-width: 1000px) {
+      height: 100% !important;
+      max-width: 100%;
+      flex: 1;
+    }
+  }
+}

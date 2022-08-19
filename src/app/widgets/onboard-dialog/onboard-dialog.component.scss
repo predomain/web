@@ -1,0 +1,27 @@
+.co-wallet {
+  margin-right: 20px;
+  width: 30px;
+  height: auto;
+}
+
+.co-wallet-icon {
+  width: auto;
+  text-align: center;
+}
+
+.co-wallet-container {
+  height: 65px;
+}
+
+.co-connecter-in-progress-icon {
+  width: 205px;
+  height: auto;
+  margin-bottom: -235px !important;
+  margin-top: 30px;
+  background-color: var(--co-gray-bg) !important;
+  border-radius: 50%;
+}
+
+.co-failed-box {
+  padding-top: 50px;
+}
