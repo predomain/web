@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BigNumber, Contract, utils } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { Observable } from 'rxjs';
 import {
   bulkRegistrationMainnet,
   bulkRegistrationTestnet,
+  generalConfigurations,
 } from 'src/app/configurations';
 import { ENSBulkRegistrationContractMainnetABI } from 'src/app/configurations/contracts/ens-bulk-registration-mainnet.abi';
 import { ENSBulkRegistrationContractTestnetABI } from 'src/app/configurations/contracts/ens-bulk-registration-testnet.abi';
@@ -13,7 +14,6 @@ import {
   ENSRegistrationCommitmentModel,
   ENSRegistrationCommmitmentRequestResultModel,
 } from 'src/app/models/states/ens-registration-interfaces';
-import { PaymentModel } from 'src/app/models/states/payment-interfaces';
 import { environment } from 'src/environments/environment';
 import { MiscUtilsService } from '../misc-utils';
 import { PaymentService } from '../payment';
@@ -168,7 +168,7 @@ export class RegistrationFacilityService {
 
   completeRegistration(
     commitments: ENSRegistrationCommitmentModel[],
-    priceRanges: BigNumber[],
+    priceRanges: string[],
     totalCost: string,
     provider
   ) {

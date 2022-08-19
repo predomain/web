@@ -7,8 +7,10 @@ export enum ContractAddressesTestnetEnum {
   WBTC = '0x3b92f58feD223E2cB1bCe4c286BD97e42f2A12EA',
 }
 
+export const contractChainlinkTestnet =
+  '0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e';
 export const bulkRegistrationTestnet =
-  '0x48e2263cD977710d6A6dF61DDf8c337e2631E179';
+  '0xD760d09695dca1316e3357833d1188a4843ea821';
 
 export const acceptedCurrenciesTestnet = [
   {

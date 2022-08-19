@@ -7,6 +7,8 @@ export enum ContractAddressesMainnetEnum {
   WBTC = '0xa0E54Ab6AA5f0bf1D62EC3526436F3c05b3348A0',
 }
 
+export const contractChainlinkMainnet =
+  '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 export const bulkRegistrationMainnet =
   '0xb1C42396eAB6908A924be00D3A794CEB673c57E9';
 

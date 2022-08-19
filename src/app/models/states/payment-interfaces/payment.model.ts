@@ -22,6 +22,6 @@ export interface PaymentModel {
   paymentGasLimit?: BigNumber;
   paymentRawRecord?: any;
   paymentPayerEthName?: string;
-  paymentPriceRanges?: BigNumber[];
+  paymentPriceRanges?: string[];
   archived?: boolean;
 }

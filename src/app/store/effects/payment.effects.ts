@@ -107,7 +107,7 @@ export class PaymentEffects {
             );
           }
           if (payments === false || payments === null || payments.length <= 0) {
-            return of(false);
+            return this.currencyExchangeService.getPrices();
           }
           for (const p of payments) {
             if (

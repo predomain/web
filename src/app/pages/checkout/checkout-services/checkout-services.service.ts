@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ethers } from 'ethers';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { ENSContracts } from 'src/app/configurations';
+import { ENSContracts, generalConfigurations } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import {
   ENSRegistrationCommmitmentRequestResultModel,
@@ -26,7 +26,6 @@ import {
 import { GenericDialogComponent } from 'src/app/widgets/generic-dialog';
 
 const globalAny: any = global;
-const totalBufferEnsureSuccess = 1.15;
 
 export interface AssetRegistrationStatusModel {
   trackedPayment?: PaymentModel;
@@ -354,9 +353,7 @@ export class CheckoutServicesService {
       })
       .reduce((a, b) => {
         return a.add(b);
-      })
-      .mul(parseInt((totalBufferEnsureSuccess * 100).toString(), 10))
-      .div(100);
+      });
     return this.registrationFacilityService
       .completeRegistration(
         compiledPacket,

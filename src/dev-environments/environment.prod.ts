@@ -8,20 +8,20 @@ export const environment = {
   defaultChain: 'homestead',
   baseUrl: 'https://predomain.eth.limo',
   validChainIds: {
-    '3': 'ropsten',
+    '5': 'goerli',
     '1': 'homestead',
   },
   networks: {
-    ropsten: {
-      networkId: 'ropsten',
-      networkName: 'Ropsten Testnet',
-      chainId: 3,
+    goerli: {
+      networkId: 'goerli',
+      networkName: 'Goerli Testnet',
+      chainId: 5,
       providerKey: 'ALCHEMY_KEY',
       ensApp: 'https://app.ens.domains',
       ensMetadataAPI:
-        'https://metadata.ens.domains/ropsten/0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85/',
+        'https://metadata.ens.domains/goerli/0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85/',
       ensGraphQLAPI:
-        'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten',
+        'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
     },
     homestead: {
       networkId: 'homestead',

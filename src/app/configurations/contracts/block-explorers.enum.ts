@@ -1,4 +1,4 @@
 export enum BlockExplorersEnum {
   homestead = 'https://etherscan.io/',
-  ropsten = 'https://ropsten.etherscan.io/',
+  goerli = 'https://goerli.etherscan.io/',
 }

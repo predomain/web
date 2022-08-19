@@ -18,5 +18,5 @@ export interface ENSRegistrationCommitmentModel {
 
 export interface ENSRegistrationCommmitmentRequestResultModel {
   commitments: string[];
-  priceRanges: BigNumber[];
+  priceRanges: string[];
 }
