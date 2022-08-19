@@ -338,7 +338,9 @@
             registrationStatus !== registrationStatusTypes.REGISTRATION_SENT &&
             registrationStatus !== registrationStatusTypes.AWAIT &&
             resolvingRegistrantAddress === true &&
-            domainConfigurationForm.controls.registrantAddress.value !== false
+            domainConfigurationForm.controls.registrantAddress.value !==
+              false &&
+            totalCost !== 0.0
           "
           fxFlex
           fxLayoutAlign="end center"

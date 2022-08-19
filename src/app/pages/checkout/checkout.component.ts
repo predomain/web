@@ -703,7 +703,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   get totalCostTruncated() {
-    return this.totalCost.toFixed(4);
+    return this.totalCost.toFixed(5);
   }
 
   get ethUsdPrice() {
