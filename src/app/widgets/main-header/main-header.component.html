@@ -324,6 +324,14 @@
     {{ "HEADER.DOCS" | translate }}
   </button>
   <button
+    *ngIf="(userData | async) !== false || (userData | async) !== undefined"
+    mat-menu-item
+    (click)="openSettings()"
+  >
+    <mat-icon>settings</mat-icon>
+    {{ "BUTTON.SETTINGS" | translate }}
+  </button>
+  <button
     *ngIf="(userData | async) === false || (userData | async) === undefined"
     mat-menu-item
     (click)="openConnect()"

@@ -1,0 +1,178 @@
+<div mat-dialog-content>
+  <div
+    class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
+    fxLayoutAlign="start start"
+    fxLayout="column"
+    fxLayoutGap="10px"
+  >
+    <div
+      fxFlex
+      fxLayoutAlign="center center"
+      class="cos-fluid-width cos-padding-1 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
+    >
+      <div fxFlex class="cos-body-0">
+        <b>
+          {{ "HEADER.SETTINGS" | translate }}
+        </b>
+      </div>
+      <div fxFlex class="cos-right-text">
+        <a (click)="saveChanges(); closeDialog()" class="cos-body-4">
+          {{ "BUTTON.SAVE_CHANGES" | translate }}
+        </a>
+      </div>
+    </div>
+    <div class="cos-fluid-width">
+      <mat-list class="cos-content-list">
+        <mat-list-item class="disabled">
+          <div fxLayout="column" fxLayoutGap="20px">
+            <div>Light Mode</div>
+            <mat-slide-toggle>Enable light layout style</mat-slide-toggle>
+          </div>
+        </mat-list-item>
+        <mat-list-item *ngIf="customRPCSelectionEnabled === true">
+          <div fxLayout="column" fxLayoutGap="20px" class="cos-fluid-width">
+            <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
+              <span fxFlex="0 0 auto"> Custom RPC </span>
+              <mat-icon fxFlex color="primary" class="cos-small-icon"
+                >help</mat-icon
+              >
+            </div>
+            <form fxFlex [formGroup]="settingsForm">
+              <mat-form-field
+                class="cos-fluid-width cos-body-0 cos-input-field-no-label cos-gray-placeholder"
+              >
+                <input
+                  class="cos-fluid-width"
+                  matInput
+                  blur="true"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Enter RPC url..."
+                  formControlName="rpc"
+                />
+                <div matSuffix>
+                  <div
+                    class="co-rpc-select cos-right-text cos-body-5"
+                    [matMenuTriggerFor]="rpcTypeMenu"
+                  >
+                    <a
+                      *ngIf="
+                        settingsForm.controls.providerSelected.value ===
+                        validRpcProviders.DEFAULT
+                      "
+                    >
+                      Default
+                    </a>
+                    <a
+                      *ngIf="
+                        settingsForm.controls.providerSelected.value ===
+                        validRpcProviders.CUSTOM
+                      "
+                    >
+                      Custom
+                    </a>
+                    <a
+                      *ngIf="
+                        settingsForm.controls.providerSelected.value ===
+                        validRpcProviders.INFURA
+                      "
+                    >
+                      Infura
+                    </a>
+                    <a
+                      *ngIf="
+                        settingsForm.controls.providerSelected.value ===
+                        validRpcProviders.ALCHEMY
+                      "
+                    >
+                      Alchemy
+                    </a>
+                  </div>
+                </div>
+              </mat-form-field>
+              <div
+                *ngIf="
+                  settingsForm.controls.providerSelected.value !==
+                    validRpcProviders.DEFAULT &&
+                  settingsForm.controls.providerSelected.value !==
+                    validRpcProviders.CUSTOM
+                "
+                fxLayout="column"
+                fxLayoutGap="7px"
+              >
+                <mat-form-field
+                  *ngIf="
+                    settingsForm.controls.providerSelected.value ===
+                    validRpcProviders.INFURA
+                  "
+                  class="cos-fluid-width cos-body-0 cos-input-field-no-label cos-gray-placeholder"
+                >
+                  <input
+                    class="cos-fluid-width"
+                    matInput
+                    blur="true"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Project ID"
+                    formControlName="rpcId"
+                  />
+                </mat-form-field>
+                <mat-form-field
+                  class="cos-fluid-width cos-body-0 cos-input-field-no-label cos-gray-placeholder"
+                >
+                  <input
+                    class="cos-fluid-width"
+                    matInput
+                    blur="true"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Project Secret"
+                    formControlName="rpcSecret"
+                  />
+                </mat-form-field>
+              </div>
+            </form>
+            <div
+              class="cos-fluid-width cos-light-note cos-light-note-dark cos-body-5 cos-gray-text"
+            >
+              <b>Notice:</b> select an RPC that will be used in the application
+              to replace the default RPC provider.
+            </div>
+          </div>
+        </mat-list-item>
+        <mat-list-item>
+          <div fxLayout="column" fxLayoutGap="20px" class="cos-fluid-width">
+            <div>Payments History</div>
+            <button mat-button (click)="clearPaymentHistory()">
+              <div fxLayoutAlign="center center">
+                <div fxFlex="0 0 auto" *ngIf="removingPayentHistory === true">
+                  <app-spinner
+                    [padded]="false"
+                    [lightColour]="true"
+                    [spinnerSize]="10"
+                    [showText]="false"
+                  ></app-spinner>
+                </div>
+                <span *ngIf="removingPayentHistory === false" fxFlex>
+                  Clear History
+                </span>
+              </div>
+            </button>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </div>
+</div>
+
+<mat-menu #rpcTypeMenu="matMenu" class="cos-menu" xPosition="before">
+  <button mat-menu-item (click)="selectProvider(validRpcProviders.DEFAULT)">
+    Default
+  </button>
+  <button mat-menu-item (click)="selectProvider(validRpcProviders.CUSTOM)">
+    Custom
+  </button>
+  <button mat-menu-item (click)="selectProvider(validRpcProviders.ALCHEMY)">
+    Alchemy
+  </button>
+</mat-menu>

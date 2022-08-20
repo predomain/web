@@ -21,6 +21,7 @@ export const generalConfigurations = {
   maxYearsRegistration: 1000,
   maxTotalCostBuffer: 115,
   defaultCurrency: 'ETH',
+  enableCustomRPC: false,
   docsLink: 'https://predomain.gitbook.io/predomain-docs/',
   blockscanLink: 'https://chat.blockscan.com/index?a=',
   trezorManifest: {

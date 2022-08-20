@@ -149,15 +149,26 @@
 }
 
 .cos-content-list {
-  color: var(--co-default-text-color) !important;
-
   &.mat-list-base {
     padding-top: 0 !important;
   }
 
   .mat-list-item {
+    &.disabled {
+      opacity: 0.25;
+      pointer-events: none !important;
+    }
+    .mat-list-item-content {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      button {
+        color: white !important;
+      }
+    }
+    height: auto !important;
+    color: white;
     border-bottom: solid 1px rgba(41, 52, 67, 0.35) !important;
-    background-color: white;
+    background-color: transparent;
   }
 }
 
@@ -796,6 +807,18 @@
         }
       }
     }
+  }
+}
+
+.cos-light-note {
+  border-width: 1px;
+  border-style: solid;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: var(--cos-border-radius-1);
+
+  &.cos-light-note-dark {
+    border-color: var(--co-gray-bg);
   }
 }
 

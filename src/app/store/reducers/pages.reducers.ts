@@ -13,10 +13,12 @@ import {
   SetPagesPageSlide,
   SetPagesState,
   SetPagesVisibility,
+  SetRPCProvider,
   ShowLoadingProgressBarOnLoad,
 } from '../actions';
 
 const initialPagesState: PagesStateModel = {
+  optionalProvider: undefined,
   pageVisibility: true,
   criticalErrorOccured: false,
   currentPageId: generalConfigurations.defaultPage,
@@ -52,6 +54,14 @@ export function PagesReducers(
         currentPageSlide: state.currentPageSlide,
         errorCode:
           'errorCode' in action.payload ? action.payload.errorCode : undefined,
+      };
+      return newState;
+    }
+
+    case SetRPCProvider: {
+      const newState = {
+        ...state,
+        optionalProvider: action.payload,
       };
       return newState;
     }

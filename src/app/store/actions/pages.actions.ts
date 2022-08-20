@@ -2,6 +2,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Action } from '@ngrx/store';
 import { IpfsErrorsEnum } from 'src/app/models/error-enums';
 import { IpfsStatesEnum } from 'src/app/models/ipfs';
+import { RPCProviderModel } from 'src/app/models/rpc/rpc-provider.model';
 import {
   GotoPageRouteActionPayloadModel,
   PagesStateModel,
@@ -19,10 +20,16 @@ export const SetPageChainCode = '[PagesState] chain code set.';
 export const SetPagesNewPageState = '[PagesState] New state set.';
 export const SetPagesNetworkState = '[PagesState] New network state set.';
 export const SetPagesVisibility = '[PagesState] visibility state set.';
+export const SetRPCProvider = '[PagesState] rpc provider set.';
 export const SetPagesNetworkStateOffline =
   '[PagesState] Offline network state procedure invoke.';
 export const GetPagesState = '[PagesState] Latest state retrieved.';
 export const GotoPageRoute = '[PagesState] Going to page route.';
+
+export class PagesSetRPCProvider implements Action {
+  readonly type = SetRPCProvider;
+  constructor(public payload: RPCProviderModel) {}
+}
 
 export class PagesSetVisibility implements Action {
   readonly type = SetPagesVisibility;
@@ -95,6 +102,7 @@ export class PageGotoRoute implements Action {
 }
 
 export type PagesActions =
+  | PagesSetRPCProvider
   | PagesSetChainCode
   | PagesSetIpfsError
   | PagesSetIpfsState

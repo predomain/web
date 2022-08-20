@@ -10,6 +10,6 @@ export enum ContractAddressesMainnetEnum {
 export const contractChainlinkMainnet =
   '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 export const bulkRegistrationMainnet =
-  '0x6348E0369fE98ba2f01a183049348D7cfa263F0d';
+  '0xb47543E7DCFd8d6835aAa8170381D0C1D3C96993';
 
 export const acceptedCurrenciesMainnet = [] as AcceptedCurrencyModel[];

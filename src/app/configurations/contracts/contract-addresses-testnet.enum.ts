@@ -10,7 +10,7 @@ export enum ContractAddressesTestnetEnum {
 export const contractChainlinkTestnet =
   '0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e';
 export const bulkRegistrationTestnet =
-  '0xb1C42396eAB6908A924be00D3A794CEB673c57E9';
+  '0x109996b8e2DdC3c869E3e50590aD2bA5F1EE5Da1';
 
 export const acceptedCurrenciesTestnet = [
   {

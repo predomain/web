@@ -138,7 +138,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       this.snackBar.open('There are no domains selected.', 'close', {
         horizontalPosition: 'center',
         verticalPosition: 'bottom',
-        duration: 15000000000,
+        duration: 5000,
       });
       return;
     }
@@ -151,7 +151,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
         {
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
-          duration: 15000000000,
+          duration: 5000,
         }
       );
       return;

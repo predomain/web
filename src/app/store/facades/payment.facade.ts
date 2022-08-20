@@ -24,6 +24,7 @@ import {
   ArchiveAllPayment,
   PaymentArchiveAll,
   PaymentETHUSDRatesSet,
+  PaymentRemoveAll,
 } from '../actions';
 import { PaymentStoreErrorsEnum } from '../../models/error-enums';
 
@@ -55,6 +56,10 @@ export class PaymentFacadeService {
 
   createPayment(payment: PaymentModel) {
     this.store.dispatch(new PaymentAddOne(payment));
+  }
+
+  removeAllPayment() {
+    this.store.dispatch(new PaymentRemoveAll());
   }
 
   removePayment(payment: PaymentModel) {

@@ -475,7 +475,7 @@ export class DomainComponent implements OnInit, OnDestroy {
     this.snackBar.open('URL link copied.', 'close', {
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
-      duration: 15000000000,
+      duration: 5000,
     });
   }
 

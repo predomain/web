@@ -422,7 +422,7 @@ export class CheckoutServicesService {
       {
         horizontalPosition: 'center',
         verticalPosition: 'bottom',
-        duration: 15000000000,
+        duration: 5000,
       }
     );
     return;

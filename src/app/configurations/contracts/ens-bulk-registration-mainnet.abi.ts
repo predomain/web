@@ -5,6 +5,19 @@ export const ENSBulkRegistrationContractMainnetABI = [
     type: 'constructor',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'bytes',
+        name: 'errorInfo',
+        type: 'bytes',
+      },
+    ],
+    name: 'error',
+    type: 'event',
+  },
+  {
     stateMutability: 'payable',
     type: 'receive',
     payable: true,

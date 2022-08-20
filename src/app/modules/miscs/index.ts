@@ -7,3 +7,4 @@ export * from './bulk-search.module';
 export * from './spinner-custom.module';
 export * from './main-header.module';
 export * from './blocky.module';
+export * from './settings-dialog.module';

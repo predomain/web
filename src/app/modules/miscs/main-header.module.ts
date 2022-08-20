@@ -15,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerCustomModule } from './spinner-custom.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SettingsDialogModule } from './settings-dialog.module';
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FlexLayoutModule,
     SpinnerCustomModule,
     BulkSearchModule,
+    SettingsDialogModule,
     BlockyModule,
     IconModule,
   ],
@@ -51,6 +53,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FlexLayoutModule,
     SpinnerCustomModule,
     BulkSearchModule,
+    SettingsDialogModule,
     BlockyModule,
     IconModule,
   ],

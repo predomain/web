@@ -35,9 +35,11 @@ import {
   PaymentAddOne,
   PaymentArchiveAll,
   PaymentCheckFulfilled,
+  PaymentRemoveAll,
   PaymentRemoveOne,
   PaymentUpsertMany,
   PaymentUpsertOne,
+  RemoveAllPayment,
   UpsertOnePayment,
 } from '../actions';
 import {
@@ -298,6 +300,17 @@ export class PaymentEffects {
         withLatestFrom(this.store.pipe(select(getPayments))),
         map(([action, payments]) => {
           this.paymentStorageService.savePayments(payments);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  removeAllPayment$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType<PaymentRemoveAll>(RemoveAllPayment),
+        map((action) => {
+          this.paymentStorageService.savePayments([]);
         })
       ),
     { dispatch: false }

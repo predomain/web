@@ -25,6 +25,7 @@ import {
   PagesSetIpfsError,
   PagesSetIpfsState,
   PagesSetCriticalError,
+  PagesSetRPCProvider,
 } from '../actions';
 import {
   GotoPageRouteActionPayloadModel,
@@ -35,6 +36,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../../environments/environment';
 import { IpfsErrorsEnum } from 'src/app/models/error-enums';
 import { IpfsStatesEnum } from 'src/app/models/ipfs';
+import { RPCProviderModel } from 'src/app/models/rpc/rpc-provider.model';
 
 @Injectable({
   providedIn: 'root',
@@ -71,6 +73,10 @@ export class PagesFacadeService {
 
   setPageCriticalError(errorOccured: boolean, redirect = true) {
     this.store.dispatch(new PagesSetCriticalError(errorOccured, redirect));
+  }
+
+  setRpcProvider(providerData: RPCProviderModel) {
+    this.store.dispatch(new PagesSetRPCProvider(providerData));
   }
 
   setIpfsError(error: IpfsErrorsEnum) {

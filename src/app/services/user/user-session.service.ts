@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { providers } from 'ethers';
+import { RPCProviderModel } from 'src/app/models/rpc/rpc-provider.model';
+import { ValidRPCProvidersEnum } from 'src/app/models/rpc/valid-rpc-providers.enum';
 import { environment } from '../../../environments/environment';
 import { UserModel } from '../../models/states/user-interfaces';
 import { MetamaskService } from '../metamask';
@@ -26,8 +28,27 @@ export class UserSessionService {
     return localStorage.getItem('canvas-user-session');
   }
 
-  getUserSessionProvider(chainId: number) {
-    const newProvider = this.createAlchemyFrontProvider(chainId);
+  getUserSessionProvider(
+    chainId: number,
+    providerData: RPCProviderModel = null
+  ) {
+    let newProvider;
+    if (providerData === null) {
+      newProvider = this.createAlchemyFrontDefaultProvider(chainId);
+    } else if (providerData.type === ValidRPCProvidersEnum.ALCHEMY) {
+      newProvider = this.createAlchemyFrontProvider(
+        chainId,
+        providerData.secret
+      );
+    } else if (providerData.type === ValidRPCProvidersEnum.INFURA) {
+      newProvider = this.createInfuraFrontProvider(
+        chainId,
+        providerData.id,
+        providerData.secret
+      );
+    } else if (providerData.type === ValidRPCProvidersEnum.CUSTOM) {
+      newProvider = this.createJSONFrontProvider(chainId, providerData.url);
+    }
     return newProvider;
   }
 
@@ -35,10 +56,25 @@ export class UserSessionService {
     return environment.networks[environment.defaultChain].chainId;
   }
 
-  createAlchemyFrontProvider(chain: number) {
+  createAlchemyFrontDefaultProvider(chain: number) {
     return new providers.AlchemyWebSocketProvider(
       chain,
       environment.networks[environment.defaultChain].providerKey
     );
+  }
+
+  createAlchemyFrontProvider(chain: number, secret: string) {
+    return new providers.AlchemyWebSocketProvider(chain, secret);
+  }
+
+  createInfuraFrontProvider(chain: number, id: string, secret: string) {
+    return new providers.InfuraProvider(chain, {
+      projectId: id,
+      projectSecret: secret,
+    });
+  }
+
+  createJSONFrontProvider(chain: number, url: string) {
+    return new providers.JsonRpcProvider(url, chain);
   }
 }

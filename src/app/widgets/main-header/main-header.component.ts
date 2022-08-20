@@ -35,6 +35,7 @@ import { BulkSearchComponent } from '../bulk-search';
 import { CustomAddressComponent } from '../custom-address';
 import { GenericDialogComponent } from '../generic-dialog';
 import { OnboardDialogComponent } from '../onboard-dialog';
+import { SettingsComponent } from '../settings';
 
 const globalAny: any = global;
 
@@ -220,6 +221,13 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     });
   }
 
+  openSettings() {
+    const dialogRef = this.dialog.open(SettingsComponent, {
+      data: 'ERRORS.UNKNOWN',
+      panelClass: 'cos-faq-dialog',
+    });
+  }
+
   goToCanvas() {
     this.pagesFacadeService.gotoPageRoute('canvas', PagesEnum.CANVAS);
   }
@@ -376,9 +384,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
         if (
           Object.keys(state.entities).filter(
             (p) =>
-              'archived' in state.entities[p] === false ||
-              ('archived' in state.entities[p] === true &&
-                state.entities[p].archived === false)
+              state.entities[p].paymentStatus === false &&
+              ('archived' in state.entities[p] === false ||
+                ('archived' in state.entities[p] === true &&
+                  state.entities[p].archived === false))
           ).length > 0
         ) {
           this.hasPendingRegistrations = true;

@@ -1,5 +1,6 @@
 export default {
   BUTTON: {
+    SAVE_CHANGES: 'Save Changes',
     PROCEED: 'Proceed',
     DISMISS: 'Dismiss',
     CONNECT: 'Connect',
@@ -7,6 +8,7 @@ export default {
     DISCONNECT: 'Disconnect',
     LOGOUT: 'Logout',
     CLOSE: 'Close',
+    SETTINGS: 'Settings',
     LAUNCH_APP: 'Launch App',
     CONNECT_TO_PROCEED: 'Connect Wallet',
     VIEW_DETAILS: 'View Details',

@@ -22,11 +22,13 @@ import {
   PagesNetworkStateSet,
   PagesSetChainCode,
   PagesSetCriticalError,
+  PagesSetRPCProvider,
   PagesSetVisibility,
   SetPageChainCode,
   SetPagesCriticalError,
   SetPagesNetworkState,
   SetPagesNetworkStateOffline,
+  SetRPCProvider,
   UserRemove,
 } from '../actions';
 import { getCurrentPagesState, getCurrentUser } from '../selectors';
@@ -48,6 +50,9 @@ import {
   takeUntil,
   withLatestFrom,
 } from 'rxjs/operators';
+import { ValidRPCProvidersEnum } from 'src/app/models/rpc/valid-rpc-providers.enum';
+import { RPCProviderModel } from 'src/app/models/rpc/rpc-provider.model';
+import { RpcService } from 'src/app/services/rpc';
 
 const globalAny: any = global;
 
@@ -61,6 +66,7 @@ export class PagesEffects {
     protected userSessionService: UserSessionService,
     protected pagesFacade: PagesFacadeService,
     protected userService: UserService,
+    protected rpcService: RpcService,
     public dialog: MatDialog,
     public ngZone: NgZone
   ) {
@@ -106,11 +112,31 @@ export class PagesEffects {
               this.pagesFacade.hideLoadingProgressBar();
             }, 1500);
           }
-          if (globalAny.canvasProvider === undefined) {
-            const chainId =
-              environment.networks[environment.defaultChain].chainId;
+          const chainId =
+            environment.networks[environment.defaultChain].chainId;
+          this.assessProviderChanges(chainId);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  provideRPCSet$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType<PagesSetRPCProvider>(SetRPCProvider),
+        map((action) => {
+          const chainId =
+            environment.networks[environment.defaultChain].chainId;
+          if (action.payload === undefined) {
             this.createProvider(chainId);
+            this.rpcService.removeRPC();
+            return;
           }
+          this.createProvider(chainId, action.payload);
+          this.rpcService.saveRpc(action.payload);
+        }),
+        catchError((error) => {
+          return of(false);
         })
       ),
     { dispatch: false }
@@ -181,7 +207,7 @@ export class PagesEffects {
             this.store.dispatch(new UserRemove());
             return;
           }
-          this.createProvider(action.payload);
+          this.assessProviderChanges(action.payload);
           return;
         })
       ),
@@ -222,9 +248,24 @@ export class PagesEffects {
     { dispatch: false }
   );
 
-  createProvider(chainId: number) {
-    const newProvider = this.userSessionService.getUserSessionProvider(chainId);
+  createProvider(chainId: number, providerData: RPCProviderModel = null) {
+    const newProvider = this.userSessionService.getUserSessionProvider(
+      chainId,
+      providerData
+    );
     globalAny.chainId = chainId;
     globalAny.canvasProvider = newProvider;
+  }
+
+  assessProviderChanges(chainId: number) {
+    const providerData = this.rpcService.loadRpc();
+    if (
+      (providerData === null || providerData === undefined) &&
+      globalAny.canvasProvider === undefined
+    ) {
+      this.createProvider(chainId);
+    } else {
+      this.store.dispatch(new PagesSetRPCProvider(JSON.parse(providerData)));
+    }
   }
 }

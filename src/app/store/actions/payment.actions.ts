@@ -70,7 +70,7 @@ export class PaymentRemoveMany implements Action {
 
 export class PaymentRemoveAll implements Action {
   readonly type = RemoveAllPayment;
-  constructor(public authenticationPin: string) {}
+  constructor() {}
 }
 
 export class CheckPaymentFulfilled implements Action {
