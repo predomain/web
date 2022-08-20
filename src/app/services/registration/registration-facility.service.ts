@@ -128,10 +128,9 @@ export class RegistrationFacilityService {
             observer.complete();
             return;
           }
-          gasLimit = this.miscUtilsService.roundUp(
-            (r as BigNumber).toNumber(),
-            50000
-          );
+          gasLimit =
+            this.miscUtilsService.roundUp((r as BigNumber).toNumber(), 50000) +
+            50000;
           observer.next([
             {
               commitments: commitmentResult[0],
@@ -212,10 +211,9 @@ export class RegistrationFacilityService {
             observer.complete();
             return;
           }
-          gasLimit = this.miscUtilsService.roundUp(
-            (r as BigNumber).toNumber(),
-            50000
-          );
+          gasLimit =
+            this.miscUtilsService.roundUp((r as BigNumber).toNumber(), 50000) +
+            50000;
           observer.next([dataInput, gasLimit]);
           observer.complete();
           return;
