@@ -357,7 +357,6 @@ export class CheckoutServicesService {
     return this.registrationFacilityService
       .completeRegistration(
         compiledPacket,
-        commmitPayment.paymentPriceRanges,
         finalTotal.toHexString(),
         globalAny.canvasProvider
       )

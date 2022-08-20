@@ -133,11 +133,6 @@ export const ENSBulkRegistrationContractTestnetABI = [
       },
       {
         internalType: 'uint256[]',
-        name: 'priceRanges',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'uint256[]',
         name: 'nameLengths',
         type: 'uint256[]',
       },
@@ -172,11 +167,6 @@ export const ENSBulkRegistrationContractTestnetABI = [
       },
       {
         internalType: 'uint256[]',
-        name: 'priceRanges',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'uint256[]',
         name: 'nameLengths',
         type: 'uint256[]',
       },
@@ -206,5 +196,25 @@ export const ENSBulkRegistrationContractTestnetABI = [
     stateMutability: 'payable',
     type: 'function',
     payable: true,
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'duration',
+        type: 'uint256',
+      },
+    ],
+    name: 'getPriceRanges',
+    outputs: [
+      {
+        internalType: 'uint256[]',
+        name: '',
+        type: 'uint256[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true,
   },
 ];
