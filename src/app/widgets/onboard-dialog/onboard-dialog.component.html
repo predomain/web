@@ -1,23 +1,26 @@
-<div mat-dialog-content>
+<div fxFlex mat-dialog-content class="cos-overflow-hidden">
   <ng-container
     *ngIf="(userFacadeService.userState$ | async)?.loading === true"
   >
     <div
       fxFlex
       fxLayoutAlign="center center"
+      fxFlexAlign="center"
       fxLayout="column"
-      class="cos-fluid-height cos-fluid-width"
+      class="cos-fluid-width cos-fluid-height"
     >
-      <img
-        class="co-connecter-in-progress-icon"
-        fxFlex="0 0 auto"
-        [src]="loadingProgressImage"
-      />
-      <app-spinner
-        [spinnerText]="'SPINNER.FOLLOW_THE_INSTRUCTIONS_ON_YOUR_WALLET'"
-        [spinnerSize]="200"
-      >
-      </app-spinner>
+      <div fxLayout="column" fxLayoutAlign="center center">
+        <img
+          class="co-connecter-in-progress-icon"
+          fxFlex="0 0 auto"
+          [src]="loadingProgressImage"
+        />
+        <app-spinner
+          [spinnerText]="'SPINNER.FOLLOW_THE_INSTRUCTIONS_ON_YOUR_WALLET'"
+          [spinnerSize]="200"
+        >
+        </app-spinner>
+      </div>
     </div>
   </ng-container>
 
@@ -25,8 +28,8 @@
     *ngIf="(userFacadeService.userState$ | async)?.loading === false"
   >
     <div
-      class="co-failed-box cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
-      fxLayoutAlign="start start"
+      class="co-failed-box cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width cos-fluid-height"
+      fxLayoutAlign="center center"
       fxLayout="column"
       fxLayoutGap="10px"
       *ngIf="(hasErrorOccured | async) === true"
@@ -37,6 +40,11 @@
         [mode]="spinnerModes.FAILED"
       >
       </app-spinner>
+      <div fxFlex class="cos-cenetr-text cos-show-on-mobile">
+        <a (click)="closeDialog()" class="cos-body-4">
+          {{ "BUTTON.CLOSE" | translate }}
+        </a>
+      </div>
     </div>
     <div
       class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"

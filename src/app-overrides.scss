@@ -348,11 +348,11 @@
 }
 
 .cos-onboard-dialog,
-.cos-faq-dialog {
+.cos-settings-dialog {
   min-width: 450px !important;
   max-width: 450px !important;
 
-  &.cos-faq-dialog {
+  &.cos-settings-dialog {
     min-width: 600px !important;
     max-width: 600px !important;
     @media only screen and (max-width: 750px) {
@@ -1291,5 +1291,14 @@ ol {
   }
   100% {
     background-position: 1200px 0px;
+  }
+}
+.cdk-overlay-pane {
+  &.cos-onboard-dialog,
+  &.cos-settings-dialog {
+    @media only screen and (max-width: 750px) {
+      height: 100%;
+      max-height: 100%;
+    }
   }
 }

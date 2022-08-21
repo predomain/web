@@ -9,6 +9,14 @@
     fxLayoutGap="10px"
     fxLayoutAlign="end center"
   >
+    <div
+      fxLayoutGap="5px"
+      fxLayoutAlign="center center"
+      [matMenuTriggerFor]="languageMenu"
+      class="cos-pointer"
+    >
+      <span>{{ languageUsed }}</span> <mat-icon>arrow_drop_down</mat-icon>
+    </div>
     <form
       *ngIf="show?.showSearch === true || show?.showSearch === undefined"
       fxFlex
@@ -279,6 +287,37 @@
     </ng-container>
   </div>
 </div>
+
+<mat-menu #languageMenu="matMenu" class="cos-menu" xPosition="after">
+  <button mat-menu-item (click)="saveLanguage('en')">
+    <mat-icon>language</mat-icon>
+    EN - English
+  </button>
+  <button mat-menu-item (click)="saveLanguage('de')">
+    <mat-icon>language</mat-icon>
+    DE - Deutsch
+  </button>
+  <button mat-menu-item (click)="saveLanguage('fr')">
+    <mat-icon>language</mat-icon>
+    FR - Français
+  </button>
+  <button mat-menu-item (click)="saveLanguage('ru')">
+    <mat-icon>language</mat-icon>
+    RU - русский
+  </button>
+  <button mat-menu-item (click)="saveLanguage('es')">
+    <mat-icon>language</mat-icon>
+    ES - Español
+  </button>
+  <button mat-menu-item (click)="saveLanguage('jp')">
+    <mat-icon>language</mat-icon>
+    JP - 日本
+  </button>
+  <button mat-menu-item (click)="saveLanguage('cn')">
+    <mat-icon>language</mat-icon>
+    CN - 中国人
+  </button>
+</mat-menu>
 
 <mat-menu #menu="matMenu" class="cos-menu" xPosition="after">
   <button

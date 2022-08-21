@@ -1,3 +1,9 @@
 export enum ValidLangEnum {
-  EN = 'en'
+  EN = 'en',
+  JP = 'jp',
+  ES = 'es',
+  DE = 'de',
+  RU = 'ru',
+  CN = 'cn',
+  FR = 'fr',
 }

@@ -37,7 +37,7 @@ const boot = BootController.getbootControl()
   .watchReboot()
   .subscribe(() => {
     if (mainApp) {
-      if (window['ngRef']) {
+      if ('ngRef' in window && 'destroy' in window['ngRef']) {
         window['ngRef'].destroy();
       }
       window['ngRef'] = mainApp;

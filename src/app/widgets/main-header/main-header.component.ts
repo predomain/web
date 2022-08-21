@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
   Output,
@@ -22,7 +23,12 @@ import {
 import { UserModel } from 'src/app/models/states/user-interfaces';
 import { WalletTypesEnum } from 'src/app/models/states/wallet-interfaces';
 import { CanvasServicesService } from 'src/app/pages/canvas/canvas-services/canvas-services.service';
-import { MiscUtilsService, UserService, WalletService } from 'src/app/services';
+import {
+  MiscUtilsService,
+  TranslationService,
+  UserService,
+  WalletService,
+} from 'src/app/services';
 import { BookmarksServiceService } from 'src/app/services/bookmarks';
 import { RegistrationServiceService } from 'src/app/services/registration';
 import {
@@ -33,9 +39,9 @@ import {
 import { environment } from 'src/environments/environment';
 import { BulkSearchComponent } from '../bulk-search';
 import { CustomAddressComponent } from '../custom-address';
-import { GenericDialogComponent } from '../generic-dialog';
 import { OnboardDialogComponent } from '../onboard-dialog';
 import { SettingsComponent } from '../settings';
+import { BootController } from '../../../boot-control';
 
 const globalAny: any = global;
 
@@ -71,10 +77,12 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     public paymentFacadeService: PaymentFacadeService,
     public canvasServices: CanvasServicesService,
     public miscUtilsService: MiscUtilsService,
+    protected translationService: TranslationService,
     protected bookmarksService: BookmarksServiceService,
     protected registrationService: RegistrationServiceService,
     protected changeDetectorRef: ChangeDetectorRef,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
+    protected ngZone: NgZone
   ) {
     this.quickSearchForm = new FormGroup({
       search: new FormControl(''),
@@ -224,7 +232,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   openSettings() {
     const dialogRef = this.dialog.open(SettingsComponent, {
       data: 'ERRORS.UNKNOWN',
-      panelClass: 'cos-faq-dialog',
+      panelClass: 'cos-settings-dialog',
     });
   }
 
@@ -290,6 +298,15 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     this.searchKeyword = (e.target as HTMLInputElement).value;
   }
 
+  saveLanguage(lang: string) {
+    this.translationService.saveLanguage(lang);
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        BootController.getbootControl().restart();
+      }, 50);
+    });
+  }
+
   goToProfile(profile: string) {
     this.pagesFacadeService.gotoPageRoute(
       'profile/' + profile,
@@ -332,6 +349,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
       return null;
     }
     return this.bulksearch.getBulkSearchEntriesFromForm(this.searchKeyword);
+  }
+
+  get languageUsed() {
+    return this.translationService.getLanguage().toUpperCase();
   }
 
   get registrationCount() {

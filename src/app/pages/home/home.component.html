@@ -42,15 +42,25 @@
         <div class="co-carousel-element">
           <div class="co-text-carousel-vertical cos-fluid-width">
             <div class="co-carousel-inner">
-              <div class="co-carousel-element-item">Search for</div>
-              <div class="co-carousel-element-item">Register</div>
-              <div class="co-carousel-element-item">Manage</div>
-              <div class="co-carousel-element-item">Collect</div>
+              <div class="co-carousel-element-item">
+                {{ "LABELS.SEARCH_FOR" | translate }}
+              </div>
+              <div class="co-carousel-element-item">
+                {{ "LABELS.REGISTER" | translate }}
+              </div>
+              <div class="co-carousel-element-item">
+                {{ "LABELS.MANAGE" | translate }}
+              </div>
+              <div class="co-carousel-element-item">
+                {{ "LABELS.COLLECT" | translate }}
+              </div>
             </div>
           </div>
         </div>
         <span class="co-eth-text"><b>.eth</b></span>
-        <div class="co-carousel-element">domains</div>
+        <div class="co-carousel-element">
+          {{ "LABELS.DOMAINS" | translate }}
+        </div>
       </div>
 
       <div
@@ -63,8 +73,7 @@
           fxFlex
           class="cos-center-text cos-body-0 cos-padding-2 cos-no-padding-bottom cos-no-paddnig-top cos-disappear-on-mobile"
         >
-          Open-source, decentralised, ENS domains search, registration &
-          marketplace.
+          {{ "LABELS.LANDING_TEXT" | translate }}
         </div>
       </div>
 

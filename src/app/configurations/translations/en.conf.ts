@@ -87,6 +87,11 @@ export default {
       'A new transaction has been created. Please check your wallet.',
   },
   LABELS: {
+    SEARCH_FOR: 'Search For',
+    MANAGE: 'Manage',
+    COLLECT: 'Collect',
+    LANDING_TEXT:
+      'Open-source, decentralised, ENS domains search, registration & marketplace.',
     PROFILE: 'Profile',
     SEARCH: 'Search',
     CONTAIN_ALPHABET: 'Contain Alphabet',
