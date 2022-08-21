@@ -45,6 +45,9 @@ export default {
     CHECK_DOMAINS: 'Check Domains',
     TRANSACTION_DETAILS: 'Transaction Details',
     BUY_NOW: 'Buy Now',
+    CLEAR_HISTORY: 'Clear History',
+    DEFAULT: 'Default',
+    CUSTOM: 'Custom',
   },
   HEADER: {
     FAQ: 'FAQs',
@@ -57,6 +60,9 @@ export default {
     DOCUMENTATIONS: 'Documentations',
     CART: 'Cart',
     BOOKMARKS: 'Bookmarks',
+    PAYMENTS_HISTORY: 'Payments History',
+    LIGHT_MODE: 'Light Mode',
+    CUSTOM_RPC: 'Custom RPC',
   },
   IPFS: {
     INITIALISING: 'Starting p2p',
@@ -123,6 +129,9 @@ export default {
     GAS_PRICE: 'Gas Price',
     NO_ADDRESS_DETECTED: 'No address detected.',
     DURATION: 'Duration',
+    NOTICE_SELECT_AN_RPC:
+      'Notice: select an RPC that will be used in the application to replace the default RPC provider.',
+    ENABLE_LIGHT_MODE: 'Enable light layout style.',
   },
   REGISTRATION: {
     BEFORE_COMMIT: 'Step 1: request registration.',

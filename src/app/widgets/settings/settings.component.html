@@ -25,17 +25,18 @@
       <mat-list class="cos-content-list">
         <mat-list-item class="disabled">
           <div fxLayout="column" fxLayoutGap="20px">
-            <div>Light Mode</div>
-            <mat-slide-toggle>Enable light layout style</mat-slide-toggle>
+            <div>{{ "HEADER.LIGHT_MODE" | translate }}</div>
+            <mat-slide-toggle>{{
+              "LABELS.ENABLE_LIGHT_MODE" | translate
+            }}</mat-slide-toggle>
           </div>
         </mat-list-item>
         <mat-list-item *ngIf="customRPCSelectionEnabled === true">
           <div fxLayout="column" fxLayoutGap="20px" class="cos-fluid-width">
             <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
-              <span fxFlex="0 0 auto"> Custom RPC </span>
-              <mat-icon fxFlex color="primary" class="cos-small-icon"
-                >help</mat-icon
-              >
+              <span fxFlex="0 0 auto">
+                {{ "HEADER.CUSTOM_RPC" | translate }}
+              </span>
             </div>
             <form fxFlex [formGroup]="settingsForm">
               <mat-form-field
@@ -61,7 +62,7 @@
                         validRpcProviders.DEFAULT
                       "
                     >
-                      Default
+                      {{ "BUTTON.DEFAULT" | translate }}
                     </a>
                     <a
                       *ngIf="
@@ -69,7 +70,7 @@
                         validRpcProviders.CUSTOM
                       "
                     >
-                      Custom
+                      {{ "BUTTON.CUSTOM" | translate }}
                     </a>
                     <a
                       *ngIf="
@@ -135,14 +136,13 @@
             <div
               class="cos-fluid-width cos-light-note cos-light-note-dark cos-body-5 cos-gray-text"
             >
-              <b>Notice:</b> select an RPC that will be used in the application
-              to replace the default RPC provider.
+              {{ "LABELS.NOTICE_SELECT_AN_RPC" | translate }}
             </div>
           </div>
         </mat-list-item>
         <mat-list-item>
           <div fxLayout="column" fxLayoutGap="20px" class="cos-fluid-width">
-            <div>Payments History</div>
+            <div>{{ "HEADER.PAYMENTS_HISTORY" | translate }}</div>
             <button mat-button (click)="clearPaymentHistory()">
               <div fxLayoutAlign="center center">
                 <div fxFlex="0 0 auto" *ngIf="removingPayentHistory === true">
@@ -154,7 +154,7 @@
                   ></app-spinner>
                 </div>
                 <span *ngIf="removingPayentHistory === false" fxFlex>
-                  Clear History
+                  {{ "BUTTON.CLEAR_HISTORY" | translate }}
                 </span>
               </div>
             </button>
@@ -167,10 +167,10 @@
 
 <mat-menu #rpcTypeMenu="matMenu" class="cos-menu" xPosition="before">
   <button mat-menu-item (click)="selectProvider(validRpcProviders.DEFAULT)">
-    Default
+    {{ "BUTTON.DEFAULT" | translate }}
   </button>
   <button mat-menu-item (click)="selectProvider(validRpcProviders.CUSTOM)">
-    Custom
+    {{ "BUTTON.CUSTOM" | translate }}
   </button>
   <button mat-menu-item (click)="selectProvider(validRpcProviders.ALCHEMY)">
     Alchemy
