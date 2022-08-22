@@ -107,11 +107,9 @@ export class RegistrationFacilityService {
         )
         .then((r) => {
           commitmentResult = r;
-          return this.getGasLimitEstimation(
-            provider,
-            'createCommitmentsForRegistration',
-            [comitmentsPrepared, duration, isResolverSet]
-          )
+          return this.getGasLimitEstimation(provider, 'requestRegistration', [
+            commitmentResult[0],
+          ])
             .toPromise()
             .catch((e) => {
               return null;
@@ -129,7 +127,6 @@ export class RegistrationFacilityService {
             return;
           }
           gasLimit = (r as BigNumber).add(generalConfigurations.gasLimitBuffer);
-          console.log(gasLimit.toString());
           observer.next([
             {
               commitments: commitmentResult[0],
