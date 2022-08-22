@@ -8,4 +8,5 @@ export enum PagesEnum {
   PROFILE = 'PROFILE',
   DOMAIN = 'DOMAIN',
   NOTFOUND = 'NOTFOUND',
+  MANAGE = 'manage',
 }

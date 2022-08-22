@@ -167,7 +167,33 @@
               <b> {{ "LABELS.PROCESSING" | translate }}... </b>
             </div>
           </ng-container>
-
+          <ng-container *ngIf="downloading === false">
+            <div fxFlex="0 0 auto">
+              <b> {{ "BUTTON.SAVE_CHANGES" | translate }} </b>
+            </div>
+          </ng-container>
+        </div>
+      </button>
+      <button mat-button fxFlex (click)="capture()">
+        <div
+          fxLayout="row"
+          fxLayoutAlign="center center"
+          fxLayoutGap="10px"
+          class="cos-fluid-width"
+        >
+          <ng-container *ngIf="downloading === true">
+            <div fxFlex="0 0 auto">
+              <app-spinner
+                [padded]="false"
+                [lightColour]="true"
+                [spinnerSize]="10"
+                [showText]="false"
+              ></app-spinner>
+            </div>
+            <div fxFlex="0 0 auto">
+              <b> {{ "LABELS.PROCESSING" | translate }}... </b>
+            </div>
+          </ng-container>
           <ng-container *ngIf="downloading === false">
             <div fxFlex="0 0 auto">
               <b> {{ "BUTTON.DOWNLOAD" | translate }} </b>
@@ -248,7 +274,11 @@
             fxLayout="row"
             (click)="selectDomain(d)"
           >
-            <div fxFlex="0 0 auto" fxLayoutAlign="start center">
+            <div
+              fxFlex="60"
+              fxLayoutAlign="start center"
+              class="cos-wallet-address-text-cut"
+            >
               {{ d.labelName }}.eth
             </div>
             <div
@@ -277,6 +307,26 @@
               fxLayoutAlign="end center"
               fxLayoutGap="10px"
             >
+              <mat-icon
+                [ngClass]="
+                  selectedDomain !== undefined &&
+                  selectedDomain.labelName === d.labelName
+                    ? ''
+                    : 'cos-gray-text'
+                "
+                class="cos-icon-can-activate"
+                >build</mat-icon
+              >
+              <mat-icon
+                [ngClass]="
+                  selectedDomain !== undefined &&
+                  selectedDomain.labelName === d.labelName
+                    ? ''
+                    : 'cos-gray-text'
+                "
+                class="cos-icon-can-activate"
+                >magic_button</mat-icon
+              >
               <mat-icon
                 [color]="
                   selectedDomain !== undefined &&

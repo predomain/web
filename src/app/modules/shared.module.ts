@@ -66,6 +66,7 @@ import { NgxColorsModule } from 'ngx-colors';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   imports: [
@@ -104,6 +105,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatSnackBarModule,
     MatProgressBarModule,
     MatBadgeModule,
+    MatPaginatorModule,
     TranslationModule,
     DragDropModule,
     OverlayModule,
@@ -177,6 +179,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatTableModule,
     MatSnackBarModule,
     MatBadgeModule,
+    MatPaginatorModule,
     DragDropModule,
     OverlayModule,
     GetScrollableXyDirective,

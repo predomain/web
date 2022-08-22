@@ -128,7 +128,8 @@ export class RegistrationFacilityService {
             observer.complete();
             return;
           }
-          gasLimit = (r as BigNumber).add(50000);
+          gasLimit = (r as BigNumber).add(generalConfigurations.gasLimitBuffer);
+          console.log(gasLimit.toString());
           observer.next([
             {
               commitments: commitmentResult[0],
@@ -208,7 +209,7 @@ export class RegistrationFacilityService {
             observer.complete();
             return;
           }
-          gasLimit = (r as BigNumber).add(50000);
+          gasLimit = (r as BigNumber).add(generalConfigurations.gasLimitBuffer);
           observer.next([dataInput, gasLimit]);
           observer.complete();
           return;

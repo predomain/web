@@ -1062,9 +1062,9 @@ ol {
   .mat-cell,
   .mat-header-cell {
     color: var(--co-default-text-color) !important;
-    border-bottom: solid 1px var(--co-darker-gray-bg) !important;
+    border-bottom: solid 1px var(--co-bg-neutral-color) !important;
     font-size: inherit !important;
-    background-color: var(--co-gray-bg) !important;
+    background-color: var(--co-darker-gray-bg) !important;
   }
 
   .cos-table-transparent {

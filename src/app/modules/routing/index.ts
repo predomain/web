@@ -5,3 +5,4 @@ export * from './home-routing.module';
 export * from './profile-routing.module';
 export * from './domain-routing.module';
 export * from './not-found-routing.module';
+export * from './manage-routing.module';

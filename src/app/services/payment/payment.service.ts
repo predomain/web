@@ -32,7 +32,7 @@ export class PaymentService {
       nonce: nonce,
       to: toAddress,
       gasPrice: gasPrice,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: payment.paymentTotal,
       data: payment.paymentAbstractBytesSlot,
     };

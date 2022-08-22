@@ -6,4 +6,5 @@ export const routerPaths = {
   notfound: 'notfound',
   profile: 'profile',
   domain: 'domain',
+  manage: 'manage',
 };

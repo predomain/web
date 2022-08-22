@@ -318,6 +318,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     this.pagesFacadeService.gotoPageRoute('domain/' + domain, PagesEnum.DOMAIN);
   }
 
+  goToManage() {
+    this.pagesFacadeService.gotoPageRoute('manage', PagesEnum.MANAGE);
+  }
+
   get quickSearchKeysToChunk() {
     if (
       this.bulksearch === undefined ||
