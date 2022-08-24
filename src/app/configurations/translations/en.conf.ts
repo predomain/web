@@ -87,6 +87,7 @@ export default {
       'A new transaction has been created. Please check your wallet.',
   },
   LABELS: {
+    MANAGE_DOMAINS: 'Manage Domains',
     SEARCH_FOR: 'Search For',
     MANAGE: 'Manage',
     COLLECT: 'Collect',
@@ -102,6 +103,7 @@ export default {
     CONTAINING_KEYWORDS: 'Containing Keywords',
     FILTERS: 'Filters',
     DOMAINS: 'Domains',
+    DOMAIN: 'Domain',
     DOMAIN_HISTORY: 'Domain History',
     EXPIRATION_DATE: 'Expiration Date',
     REGISTRATION_DATE: 'Registration Date',
@@ -115,6 +117,7 @@ export default {
     CLICK: 'Click',
     CONNECT_TO_START: ' to get started or ',
     TIP: 'Tip',
+    ACTION: 'Action',
     ADVANCED_SEARCH_TIP:
       'use new line or commas to seperate your domain entries.',
     ADVANCED_SEARCH: 'Avanced Search',

@@ -15,7 +15,7 @@ export const generalConfigurations = {
   timeUntilCheckoutExpires: 3000,
   maxConfirmationsUntilTxFinal: 1,
   declarePaymentStatusUnkownUntilXFailedDataFetches: 5,
-  gasLimitBuffer: 1,
+  gasLimitBuffer: 150000,
   maxCheckoutRetryUntilRehydrateProcessId: 5,
   maxIpfsSubscriptionRetries: 5,
   maxDomainsToRegister: 50,

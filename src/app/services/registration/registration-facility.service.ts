@@ -126,7 +126,7 @@ export class RegistrationFacilityService {
             observer.complete();
             return;
           }
-          gasLimit = (r as BigNumber).add(generalConfigurations.gasLimitBuffer);
+          gasLimit = r as BigNumber;
           observer.next([
             {
               commitments: commitmentResult[0],

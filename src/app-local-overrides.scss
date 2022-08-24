@@ -1,0 +1,32 @@
+@import "./app-styles.scss";
+
+.co-manage-domains-table {
+  tbody {
+    width: calc(80% - 60px) !important;
+    height: calc(100% - 315px) !important;
+    @media only screen and (max-width: 1000px) {
+      width: calc(100% - 50px) !important;
+    }
+    tr {
+      height: 50px !important;
+      overflow: hidden;
+      td,
+      th {
+        flex: 1;
+        &:first-of-type {
+          flex: 1 1 50% !important;
+        }
+      }
+      td {
+        align-items: center !important;
+        &:first-of-type {
+          align-items: flex-start !important;
+        }
+        align-items: center !important;
+        &:last-of-type {
+          align-items: flex-end !important;
+        }
+      }
+    }
+  }
+}

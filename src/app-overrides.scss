@@ -1046,25 +1046,61 @@ ol {
 }
 
 .cos-table {
+  overflow: hidden;
   background-color: var(--co-darker-gray-bg) !important;
-  border-radius: 7.5px !important;
-  overflow: hidden;
-  border-radius: 3.5px !important;
-  overflow: hidden;
+  border-radius: var(--cos-border-radius-2) !important;
   box-shadow: -1px 0 2px 0 rgb(41 52 67 / 12%), 1px 0 2px 0 rgb(41 52 67 / 7%),
     0 1px 2px 0 rgb(41 52 67 / 10%) !important;
-  scrollbar-width: none !important;
+
+  &.cos-with-paging {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    tbody {
+      border-bottom: solid 2px var(--co-bg-neutral-color) !important;
+    }
+  }
+
+  &.cos-topless {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
 
   thead {
-    height: 50px;
+    tr {
+      th {
+        height: 50px;
+        border-bottom: solid 2px var(--co-bg-neutral-color) !important;
+      }
+    }
+  }
+
+  .mat-header-cell {
+    background-color: var(--co-gray-bg) !important;
+    .mat-checkbox-inner-container {
+      background-color: var(--co-darker-gray-bg) !important;
+    }
   }
 
   .mat-cell,
   .mat-header-cell {
     color: var(--co-default-text-color) !important;
-    border-bottom: solid 1px var(--co-bg-neutral-color) !important;
-    font-size: inherit !important;
-    background-color: var(--co-darker-gray-bg) !important;
+    font-size: var(--co-font-size-2) !important;
+  }
+
+  tbody {
+    .mat-row {
+      border-bottom: solid 2px var(--co-bg-neutral-color) !important;
+      &:last-of-type {
+        border-bottom: 0 !important;
+      }
+      &:hover {
+        background-color: var(--co-gray-bg) !important;
+        cursor: pointer;
+        .mat-checkbox-inner-container {
+          background-color: var(--co-darker-gray-bg) !important;
+        }
+      }
+    }
   }
 
   .cos-table-transparent {
@@ -1101,6 +1137,25 @@ ol {
           td {
             min-height: 400px;
             display: table-cell !important;
+          }
+        }
+      }
+    }
+  }
+
+  &.cos-table-scrollable {
+    &.cos-table-80-percent {
+      tbody {
+        overflow: auto !important;
+        display: block !important;
+        position: absolute !important;
+        tr {
+          display: flex;
+          td {
+            display: flex;
+            align-items: start;
+            flex-direction: column;
+            justify-content: center;
           }
         }
       }

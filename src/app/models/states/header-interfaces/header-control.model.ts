@@ -3,4 +3,6 @@ export interface HeaderControlModel {
   showCanvas?: boolean;
   showBookmark?: boolean;
   showSearch?: boolean;
+  showTranslation?: boolean;
+  showManagement?: boolean;
 }

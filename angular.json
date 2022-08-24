@@ -36,6 +36,7 @@
               "src/app-materials.scss",
               "src/app-material-overrides.scss",
               "src/app-overrides.scss",
+              "src/app-local-overrides.scss",
               "src/app-root.scss"
             ],
             "scripts": []
@@ -192,6 +193,7 @@
               "src/app-materials.scss",
               "src/app-material-overrides.scss",
               "src/app-overrides.scss",
+              "src/app-local-overrides.scss",
               "src/app-root.scss"
             ],
             "scripts": []

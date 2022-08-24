@@ -30,7 +30,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { ethers } from 'ethers';
 import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
-import { TimeAgoPipe } from 'src/app/modules/pipes';
+import { FormatTimePipe, TimeAgoPipe } from 'src/app/modules/pipes';
 import {
   EnsEvensSymbolEnum,
   ENSEventModel,
@@ -94,6 +94,7 @@ export class DomainComponent implements OnInit, OnDestroy {
     protected registrationDataService: RegistrationDataService,
     protected activatedRoute: ActivatedRoute,
     protected timeAgoService: TimeAgoPipe,
+    protected formatTimeService: FormatTimePipe,
     protected router: Router,
     protected snackBar: MatSnackBar,
     public bookmarksService: BookmarksServiceService,
@@ -222,12 +223,12 @@ export class DomainComponent implements OnInit, OnDestroy {
 
   injectDomainMetadataToForm() {
     this.metadataForm.controls.creation.setValue(
-      this.timeAgoService.transform(
+      this.formatTimeService.transform(
         (parseInt(this.userDomains[0].createdAt) * 1000).toString()
       )
     );
     this.metadataForm.controls.registration.setValue(
-      this.timeAgoService.transform(
+      this.formatTimeService.transform(
         (parseInt(this.userDomains[0].registrationDate) * 1000).toString()
       )
     );

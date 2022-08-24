@@ -9,14 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  catchError,
-  delayWhen,
-  map,
-  retryWhen,
-  switchMap,
-  take,
-} from 'rxjs/operators';
+import { delayWhen, map, retryWhen, switchMap, take } from 'rxjs/operators';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';

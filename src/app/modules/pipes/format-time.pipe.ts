@@ -1,15 +1,14 @@
-import { DatePipe } from "@angular/common";
-import { Pipe, PipeTransform } from "@angular/core";
+import { DatePipe } from '@angular/common';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: "formatTime",
+  name: 'formatTime',
 })
 export class FormatTimePipe extends DatePipe implements PipeTransform {
   transform(value: string): any {
     if (value) {
-      const inputDate = new Date(value);
-
-      return super.transform(inputDate, "MMM d y HH:MM");
+      const inputDate = new Date(parseInt(value));
+      return super.transform(inputDate, 'MMM d y HH:MM');
     }
   }
 }

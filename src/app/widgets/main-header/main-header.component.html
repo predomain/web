@@ -10,6 +10,10 @@
     fxLayoutAlign="end center"
   >
     <div
+      *ngIf="
+        show === undefined ||
+        (show !== undefined && show.showTranslation === true)
+      "
       fxLayoutGap="5px"
       fxLayoutAlign="center center"
       [matMenuTriggerFor]="languageMenu"
@@ -162,7 +166,10 @@
         <mat-icon>layers</mat-icon>
       </div>
       <div
-        *ngIf="false"
+        *ngIf="
+          show === undefined ||
+          (show !== undefined && show.showManagement === true)
+        "
         fxFlex="0 0 auto"
         class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
@@ -286,7 +293,10 @@
         <mat-icon>layers</mat-icon>
       </div>
       <div
-        *ngIf="false"
+        *ngIf="
+          show === undefined ||
+          (show !== undefined && show.showManagement === true)
+        "
         fxFlex="0 0 auto"
         class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
