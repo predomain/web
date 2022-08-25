@@ -85,7 +85,7 @@ export default {
       'Se ha creado una nueva transacción. Por favor, comprueba tu cartera.',
   },
   LABELS: {
-    PlEASE_WAIT: 'Espere por favor',
+    PLEASE_WAIT: 'Espere por favor',
     SEARCH_FOR: 'Buscar',
     MANAGE: 'Administrar',
     COLLECT: 'Recoger',

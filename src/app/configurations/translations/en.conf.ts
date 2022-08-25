@@ -88,7 +88,7 @@ export default {
       'A new transaction has been created. Please check your wallet.',
   },
   LABELS: {
-    PlEASE_WAIT: 'Please wait',
+    PLEASE_WAIT: 'Please wait',
     SELECT_A_DOMAIN: 'Select a Domain',
     RENEW: 'Renew',
     MANAGE_DOMAINS: 'Manage Domains',

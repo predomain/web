@@ -1,1 +1,493 @@
-Hello World!
+<div class="shooting_star" *ngFor="let s of starCount"></div>
+<div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
+  <div
+    fxFlex="90"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="30px"
+    class="co-profile-header cos-fluid-width"
+  >
+    <span fxLayoutAlign="center center" fxLayoutGap="10px" (click)="goToHome()">
+      <mat-icon class="cos-icon-can-activate" color="primary"
+        >arrow_back_ios</mat-icon
+      >
+      <a class="co-back-button">
+        {{ "HEADER.BACK_TO_HOME" | translate }}
+      </a>
+    </span>
+  </div>
+  <app-main-header
+    [show]="{
+      showBasket: true,
+      showBookmark: true,
+      showCanvas: true,
+      showTranslation: true,
+      showManagement: true
+    }"
+  ></app-main-header>
+</div>
+<div
+  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
+></div>
+<div
+  #fadeTop
+  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
+  fxLayout="row"
+  fxLayoutAlign="center end"
+></div>
+<div
+  appGetScrollableXy
+  (scrollPosition)="
+    $event[1] > 100
+      ? (fadeTop.style.display = 'flex')
+      : (fadeTop.style.display = 'none')
+  "
+  class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
+>
+  <div
+    fxLayout="row"
+    fxLayoutAlign="center start"
+    class="co-banner cos-pos-fixed cos-fluid-width"
+  ></div>
+  <div
+    fxLayout="row"
+    fxLayoutAlign="center start"
+    class="co-profile-content-container cos-pos-absolute cos-fluid-width cos-fluid-height"
+  >
+    <div
+      fxFlex="100"
+      fxLayout="column"
+      fxLayoutGap="10px"
+      class="co-profile-content cos-fluid-height cos-padding-2"
+    >
+      <div fxFlex fxLayoutGap="20px">
+        <div fxFlex="20" class="cos-fluid-height cos-disappear-on-mobile">
+          <div
+            id="canvas_size_guide"
+            class="cos-fluid-width cos-no-margin-bottom"
+            [style.visibility]="'hidden'"
+            [style.width]="'100%'"
+            [style.height]="'0px'"
+          ></div>
+          <div
+            fxLayout="column"
+            fxLayoutGap="10px"
+            fxLayoutAlign="stretch stretch"
+            class="cos-fluid-height cos-fluid-width cos-border-radius-2"
+          >
+            <app-preview-image
+              *ngIf="selectedDomain === undefined"
+              fxFlex="0 0 auto"
+              [preview]="'assets/img-blank.png'"
+              [error]="'assets/profile-blank.png'"
+              [style.height]="
+                canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
+              "
+              class="cos-border-radius-2"
+            ></app-preview-image>
+            <app-preview-image
+              *ngIf="selectedDomain !== undefined"
+              fxFlex="0 0 auto"
+              [preview]="'assets/img-blank.png'"
+              [error]="'assets/profile-blank.png'"
+              [src]="
+                ensMetadataAPI +
+                hashToBigIntString(selectedDomain.labelHash) +
+                '/image'
+              "
+              class="cos-border-radius-2"
+            ></app-preview-image>
+            <div
+              fxFlex
+              fxLayout="column"
+              class="co-filters-content cos-fluid-height"
+            >
+              <div
+                fxFlex="0 0 auto"
+                fxLayout="row"
+                fxLayoutAlign="start start"
+                fxLayoutGap="10px"
+                class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right"
+              >
+                <mat-icon>info</mat-icon>
+                <span>
+                  <b> {{ "LABELS.DETAILS" | translate }} </b>
+                </span>
+              </div>
+              <div
+                *ngIf="selectedDomain === undefined"
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="center center"
+                class="cos-padding-1 cos-bg-darker-gray cos-gray-text cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right"
+              >
+                <div
+                  fxLayout="column"
+                  fxLayoutAlign="center center"
+                  fxLayoutGap="10px"
+                >
+                  <mat-icon class="cos-large-icon">info</mat-icon>
+                  <span fxFlex class="cos-center-text">
+                    {{ "LABELS.SELECT_A_DOMAIN" | translate }}
+                  </span>
+                </div>
+              </div>
+              <div
+                *ngIf="selectedDomain !== undefined"
+                fxFlex
+                fxLayoutGap="10px"
+                class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right"
+              >
+                <form
+                  fxFlex
+                  fxLayout="column"
+                  fxLayoutAlign="start stretch"
+                  [formGroup]="metadataForm"
+                  class="cos-fluid-width cos-body-4 cos-gray-text"
+                >
+                  <div class="co-form-label">
+                    {{ "LABELS.CREATION_DATE" | translate }}
+                  </div>
+                  <mat-form-field class="co-main-search cos-body-0">
+                    <input
+                      class="cos-fluid-width cos-bg-darker-gray"
+                      matInput
+                      type="text"
+                      autocomplete="off"
+                      maxlength="50"
+                      formControlName="creation"
+                    />
+                  </mat-form-field>
+                  <div class="co-form-label">
+                    {{ "LABELS.REGISTRATION_DATE" | translate }}
+                  </div>
+                  <mat-form-field class="co-main-search cos-body-0">
+                    <input
+                      class="cos-fluid-width cos-bg-darker-gray"
+                      matInput
+                      type="text"
+                      autocomplete="off"
+                      maxlength="50"
+                      formControlName="registration"
+                    />
+                  </mat-form-field>
+                  <div class="co-form-label">
+                    {{ "LABELS.EXPIRATION_DATE" | translate }}
+                  </div>
+                  <mat-form-field class="co-main-search cos-body-0">
+                    <input
+                      class="cos-fluid-width cos-bg-darker-gray"
+                      matInput
+                      type="text"
+                      autocomplete="off"
+                      maxlength="50"
+                      formControlName="expiration"
+                    />
+                  </mat-form-field>
+                  <div fxFlex></div>
+                  <div fxLayout="column" fxLayoutGap="10px">
+                    <div fxLayout="column" fxLayoutGap="10px"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutGap="2px"
+          class="cos-fluid-height"
+        >
+          <div
+            fxFlex="0 0 auto"
+            fxLayoutAlign="start center"
+            class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right"
+          >
+            <div fxFlex class="cos-body-0">
+              <b> {{ "LABELS.MANAGE_DOMAINS" | translate }} </b>
+            </div>
+            <div fxFlex fxLayoutGap="10px" fxLayoutAlign="end center">
+              <button mat-button>
+                {{ "BUTTON.SAVE_CHANGES" | translate }}
+              </button>
+            </div>
+          </div>
+
+          <div
+            fxLayout="column"
+            class="cos-fluid-width cos-fluid-height"
+            fxLayoutGap="10px"
+          >
+            <div fxLayoutAlign="stretch start" fxLayout="column" fxFlex>
+              <div
+                fxFlex
+                class="cos-form-container cos-fluid-width"
+                fxFlex
+                fxLayout="column"
+                fxLayoutAlign="start center"
+              >
+                <table
+                  *ngIf="dataSource.data[0].id === null"
+                  mat-table
+                  [dataSource]="dataSource"
+                  class="cos-fluid-width cos-fluid-height cos-table cos-table-static cos-table-empty cos-topless cos-table-fluid cos-with-paging cos-body-4"
+                >
+                  <ng-container matColumnDef="labelName">
+                    <th mat-header-cell *matHeaderCellDef>
+                      <b>
+                        {{ "LABELS.DOMAIN" | translate }}
+                      </b>
+                    </th>
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="3">
+                      <ng-container *ngIf="hasDomainsListLoaded === false">
+                        <div fxFlex class="cos-fluid-width cos-fuid-height">
+                          <app-custom-spinner
+                            [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
+                            [spinnerSize]="150"
+                            [mode]="spinnerModes.LOADING"
+                            [customIcon]="'llayers'"
+                          >
+                          </app-custom-spinner>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="hasDomainsListLoaded === true">
+                        <div fxFlex class="cos-fluid-width cos-fuid-height">
+                          <app-custom-spinner
+                            [spinnerText]="'SPINNER.LOADING_DATA'"
+                            [spinnerSize]="150"
+                            [mode]="spinnerModes.LOADING"
+                            [customIcon]="'spin'"
+                          >
+                          </app-custom-spinner>
+                        </div>
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="expiry">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="cos-cemter-text"
+                    >
+                      <span>
+                        <b>
+                          {{ "LABELS.EXPIRATION_DATE" | translate }}
+                        </b>
+                      </span>
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element"
+                      class="cos-right-text"
+                    ></td>
+                  </ng-container>
+                  <ng-container matColumnDef="action">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="cos-right-text"
+                    >
+                      <div
+                        fxLayout="row"
+                        fxLayoutGap="20px"
+                        fxLayoutAlign="end center"
+                        class="cos-padding-px-0 cos-no-padding-left cos-no-padding-top cos-no-padding-bottom"
+                      >
+                        <b>
+                          {{ "LABELS.RENEW" | translate }}
+                        </b>
+                        <a
+                          [matMenuTriggerFor]="renewMenu"
+                          fxLayoutAlign="center center"
+                          class="cos-body-4"
+                        >
+                          <span> 1 Year </span>
+                          <mat-icon class="cos-small-icon"
+                            >arrow_drop_down</mat-icon
+                          >
+                        </a>
+                        <mat-checkbox class="no-label"></mat-checkbox>
+                      </div>
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element"
+                      class="cos-right-text"
+                      expiry
+                    ></td>
+                  </ng-container>
+                  <ng-container matColumnDef="moreInfo">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="cos-left-text"
+                    ></th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element"
+                      class="cos-right-text"
+                    ></td>
+                  </ng-container>
+                  <tr
+                    mat-header-row
+                    *matHeaderRowDef="displayedColumns"
+                    class="cos-table-tr-no-content"
+                  ></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                    class="cos-table-tr-no-content"
+                  ></tr>
+                </table>
+                <table
+                  *ngIf="
+                    dataSource.data !== undefined &&
+                    dataSource.data[0].id !== null
+                  "
+                  mat-table
+                  [dataSource]="dataSource"
+                  class="cos-fluid-width co-manage-domains-table cos-table cos-table-scrollable cos-table-80-percent cos-topless cos-with-paging cos-body-4"
+                >
+                  <ng-container matColumnDef="labelName">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="cos-fluid-width-two-third"
+                    >
+                      <b>
+                        {{ "LABELS.DOMAIN" | translate }}
+                      </b>
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      <div
+                        fxFlex
+                        fxLayout="row"
+                        fxLayoutGap="10px"
+                        fxLayoutAlign="center center"
+                        cass="cos-fluid-width cos-wallet-address-text-cut"
+                      >
+                        <img fxFlex="20px" src="assets/ens.svg" />
+                        <div fxFlex="0 0 auto">
+                          {{ element.labelName | translate }}.eth
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="expiry">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="cos-center-text"
+                    >
+                      <b>
+                        {{ "LABELS.EXPIRATION_DATE" | translate }}
+                      </b>
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element"
+                      class="cos-right-text"
+                    >
+                      {{ element.expiry | timeAgo }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="action">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="cos-right-text"
+                    >
+                      <div
+                        fxLayout="row"
+                        fxLayoutGap="20px"
+                        fxLayoutAlign="end center"
+                        class="cos-padding-px-0 cos-no-padding-left cos-no-padding-top cos-no-padding-bottom"
+                      >
+                        <b>
+                          {{ "LABELS.RENEW" | translate }}
+                        </b>
+                        <a
+                          [matMenuTriggerFor]="renewMenu"
+                          fxLayoutAlign="center center"
+                          class="cos-body-4"
+                        >
+                          <span> 1 Year </span>
+                          <mat-icon class="cos-small-icon"
+                            >arrow_drop_down</mat-icon
+                          >
+                        </a>
+                        <mat-checkbox class="no-label"></mat-checkbox>
+                      </div>
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element"
+                      class="cos-right-text"
+                    >
+                      <mat-checkbox class="no-label"></mat-checkbox>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="moreInfo">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="cos-left-text"
+                    ></th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element"
+                      class="cos-right-text"
+                    >
+                      <a href="">More Info</a>
+                    </td>
+                  </ng-container>
+                  <tr
+                    mat-header-row
+                    *matHeaderRowDef="displayedColumns; sticky: true"
+                  ></tr>
+                  <tr
+                    (click)="selectDomain(row)"
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                  ></tr>
+                </table>
+                <div
+                  fxFlex
+                  fxLayoutAlign="end end"
+                  class="cos-fluid-width cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right"
+                >
+                  <mat-paginator [pageSizeOptions]="[30]" hidePageSize="true">
+                  </mat-paginator>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<mat-menu #renewMenu="matMenu" class="cos-menu" xPosition="after">
+  <button mat-menu-item>
+    <mat-icon>update</mat-icon>
+    1 Year
+  </button>
+  <button mat-menu-item>
+    <mat-icon>update</mat-icon>
+    2 Years
+  </button>
+  <button mat-menu-item>
+    <mat-icon>update</mat-icon>
+    3 Years
+  </button>
+  <button mat-menu-item>
+    <mat-icon>update</mat-icon>
+    4 Years
+  </button>
+  <button mat-menu-item>
+    <mat-icon>update</mat-icon>
+    5 Years
+  </button>
+</mat-menu>

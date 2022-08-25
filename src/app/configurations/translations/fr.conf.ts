@@ -85,7 +85,7 @@ export default {
       'Une nouvelle transaction a été créée. Veuillez vérifier votre portefeuille.',
   },
   LABELS: {
-    PlEASE_WAIT: "S'il vous plaît, attendez",
+    PLEASE_WAIT: "S'il vous plaît, attendez",
     SEARCH_FOR: 'Rechercher',
     MANAGE: 'Faire en sorte',
     COLLECT: 'Recueillir',

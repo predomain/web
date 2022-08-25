@@ -83,7 +83,7 @@ export default {
     PENDING_TRANSACTION_CERATED: '新交易已创建。请检查您的钱包。',
   },
   LABELS: {
-    PlEASE_WAIT: '请稍等',
+    PLEASE_WAIT: '请稍等',
     SEARCH_FOR: '搜索',
     MANAGE: '管理',
     COLLECT: '搜集',

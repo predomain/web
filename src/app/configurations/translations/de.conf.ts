@@ -85,7 +85,7 @@ export default {
       'Eine neue Transaktion wurde erstellt. Bitte überprüfen Sie Ihre Wallet.',
   },
   LABELS: {
-    PlEASE_WAIT: 'Warten Sie mal',
+    PLEASE_WAIT: 'Warten Sie mal',
     SEARCH_FOR: 'Suchen nach',
     MANAGE: 'Verwalten',
     COLLECT: 'Sammeln',

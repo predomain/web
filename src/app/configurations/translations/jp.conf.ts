@@ -85,7 +85,7 @@ export default {
       '新しい取引が作成されました。ウォレットを確認してください。',
   },
   LABELS: {
-    PlEASE_WAIT: 'お待ちください',
+    PLEASE_WAIT: 'お待ちください',
     SEARCH_FOR: '検索する',
     MANAGE: '管理',
     COLLECT: '収集',
