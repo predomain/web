@@ -68,6 +68,7 @@ export class RegistrationFacilityService {
 
   createRegistrationCommitmentPacket(
     commitments: ENSRegistrationCommitmentModel[],
+    payer: string,
     provider
   ) {
     const contract = this.getEnsBulkRegistrationContract(provider);
@@ -107,9 +108,12 @@ export class RegistrationFacilityService {
         )
         .then((r) => {
           commitmentResult = r;
-          return this.getGasLimitEstimation(provider, 'requestRegistration', [
-            commitmentResult[0],
-          ])
+          return this.getGasLimitEstimation(
+            provider,
+            'requestRegistration',
+            [commitmentResult[0]],
+            payer
+          )
             .toPromise()
             .catch((e) => {
               return null;
@@ -165,6 +169,7 @@ export class RegistrationFacilityService {
 
   completeRegistration(
     commitments: ENSRegistrationCommitmentModel[],
+    payer: string,
     totalCost: string,
     provider
   ) {
@@ -192,13 +197,15 @@ export class RegistrationFacilityService {
       dataParams
     );
     let gasLimit;
-    const preparedTx = {
-      to: this.bulkRegistrationContractAddress,
-      data: dataInput,
-      value: totalCost,
-    };
     return new Observable((observer) => {
-      this.getGasLimitEstimation(provider, 'sendTransaction', preparedTx, true)
+      this.getGasLimitEstimation(
+        provider,
+        dataMethod,
+        dataParams,
+        payer,
+        false,
+        totalCost
+      )
         .toPromise()
         .then((r) => {
           if (r === false || r === null) {
@@ -231,7 +238,9 @@ export class RegistrationFacilityService {
     provider = null,
     method: string,
     params: any,
-    providerFunction = false
+    payer: string,
+    providerFunction = false,
+    value: string = '0x0'
   ) {
     const c = new Contract(
       this.bulkRegistrationContractAddress,
@@ -240,7 +249,10 @@ export class RegistrationFacilityService {
     );
     return new Observable((observer) => {
       if (providerFunction === false) {
-        c.estimateGas[method](...params)
+        c.estimateGas[method](...params, {
+          value,
+          from: payer,
+        })
           .then((r) => {
             if (r === null) {
               observer.next(false);

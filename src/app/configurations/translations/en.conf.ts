@@ -48,6 +48,7 @@ export default {
     CLEAR_HISTORY: 'Clear History',
     DEFAULT: 'Default',
     CUSTOM: 'Custom',
+    FRACTIONALISE: 'Fractionalise',
   },
   HEADER: {
     FAQ: 'FAQs',
@@ -87,6 +88,8 @@ export default {
       'A new transaction has been created. Please check your wallet.',
   },
   LABELS: {
+    SELECT_A_DOMAIN: 'Select a domain',
+    RENEW: 'Renew',
     MANAGE_DOMAINS: 'Manage Domains',
     SEARCH_FOR: 'Search For',
     MANAGE: 'Manage',

@@ -37,7 +37,7 @@ export class ManageComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   starCount = new Array(3).fill(0);
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
-  displayedColumns: string[] = ['labelName', 'expiry', 'action'];
+  displayedColumns: string[] = ['labelName', 'expiry', 'action', 'moreInfo'];
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   dataSource = new MatTableDataSource<ENSDomainMetadataModel>(EMPTY_DATA);
@@ -163,6 +163,8 @@ export class ManageComponent implements OnInit, AfterViewInit {
       )
     );
   }
+
+  selectAllToRenew() {}
 
   hashToBigIntString(hash: string) {
     return ethers.BigNumber.from(hash).toString();

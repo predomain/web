@@ -1,6 +1,25 @@
 @import "./app-styles.scss";
 
 .co-manage-domains-table {
+  thead {
+    tr {
+      height: 50px !important;
+      overflow: hidden;
+      th {
+        flex: 1;
+        justify-content: center;
+        &:first-of-type {
+          flex: 1 1 20% !important;
+        }
+        &:nth-of-type(3n) {
+          justify-content: flex-end !important;
+        }
+        &:last-of-type {
+          justify-content: flex-start !important;
+        }
+      }
+    }
+  }
   tbody {
     width: calc(80% - 60px) !important;
     height: calc(100% - 315px) !important;
@@ -10,19 +29,16 @@
     tr {
       height: 50px !important;
       overflow: hidden;
-      td,
-      th {
-        flex: 1;
-        &:first-of-type {
-          flex: 1 1 50% !important;
-        }
-      }
       td {
+        flex: 1;
         align-items: center !important;
         &:first-of-type {
+          flex: 1 1 20% !important;
           align-items: flex-start !important;
         }
-        align-items: center !important;
+        &:nth-of-type(3n) {
+          align-items: flex-end !important;
+        }
         &:last-of-type {
           align-items: flex-end !important;
         }

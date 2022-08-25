@@ -1067,6 +1067,7 @@ ol {
 
   thead {
     tr {
+      height: 50px;
       th {
         height: 50px;
         border-bottom: solid 2px var(--co-bg-neutral-color) !important;
@@ -1145,6 +1146,22 @@ ol {
 
   &.cos-table-scrollable {
     &.cos-table-80-percent {
+      thead {
+        display: block !important;
+        tr {
+          display: flex;
+          th {
+            display: flex;
+            align-items: center;
+            &:first-of-type {
+              justify-content: flex-start;
+            }
+            &:last-of-type {
+              justify-content: flex-end;
+            }
+          }
+        }
+      }
       tbody {
         overflow: auto !important;
         display: block !important;

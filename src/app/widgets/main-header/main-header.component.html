@@ -166,19 +166,6 @@
         <mat-icon>layers</mat-icon>
       </div>
       <div
-        *ngIf="
-          show === undefined ||
-          (show !== undefined && show.showManagement === true)
-        "
-        fxFlex="0 0 auto"
-        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        (click)="openConnect()"
-      >
-        <mat-icon>magic_button</mat-icon>
-      </div>
-      <div
         fxFlex="0 0 auto"
         class="cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
@@ -291,19 +278,6 @@
         (click)="goToCanvas()"
       >
         <mat-icon>layers</mat-icon>
-      </div>
-      <div
-        *ngIf="
-          show === undefined ||
-          (show !== undefined && show.showManagement === true)
-        "
-        fxFlex="0 0 auto"
-        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        (click)="goToManage()"
-      >
-        <mat-icon>magic_button</mat-icon>
       </div>
       <div
         fxFlex="0 0 auto"

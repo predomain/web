@@ -10,4 +10,5 @@ export interface ENSDomainMetadataModel {
   createdAt?: string;
   events?: { blockNumber: number; transactionID: string }[];
   action?: any;
+  moreInfo?: any;
 }

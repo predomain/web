@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ENSContracts, generalConfigurations } from 'src/app/configurations';
@@ -256,6 +256,7 @@ export class CheckoutServicesService {
     return this.registrationFacilityService
       .createRegistrationCommitmentPacket(
         compiledPacket,
+        payer,
         globalAny.canvasProvider
       )
       .pipe(
@@ -354,18 +355,29 @@ export class CheckoutServicesService {
       .reduce((a, b) => {
         return a.add(b);
       });
+
     return this.registrationFacilityService
       .completeRegistration(
         compiledPacket,
+        payer,
         finalTotal.toHexString(),
         globalAny.canvasProvider
       )
       .pipe(
         map((registrationPacketAndGasLimit: any) => {
+          const minimumAcceptableGasCostPerRegistration =
+            compiledPacket.length === 1
+              ? ethers.BigNumber.from(200000)
+              : ethers.BigNumber.from(110000).mul(compiledPacket.length);
           if (registrationPacketAndGasLimit === false) {
             throw 1;
           }
           const [registrationPacket, gasLimit] = registrationPacketAndGasLimit;
+          if (
+            (gasLimit as BigNumber).lt(minimumAcceptableGasCostPerRegistration)
+          ) {
+            throw 1;
+          }
           const serial = this.walletService.produceNonce(NonceTypesEnum.SERIAL);
           const p = {
             id: serial,
