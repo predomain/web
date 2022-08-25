@@ -35,11 +35,6 @@ const routes: Routes = [
       import('./modules/profile.module').then((m) => m.ProfileModule),
   },
   {
-    path: 'manage',
-    loadChildren: () =>
-      import('./modules/manage.module').then((m) => m.ManageModule),
-  },
-  {
     path: 'checkout',
     loadChildren: () =>
       import('./modules/checkout.module').then((m) => m.CheckoutModule),
