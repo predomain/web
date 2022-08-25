@@ -60,6 +60,7 @@ export default {
     DOCUMENTATIONS: '文件',
     CART: '购物车',
     BOOKMARKS: '书签',
+    CUSTOM_RPC: '自定义 RPC',
   },
   IPFS: {
     INITIALISING: '正在启动 p2p',
@@ -82,6 +83,7 @@ export default {
     PENDING_TRANSACTION_CERATED: '新交易已创建。请检查您的钱包。',
   },
   LABELS: {
+    PlEASE_WAIT: '请稍等',
     SEARCH_FOR: '搜索',
     MANAGE: '管理',
     COLLECT: '搜集',
@@ -136,7 +138,7 @@ export default {
     COMMIT_SENT: '正在处理请求...',
     COMMIT_COMPLETE: '第 1 步：请求注册。',
     AWAIT: '正在处理请求...',
-    BEFORE_REGISTRATION: '第 3 步：请求注册。',
+    BEFORE_REGISTRATION: '请求注册。',
     REGISTRATION_SENT: '正在完成注册...',
     REGISTRATION_COMPLETE: '登记!',
     REGISTRATION_COMPLETE_TITLE: '登记',

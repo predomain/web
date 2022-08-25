@@ -60,6 +60,7 @@ export default {
     DOCUMENTATIONS: 'Dokumentationen',
     CART: 'Warenkorb',
     BOOKMARKS: 'Lesezeichen',
+    CUSTOM_RPC: 'Benutzerdefinierter RPC',
   },
   IPFS: {
     INITIALISING: 'Starte p2p',
@@ -84,6 +85,7 @@ export default {
       'Eine neue Transaktion wurde erstellt. Bitte überprüfen Sie Ihre Wallet.',
   },
   LABELS: {
+    PlEASE_WAIT: 'Warten Sie mal',
     SEARCH_FOR: 'Suchen nach',
     MANAGE: 'Verwalten',
     COLLECT: 'Sammeln',
@@ -140,7 +142,7 @@ export default {
     COMMIT_SENT: 'Anfrage wird verarbeitet...',
     COMMIT_COMPLETE: 'Schritt 1: Registrierung anfordern...',
     AWAIT: 'Anfrage wird verarbeitet...',
-    BEFORE_REGISTRATION: 'Schritt 3: Registrierung anfordern.',
+    BEFORE_REGISTRATION: 'Registrierung anfordern.',
     REGISTRATION_SENT: 'Registrierung wird abgeschlossen...',
     REGISTRATION_COMPLETE: 'Anmeldung!',
     REGISTRATION_COMPLETE_TITLE: 'Anmeldung',

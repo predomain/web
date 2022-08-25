@@ -22,9 +22,10 @@
   }
   tbody {
     width: calc(80% - 60px) !important;
-    height: calc(100% - 315px) !important;
+    height: calc(100% - 305px) !important;
     @media only screen and (max-width: 1000px) {
       width: calc(100% - 50px) !important;
+      height: calc(100% - 315px) !important;
     }
     tr {
       height: 50px !important;

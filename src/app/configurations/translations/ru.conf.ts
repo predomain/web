@@ -60,6 +60,7 @@ export default {
     DOCUMENTATIONS: 'Документация',
     CART: 'Корзина',
     BOOKMARKS: 'Закладки',
+    CUSTOM_RPC: 'Пользовательский RPC',
   },
   IPFS: {
     INITIALISING: 'Запуск p2p',
@@ -84,6 +85,7 @@ export default {
       'Была создана новая транзакция. Пожалуйста, проверьте ваш кошелек.',
   },
   LABELS: {
+    PlEASE_WAIT: 'Пожалуйста подождите',
     SEARCH_FOR: 'искать',
     MANAGE: 'управлять',
     COLLECT: 'собирать',
@@ -140,7 +142,7 @@ export default {
     COMMIT_SENT: 'Обработка запроса...',
     COMMIT_COMPLETE: 'Шаг 1: запрос на регистрацию...',
     AWAIT: 'Обработка запроса...',
-    BEFORE_REGISTRATION: 'Шаг 3: запрос на регистрацию.',
+    BEFORE_REGISTRATION: 'запрос на регистрацию.',
     REGISTRATION_SENT: 'Завершение регистрации...',
     REGISTRATION_COMPLETE: 'Регистрация!',
     REGISTRATION_COMPLETE_TITLE: 'Регистрация завершена',

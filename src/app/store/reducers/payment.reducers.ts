@@ -1,5 +1,4 @@
 import { EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { generalConfigurations } from '../../configurations';
 import {
   PaymentModel,
   PaymentStateModel,
@@ -15,6 +14,7 @@ import {
   AddOnePayment,
   SetEthUSDRates,
   ArchiveAllPayment,
+  CancelledPayment,
 } from '../actions';
 
 export function selectPaymentId(payment: PaymentModel): string {
@@ -30,6 +30,7 @@ export const initialPaymentState: PaymentStateModel = adapter.getInitialState({
   error: undefined,
   loading: false,
   ethUsdPrice: '0.00',
+  paymentCancelled: false,
 });
 
 export function PaymentReducers(
@@ -46,6 +47,7 @@ export function PaymentReducers(
         entities: stateChange.entities,
         error: undefined,
         loading: false,
+        paymentCancelled: false,
       };
     }
 
@@ -64,6 +66,7 @@ export function PaymentReducers(
         entities: stateChange.entities,
         error: undefined,
         loading: true,
+        paymentCancelled: false,
       };
     }
 
@@ -75,6 +78,7 @@ export function PaymentReducers(
         entities: stateChange.entities,
         error: undefined,
         loading: false,
+        paymentCancelled: false,
       };
     }
 
@@ -86,6 +90,7 @@ export function PaymentReducers(
         entities: stateChange.entities,
         error: undefined,
         loading: false,
+        paymentCancelled: false,
       };
     }
 
@@ -97,6 +102,7 @@ export function PaymentReducers(
         entities: stateChange.entities,
         error: undefined,
         loading: false,
+        paymentCancelled: false,
       };
     }
 
@@ -108,6 +114,7 @@ export function PaymentReducers(
         entities: stateChange.entities,
         error: undefined,
         loading: false,
+        paymentCancelled: false,
       };
     }
 
@@ -124,6 +131,7 @@ export function PaymentReducers(
         entities: stateChange.entities,
         error: undefined,
         loading: false,
+        paymentCancelled: false,
       };
     }
 
@@ -132,6 +140,7 @@ export function PaymentReducers(
         ...state,
         error: action.payload,
         loading: false,
+        paymentCancelled: false,
       };
     }
 
@@ -140,6 +149,16 @@ export function PaymentReducers(
         ...state,
         error: undefined,
         loading: true,
+        paymentCancelled: false,
+      };
+    }
+
+    case CancelledPayment: {
+      return {
+        ...state,
+        error: undefined,
+        loading: false,
+        paymentCancelled: true,
       };
     }
 

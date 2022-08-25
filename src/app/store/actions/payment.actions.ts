@@ -5,6 +5,7 @@ export const PaymentCheckFulfilled =
   '[PaymentState] Payment checking status if fulfilled.';
 export const PaymentTriggerStatusChecking =
   '[PaymentState] Payment checking status triggered.';
+export const CancelledPayment = '[PaymentState] payment cancelled.';
 export const AddOnePayment = '[PaymentState] Add payment.';
 export const UpdatePayment = '[PaymentState] Update payment.';
 export const UpsertOnePayment = '[PaymentState] Upsert one payment.';
@@ -17,6 +18,11 @@ export const RemoveManyPayment = '[PaymentState] Remove many payment.';
 export const RemoveAllPayment = '[PaymentState] Remove all payment.';
 export const ArchiveAllPayment = '[PaymentState] Archive all payment.';
 export const SetPaymentError = '[PaymentState] Payment error set.';
+
+export class PaymentCancelled implements Action {
+  readonly type = CancelledPayment;
+  constructor() {}
+}
 
 export class PaymentArchiveAll implements Action {
   readonly type = ArchiveAllPayment;
@@ -84,6 +90,7 @@ export class PaymentUpdate implements Action {
 }
 
 export type PaymentActions =
+  | PaymentCancelled
   | PaymentAddOne
   | PaymentRemoveOne
   | PaymentRemoveMany

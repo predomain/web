@@ -603,6 +603,11 @@
     font-size: 15px;
     height: 15px;
   }
+  &.cos-large-icon {
+    width: 55px;
+    font-size: 55px;
+    height: 55px;
+  }
   &.cos-icon-can-activate {
     cursor: pointer;
     &:hover {

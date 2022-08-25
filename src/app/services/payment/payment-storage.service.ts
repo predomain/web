@@ -13,6 +13,10 @@ export class PaymentStorageService {
     return globalAny.networkName;
   }
 
+  removePayments() {
+    localStorage.removeItem('canvas-payments-data');
+  }
+
   savePayments(paymentData: PaymentModel[]) {
     localStorage.setItem('canvas-payments-data', JSON.stringify(paymentData));
   }

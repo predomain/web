@@ -1,7 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import {
   PaymentModel,
-  PaymentTypesEnum,
   PaymentStateModel,
 } from '../../models/states/payment-interfaces';
 

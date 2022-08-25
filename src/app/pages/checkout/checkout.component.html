@@ -150,7 +150,8 @@
         fxLayoutGap="10px"
         fxFlexAlign="start"
         [ngClass]="
-          registrationStatus !== registrationStatusTypes.BEFORE_COMMIT
+          registrationStatus !== registrationStatusTypes.BEFORE_COMMIT ||
+          proceedPressed === true
             ? 'co-disabled-inputs'
             : ''
         "
@@ -286,7 +287,8 @@
           fxFlex
           fxLayout="column"
           [ngClass]="
-            registrationStatus !== registrationStatusTypes.BEFORE_COMMIT
+            registrationStatus !== registrationStatusTypes.BEFORE_COMMIT ||
+            proceedPressed === true
               ? 'co-disabled-inputs'
               : ''
           "
@@ -334,25 +336,43 @@
         </div>
         <div
           *ngIf="
+            proceedLocked === false &&
             registrationStatus !== registrationStatusTypes.COMMIT_SENT &&
             registrationStatus !== registrationStatusTypes.REGISTRATION_SENT &&
             registrationStatus !== registrationStatusTypes.AWAIT &&
             resolvingRegistrantAddress === true &&
-            domainConfigurationForm.controls.registrantAddress.value !==
-              false &&
-            totalCost !== 0.0
+            domainConfigurationForm.controls.registrantAddress.value !== false
           "
-          fxFlex
+          fxFlex="0 0 auto"
           fxLayoutAlign="end center"
           fxLayoutGap="5px"
           class="cos-right-text cos-margin-3 cos-no-margin-left cos-no-margin-top cos-no-margin-bottom"
         >
           <a
-            [disabled]="nextAction() === null"
+            [disabled]="nextAction() === null || proceedPressed === true"
             [ngClass]="nextAction() === null ? 'cos-grey-text' : ''"
             (click)="nextAction()()"
-            >{{ "BUTTON.PROCEED" | translate }}</a
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="end center"
+            fxLayoutGap="10px"
           >
+            <ng-container *ngIf="proceedPressed === true">
+              <div fxFlex class="cos-right-text cos-disappear-on-mobile">
+                {{ "LABELS.PLEASE_WAIT" | translate }}...
+              </div>
+              <app-spinner
+                fxFlex="20px"
+                [padded]="false"
+                [lightColour]="false"
+                [spinnerSize]="10"
+                [showText]="false"
+              ></app-spinner>
+            </ng-container>
+            <ng-container *ngIf="proceedPressed === false">
+              {{ "BUTTON.PROCEED" | translate }}
+            </ng-container>
+          </a>
         </div>
       </div>
       <mat-progress-bar

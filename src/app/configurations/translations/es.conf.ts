@@ -60,6 +60,7 @@ export default {
     DOCUMENTATIONS: 'Documentaciones',
     CART: 'Carrito',
     BOOKMARKS: 'Marcadores',
+    CUSTOM_RPC: 'RPC personalizado',
   },
   IPFS: {
     INITIALISING: 'Iniciando p2p',
@@ -84,6 +85,7 @@ export default {
       'Se ha creado una nueva transacción. Por favor, comprueba tu cartera.',
   },
   LABELS: {
+    PlEASE_WAIT: 'Espere por favor',
     SEARCH_FOR: 'Buscar',
     MANAGE: 'Administrar',
     COLLECT: 'Recoger',
@@ -140,7 +142,7 @@ export default {
     COMMIT_SENT: 'Procesando solicitud...',
     COMMIT_COMPLETE: 'Paso 1: solicitar registro...',
     AWAIT: 'Procesando solicitud...',
-    BEFORE_REGISTRATION: 'Paso 3: solicitar registro.',
+    BEFORE_REGISTRATION: 'Solicitar registro.',
     REGISTRATION_SENT: 'Completando registro...',
     REGISTRATION_COMPLETE: 'Fecha de registro!',
     REGISTRATION_COMPLETE_TITLE: 'Registro completado',

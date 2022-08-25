@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BigNumber, ethers } from 'ethers';
 import { of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { ENSContracts, generalConfigurations } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import {
@@ -51,72 +51,34 @@ export class CheckoutServicesService {
     paymentStateNow: PaymentStateModel
   ) {
     const payments = paymentStateNow.entities;
-    const pending = Object.keys(payments).filter(
-      (p) =>
-        payments[p].paymentStatus === false &&
-        payments[p].paymentHash !== '' &&
-        payments[p].paymentHash !== undefined &&
-        payments[p].paymentHash !== null &&
-        (payments[p].archived === undefined || payments[p].archived === false)
-    );
-    const fulFilled = Object.keys(payments).filter(
-      (p) =>
-        payments[p].paymentStatus === true &&
-        payments[p].paymentHash !== '' &&
-        payments[p].paymentHash !== undefined &&
-        payments[p].paymentHash !== null &&
-        (payments[p].archived === undefined || payments[p].archived === false)
-    );
-    let currentStatus;
+    let pending, fulFilled, currentStatus;
+    pending = [];
+    fulFilled = [];
+    if (Object.keys(payments).length > 0) {
+      pending = Object.keys(payments).filter(
+        (p) =>
+          payments[p].paymentStatus === false &&
+          payments[p].paymentHash !== '' &&
+          payments[p].paymentHash !== undefined &&
+          payments[p].paymentHash !== null &&
+          (payments[p].archived === undefined || payments[p].archived === false)
+      );
+      fulFilled = Object.keys(payments).filter(
+        (p) =>
+          payments[p].paymentStatus === true &&
+          payments[p].paymentHash !== '' &&
+          payments[p].paymentHash !== undefined &&
+          payments[p].paymentHash !== null &&
+          (payments[p].archived === undefined || payments[p].archived === false)
+      );
+    }
     if (pending.length <= 0 && fulFilled.length <= 0) {
       currentStatus = {
         status: ENSRegistrationStepsEnum.BEFORE_COMMIT,
       } as AssetRegistrationStatusModel;
-    } else if (
-      pending.length > 0 &&
-      payments[pending[pending.length - 1]].paymentType ===
-        PaymentTypesEnum.COMMIT &&
-      payments[pending[pending.length - 1]].paymentStatus === false &&
-      registrationStatus === ENSRegistrationStepsEnum.BEFORE_COMMIT
-    ) {
-      currentStatus = {
-        trackedPayment: payments[pending[pending.length - 1]],
-        status: ENSRegistrationStepsEnum.COMMIT_SENT,
-      } as AssetRegistrationStatusModel;
-    } else if (
-      fulFilled.length > 0 &&
-      payments[fulFilled[fulFilled.length - 1]].paymentType ===
-        PaymentTypesEnum.COMMIT &&
-      payments[fulFilled[fulFilled.length - 1]].paymentStatus === true &&
-      (registrationStatus === ENSRegistrationStepsEnum.COMMIT_SENT ||
-        registrationStatus === ENSRegistrationStepsEnum.BEFORE_COMMIT)
-    ) {
-      currentStatus = {
-        trackedPayment: payments[fulFilled[fulFilled.length - 1]],
-        status: ENSRegistrationStepsEnum.AWAIT,
-      } as AssetRegistrationStatusModel;
-    } else if (
-      registrationStatus == ENSRegistrationStepsEnum.AWAIT &&
-      payments[fulFilled[fulFilled.length - 1]].paymentType ===
-        PaymentTypesEnum.COMMIT &&
-      this.timeToWait(payments[fulFilled[fulFilled.length - 1]].paymentDate) >
-        100
-    ) {
-      currentStatus = {
-        status: ENSRegistrationStepsEnum.BEFORE_REGISTRATION,
-      } as AssetRegistrationStatusModel;
-    } else if (
-      pending.length > 0 &&
-      payments[pending[pending.length - 1]].paymentStatus === false &&
-      payments[pending[pending.length - 1]].paymentType ===
-        PaymentTypesEnum.REGISTER &&
-      registrationStatus === ENSRegistrationStepsEnum.BEFORE_REGISTRATION
-    ) {
-      currentStatus = {
-        trackedPayment: payments[fulFilled[fulFilled.length - 1]],
-        status: ENSRegistrationStepsEnum.REGISTRATION_SENT,
-      } as AssetRegistrationStatusModel;
-    } else if (
+      return currentStatus;
+    }
+    if (
       fulFilled.length > 1 &&
       payments[fulFilled[fulFilled.length - 1]].paymentStatus === true &&
       payments[fulFilled[fulFilled.length - 1]].paymentType ===
@@ -137,6 +99,59 @@ export class CheckoutServicesService {
       currentStatus = {
         status: ENSRegistrationStepsEnum.REGISTRATION_COMPLETE,
       } as AssetRegistrationStatusModel;
+      return currentStatus;
+    }
+    if (
+      pending.length > 0 &&
+      payments[pending[pending.length - 1]].paymentStatus === false &&
+      payments[pending[pending.length - 1]].paymentType ===
+        PaymentTypesEnum.REGISTER &&
+      registrationStatus === ENSRegistrationStepsEnum.BEFORE_REGISTRATION
+    ) {
+      currentStatus = {
+        trackedPayment: payments[fulFilled[fulFilled.length - 1]],
+        status: ENSRegistrationStepsEnum.REGISTRATION_SENT,
+      } as AssetRegistrationStatusModel;
+      return currentStatus;
+    }
+    if (
+      registrationStatus == ENSRegistrationStepsEnum.AWAIT &&
+      payments[fulFilled[fulFilled.length - 1]].paymentType ===
+        PaymentTypesEnum.COMMIT &&
+      this.timeToWait(payments[fulFilled[fulFilled.length - 1]].paymentDate) >
+        100
+    ) {
+      currentStatus = {
+        status: ENSRegistrationStepsEnum.BEFORE_REGISTRATION,
+      } as AssetRegistrationStatusModel;
+      return currentStatus;
+    }
+    if (
+      fulFilled.length > 0 &&
+      payments[fulFilled[fulFilled.length - 1]].paymentType ===
+        PaymentTypesEnum.COMMIT &&
+      payments[fulFilled[fulFilled.length - 1]].paymentStatus === true &&
+      (registrationStatus === ENSRegistrationStepsEnum.COMMIT_SENT ||
+        registrationStatus === ENSRegistrationStepsEnum.BEFORE_COMMIT)
+    ) {
+      currentStatus = {
+        trackedPayment: payments[fulFilled[fulFilled.length - 1]],
+        status: ENSRegistrationStepsEnum.AWAIT,
+      } as AssetRegistrationStatusModel;
+      return currentStatus;
+    }
+    if (
+      pending.length > 0 &&
+      payments[pending[pending.length - 1]].paymentType ===
+        PaymentTypesEnum.COMMIT &&
+      payments[pending[pending.length - 1]].paymentStatus === false &&
+      registrationStatus === ENSRegistrationStepsEnum.BEFORE_COMMIT
+    ) {
+      currentStatus = {
+        trackedPayment: payments[pending[pending.length - 1]],
+        status: ENSRegistrationStepsEnum.COMMIT_SENT,
+      } as AssetRegistrationStatusModel;
+      return currentStatus;
     }
     return currentStatus;
   }
@@ -260,7 +275,7 @@ export class CheckoutServicesService {
         globalAny.canvasProvider
       )
       .pipe(
-        map((commitmentPacketAndGas: any) => {
+        switchMap((commitmentPacketAndGas: any) => {
           if (commitmentPacketAndGas === false) {
             throw 1;
           }
@@ -297,6 +312,7 @@ export class CheckoutServicesService {
             paymentPayerEthName: ownerEthName,
           } as PaymentModel;
           this.paymentFacade.createPayment(p);
+          return of(true);
         }),
         catchError((e) => {
           this.showErrorOnContractThrown();
@@ -364,7 +380,7 @@ export class CheckoutServicesService {
         globalAny.canvasProvider
       )
       .pipe(
-        map((registrationPacketAndGasLimit: any) => {
+        switchMap((registrationPacketAndGasLimit: any) => {
           const minimumAcceptableGasCostPerRegistration =
             compiledPacket.length === 1
               ? ethers.BigNumber.from(200000)
@@ -400,6 +416,7 @@ export class CheckoutServicesService {
             paymentPayerEthName: ownerEthName,
           } as PaymentModel;
           this.paymentFacade.createPayment(p);
+          return of(true);
         }),
         catchError((e) => {
           this.showErrorOnContractThrown();

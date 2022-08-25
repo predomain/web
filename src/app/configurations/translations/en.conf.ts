@@ -88,7 +88,8 @@ export default {
       'A new transaction has been created. Please check your wallet.',
   },
   LABELS: {
-    SELECT_A_DOMAIN: 'Select a domain',
+    PlEASE_WAIT: 'Please wait',
+    SELECT_A_DOMAIN: 'Select a Domain',
     RENEW: 'Renew',
     MANAGE_DOMAINS: 'Manage Domains',
     SEARCH_FOR: 'Search For',
@@ -149,7 +150,7 @@ export default {
     COMMIT_SENT: 'Processing request...',
     COMMIT_COMPLETE: 'Step 1: request registration received...',
     AWAIT: 'Finalising request...',
-    BEFORE_REGISTRATION: 'Step 3: complete registration.',
+    BEFORE_REGISTRATION: 'Complete registration.',
     REGISTRATION_SENT: 'Completing registration...',
     REGISTRATION_COMPLETE: 'Registration complete!',
     REGISTRATION_COMPLETE_TITLE: 'Registration Complete',

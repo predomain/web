@@ -6,4 +6,5 @@ export interface PaymentStateModel extends EntityState<PaymentModel> {
   error: PaymentStoreErrorsEnum;
   loading: boolean;
   ethUsdPrice: string;
+  paymentCancelled: boolean;
 }

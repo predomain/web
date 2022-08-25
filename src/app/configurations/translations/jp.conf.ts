@@ -60,6 +60,7 @@ export default {
     DOCUMENTATIONS: '文書',
     CART: 'カート',
     BOOKMARKS: 'ブックマーク',
+    CUSTOM_RPC: 'カスタム RPC',
   },
   IPFS: {
     INITIALISING: 'p2pを開始',
@@ -84,6 +85,7 @@ export default {
       '新しい取引が作成されました。ウォレットを確認してください。',
   },
   LABELS: {
+    PlEASE_WAIT: 'お待ちください',
     SEARCH_FOR: '検索する',
     MANAGE: '管理',
     COLLECT: '収集',
@@ -140,7 +142,7 @@ export default {
     COMMIT_SENT: 'リクエストを処理しています...',
     COMMIT_COMPLETE: 'ステップ 1: リクエスト登録',
     AWAIT: 'リクエストを処理しています...',
-    BEFORE_REGISTRATION: 'ステップ 3: リクエスト登録',
+    BEFORE_REGISTRATION: 'リクエスト登録',
     REGISTRATION_SENT: '登録を完了中...',
     REGISTRATION_COMPLETE: '登録!',
     REGISTRATION_COMPLETE_TITLE: '登録',

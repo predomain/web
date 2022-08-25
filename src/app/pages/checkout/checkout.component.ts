@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, timer } from 'rxjs';
 import * as ethers from 'ethers';
 import {
   ChangeDetectorRef,
@@ -8,7 +8,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { HeaderBackgroundColorsEnum } from '../../models/states/header-interfaces';
 import {
   PagesEnum,
@@ -85,6 +85,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   registrationListLoaded = false;
   registrationGasPrice = 0;
   timeCommitFulfilled = 0;
+  proceedPressed = false;
+  proceedLocked = false;
   registrationPreviousStatus;
   registrationUpdateGasPrice;
   registrationCurrentTrackedPayment: PaymentModel;
@@ -108,6 +110,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   getContentHashSubscription;
   staticPaymentTranslatedTexts;
   registrationProcessSubscription;
+  assessCheckoutStatusSubscription;
 
   constructor(
     protected activatedRoute: ActivatedRoute,
@@ -165,14 +168,156 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       .subscribe();
     this.paymentStateSubscription = this.paymentFacadeService.paymentState$
       .pipe(
-        map((s) => {
+        switchMap((s) => {
           this.paymentState = s;
+          return this.asseCheckoutStatus();
+          // const registrationStatusAssessment =
+          //   this.checkoutService.assessRegistrationStatus(
+          //     this.registrationStatus,
+          //     this.paymentState
+          //   );
+          // console.log(registrationStatusAssessment);
+          // if (
+          //   (registrationStatusAssessment !== undefined &&
+          //     this.paymentState.paymentCancelled === true &&
+          //     (registrationStatusAssessment.status ===
+          //       ENSRegistrationStepsEnum.BEFORE_COMMIT ||
+          //       registrationStatusAssessment.status ===
+          //         ENSRegistrationStepsEnum.BEFORE_REGISTRATION)) ||
+          //   (registrationStatusAssessment !== undefined &&
+          //     registrationStatusAssessment.status !==
+          //       ENSRegistrationStepsEnum.BEFORE_COMMIT &&
+          //     registrationStatusAssessment.status !==
+          //       ENSRegistrationStepsEnum.BEFORE_REGISTRATION)
+          // ) {
+          //   this.proceedLocked = false;
+          //   this.proceedPressed = false;
+          // }
+          // if (registrationStatusAssessment === undefined) {
+          //   return false;
+          // }
+          // this.registrationPreviousStatus =
+          //   registrationStatusAssessment === undefined
+          //     ? ENSRegistrationStepsEnum.BEFORE_COMMIT
+          //     : this.registrationStatus;
+          // this.registrationStatus = registrationStatusAssessment.status;
+          // if ('trackedPayment' in registrationStatusAssessment === true) {
+          //   this.timeCommitFulfilled =
+          //     registrationStatusAssessment.trackedPayment.paymentDate;
+          //   this.registrationCurrentTrackedPayment =
+          //     registrationStatusAssessment.trackedPayment;
+          //   this.domainConfigurationForm.controls.duration.setValue(
+          //     parseFloat(
+          //       (
+          //         ethers.BigNumber.from(
+          //           this.registrationCurrentTrackedPayment.paymentRawRecord[0]
+          //             .duration
+          //         ).toNumber() / YEARS_IN_SECONDS
+          //       ).toFixed(2)
+          //     )
+          //   );
+          // }
+        })
+      )
+      .subscribe();
+    this.userStateSubscription = this.userFacadeService.userState$
+      .pipe(
+        withLatestFrom(this.paymentFacadeService.paymentState$),
+        map((states) => {
+          const [s, p] = states;
+          if ('walletAddress' in s.user && s.user.walletAddress !== undefined) {
+            this.currentUserData = { ...s.user };
+            let nameToResolveAsRegistrant = this.getCurrentRegistrantAddress(
+              s.user.walletAddress,
+              Object.keys(p.entities).map((i) => p.entities[i])
+            );
+            this.domainConfigurationForm.controls.registrant.setValue(
+              nameToResolveAsRegistrant.eth === null
+                ? nameToResolveAsRegistrant.address
+                : nameToResolveAsRegistrant.eth
+            );
+            this.domainConfigurationForm.controls.registrantAddress.setValue(
+              nameToResolveAsRegistrant.address
+            );
+            return;
+          }
+          this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+          return;
+        })
+      )
+      .subscribe();
+    this.loadRegistrations();
+    this.performBulkSearch(
+      true,
+      Object.keys(this.registrationDomains).map(
+        (d) => this.registrationDomains[d].labelName
+      )
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.assessCheckoutStatusSubscription) {
+      this.assessCheckoutStatusSubscription.unsubscribe();
+    }
+    if (this.registrationStateSubscription) {
+      this.registrationStateSubscription.unsubscribe();
+    }
+    if (this.resolveRegistrantAddressSubscription) {
+      this.resolveRegistrantAddressSubscription.unsubscribe();
+    }
+    if (this.userStateSubscription) {
+      this.userStateSubscription.unsubscribe();
+    }
+    if (this.getContentHashSubscription) {
+      this.getContentHashSubscription.unsubscribe();
+    }
+    if (this.pagesStateSubscription) {
+      this.pagesStateSubscription.unsubscribe();
+    }
+    if (this.paymentStateSubscription) {
+      this.paymentStateSubscription.unsubscribe();
+    }
+    if (this.registrationProcessSubscription) {
+      this.registrationProcessSubscription.unsubscribe();
+    }
+  }
+
+  asseCheckoutStatus() {
+    if (this.assessCheckoutStatusSubscription !== undefined) {
+      return of(null);
+    }
+    let locked = false;
+    this.assessCheckoutStatusSubscription = timer(0, 250)
+      .pipe(
+        filter((i) => {
+          if (locked === true) {
+            return false;
+          }
+          locked = true;
+          return true;
+        }),
+        switchMap((i) => {
+          return this.paymentFacade.paymentState$;
+        }),
+        map((ps) => {
           const registrationStatusAssessment =
             this.checkoutService.assessRegistrationStatus(
               this.registrationStatus,
-              this.paymentState
+              ps
             );
+          if (
+            ps.paymentCancelled === true ||
+            (registrationStatusAssessment !== undefined &&
+              registrationStatusAssessment.status !==
+                ENSRegistrationStepsEnum.BEFORE_COMMIT &&
+              registrationStatusAssessment.status !==
+                ENSRegistrationStepsEnum.BEFORE_REGISTRATION)
+          ) {
+            this.proceedLocked = false;
+            this.proceedPressed = false;
+          }
           if (registrationStatusAssessment === undefined) {
+            locked = false;
             return false;
           }
           this.registrationPreviousStatus =
@@ -196,79 +341,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               )
             );
           }
+          locked = false;
         })
       )
       .subscribe();
-    this.userStateSubscription = this.userFacadeService.userState$
-      .pipe(
-        withLatestFrom(this.paymentFacadeService.paymentState$),
-        switchMap((states) => {
-          const [s, p] = states;
-          if ('walletAddress' in s.user && s.user.walletAddress !== undefined) {
-            this.currentUserData = { ...s.user };
-            let nameToResolveAsRegistrant = this.getCurrentRegistrantAddress(
-              s.user.walletAddress,
-              Object.keys(p.entities).map((i) => p.entities[i])
-            );
-            this.domainConfigurationForm.controls.registrantAddress.setValue(
-              nameToResolveAsRegistrant.address
-            );
-            if (nameToResolveAsRegistrant.isEthName === false) {
-              return this.userService.getEthName(
-                globalAny.canvasProvider,
-                nameToResolveAsRegistrant.address
-              );
-            }
-            return of(nameToResolveAsRegistrant.eth);
-          }
-          this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
-          return of(null);
-        }),
-        map((r) => {
-          if (r === null || r === false) {
-            this.domainConfigurationForm.controls.registrant.setValue(
-              this.currentUserData.walletAddress
-            );
-            return;
-          }
-          this.currentUserData.ethName = r as string;
-          this.domainConfigurationForm.controls.registrant.setValue(
-            this.currentUserData.ethName
-          );
-        })
-      )
-      .subscribe();
-    this.loadRegistrations();
-    this.performBulkSearch(
-      true,
-      Object.keys(this.registrationDomains).map(
-        (d) => this.registrationDomains[d].labelName
-      )
-    );
-  }
-
-  ngOnDestroy() {
-    if (this.registrationStateSubscription) {
-      this.registrationStateSubscription.unsubscribe();
-    }
-    if (this.resolveRegistrantAddressSubscription) {
-      this.resolveRegistrantAddressSubscription.unsubscribe();
-    }
-    if (this.userStateSubscription) {
-      this.userStateSubscription.unsubscribe();
-    }
-    if (this.getContentHashSubscription) {
-      this.getContentHashSubscription.unsubscribe();
-    }
-    if (this.pagesStateSubscription) {
-      this.pagesStateSubscription.unsubscribe();
-    }
-    if (this.paymentStateSubscription) {
-      this.paymentStateSubscription.unsubscribe();
-    }
-    if (this.registrationProcessSubscription) {
-      this.registrationProcessSubscription.unsubscribe();
-    }
   }
 
   loadRegistrations() {
@@ -344,6 +420,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     const registrant = this.domainConfigurationForm.controls.registrant.value;
     const registrantAddress =
       this.domainConfigurationForm.controls.registrantAddress.value;
+    this.proceedPressed = true;
     this.registrationProcessSubscription = this.checkoutService
       .commitRegistration(
         this.registrationDomains,
@@ -354,7 +431,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.paymentState.ethUsdPrice,
         registrant
       )
-      .subscribe();
+      .subscribe((r) => {
+        if (r === true) {
+          this.proceedLocked = true;
+          return;
+        }
+        this.proceedLocked = false;
+        this.proceedPressed = false;
+      });
   }
 
   completeRegistration() {
@@ -379,6 +463,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.registrationProcessSubscription.unsubscribe();
       this.registrationProcessSubscription = undefined;
     }
+    this.proceedPressed = true;
     this.registrationProcessSubscription = this.checkoutService
       .completeRegistration(
         this.registrationCurrentTrackedPayment,
@@ -386,7 +471,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.paymentState.ethUsdPrice,
         this.domainConfigurationForm.controls.registrant.value
       )
-      .subscribe();
+      .subscribe((r) => {
+        if (r === true) {
+          this.proceedLocked = true;
+          return;
+        }
+        this.proceedLocked = false;
+        this.proceedPressed = false;
+      });
   }
 
   openDurationSettingDialog() {

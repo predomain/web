@@ -34,6 +34,7 @@ import {
   CheckPaymentFulfilled,
   PaymentAddOne,
   PaymentArchiveAll,
+  PaymentCancelled,
   PaymentCheckFulfilled,
   PaymentRemoveAll,
   PaymentRemoveOne,
@@ -237,6 +238,8 @@ export class PaymentEffects {
                 duration: 15000,
               }
             );
+            this.store.dispatch(new PaymentCancelled());
+            this.store.dispatch(new PaymentRemoveOne(action.payload.id));
             return of(false);
           }
           this.store.dispatch(
@@ -283,11 +286,18 @@ export class PaymentEffects {
       this.actions$.pipe(
         ofType<PaymentUpsertOne>(UpsertOnePayment),
         withLatestFrom(this.store.pipe(select(getPayments))),
-        map(([action, payments]) => {
-          this.paymentStorageService.savePayments([
-            ...payments,
-            action.payload,
-          ]);
+        switchMap(([a, paymentState]) => {
+          const payments = paymentState as PaymentModel[];
+          let payment;
+          for (const p of payments) {
+            if (p.id === a.payload.id) {
+              payment = a.payload;
+            }
+          }
+          return of(payments);
+        }),
+        map((p) => {
+          return this.paymentStorageService.savePayments(p);
         })
       ),
     { dispatch: false }
@@ -310,7 +320,7 @@ export class PaymentEffects {
       this.actions$.pipe(
         ofType<PaymentRemoveAll>(RemoveAllPayment),
         map((action) => {
-          this.paymentStorageService.savePayments([]);
+          this.paymentStorageService.removePayments();
         })
       ),
     { dispatch: false }
