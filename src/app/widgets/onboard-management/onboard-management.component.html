@@ -1,0 +1,180 @@
+<div mat-dialog-content>
+  <div
+    class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
+    fxLayoutAlign="start start"
+    fxLayout="column"
+    fxLayoutGap="10px"
+  >
+    <div
+      fxFlex
+      fxLayoutAlign="center center"
+      class="cos-fluid-width cos-padding-1 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
+    >
+      <div fxFlex class="cos-body-0">
+        <b>
+          {{ "HEADER.MANAGE_DOMAINS" | translate }}
+        </b>
+      </div>
+      <div fxFlex class="cos-right-text">
+        <a (click)="closeDialog()" class="cos-body-4">
+          {{ "BUTTON.CLOSE" | translate }}
+        </a>
+      </div>
+    </div>
+    <div class="cos-fluid-width">
+      <mat-accordion class="cos-fluid-width" #stepper>
+        <mat-expansion-panel
+          [expanded]="step === 0"
+          [disabled]="step !== 0"
+          (opened)="setStep(0)"
+          hideToggle="true"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row">
+                <div fxFlex>
+                  <b> Setup </b>
+                </div>
+                <div fxFlex class="cos-right-text cos-body-4">
+                  <a> Step 1 </a>
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>
+            To enabled ENS domains management, your account must be configured
+            to approve domain transfers.
+          </p>
+          <p>Click <b>Next</b> to proceed.</p>
+          <p class="cos-body-1"><a (click)="nextStep()">Next</a></p>
+        </mat-expansion-panel>
+        <mat-expansion-panel
+          [expanded]="step === 1"
+          [disabled]="step !== 1"
+          (opened)="setStep(1)"
+          hideToggle="true"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row">
+                <div fxFlex>
+                  <b> Approve </b>
+                </div>
+                <div fxFlex class="cos-right-text cos-body-4">
+                  <a> Step 2 </a>
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>
+            Conract approval will create a transaction to the ENS contract for.
+          </p>
+          <p class="header-item cos-body-3 cos-gray-text">
+            <b> Predomain Marketplace:</b>
+          </p>
+          <div
+            class="cos-fluid-width cos-light-note cos-light-note-dark cos-body-2 cos-center-text cos-bg-darker-gray"
+          >
+            <a> marketplace.predomain.eth </a>
+          </div>
+          <p class="cos-fluid-width">
+            <button
+              fxFlex
+              mat-button
+              (click)="approve()"
+              [disabled]="approving === true"
+            >
+              <div fxLayoutAlign="center center">
+                <div fxFlex="0 0 auto" *ngIf="approving === true">
+                  <app-spinner
+                    [padded]="false"
+                    [lightColour]="true"
+                    [spinnerSize]="10"
+                    [showText]="false"
+                  ></app-spinner>
+                </div>
+                <span *ngIf="approving === false" fxFlex>
+                  {{ "BUTTON.APPROVE" | translate }}
+                </span>
+              </div>
+            </button>
+          </p>
+        </mat-expansion-panel>
+        <mat-expansion-panel
+          [expanded]="step === 2"
+          [disabled]="step !== 2"
+          (opened)="setStep(2)"
+          hideToggle="true"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row">
+                <div fxFlex>
+                  <b> Complete </b>
+                </div>
+                <div fxFlex class="cos-right-text cos-body-4">
+                  <a> Step 3 </a>
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ng-container *ngIf="transferComplete === true">
+            <p class="cos-padding-3 cos-no-padding-bottom">
+              <app-icon [iconSize]="150">
+                <ng-container> check </ng-container>
+              </app-icon>
+            </p>
+            <p class="cos-body-0 cos-center-text">Transfer Complete!</p>
+          </ng-container>
+          <ng-container *ngIf="transferComplete === false">
+            <p>
+              Your domains are now ready for the transfer. To complete your
+              transfer press proceed.
+            </p>
+            <p class="header-item cos-body-3 cos-gray-text">
+              <b> Transfer to:</b>
+            </p>
+            <div
+              class="cos-fluid-width cos-light-note cos-light-note-dark cos-body-3 cos-center-text cos-bg-darker-gray"
+            >
+              <a (click)="goToEtherscan(domainsTransferTo)">
+                {{ domainsTransferTo }}
+              </a>
+            </div>
+            <p class="cos-fluid-width">
+              <button
+                fxFlex
+                mat-button
+                (click)="performTransfer()"
+                [disabled]="transfering === true"
+              >
+                <div fxLayoutAlign="center center">
+                  <div fxFlex="0 0 auto" *ngIf="transfering === true">
+                    <app-spinner
+                      [padded]="false"
+                      [lightColour]="true"
+                      [spinnerSize]="10"
+                      [showText]="false"
+                    ></app-spinner>
+                  </div>
+                  <span *ngIf="transfering === false" fxFlex>
+                    {{ "BUTTON.PROCEED" | translate }}
+                  </span>
+                </div>
+              </button>
+            </p>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>

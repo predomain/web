@@ -143,7 +143,11 @@
         <mat-list-item>
           <div fxLayout="column" fxLayoutGap="20px" class="cos-fluid-width">
             <div>{{ "HEADER.PAYMENTS_HISTORY" | translate }}</div>
-            <button mat-button (click)="clearPaymentHistory()">
+            <button
+              mat-button
+              (click)="clearPaymentHistory()"
+              [disabled]="removingPayentHistory === true"
+            >
               <div fxLayoutAlign="center center">
                 <div fxFlex="0 0 auto" *ngIf="removingPayentHistory === true">
                   <app-spinner

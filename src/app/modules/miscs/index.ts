@@ -8,3 +8,5 @@ export * from './spinner-custom.module';
 export * from './main-header.module';
 export * from './blocky.module';
 export * from './settings-dialog.module';
+export * from './onboard-management-dialog.module';
+export * from './renew-management-dialog.module';

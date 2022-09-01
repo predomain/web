@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import request, { gql } from 'graphql-request';
 import { Observable } from 'rxjs';
-import { ens_normalize } from '@adraffy/ens-normalize';
+import { ens_normalize, ens_beautify } from '@adraffy/ens-normalize/src/lib';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
@@ -28,6 +28,7 @@ export class EnsService {
             expiryDate
             registrationDate
             domain {
+              id
               createdAt
             }
           }
@@ -54,6 +55,7 @@ export class EnsService {
               id
             }
             domain {
+              id
               createdAt
               labelhash
             }
@@ -116,11 +118,19 @@ export class EnsService {
       return false;
     }
     try {
-      ens_normalize(name + '.eth');
+      ens_normalize(name);
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  performNormalisation(name: string) {
+    return ens_normalize(name);
+  }
+
+  prettify(name: string) {
+    return ens_beautify(name);
   }
 
   calculateDomainsPrice(

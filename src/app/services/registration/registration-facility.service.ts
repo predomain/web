@@ -15,6 +15,7 @@ import {
   ENSRegistrationCommmitmentRequestResultModel,
 } from 'src/app/models/states/ens-registration-interfaces';
 import { environment } from 'src/environments/environment';
+import { ContractService } from '../contract';
 import { MiscUtilsService } from '../misc-utils';
 import { PaymentService } from '../payment';
 
@@ -26,7 +27,8 @@ const gloalAny: any = global;
 export class RegistrationFacilityService {
   constructor(
     protected miscUtilsService: MiscUtilsService,
-    protected paymentService: PaymentService
+    protected paymentService: PaymentService,
+    protected contractService: ContractService
   ) {}
 
   registrationDomainsToCommitmentPacket(
@@ -108,12 +110,15 @@ export class RegistrationFacilityService {
         )
         .then((r) => {
           commitmentResult = r;
-          return this.getGasLimitEstimation(
-            provider,
-            'requestRegistration',
-            [commitmentResult[0]],
-            payer
-          )
+          return this.contractService
+            .getGasLimitEstimation(
+              provider,
+              'requestRegistration',
+              [commitmentResult[0]],
+              payer,
+              this.bulkRegistrationContractAddress,
+              this.BulkRegistrationContractABI
+            )
             .toPromise()
             .catch((e) => {
               return null;
@@ -198,14 +203,17 @@ export class RegistrationFacilityService {
     );
     let gasLimit;
     return new Observable((observer) => {
-      this.getGasLimitEstimation(
-        provider,
-        dataMethod,
-        dataParams,
-        payer,
-        false,
-        totalCost
-      )
+      this.contractService
+        .getGasLimitEstimation(
+          provider,
+          dataMethod,
+          dataParams,
+          payer,
+          this.bulkRegistrationContractAddress,
+          this.BulkRegistrationContractABI,
+          false,
+          totalCost
+        )
         .toPromise()
         .then((r) => {
           if (r === false || r === null) {
@@ -232,56 +240,6 @@ export class RegistrationFacilityService {
       provider
     );
     return c;
-  }
-
-  getGasLimitEstimation(
-    provider = null,
-    method: string,
-    params: any,
-    payer: string,
-    providerFunction = false,
-    value: string = '0x0'
-  ) {
-    const c = new Contract(
-      this.bulkRegistrationContractAddress,
-      this.BulkRegistrationContractABI,
-      provider
-    );
-    return new Observable((observer) => {
-      if (providerFunction === false) {
-        c.estimateGas[method](...params, {
-          value,
-          from: payer,
-        })
-          .then((r) => {
-            if (r === null) {
-              observer.next(false);
-              observer.complete();
-            }
-            observer.next(r);
-            observer.complete();
-          })
-          .catch((e) => {
-            observer.next(false);
-            observer.complete();
-          });
-      } else {
-        provider
-          .estimateGas(params)
-          .then((r) => {
-            if (r === null) {
-              observer.next(false);
-              observer.complete();
-            }
-            observer.next(r);
-            observer.complete();
-          })
-          .catch((e) => {
-            observer.next(false);
-            observer.complete();
-          });
-      }
-    });
   }
 
   get BulkRegistrationContractABI() {

@@ -1,12 +1,29 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
-import { ethers } from 'ethers';
-import { timer } from 'rxjs';
+import { BigNumber, ethers } from 'ethers';
+import { of, timer } from 'rxjs';
 import { delayWhen, map, retryWhen, take } from 'rxjs/operators';
 import { generalConfigurations } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { InputTypesEnum } from 'src/app/models/custom-adderss-dialog';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { PaymentStateModel } from 'src/app/models/states/payment-interfaces';
@@ -14,34 +31,83 @@ import { UserStateModel } from 'src/app/models/states/user-interfaces';
 import { FormatTimePipe, TimeAgoPipe } from 'src/app/modules/pipes';
 import { UserService } from 'src/app/services';
 import { EnsService } from 'src/app/services/ens';
+import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
 import {
   PagesFacadeService,
   PaymentFacadeService,
   UserFacadeService,
 } from 'src/app/store/facades';
+import { OnboardManagementComponent } from 'src/app/widgets/onboard-management';
+import { RenewManagementComponent } from 'src/app/widgets/renew-management';
 import { environment } from 'src/environments/environment';
 import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
 
+const globalAny: any = global;
 const EMPTY_DATA: ENSDomainMetadataModel[] = [
   {
     id: null,
   },
 ];
+export enum ManagementOperationEnum {
+  TRANSFER,
+  RENEW,
+}
+export enum RenewalDurationsEnum {
+  '6MONTHS' = 'RENEWAL_DURATIONS.SIX_MONTHS',
+  '1YEAR' = 'RENEWAL_DURATIONS.ONE_YEAR',
+  '2YEARS' = 'RENEWAL_DURATIONS.TWO_YEARS',
+  '3YEARS' = 'RENEWAL_DURATIONS.THREE_YEARS',
+  '4YEARS' = 'RENEWAL_DURATIONS.FOUR_YEARS',
+  '5YEARS' = 'RENEWAL_DURATIONS.FIVE_YEARS',
+}
+
+export enum RenewalDurationsTimeMultiplierEnum {
+  'RENEWAL_DURATIONS.SIX_MONTHS' = 0.5,
+  'RENEWAL_DURATIONS.ONE_YEAR' = 1,
+  'RENEWAL_DURATIONS.TWO_YEARS' = 2,
+  'RENEWAL_DURATIONS.THREE_YEARS' = 3,
+  'RENEWAL_DURATIONS.FOUR_YEARS' = 4,
+  'RENEWAL_DURATIONS.FIVE_YEARS' = 5,
+}
+
+const YEARS_IN_SECONDS = 31556952;
 
 @Component({
   selector: 'app-manage',
   templateUrl: './manage.component.html',
   styleUrls: ['./manage.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
+    ]),
+  ],
 })
-export class ManageComponent implements OnInit, AfterViewInit {
+export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('transferAllCheckbox') transferAllCheckbox: MatCheckbox;
+  @ViewChild('renewAllCheckbox') renewAllCheckbox: MatCheckbox;
   starCount = new Array(3).fill(0);
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
-  displayedColumns: string[] = ['labelName', 'expiry', 'action', 'moreInfo'];
+  displayedColumns: string[] = ['labelName', 'expiry', 'renew', 'transfer'];
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   dataSource = new MatTableDataSource<ENSDomainMetadataModel>(EMPTY_DATA);
+  managementOperationTypes: typeof ManagementOperationEnum =
+    ManagementOperationEnum;
+  domainsTransferred: string[] = [];
+  renewalDuration = RenewalDurationsEnum['6MONTHS'];
+  renewalDurationTypes: typeof RenewalDurationsEnum = RenewalDurationsEnum;
   hasDomainsListLoaded = false;
+  moreInfoEnabled = false;
+  managementOperation: ManagementOperationEnum;
+  collapseAllItems = false;
+  savingChangesInitiated = false;
+  transferDomainsTo: string;
   selectedDomain: ENSDomainMetadataModel;
   metadataForm: FormGroup;
   paymentState: PaymentStateModel;
@@ -50,6 +116,8 @@ export class ManageComponent implements OnInit, AfterViewInit {
   paymentStateSubscription;
   userStateSubscription;
   getUserDomainsSubscripton;
+  saveChangesSubscripton;
+  managementDialogSubscription;
 
   constructor(
     protected pagesFacade: PagesFacadeService,
@@ -59,8 +127,15 @@ export class ManageComponent implements OnInit, AfterViewInit {
     protected timeAgoService: TimeAgoPipe,
     protected formatTimeService: FormatTimePipe,
     protected paymentFacadeService: PaymentFacadeService,
+    protected canvasServices: CanvasServicesService,
+    protected dialog: MatDialog,
+    protected snackBar: MatSnackBar,
+    protected ensMarketplaceService: EnsMarketplaceService,
     public canvasService: CanvasServicesService
   ) {
+    if (this.moreInfoEnabled === true) {
+      this.displayedColumns.push('moreInfo');
+    }
     this.metadataForm = new FormGroup({
       creation: new FormControl({ disabled: true, value: '' }),
       registration: new FormControl({ disabled: true, value: '' }),
@@ -94,14 +169,41 @@ export class ManageComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
+  ngOnDestroy(): void {
+    if (this.managementDialogSubscription) {
+      this.managementDialogSubscription.unsubscribe();
+    }
+    if (this.saveChangesSubscripton) {
+      this.saveChangesSubscripton.unsubscribe();
+    }
+    if (this.paymentStateSubscription) {
+      this.paymentStateSubscription.unsubscribe();
+    }
+    if (this.userStateSubscription) {
+      this.userStateSubscription.unsubscribe();
+    }
+    if (this.getUserDomainsSubscripton) {
+      this.getUserDomainsSubscripton.unsubscribe();
+    }
+  }
+
   getUserDomains() {
     let retries = 0;
     const userWalletAddres = this.userState.user.walletAddress;
-    this.userService
+    this.hasDomainsListLoaded = false;
+    if (this.getUserDomainsSubscripton) {
+      this.getUserDomainsSubscripton.unsubscribe();
+    }
+    this.getUserDomainsSubscripton = this.userService
       .getUserDomains((userWalletAddres as string).toLowerCase())
       .pipe(
         map((r) => {
           const domains = (r as any).registrations
+            .filter((d) => {
+              return (
+                this.domainsTransferred.includes(d.domain.labelName) === false
+              );
+            })
             .map((d) => {
               const gPeriod = this.ensService.calculateGracePeriodPercentage(
                 parseInt(d.expiryDate, 10)
@@ -118,11 +220,16 @@ export class ManageComponent implements OnInit, AfterViewInit {
                   parseInt(d.registrationDate) * 1000
                 ).toString(),
                 createdAt: (parseInt(d.domain.createdAt) * 1000).toString(),
+                renew: false,
+                transfer: false,
+                detailExpanded: false,
               } as ENSDomainMetadataModel;
               return fData;
             })
             .sort((a, b) => b.registrationDate - a.registrationDate);
           this.hasDomainsListLoaded = true;
+          this.userDomains = domains;
+          this.selectDomain(this.userDomains[0], false);
           this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
             domains
           );
@@ -145,7 +252,12 @@ export class ManageComponent implements OnInit, AfterViewInit {
       .subscribe();
   }
 
-  selectDomain(domain: ENSDomainMetadataModel) {
+  selectDomain(domain: ENSDomainMetadataModel, detailExpand = true) {
+    if (detailExpand === false) {
+      this.collapseAllItems = true;
+    } else {
+      this.collapseAllItems = false;
+    }
     this.selectedDomain = domain;
     this.metadataForm.controls.creation.setValue(
       this.formatTimeService.transform(
@@ -164,7 +276,255 @@ export class ManageComponent implements OnInit, AfterViewInit {
     );
   }
 
-  selectAllToRenew() {}
+  selectAllToTransfer(domains: ENSDomainMetadataModel[], toTransfer = false) {
+    this.managementOperation = ManagementOperationEnum.TRANSFER;
+    this.renewAllCheckbox.checked = false;
+    if (toTransfer === false) {
+      this.managementOperation = undefined;
+    }
+    const domainsToRenew = domains.map((d) => d.labelName);
+    if (toTransfer === false) {
+      this.userDomains = this.userDomains.map((d) => {
+        return { ...d, transfer: false };
+      });
+      this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+        this.userDomains
+      );
+      this.dataSource.paginator = this.paginator;
+      return;
+    }
+    this.userDomains = this.userDomains.map((d) => {
+      if (domainsToRenew.includes(d.labelName)) {
+        return { ...d, transfer: true, renew: false };
+      }
+      return d;
+    });
+    this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+      this.userDomains
+    );
+    this.dataSource.paginator = this.paginator;
+  }
+
+  selectAllToRenew(domains: ENSDomainMetadataModel[], toRenew = false) {
+    this.managementOperation = ManagementOperationEnum.RENEW;
+    this.transferAllCheckbox.checked = false;
+    if (toRenew === false) {
+      this.managementOperation = undefined;
+    }
+    const domainsToRenew = domains.map((d) => d.labelName);
+    if (toRenew === false) {
+      this.userDomains = this.userDomains.map((d) => {
+        return { ...d, renew: false };
+      });
+      this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+        this.userDomains
+      );
+      this.dataSource.paginator = this.paginator;
+      return;
+    }
+    this.userDomains = this.userDomains.map((d) => {
+      if (domainsToRenew.includes(d.labelName)) {
+        return { ...d, renew: true, transfer: false };
+      }
+      return d;
+    });
+    this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+      this.userDomains
+    );
+    this.dataSource.paginator = this.paginator;
+  }
+
+  saveChanges() {
+    const provider = globalAny.canvasProvider;
+    const tokenId = BigNumber.from(this.userDomains[0].labelHash).toString();
+    if (this.saveChangesSubscripton) {
+      this.saveChangesSubscripton.unsubscribe();
+    }
+    this.savingChangesInitiated = true;
+    const domainsToTransfer = this.getDomainsToTransfer();
+    if (
+      domainsToTransfer.length <= 0 &&
+      this.managementOperation === ManagementOperationEnum.TRANSFER
+    ) {
+      this.snackBar.open('Select a domain to transfer or renew.', 'close', {
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        duration: 5000,
+      });
+      this.savingChangesInitiated = false;
+      return;
+    }
+    if (
+      this.transferDomainsTo === undefined &&
+      domainsToTransfer.length > 0 &&
+      this.managementOperation === ManagementOperationEnum.TRANSFER
+    ) {
+      this.snackBar.open(
+        'Select an address to transfer your domains.',
+        'close',
+        {
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          duration: 5000,
+        }
+      );
+      this.savingChangesInitiated = false;
+      return;
+    }
+    this.saveChangesSubscripton = this.ensMarketplaceService
+      .checkApproval(tokenId, provider)
+      .pipe(
+        map((r) => {
+          this.savingChangesInitiated = false;
+          this.openOnboardingDialog(r);
+        })
+      )
+      .subscribe();
+  }
+
+  openOnboardingDialog(approvalStatus: boolean) {
+    if (this.managementDialogSubscription) {
+      this.managementDialogSubscription.unsubscribe();
+    }
+    if (this.managementOperation === ManagementOperationEnum.RENEW) {
+      const domainsToRenew = this.getDomainsToRenew();
+      const dialogRef = this.dialog.open(RenewManagementComponent, {
+        panelClass: 'cos-settings-dialog',
+      });
+      dialogRef.componentInstance.domainsToRenew = domainsToRenew;
+      const durationMultiplier = ethers.BigNumber.from(
+        RenewalDurationsTimeMultiplierEnum[this.renewalDuration] * 100
+      );
+      dialogRef.componentInstance.renewalDuration = ethers.BigNumber.from(
+        YEARS_IN_SECONDS
+      )
+        .mul(durationMultiplier)
+        .div(100);
+      this.managementDialogSubscription = dialogRef
+        .beforeClosed()
+        .subscribe((r) => {
+          this.managementOperation = undefined;
+          this.renewAllCheckbox.checked = false;
+          this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+            EMPTY_DATA
+          );
+          this.hasDomainsListLoaded = false;
+          setTimeout(() => {
+            this.getUserDomains();
+          }, 2000);
+        });
+    } else if (this.managementOperation === ManagementOperationEnum.TRANSFER) {
+      const domainsToTransfer = this.getDomainsToTransfer();
+      const dialogRef = this.dialog.open(OnboardManagementComponent, {
+        panelClass: 'cos-settings-dialog',
+      });
+      dialogRef.componentInstance.setStep(approvalStatus === true ? 2 : 0);
+      dialogRef.componentInstance.domainsSelectedTransfer = domainsToTransfer;
+      dialogRef.componentInstance.domainsTransferTo = this.transferDomainsTo;
+      this.managementDialogSubscription = dialogRef
+        .beforeClosed()
+        .subscribe((r) => {
+          this.managementOperation = undefined;
+          if (dialogRef.componentInstance.transferComplete === true) {
+            this.domainsTransferred = this.domainsTransferred.concat(
+              domainsToTransfer.map((d) => d.labelName)
+            );
+          }
+          this.transferAllCheckbox.checked = false;
+          this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+            EMPTY_DATA
+          );
+          this.hasDomainsListLoaded = false;
+          setTimeout(() => {
+            this.getUserDomains();
+          }, 2000);
+        });
+    }
+  }
+
+  openAddressSetDialog() {
+    this.canvasServices.openCustomAddressDialog(
+      'FORM_LABELS.ENTER_RECEIVER_ADDRESS',
+      'FORM_ERRORS.INVALID_ADDRESS',
+      (p) => {
+        if (p === undefined || p === null || p === false) {
+          return of(false);
+        }
+        this.transferDomainsTo = p;
+        return of(true);
+      },
+      '',
+      InputTypesEnum.ADDRESS
+    );
+  }
+
+  selectDomainForTransfer(toTransfer) {
+    this.managementOperation = ManagementOperationEnum.TRANSFER;
+    const domainsSelectedForTransfer = this.getDomainsOnList();
+    if (
+      toTransfer === false &&
+      domainsSelectedForTransfer.filter((d) => d.transfer === true).length <= 0
+    ) {
+      this.managementOperation = undefined;
+    }
+  }
+
+  selectDomainForRenewal(toRenew) {
+    this.managementOperation = ManagementOperationEnum.RENEW;
+    const domainsSelectedForRenewal = this.getDomainsOnList();
+    if (
+      toRenew === false &&
+      domainsSelectedForRenewal.filter((d) => d.renew === true).length <= 0
+    ) {
+      this.managementOperation = undefined;
+    }
+  }
+
+  getDomainsOnList() {
+    const skip =
+      this.dataSource.paginator.pageSize * this.dataSource.paginator.pageIndex;
+    const domainsToTransfer = this.dataSource.data
+      .filter((u, i) => i >= skip)
+      .filter(
+        (u: ENSDomainMetadataModel, i: number) =>
+          i < this.dataSource.paginator.pageSize
+      );
+    return domainsToTransfer;
+  }
+
+  getDomainsToTransfer() {
+    const skip =
+      this.dataSource.paginator.pageSize * this.dataSource.paginator.pageIndex;
+    const domainsToTransfer = this.dataSource.data
+      .filter((u, i) => i >= skip)
+      .filter(
+        (u: ENSDomainMetadataModel, i: number) =>
+          i < this.dataSource.paginator.pageSize
+      )
+      .filter((d) => d.transfer === true);
+    return domainsToTransfer;
+  }
+
+  getDomainsToRenew() {
+    const skip =
+      this.dataSource.paginator.pageSize * this.dataSource.paginator.pageIndex;
+    const domainsToTransfer = this.dataSource.data
+      .filter((u, i) => i >= skip)
+      .filter(
+        (u: ENSDomainMetadataModel, i: number) =>
+          i < this.dataSource.paginator.pageSize
+      )
+      .filter((d) => d.renew === true);
+    return domainsToTransfer;
+  }
+
+  pretty(name: string) {
+    return this.ensService.prettify(name);
+  }
+
+  selectRenewalDuration(duration: RenewalDurationsEnum) {
+    this.renewalDuration = duration;
+  }
 
   hashToBigIntString(hash: string) {
     return ethers.BigNumber.from(hash).toString();

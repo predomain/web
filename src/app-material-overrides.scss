@@ -665,17 +665,32 @@
 }
 
 .mat-accordion {
-  border-radius: var(--cos-border-radius-2) !important;
-  background-color: var(--co-darker-gray-bg) !important;
+  background-color: transparent !important;
   overflow: hidden;
+
   .mat-expansion-panel {
-    background-color: var(--co-gray-bg) !important;
+    margin-bottom: 1px !important;
+    margin-top: 0px !important;
+    background-color: var(--co-darker-gray-bg) !important;
     color: white !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-top: solid 1px var(--co-gray-bg) !important;
+
+    &:not(.mat-expanded) {
+      .mat-expansion-panel-header {
+        .mat-content {
+          .mat-expansion-panel-header-title {
+            opacity: 0.15;
+          }
+        }
+      }
+    }
     .mat-expansion-panel-header {
-      background-color: var(--co-gray-bg) !important;
-      border-bottom-left-radius: 0 !important;
-      border-bottom-right-radius: 0 !important;
-      border-bottom: solid 1px var(--co-darker-gray-bg) !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      background-color: var(--co-darker-gray-bg) !important;
+      border-bottom: transparent !important;
       .mat-expansion-indicator {
         filter: invert(1);
       }
@@ -683,17 +698,21 @@
         .mat-expansion-panel-header-title {
           font-size: var(--co-font-size-1) !important;
           color: white !important;
+          margin-right: 0px !important;
         }
       }
     }
     .mat-expansion-panel-content {
       .mat-expansion-panel-body {
-        padding: 24px !important;
-        padding-top: 20px !important;
-        padding-bottom: 20px !important;
+        padding: 0px !important;
+        padding-top: 0px !important;
+        padding-bottom: 10px !important;
         p {
           margin-block-start: 20px !important;
           margin-block-end: 20px !important;
+          &.header-item {
+            margin-block-end: 10px !important;
+          }
           &:first-of-type {
             margin-block-start: 0 !important;
           }

@@ -22,6 +22,8 @@ import {
   UserFacadeService,
 } from '../store/facades';
 import { DownloadService } from '../services/download/download.service';
+import { ContractService } from '../services/contract';
+import { EnsMarketplaceService } from '../services/ens-marketplace';
 
 export const serviceProviders = [
   UserService,
@@ -43,4 +45,6 @@ export const serviceProviders = [
   PaymentStorageService,
   WalletConnectService,
   DownloadService,
+  ContractService,
+  EnsMarketplaceService,
 ];

@@ -24,10 +24,10 @@ export class UserService {
             expiryDate
             registrationDate
             domain{
+              id
               createdAt
               labelName
               labelhash
-              id
               events{
                 id
                 blockNumber

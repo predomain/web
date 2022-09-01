@@ -117,6 +117,13 @@ export class CanvasServicesService {
                     }
                   }
                   break;
+                case InputTypesEnum.ADDRESS:
+                  {
+                    if (this.miscUtils.checksumEtheruemAddress(t) === false) {
+                      throw false;
+                    }
+                  }
+                  break;
               }
               return true;
             }),

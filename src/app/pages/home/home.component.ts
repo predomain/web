@@ -45,6 +45,10 @@ export class HomeComponent {
     );
   }
 
+  pretty(name: string) {
+    return this.ensService.prettify(name);
+  }
+
   get userData() {
     return this.userFacadeService.userState$.pipe(
       switchMap((s) => {

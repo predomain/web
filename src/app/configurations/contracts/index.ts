@@ -3,3 +3,6 @@ export * from './contract-addresses-testnet.enum';
 export * from './supported-currencies.enum';
 export * from './ens-contracts.model';
 export * from './block-explorers.enum';
+export * from './ens-marketplace-abi-mainnet.model';
+export * from './ens-marketplace-abi-testnet.model';
+export * from './ens-token-nft-abi.model';

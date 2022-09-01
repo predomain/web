@@ -9,7 +9,7 @@ export const generalConfigurations = {
   sessionTimeout: 6000 * 15,
   maxRPCCallRetries: 3,
   timeUntilImageLoadErrors: 3000,
-  timeToUpdateEthUSDRate: 5000,
+  timeToUpdateEthUSDRate: 60000,
   timeToUpdateCheckoutPipe: 3000,
   timeToUpdateRegistrationGasPrice: 5000,
   timeUntilCheckoutExpires: 3000,

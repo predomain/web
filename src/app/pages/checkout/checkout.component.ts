@@ -171,52 +171,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         switchMap((s) => {
           this.paymentState = s;
           return this.asseCheckoutStatus();
-          // const registrationStatusAssessment =
-          //   this.checkoutService.assessRegistrationStatus(
-          //     this.registrationStatus,
-          //     this.paymentState
-          //   );
-          // console.log(registrationStatusAssessment);
-          // if (
-          //   (registrationStatusAssessment !== undefined &&
-          //     this.paymentState.paymentCancelled === true &&
-          //     (registrationStatusAssessment.status ===
-          //       ENSRegistrationStepsEnum.BEFORE_COMMIT ||
-          //       registrationStatusAssessment.status ===
-          //         ENSRegistrationStepsEnum.BEFORE_REGISTRATION)) ||
-          //   (registrationStatusAssessment !== undefined &&
-          //     registrationStatusAssessment.status !==
-          //       ENSRegistrationStepsEnum.BEFORE_COMMIT &&
-          //     registrationStatusAssessment.status !==
-          //       ENSRegistrationStepsEnum.BEFORE_REGISTRATION)
-          // ) {
-          //   this.proceedLocked = false;
-          //   this.proceedPressed = false;
-          // }
-          // if (registrationStatusAssessment === undefined) {
-          //   return false;
-          // }
-          // this.registrationPreviousStatus =
-          //   registrationStatusAssessment === undefined
-          //     ? ENSRegistrationStepsEnum.BEFORE_COMMIT
-          //     : this.registrationStatus;
-          // this.registrationStatus = registrationStatusAssessment.status;
-          // if ('trackedPayment' in registrationStatusAssessment === true) {
-          //   this.timeCommitFulfilled =
-          //     registrationStatusAssessment.trackedPayment.paymentDate;
-          //   this.registrationCurrentTrackedPayment =
-          //     registrationStatusAssessment.trackedPayment;
-          //   this.domainConfigurationForm.controls.duration.setValue(
-          //     parseFloat(
-          //       (
-          //         ethers.BigNumber.from(
-          //           this.registrationCurrentTrackedPayment.paymentRawRecord[0]
-          //             .duration
-          //         ).toNumber() / YEARS_IN_SECONDS
-          //       ).toFixed(2)
-          //     )
-          //   );
-          // }
         })
       )
       .subscribe();
@@ -687,6 +641,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         completeRegistrationMethod: () => this.completeRegistration(),
       }
     );
+  }
+
+  pretty(name: string) {
+    return this.ensService.prettify(name);
   }
 
   get progressLoaderMode() {

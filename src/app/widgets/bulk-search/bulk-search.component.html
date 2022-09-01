@@ -100,7 +100,7 @@
             fxLayoutAlign="start center"
             class="cos-wallet-address-text-cut"
           >
-            {{ d.labelName }}.eth
+            {{ pretty(d.labelName) }}.eth
           </div>
           <a
             *ngIf="d.isAvailable === true && registrationListOpen === false"

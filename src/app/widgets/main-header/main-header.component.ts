@@ -42,6 +42,7 @@ import { CustomAddressComponent } from '../custom-address';
 import { OnboardDialogComponent } from '../onboard-dialog';
 import { SettingsComponent } from '../settings';
 import { BootController } from '../../../boot-control';
+import { EnsService } from 'src/app/services/ens';
 
 const globalAny: any = global;
 
@@ -77,6 +78,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     public paymentFacadeService: PaymentFacadeService,
     public canvasServices: CanvasServicesService,
     public miscUtilsService: MiscUtilsService,
+    public ensService: EnsService,
     protected translationService: TranslationService,
     protected bookmarksService: BookmarksServiceService,
     protected registrationService: RegistrationServiceService,
@@ -305,6 +307,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
         BootController.getbootControl().restart();
       }, 50);
     });
+  }
+
+  pretty(name: string) {
+    return this.ensService.prettify(name);
   }
 
   goToProfile(profile: string) {

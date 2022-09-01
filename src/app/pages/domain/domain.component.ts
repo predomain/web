@@ -470,6 +470,10 @@ export class DomainComponent implements OnInit, OnDestroy {
     );
   }
 
+  pretty(name: string) {
+    return this.ensService.prettify(name);
+  }
+
   copyShareLink() {
     const href = this.router.url;
     navigator.clipboard.writeText(environment.baseUrl + '/#' + href);

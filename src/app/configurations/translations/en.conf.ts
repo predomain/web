@@ -49,6 +49,9 @@ export default {
     DEFAULT: 'Default',
     CUSTOM: 'Custom',
     FRACTIONALISE: 'Fractionalise',
+    MORE_INFO: 'More Info',
+    LESS_INFO: 'Less Info',
+    APPROVE: 'Approve',
   },
   HEADER: {
     FAQ: 'FAQs',
@@ -64,6 +67,8 @@ export default {
     PAYMENTS_HISTORY: 'Payments History',
     LIGHT_MODE: 'Light Mode',
     CUSTOM_RPC: 'Custom RPC',
+    SETUP_REQUIRED: 'Setup Required',
+    MANAGE_DOMAINS: 'Manage Domains',
   },
   IPFS: {
     INITIALISING: 'Starting p2p',
@@ -87,7 +92,17 @@ export default {
     PENDING_TRANSACTION_CERATED:
       'A new transaction has been created. Please check your wallet.',
   },
+  RENEWAL_DURATIONS: {
+    SIX_MONTHS: '6 Months',
+    ONE_YEAR: '1 Year',
+    TWO_YEARS: '2 Years',
+    THREE_YEARS: '3 Years',
+    FOUR_YEARS: '4 Years',
+    FIVE_YEARS: '5 Years',
+  },
   LABELS: {
+    ADDRESS: 'Address',
+    TRANSFER: 'Transfer',
     PLEASE_WAIT: 'Please wait',
     SELECT_A_DOMAIN: 'Select a Domain',
     RENEW: 'Renew',
@@ -174,11 +189,13 @@ export default {
     ENTER_QR_LINK: 'Enter custom QR Code URL',
     ENTER_PRICE: 'Enter price',
     ENTER_CUSTOM_ADDRESS: 'Enter custom address',
+    ENTER_RECEIVER_ADDRESS: 'Enter Receiver Address',
   },
   FORM_ERRORS: {
     INVALID_DURATION: 'Invalid Duration',
     INVALID_QR_LINK: 'Invalid URL, please try again.',
     INVALID_PRICE: 'Invalid price, please try again.',
     NO_ADDRESS_DETECTED: 'No address detected, please try again.',
+    INVALID_ADDRESS: 'Invalid address, please try again.',
   },
 };

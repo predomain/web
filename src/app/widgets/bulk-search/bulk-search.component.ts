@@ -297,7 +297,9 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       }
     }
     toFind = [...new Set(toFind)];
-    return toFind;
+    return toFind.map((n) => {
+      return this.ensService.performNormalisation(n);
+    });
   }
 
   performBulkSearch(noSearchFormToggle = false, entries: string[] = null) {
@@ -308,6 +310,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       this.performBulkSearchSubscription.unsubscribe();
       this.performBulkSearchSubscription = undefined;
     }
+    console.log(entries);
     let toFind =
       entries !== null ? entries : this.getBulkSearchEntriesFromForm();
     this.performBulkSearchSubscription = this.ensService
@@ -348,6 +351,10 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
 
   getDomainLink(domain: string) {
     return environment.baseUrl + '/#/domain/' + domain;
+  }
+
+  pretty(name: string) {
+    return this.ensService.prettify(name);
   }
 
   get searchResultTitle() {

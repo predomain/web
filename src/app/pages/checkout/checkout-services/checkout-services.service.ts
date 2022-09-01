@@ -24,6 +24,7 @@ import {
   PaymentFacadeService,
 } from 'src/app/store/facades';
 import { GenericDialogComponent } from 'src/app/widgets/generic-dialog';
+import { environment } from 'src/environments/environment';
 
 const globalAny: any = global;
 
@@ -258,14 +259,16 @@ export class CheckoutServicesService {
       this.miscUtilsService.toHex(
         this.walletService.produceNonce(NonceTypesEnum.TOKEN)
       );
+    const ensResolver =
+      environment.test === true
+        ? ENSContracts.resolverTestnet
+        : ENSContracts.resolver;
     const compiledPacket =
       this.registrationFacilityService.registrationDomainsToCommitmentPacket(
         registrant,
         duration,
         secret,
-        resolverSet === true
-          ? ENSContracts.resolver
-          : ENSContracts.nullResolver,
+        resolverSet === true ? ensResolver : ENSContracts.nullResolver,
         domains
       );
     return this.registrationFacilityService

@@ -432,6 +432,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return value;
   }
 
+  pretty(name: string) {
+    return this.ensService.prettify(name);
+  }
+
   isEmojiInLabel(label: string) {
     return this.miscUtils.testEmoji().test(label);
   }

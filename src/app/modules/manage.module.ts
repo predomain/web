@@ -4,18 +4,20 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { serviceProviders } from '../models';
-import { MainHeaderModule, OnboardDialogModule } from './miscs';
+import { MainHeaderModule, RenewManagementDialogModule } from './miscs';
 import { Intercept } from '../services';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SharedModule } from './shared.module';
 import { ManageRoutingModule } from './routing';
 import { ManageComponent } from '../pages/manage/manage.component';
+import { OnboardManagementDialogModule } from './miscs/onboard-management-dialog.module';
 
 @NgModule({
   imports: [
     SharedModule,
     ManageRoutingModule,
-    OnboardDialogModule,
+    OnboardManagementDialogModule,
+    RenewManagementDialogModule,
     MainHeaderModule,
   ],
   providers: [
@@ -27,7 +29,7 @@ import { ManageComponent } from '../pages/manage/manage.component';
     },
   ],
   declarations: [ManageComponent],
-  exports: [SharedModule, OnboardDialogModule, MainHeaderModule],
+  exports: [SharedModule, OnboardManagementDialogModule, MainHeaderModule],
   bootstrap: [],
   entryComponents: [],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
