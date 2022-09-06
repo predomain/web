@@ -285,7 +285,7 @@
             </div>
             <div
               fxFlex
-              fxLayoutAlign="start center"
+              fxLayoutAlign="end center"
               class="cos-body-5 cos-gray-text"
             >
               <div
@@ -309,26 +309,6 @@
               fxLayoutAlign="end center"
               fxLayoutGap="10px"
             >
-              <mat-icon
-                [ngClass]="
-                  selectedDomain !== undefined &&
-                  selectedDomain.labelName === d.labelName
-                    ? ''
-                    : 'cos-gray-text'
-                "
-                class="cos-icon-can-activate"
-                >build</mat-icon
-              >
-              <mat-icon
-                [ngClass]="
-                  selectedDomain !== undefined &&
-                  selectedDomain.labelName === d.labelName
-                    ? ''
-                    : 'cos-gray-text'
-                "
-                class="cos-icon-can-activate"
-                >magic_button</mat-icon
-              >
               <mat-icon
                 [color]="
                   selectedDomain !== undefined &&

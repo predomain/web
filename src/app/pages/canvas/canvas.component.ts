@@ -26,6 +26,7 @@ import { EnsService } from 'src/app/services/ens';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { environment } from 'src/environments/environment';
+import { InputTypesEnum } from 'src/app/models/custom-adderss-dialog';
 
 const globalAny: any = global;
 
@@ -488,13 +489,6 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     this.showImages();
   }
 
-  openConnect() {
-    const dialogRef = this.dialog.open(OnboardDialogComponent, {
-      data: 'ERRORS.UNKNOWN',
-      panelClass: 'cos-onboard-dialog',
-    });
-  }
-
   showImages() {
     if (this.displayedImages === null || this.displayedImages === undefined) {
       return;
@@ -746,7 +740,9 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
         this.showImages();
         this.drawSelectedImageCanvas();
         return of(true);
-      }
+      },
+      '1 ETH',
+      InputTypesEnum.ANY
     );
   }
 
@@ -764,7 +760,9 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
         document.getElementById('canvas_ht').innerHTML = '';
         this.showImages();
         return of(true);
-      }
+      },
+      '',
+      InputTypesEnum.URL
     );
   }
 

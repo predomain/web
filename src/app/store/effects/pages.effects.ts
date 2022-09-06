@@ -50,7 +50,6 @@ import {
   takeUntil,
   withLatestFrom,
 } from 'rxjs/operators';
-import { ValidRPCProvidersEnum } from 'src/app/models/rpc/valid-rpc-providers.enum';
 import { RPCProviderModel } from 'src/app/models/rpc/rpc-provider.model';
 import { RpcService } from 'src/app/services/rpc';
 
@@ -114,7 +113,9 @@ export class PagesEffects {
           }
           const chainId =
             environment.networks[environment.defaultChain].chainId;
-          this.assessProviderChanges(chainId);
+          if (chainId !== globalAny.chainId) {
+            this.assessProviderChanges(chainId);
+          }
         })
       ),
     { dispatch: false }

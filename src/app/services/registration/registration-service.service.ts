@@ -31,24 +31,21 @@ export class RegistrationServiceService {
     return [];
   }
 
+  saveAllRegistrations(domainsData: ENSDomainMetadataModel[]) {
+    const registrationsRaw = this.loadRegistrationsAndFeed().reduce(
+      (accumulator, value) => {
+        return { ...accumulator, [value.labelName]: value };
+      },
+      {}
+    );
+    const bKeys = Object.keys(registrationsRaw);
+    let registrations = [...new Set(bKeys)].map((k) => registrationsRaw[k]);
+    registrations = registrations.concat(domainsData);
+    localStorage.setItem('canvas-registrations', JSON.stringify(registrations));
+    return registrations;
+  }
+
   saveRegistrations(domainData: ENSDomainMetadataModel) {
-    if (
-      this.loadRegistrationsAndFeed().length >=
-      generalConfigurations.maxDomainsToRegister
-    ) {
-      this.snackBar.open(
-        'Only a maximum of ' +
-          generalConfigurations.maxDomainsToRegister +
-          ' domains can be registered.',
-        'close',
-        {
-          horizontalPosition: 'center',
-          verticalPosition: 'bottom',
-          duration: 15000,
-        }
-      );
-      return;
-    }
     const registrationsRaw = this.loadRegistrationsAndFeed().reduce(
       (accumulator, value) => {
         return { ...accumulator, [value.labelName]: value };

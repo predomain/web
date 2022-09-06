@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import request, { gql } from 'graphql-request';
 import { Observable } from 'rxjs';
-import { ens_normalize, ens_beautify } from '@adraffy/ens-normalize/src/lib';
+import { ens_normalize, ens_beautify } from '@adraffy/ens-normalize';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
@@ -136,7 +136,7 @@ export class EnsService {
   calculateDomainsPrice(
     name: string,
     ethToUsdRate: string,
-    duration: number = 1
+    durationInYears: number = 1
   ) {
     const ethUsdRate = parseInt(ethToUsdRate, 10);
     let nameCost = 5;
@@ -152,6 +152,6 @@ export class EnsService {
         }
         break;
     }
-    return parseFloat((nameCost / ethUsdRate).toFixed(4)) * duration;
+    return parseFloat((nameCost / ethUsdRate).toFixed(4)) * durationInYears;
   }
 }

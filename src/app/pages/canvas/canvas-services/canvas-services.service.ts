@@ -95,6 +95,9 @@ export class CanvasServicesService {
         switchMap((entry) => {
           return of(entry).pipe(
             filter((t) => {
+              if (inputType === InputTypesEnum.ANY) {
+                return true;
+              }
               switch (inputType) {
                 case InputTypesEnum.ALPHABET:
                   {
@@ -120,6 +123,13 @@ export class CanvasServicesService {
                 case InputTypesEnum.ADDRESS:
                   {
                     if (this.miscUtils.checksumEtheruemAddress(t) === false) {
+                      throw false;
+                    }
+                  }
+                  break;
+                case InputTypesEnum.URL:
+                  {
+                    if (this.miscUtils.testUrl().test(t) === false) {
                       throw false;
                     }
                   }

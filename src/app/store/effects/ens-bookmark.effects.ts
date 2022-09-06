@@ -12,9 +12,13 @@ import { BookmarksServiceService } from 'src/app/services/bookmarks';
 import {
   AddOneENSBookmark,
   ENSBookmarkAddOne,
+  ENSBookmarkRemoveAll,
   ENSBookmarkRemoveOne,
+  ENSBookmarkUpsertMany,
   ENSBookmarkUpsertOne,
+  RemoveAllENSBookmark,
   RemoveOneENSBookmark,
+  UpsertManyENSBookmark,
   UpsertOneENSBookmark,
 } from '../actions';
 import { getENSBookmarks } from '../selectors';
@@ -64,6 +68,21 @@ export class ENSBookmarkEffects {
     { dispatch: false }
   );
 
+  removeAllBookmarks$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType<ENSBookmarkRemoveAll>(RemoveAllENSBookmark),
+        filter((action) => action.toSave === true),
+        withLatestFrom(this.store.pipe(select(getENSBookmarks))),
+        map((state) => {
+          const [action, bookmarks] = state;
+          this.bookMarkService.removeAllBookmarks();
+        })
+      ),
+
+    { dispatch: false }
+  );
+
   removeOneBookmark$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -86,6 +105,19 @@ export class ENSBookmarkEffects {
         filter((action) => action.toSave === true),
         map((action) => {
           this.bookMarkService.saveBookmark(action.payload);
+        })
+      ),
+
+    { dispatch: false }
+  );
+
+  upsertManyBookmark$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType<ENSBookmarkUpsertMany>(UpsertManyENSBookmark),
+        filter((action) => action.toSave === true),
+        map((action) => {
+          this.bookMarkService.saveAllBookmark(action.payload);
         })
       ),
 

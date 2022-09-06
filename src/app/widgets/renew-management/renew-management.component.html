@@ -36,25 +36,33 @@
             <mat-panel-title>
               <div fxFlex fxLayout="row">
                 <div fxFlex>
-                  <b> Renewal Cost </b>
+                  <b> {{ "RENEW.RENEWAL_COST" | translate }} </b>
                 </div>
                 <div fxFlex class="cos-right-text cos-body-4">
-                  <a> Step 1 </a>
+                  <a> {{ "STEP.STEP_1" | translate }} </a>
                 </div>
               </div>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <p>Below is the estimated renewal cost for this transaction.</p>
+          <p>{{ "RENEW.ESTIMATED_RENEWAL_COST" | translate }}</p>
           <p class="header-item cos-body-3 cos-gray-text">
-            <b> Estimated cost: </b>
+            <b> {{ "LABELS.ESTIMATED_COST" | translate }}: </b>
           </p>
           <div
             class="cos-fluid-width cos-light-note cos-light-note-dark cos-body-0 cos-center-text cos-bg-darker-gray"
           >
-            <a> {{ getRenewalCost(domainsToRenew, renewalDuration) }} ETH</a>
+            <a>
+              {{
+                getRenewalCost(namesOfDomainsToRenew, renewalDuration)
+                  | fixedEther
+              }}
+              ETH</a
+            >
           </div>
-          <p>Click <b>Next</b> to proceed.</p>
-          <p class="cos-body-1"><a (click)="nextStep()">Next</a></p>
+          <p [innerHTML]="'LABELS.CLICK_NEXT_TO_PROCEED' | translate"></p>
+          <p class="cos-body-1">
+            <a (click)="nextStep()">{{ "BUTTON.NEXT" | translate }}</a>
+          </p>
         </mat-expansion-panel>
         <mat-expansion-panel
           [expanded]="step === 1"
@@ -69,36 +77,37 @@
             <mat-panel-title>
               <div fxFlex fxLayout="row">
                 <div fxFlex>
-                  <b> Complete </b>
+                  <b> {{ "LABELS.COMPLETE" | translate }} </b>
                 </div>
                 <div fxFlex class="cos-right-text cos-body-4">
-                  <a> Step 2 </a>
+                  <a> {{ "STEP.STEP_2" | translate }} </a>
                 </div>
               </div>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <ng-container *ngIf="transferComplete === true">
+          <ng-container *ngIf="renewComplete === true">
             <p class="cos-padding-3 cos-no-padding-bottom">
               <app-icon [iconSize]="150">
                 <ng-container> check </ng-container>
               </app-icon>
             </p>
-            <p class="cos-body-0 cos-center-text">Transfer Complete!</p>
+            <p class="cos-body-0 cos-center-text">
+              {{ "RENEW.RENEWAL_COMPLETE" | translate }}!
+            </p>
           </ng-container>
-          <ng-container *ngIf="transferComplete === false">
+          <ng-container *ngIf="renewComplete === false">
             <p>
-              Your domains are now ready renewal. To complete your renewal press
-              proceed.
+              {{ "RENEW.DOMAINS_READY_FOR_RENEWAL" | translate }}
             </p>
             <p class="cos-fluid-width">
               <button
                 fxFlex
                 mat-button
-                (click)="performTransfer()"
-                [disabled]="transfering === true"
+                (click)="performRenewal()"
+                [disabled]="renewing === true"
               >
                 <div fxLayoutAlign="center center">
-                  <div fxFlex="0 0 auto" *ngIf="transfering === true">
+                  <div fxFlex="0 0 auto" *ngIf="renewing === true">
                     <app-spinner
                       [padded]="false"
                       [lightColour]="true"
@@ -106,7 +115,7 @@
                       [showText]="false"
                     ></app-spinner>
                   </div>
-                  <span *ngIf="transfering === false" fxFlex>
+                  <span *ngIf="renewing === false" fxFlex>
                     {{ "BUTTON.PROCEED" | translate }}
                   </span>
                 </div>

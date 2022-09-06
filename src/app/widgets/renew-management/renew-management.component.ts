@@ -13,7 +13,6 @@ import { Store } from '@ngrx/store';
 import { BigNumber, ethers } from 'ethers';
 import { of, Subject, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
-import { generalConfigurations } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import {
@@ -45,17 +44,17 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
   userState: UserStateModel;
   paymentState: PaymentStateModel;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
-  transferToCheck: PaymentModel;
-  transfering = false;
-  transferComplete = false;
+  renewToCheck: PaymentModel;
+  renewing = false;
+  renewComplete = false;
   closedByButton = false;
   overlaysCountOnInit = 0;
   maxSteps = 2;
   approvalSerial;
   userStateSubscription;
   paymentStateSubscription;
-  transferSubscription;
-  transferStatusCheckSubscription;
+  renewSubscription;
+  renewStatusCheckSubscription;
 
   constructor(
     protected userFacade: UserFacadeService,
@@ -130,20 +129,17 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  renewDomains(
-    domainsToTransfer: ENSDomainMetadataModel[],
-    duration: BigNumber
-  ) {
-    if (this.transferSubscription) {
-      this.transferSubscription.unsubscribe();
+  renewDomains(domainsToRenew: ENSDomainMetadataModel[], duration: BigNumber) {
+    if (this.renewSubscription) {
+      this.renewSubscription.unsubscribe();
     }
-    this.transfering = true;
+    this.renewing = true;
     const userAddress = this.userState.user.walletAddress;
-    const domainNames = domainsToTransfer.map((d) => d.labelName);
+    const domainNames = domainsToRenew.map((d) => d.labelName);
     const totalCost = ethers.BigNumber.from(
       (this.getRenewalCost(domainNames, duration) * 10 ** 18).toString()
     ).toHexString();
-    this.transferSubscription = this.ensMarketplaceService
+    this.renewSubscription = this.ensMarketplaceService
       .renew(
         domainNames,
         duration,
@@ -156,7 +152,7 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
           if (transferDataAndGas === false) {
             throw 1;
           }
-          const [transferData, gasLimit] = transferDataAndGas;
+          const [renewData, gasLimit] = transferDataAndGas;
           const serial = this.walletService.produceNonce(NonceTypesEnum.SERIAL);
           this.approvalSerial = serial;
           const p = {
@@ -170,7 +166,7 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
             paymentSerial: serial,
             paymentDate: new Date().getTime(),
             paymentType: PaymentTypesEnum.TX_RENEW,
-            paymentAbstractBytesSlot: transferData,
+            paymentAbstractBytesSlot: renewData,
             paymentTotal: totalCost,
             paymentStatus: false,
             paymentError: -1,
@@ -187,74 +183,73 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
       )
       .subscribe((r) => {
         if (r === false) {
-          this.transfering = false;
+          this.renewing = false;
         }
       });
   }
 
   checkRenewStatus() {
-    if (this.transferStatusCheckSubscription) {
+    if (this.renewStatusCheckSubscription) {
       return;
     }
-    const hasTransferResolved = new Subject<boolean>();
-    this.transferStatusCheckSubscription = timer(0, 500)
+    const hasRenewalResolved = new Subject<boolean>();
+    this.renewStatusCheckSubscription = timer(0, 500)
       .pipe(
-        takeUntil(hasTransferResolved),
+        takeUntil(hasRenewalResolved),
         switchMap((i) => {
           return this.paymentFacade.paymentState$;
         }),
         map((paymentState) => {
           const payments = paymentState.entities;
           const paymentIds = Object.keys(payments);
-          const pendingTransferPayments = [];
+          const pendingRenewalPayments = [];
           for (const p of paymentIds) {
             const payment = payments[p];
             if (
-              this.transferToCheck !== undefined &&
-              payment.paymentSerial === this.transferToCheck.paymentSerial
+              this.renewToCheck !== undefined &&
+              payment.paymentSerial === this.renewToCheck.paymentSerial
             ) {
-              pendingTransferPayments.push(payment);
+              pendingRenewalPayments.push(payment);
               break;
             }
             if (
-              payment.paymentType === PaymentTypesEnum.TX_TRANSFER &&
+              payment.paymentType === PaymentTypesEnum.TX_RENEW &&
               payment.paymentStatus === false
             ) {
-              pendingTransferPayments.push(payment);
+              pendingRenewalPayments.push(payment);
             }
           }
           if (paymentState.paymentCancelled === true) {
-            this.transfering = false;
-            this.transferStatusCheckSubscription = undefined;
-            hasTransferResolved.next(false);
+            this.renewing = false;
+            this.renewStatusCheckSubscription = undefined;
+            hasRenewalResolved.next(false);
             return;
           }
           if (
-            pendingTransferPayments.length > 0 &&
-            pendingTransferPayments[pendingTransferPayments.length - 1]
+            pendingRenewalPayments.length > 0 &&
+            pendingRenewalPayments[pendingRenewalPayments.length - 1]
               .paymentStatus === true
           ) {
-            this.transferComplete = true;
-            this.transfering = false;
-            this.transferStatusCheckSubscription = undefined;
-            hasTransferResolved.next(false);
-            this.nextStep();
+            this.renewComplete = true;
+            this.renewing = false;
+            this.renewStatusCheckSubscription = undefined;
+            hasRenewalResolved.next(false);
             return;
           }
           if (
-            pendingTransferPayments.length > 0 &&
-            this.transferToCheck === undefined
+            pendingRenewalPayments.length > 0 &&
+            this.renewToCheck === undefined
           ) {
-            this.transfering = true;
-            this.transferToCheck =
-              pendingTransferPayments[pendingTransferPayments.length - 1];
+            this.renewing = true;
+            this.renewToCheck =
+              pendingRenewalPayments[pendingRenewalPayments.length - 1];
           }
         })
       )
       .subscribe();
   }
 
-  performTransfer() {
+  performRenewal() {
     this.renewDomains(this.domainsToRenew, this.renewalDuration);
   }
 
@@ -277,7 +272,7 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
         return this.ensService.calculateDomainsPrice(
           d,
           this.paymentState.ethUsdPrice,
-          YEARS_IN_SECONDS / duration.toNumber()
+          duration.toNumber() / YEARS_IN_SECONDS
         );
       })
       .reduce((a, b) => {
@@ -329,5 +324,9 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
 
   get ensMarketplaceContract() {
     return this.ensMarketplaceService.marketplaceContractAddress;
+  }
+
+  get namesOfDomainsToRenew() {
+    return this.domainsToRenew.map((d) => d.labelName);
   }
 }

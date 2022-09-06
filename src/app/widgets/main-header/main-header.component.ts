@@ -43,6 +43,7 @@ import { OnboardDialogComponent } from '../onboard-dialog';
 import { SettingsComponent } from '../settings';
 import { BootController } from '../../../boot-control';
 import { EnsService } from 'src/app/services/ens';
+import { PaymentTypesEnum } from 'src/app/models/states/payment-interfaces';
 
 const globalAny: any = global;
 
@@ -415,6 +416,8 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
         if (
           Object.keys(state.entities).filter(
             (p) =>
+              (state.entities[p].paymentType === PaymentTypesEnum.COMMIT ||
+                state.entities[p].paymentType === PaymentTypesEnum.REGISTER) &&
               state.entities[p].paymentStatus === false &&
               ('archived' in state.entities[p] === false ||
                 ('archived' in state.entities[p] === true &&

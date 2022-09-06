@@ -236,7 +236,7 @@ textarea {
   Border/-radius Styles
 ---------------------------------------------*/
 .cos-border {
-  border: solid 1px var(--co-border-color) !important;
+  border: solid 1px var(--co-gray-bg) !important;
 }
 
 .cos-border-darker {
@@ -630,4 +630,12 @@ textarea {
 ---------------------------------------------*/
 .cos-word-break-all {
   word-break: break-all;
+}
+
+/*-------------------------------------------
+  Shadow Styles
+---------------------------------------------*/
+.cos-box-shadow {
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 10%), 0 4px 5px 0 rgb(0 0 0 / 5%),
+    0 1px 10px 0 rgb(0 0 0 / 5%) !important;
 }

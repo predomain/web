@@ -1,20 +1,23 @@
 import { Action } from '@ngrx/store';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { ENSRegistrationStoreErrorsEnum } from '../../models/error-enums';
-export const AddOneENSRegistration = '[ENSRegistrationState] Add payment.';
-export const UpdateENSRegistration = '[ENSRegistrationState] Update payment.';
+export const AddOneENSRegistration = '[ENSRegistrationState] Add registration.';
+export const UpdateENSRegistration =
+  '[ENSRegistrationState] Update registration.';
 export const UpsertOneENSRegistration =
-  '[ENSRegistrationState] Upsert one payment.';
+  '[ENSRegistrationState] Upsert one registration.';
 export const UpsertManyENSRegistration =
-  '[ENSRegistrationState] Upsert many payment.';
-export const GetOneENSRegistration = '[ENSRegistrationState] Get one payment.';
-export const GetAllENSRegistration = '[ENSRegistrationState] Get all payment.';
+  '[ENSRegistrationState] Upsert many registration.';
+export const GetOneENSRegistration =
+  '[ENSRegistrationState] Get one registration.';
+export const GetAllENSRegistration =
+  '[ENSRegistrationState] Get all registration.';
 export const RemoveOneENSRegistration =
-  '[ENSRegistrationState] Remove one payment.';
+  '[ENSRegistrationState] Remove one registration.';
 export const RemoveManyENSRegistration =
-  '[ENSRegistrationState] Remove many payment.';
+  '[ENSRegistrationState] Remove many registration.';
 export const RemoveAllENSRegistration =
-  '[ENSRegistrationState] Remove all payment.';
+  '[ENSRegistrationState] Remove all registration.';
 export const SetENSRegistrationError =
   '[ENSRegistrationState] ENSRegistration error set.';
 

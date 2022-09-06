@@ -7,6 +7,7 @@ import { serviceProviders } from '../../models';
 import { SharedModule } from '../shared.module';
 import { IconModule } from './icon.module';
 import { RenewManagementComponent } from 'src/app/widgets/renew-management/renew-management.component';
+import { EtherDecimalFixedModule } from './ether-decimal-fixed.module';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { RenewManagementComponent } from 'src/app/widgets/renew-management/renew
     MatButtonModule,
     FlexLayoutModule,
     IconModule,
+    EtherDecimalFixedModule,
     SharedModule,
   ],
   providers: [...serviceProviders],
@@ -23,6 +25,7 @@ import { RenewManagementComponent } from 'src/app/widgets/renew-management/renew
     RenewManagementComponent,
     TranslationModule,
     IconModule,
+    EtherDecimalFixedModule,
     FlexLayoutModule,
   ],
   bootstrap: [],

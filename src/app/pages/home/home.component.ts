@@ -8,7 +8,6 @@ import { EnsService } from 'src/app/services/ens';
 import { UserFacadeService } from 'src/app/store/facades';
 import { MainHeaderComponent } from 'src/app/widgets/main-header';
 import { MiscUtilsService } from 'src/app/services';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-home',

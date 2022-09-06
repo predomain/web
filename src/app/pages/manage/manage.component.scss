@@ -30,6 +30,13 @@
   padding-top: 70px;
 }
 
+.cos-profile-content {
+  padding: 20px !important;
+  @media only screen and (max-width: 1000px) {
+    padding: 0 !important;
+  }
+}
+
 .co-profile-content,
 .co-content-container,
 .co-bg {
@@ -48,4 +55,8 @@
 
 .co-renew-label {
   padding-right: 5px;
+}
+
+.co-floating-mobile-control {
+  z-index: 1004;
 }

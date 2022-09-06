@@ -52,6 +52,11 @@ export default {
     MORE_INFO: 'More Info',
     LESS_INFO: 'Less Info',
     APPROVE: 'Approve',
+    NEXT: 'Next',
+    PENDING: 'Pending',
+    REMOVE_ALL_ITEMS: 'Remove All Items',
+    ADD_ALL_TO_CART: 'Add All To Cart',
+    BOOKMARK_ALL: 'Bookmark All',
   },
   HEADER: {
     FAQ: 'FAQs',
@@ -69,6 +74,7 @@ export default {
     CUSTOM_RPC: 'Custom RPC',
     SETUP_REQUIRED: 'Setup Required',
     MANAGE_DOMAINS: 'Manage Domains',
+    APPROVE: 'Approve',
   },
   IPFS: {
     INITIALISING: 'Starting p2p',
@@ -101,6 +107,8 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    COMPLETE: 'Complete',
+    ESTIMATED_COST: 'Estimated Cost',
     ADDRESS: 'Address',
     TRANSFER: 'Transfer',
     PLEASE_WAIT: 'Please wait',
@@ -113,6 +121,7 @@ export default {
     LANDING_TEXT:
       'Open-source, decentralised, ENS domains search, registration & marketplace.',
     PROFILE: 'Profile',
+    GO_TO_PROFILE: 'Go to Profile',
     SEARCH: 'Search',
     CONTAIN_ALPHABET: 'Contain Alphabet',
     CONTAIN_NUMBERS: 'Contain Numbers',
@@ -139,7 +148,7 @@ export default {
     ACTION: 'Action',
     ADVANCED_SEARCH_TIP:
       'use new line or commas to seperate your domain entries.',
-    ADVANCED_SEARCH: 'Avanced Search',
+    ADVANCED_SEARCH: 'Advanced Search',
     ADVANCED_MODE: 'Advanced Mode',
     REGISTER_DOMAINS_TO: 'Register Domains To',
     NO_DOMAINS_SELECTED: 'No domains selected.',
@@ -159,6 +168,7 @@ export default {
     NOTICE_SELECT_AN_RPC:
       'Notice: select an RPC that will be used in the application to replace the default RPC provider.',
     ENABLE_LIGHT_MODE: 'Enable light layout style.',
+    CLICK_NEXT_TO_PROCEED: 'Click <b>Next</b> to proceed.',
   },
   REGISTRATION: {
     BEFORE_COMMIT: 'Step 1: request registration.',
@@ -197,5 +207,30 @@ export default {
     INVALID_PRICE: 'Invalid price, please try again.',
     NO_ADDRESS_DETECTED: 'No address detected, please try again.',
     INVALID_ADDRESS: 'Invalid address, please try again.',
+  },
+  STEP: {
+    STEP_1: 'Step 1',
+    STEP_2: 'Step 2',
+    STEP_3: 'Step 3',
+    STEP_4: 'Step 4',
+    STEP_5: 'Step 5',
+  },
+  RENEW: {
+    RENEWAL_COST: 'Renewal Cost',
+    ESTIMATED_RENEWAL_COST:
+      'Below is the estimated renewal cost for this transaction.',
+    RENEWAL_COMPLETE: 'Renewal Complete',
+    DOMAINS_READY_FOR_RENEWAL:
+      ' Your domains are now ready renewal. To complete your renewal press proceed.',
+  },
+  TRANSFER: {
+    TRANSFER_TO: 'Transfer to',
+    TRANSFER_COMPLETE: 'Tranfer Complete!',
+    SETUP_INSTRUCTION:
+      'To enabled ENS domains management, your account must be configured to approve domain transfers.',
+    CONTRACT_APPROVAL_NOTE:
+      'Contract approval allows the contract to perform transferring of domains on your behalf.',
+    DOMAINS_READY_FOR_TRANSFER:
+      'Your domains are now ready for transfer. To complete your transfer press proceed.',
   },
 };

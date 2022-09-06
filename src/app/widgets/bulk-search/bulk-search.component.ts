@@ -6,10 +6,10 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { MatInput } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { select, Store } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
+import { generalConfigurations } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
@@ -98,17 +98,26 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
           ),
           map((state) => {
             const [registrationState, registrations] = state;
+            let hasDomainsBeenRemovedFromBasket = false;
+            if (this.registrationDomains.length > 0) {
+              hasDomainsBeenRemovedFromBasket =
+                registrations.length < this.registrationDomains.length;
+            }
             this.registrationDomains = registrations;
             this.registrationListLoaded = true;
             if (this.registrationListOpen === true) {
               this.performBulkSearch(
-                false,
+                hasDomainsBeenRemovedFromBasket === true,
                 this.registrationDomains.map((d) => d.labelName)
               );
             }
           })
         )
         .subscribe();
+  }
+
+  removeAllRegistrations() {
+    this.registrationFacadeService.removeAllRegistrations();
   }
 
   removeRegistrations(domain: string) {
@@ -130,7 +139,59 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
   }
 
   addToRegistration(domain: ENSDomainMetadataModel) {
+    if (
+      this.registrationDomains.length >=
+      generalConfigurations.maxDomainsToRegister
+    ) {
+      this.snackBar.open(
+        'Only a maximum of ' +
+          generalConfigurations.maxDomainsToRegister +
+          ' domains can be registered.',
+        'close',
+        {
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          duration: 15000,
+        }
+      );
+      return;
+    }
     this.registrationFacadeService.upsertRegistration(domain);
+  }
+
+  addAllToRegistration() {
+    if (
+      this.registrationDomains.length + this.bulkSearchResults.length >=
+      generalConfigurations.maxDomainsToRegister
+    ) {
+      this.snackBar.open(
+        'Only a maximum of ' +
+          generalConfigurations.maxDomainsToRegister +
+          ' domains can be registered.',
+        'close',
+        {
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          duration: 15000,
+        }
+      );
+      return;
+    }
+    this.snackBar.open('Domains added to cart.', 'close', {
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      duration: 5000,
+    });
+
+    const alreadyInCart = this.registrationDomains.map((d) => d.labelName);
+    const validForRegistration = this.bulkSearchResults
+      .filter((d) => {
+        return d.isNotAvailable === false;
+      })
+      .filter((d) => {
+        return alreadyInCart.includes(d.labelName) === false;
+      });
+    this.registrationFacadeService.upsertAllRegistration(validForRegistration);
   }
 
   goToRegistration() {
@@ -143,7 +204,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      this.bulkSearchResults.filter((d) => d.isAvailable === true).length > 0
+      this.bulkSearchResults.filter((d) => d.isNotAvailable === true).length > 0
     ) {
       this.snackBar.open(
         'Cannot proceed with an already registered domain, pleaes try again.',
@@ -177,11 +238,16 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
           withLatestFrom(this.bookmarkStore.pipe(select(getENSBookmarks))),
           map((state) => {
             const [bookmarkState, bookmarks] = state;
+            let hasDomainsBeenRemovedFromBookmark = false;
+            if (this.bulkSearchBookmarks.length > 0) {
+              hasDomainsBeenRemovedFromBookmark =
+                bookmarks.length < this.bulkSearchBookmarks.length;
+            }
             this.bulkSearchBookmarks = bookmarks;
             this.bulkSearchBookmarksLoaded = true;
             if (this.bulkSearchBookmarksShow === true) {
               this.performBulkSearch(
-                false,
+                hasDomainsBeenRemovedFromBookmark === true,
                 this.bulkSearchBookmarks.map((d) => d.labelName)
               );
             }
@@ -207,6 +273,23 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
 
   countBookmarks() {
     return this.bookmarksService.countBookmarks();
+  }
+
+  removeAllBookmarks() {
+    this.bookmarkFacadeService.removeAllBookmarks();
+  }
+
+  addAllToBookmark() {
+    this.snackBar.open('Bookmarks added.', 'close', {
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      duration: 5000,
+    });
+    const alreadyBookmarked = this.bulkSearchBookmarks.map((d) => d.labelName);
+    const validForBookmarking = this.bulkSearchResults.filter((d) => {
+      return alreadyBookmarked.includes(d.labelName) === false;
+    });
+    this.bookmarkFacadeService.upsertAllBookmark(validForBookmarking);
   }
 
   toggleBookmark(domain: ENSDomainMetadataModel) {
@@ -310,7 +393,6 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       this.performBulkSearchSubscription.unsubscribe();
       this.performBulkSearchSubscription = undefined;
     }
-    console.log(entries);
     let toFind =
       entries !== null ? entries : this.getBulkSearchEntriesFromForm();
     this.performBulkSearchSubscription = this.ensService
@@ -326,7 +408,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
           const fData = {
             id: f.toLowerCase(),
             labelName: f.toLowerCase(),
-            isAvailable: found === undefined ? false : true,
+            isNotAvailable: found === undefined ? false : true,
           } as ENSDomainMetadataModel;
           if (found === undefined) {
             this.bulkSearchAvailableCount++;

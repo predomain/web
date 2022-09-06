@@ -1,15 +1,15 @@
 import { Action } from '@ngrx/store';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { ENSBookmarkStoreErrorsEnum } from '../../models/error-enums';
-export const AddOneENSBookmark = '[ENSBookmarkState] Add payment.';
-export const UpdateENSBookmark = '[ENSBookmarkState] Update payment.';
-export const UpsertOneENSBookmark = '[ENSBookmarkState] Upsert one payment.';
-export const UpsertManyENSBookmark = '[ENSBookmarkState] Upsert many payment.';
-export const GetOneENSBookmark = '[ENSBookmarkState] Get one payment.';
-export const GetAllENSBookmark = '[ENSBookmarkState] Get all payment.';
-export const RemoveOneENSBookmark = '[ENSBookmarkState] Remove one payment.';
-export const RemoveManyENSBookmark = '[ENSBookmarkState] Remove many payment.';
-export const RemoveAllENSBookmark = '[ENSBookmarkState] Remove all payment.';
+export const AddOneENSBookmark = '[ENSBookmarkState] Add bookmark.';
+export const UpdateENSBookmark = '[ENSBookmarkState] Update bookmark.';
+export const UpsertOneENSBookmark = '[ENSBookmarkState] Upsert one bookmark.';
+export const UpsertManyENSBookmark = '[ENSBookmarkState] Upsert many bookmark.';
+export const GetOneENSBookmark = '[ENSBookmarkState] Get one bookmark.';
+export const GetAllENSBookmark = '[ENSBookmarkState] Get all bookmark.';
+export const RemoveOneENSBookmark = '[ENSBookmarkState] Remove one bookmark.';
+export const RemoveManyENSBookmark = '[ENSBookmarkState] Remove many bookmark.';
+export const RemoveAllENSBookmark = '[ENSBookmarkState] Remove all bookmark.';
 export const SetENSBookmarkError = '[ENSBookmarkState] ENSBookmark error set.';
 
 export class ENSBookmarkErrorSet implements Action {
@@ -54,7 +54,7 @@ export class ENSBookmarkRemoveMany implements Action {
 
 export class ENSBookmarkRemoveAll implements Action {
   readonly type = RemoveAllENSBookmark;
-  constructor(public authenticationPin: string, public toSave = true) {}
+  constructor(public toSave = true) {}
 }
 
 export class ENSBookmarkUpdate implements Action {

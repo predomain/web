@@ -6,9 +6,11 @@ import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interf
 import {
   ENSBookmarkAddOne,
   ENSBookmarkErrorSet,
+  ENSBookmarkRemoveAll,
   ENSBookmarkRemoveMany,
   ENSBookmarkRemoveOne,
   ENSBookmarkUpdate,
+  ENSBookmarkUpsertMany,
   ENSBookmarkUpsertOne,
 } from '../actions';
 import {
@@ -34,12 +36,20 @@ export class ENSBookmarkFacadeService {
     this.store.dispatch(new ENSBookmarkRemoveOne(bookmark.id));
   }
 
+  removeAllBookmarks() {
+    this.store.dispatch(new ENSBookmarkRemoveAll());
+  }
+
   removeBookmarks(bookmark: ENSDomainMetadataModel[]) {
     this.store.dispatch(new ENSBookmarkRemoveMany(bookmark.map((n) => n.id)));
   }
 
   upsertBookmark(bookmark: ENSDomainMetadataModel) {
     this.store.dispatch(new ENSBookmarkUpsertOne(bookmark));
+  }
+
+  upsertAllBookmark(bookmarks: ENSDomainMetadataModel[]) {
+    this.store.dispatch(new ENSBookmarkUpsertMany(bookmarks));
   }
 
   updateBookmark(bookmark: ENSDomainMetadataModel) {

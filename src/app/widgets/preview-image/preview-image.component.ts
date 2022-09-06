@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -21,18 +22,25 @@ export class PreviewImageComponent implements OnChanges {
   @Input() dontLoad = false;
   @Output() imageLoaded = new EventEmitter<boolean>();
 
+  constructor(public changeDetectorRef: ChangeDetectorRef) {}
+
   setError() {
     setTimeout(() => {
       if (this.loaded === false && this.errored === false) {
         this.errored = true;
       }
+      this.imageLoaded.emit(true);
     }, generalConfigurations.timeUntilImageLoadErrors);
   }
 
   ngOnChanges() {
-    if (this.loaded === true) {
+    if (this.loaded === true || this.errored === true) {
       this.imageLoaded.emit(true);
       this.loaded = false;
     }
+  }
+
+  markCheck() {
+    this.changeDetectorRef.markForCheck();
   }
 }

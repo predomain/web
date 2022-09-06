@@ -16,9 +16,11 @@ import {
   AddOneENSRegistration,
   ENSRegistrationAddOne,
   ENSRegistrationRemoveAll,
+  ENSRegistrationUpsertMany,
   ENSRegistrationUpsertOne,
   RemoveAllENSRegistration,
   RemoveOneENSRegistration,
+  UpsertManyENSRegistration,
   UpsertOneENSRegistration,
 } from '../actions';
 import { getENSRegistrations } from '../selectors';
@@ -107,6 +109,19 @@ export class ENSRegistrationEffects {
         filter((action) => action.toSave === true),
         map((action) => {
           this.registrationService.saveRegistrations(action.payload);
+        })
+      ),
+
+    { dispatch: false }
+  );
+
+  upsertManyRegistration$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType<ENSRegistrationUpsertMany>(UpsertManyENSRegistration),
+        filter((action) => action.toSave === true),
+        map((action) => {
+          this.registrationService.saveAllRegistrations(action.payload);
         })
       ),
 

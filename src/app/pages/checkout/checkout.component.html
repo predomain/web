@@ -53,12 +53,12 @@
       <div
         *ngIf="
           countRegistrations() > 0 &&
-          ((bulkSearchAvailableOnly === true && d.isAvailable === false) ||
+          ((bulkSearchAvailableOnly === true && d.isNotAvailable === false) ||
             bulkSearchAvailableOnly === false)
         "
         class="co-bulk-search-item-container"
         [ngClass]="
-          d.isAvailable === true ? 'co-bulk-search-item-not-available' : ''
+          d.isNotAvailable === true ? 'co-bulk-search-item-not-available' : ''
         "
       >
         <div
@@ -79,7 +79,7 @@
             {{ pretty(d.labelName) }}.eth
           </div>
           <a
-            *ngIf="d.isAvailable === true"
+            *ngIf="d.isNotAvailable === true"
             target="_blank"
             href="https://app.ens.domains/name/{{ d.labelName }}.eth/details"
             class="cos-body-3"

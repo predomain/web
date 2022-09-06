@@ -15,9 +15,12 @@
           {{ "HEADER.SETTINGS" | translate }}
         </b>
       </div>
-      <div fxFlex class="cos-right-text">
+      <div fxFlex class="cos-right-text" fxLayoutGap="20px">
         <a (click)="saveChanges(); closeDialog()" class="cos-body-4">
           {{ "BUTTON.SAVE_CHANGES" | translate }}
+        </a>
+        <a (click)="closeDialog()" class="cos-body-4">
+          {{ "BUTTON.CLOSE" | translate }}
         </a>
       </div>
     </div>

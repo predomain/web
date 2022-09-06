@@ -1,4 +1,3 @@
-<div class="shooting_star" *ngFor="let s of starCount"></div>
 <div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
   <div
     fxFlex="90"
@@ -27,28 +26,29 @@
   ></app-main-header>
 </div>
 <div
-  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
-></div>
-<div
-  class="cos-moon cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
-></div>
-<div
   #fadeTop
   class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
   fxLayout="row"
   fxLayoutAlign="center end"
 ></div>
 <div
+  class="cos-pos-fixed cos-pos-bottom-reset cos-pos-right-reset cos-padding-3"
+>
+  <div class="cos-bg-darker-gray">
+    <mat-icon> </mat-icon>
+  </div>
+</div>
+<div
   appGetScrollableXy
   (scrollPosition)="
-    $event[1] > 100
+    $event[1] > 50
       ? (fadeTop.style.display = 'flex')
       : (fadeTop.style.display = 'none');
     $event[1] > 300
       ? (filters.style.position = 'sticky')
       : (filters.style.position = 'static');
     $event[1] > 300
-      ? (filters.style.top = '130px')
+      ? (filters.style.top = '90px')
       : (filters.style.top = 'none')
   "
   class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
@@ -56,23 +56,19 @@
   <div
     fxLayout="row"
     fxLayoutAlign="center start"
-    class="co-banner cos-pos-fixed cos-fluid-width"
-  ></div>
-  <div
-    fxLayout="row"
-    fxLayoutAlign="center start"
-    class="co-profile-content-container cos-pos-absolute cos-fluid-width cos-fluid-height"
+    class="co-profile-content-container cos-pos-absolute cos-fluid-width cos-fluid-height cos-bg-darker-gray"
   >
     <div
-      fxFlex="90"
+      fxFlex="100"
       fxLayout="column"
-      fxLayoutGap="10px"
-      class="co-profile-content"
+      fxLayoutGap="20px"
+      class="co-profile-content cos-padding-2 cos-bg-darker-gray"
     >
       <div
-        fxLayout="row"
         fxFlex="90"
-        class="cos-fluid-width cos-overflow-hidden"
+        fxLayout="row"
+        fxLayoutGap="30px"
+        class="co-profile-header cos-fluid-width cos-overflow-hidden"
       >
         <div fxLayout="column" fxFlex="20" class="co-avatar-container">
           <div
@@ -84,13 +80,14 @@
           ></div>
           <div
             fxLayoutAlign="stretch stretch"
-            class="cos-fluid-height cos-fluid-width cos-border-radius-2"
+            class="cos-fluid-height cos-fluid-width"
           >
             <app-preview-image
               *ngIf="ethNameData === undefined"
               fxFlex
+              (imageLoaded)="avatarResolved = true"
               [preview]="'assets/img-blank.png'"
-              [error]="'assets/profile-blank.png'"
+              [error]="'assets/profile-blank.svg'"
               [style.height]="
                 canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
               "
@@ -99,8 +96,9 @@
             <app-preview-image
               *ngIf="ethNameData !== undefined"
               fxFlex
+              (imageLoaded)="avatarResolved = true"
               [preview]="'assets/img-blank.png'"
-              [error]="'assets/profile-blank.png'"
+              [error]="'assets/profile-blank.svg'"
               [src]="
                 ensMetadataAPI +
                 hashToBigIntString(ethNameData.labelhash) +
@@ -111,16 +109,52 @@
               "
               class="cos-border-radius-2"
             ></app-preview-image>
+            <div
+              *ngIf="ethNameData === undefined && avatarResolved === true"
+              class="co-no-name cos-wallet-address-text-cut cos-pos-absolute cos-right-text"
+              fxFlex="0 1 11.5"
+            >
+              <b>
+                {{ userName }}
+              </b>
+            </div>
           </div>
         </div>
-        <div fxFlex fxLayout="column" fxLayoutAlign="end start">
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutGap="20px"
+          fxLayoutAlign="start start"
+        >
           <div
-            fxLayout="column"
-            fxLayoutGap="10px"
-            class="co-info-container cos-padding-2 cos-no-padding-top"
+            fxFlex="50px"
+            fxLayout="row"
+            fxFlexAlign="top"
+            fxLayoutAlign="start start"
+            class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
           >
-            <div fxFlex class="co-title-text">
+            <a href="/home">Home</a>
+            <span
+              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+            >
+              <mat-icon class="cos-small-icon" color="primary"
+                >arrow_forward</mat-icon
+              >
+            </span>
+            <span class="cos-gray-text">
               {{ userName }}
+            </span>
+          </div>
+          <div fxFlex fxLayout="column" class="co-info-container">
+            <div fxFlex fxLayout="row" class="co-title-text">
+              <div
+                fxFlex="0 1 200px"
+                class="cos-wallet-address-text-cut cos-overflow-hidden"
+              >
+                <b>
+                  {{ userName }}
+                </b>
+              </div>
             </div>
             <div fxLayoutAlign="start center" fxLayoutGap="5px">
               <div>
@@ -133,9 +167,10 @@
             </div>
           </div>
           <div
+            fxFlex
             fxLayout="row"
             fxLayoutGap="20px"
-            class="co-info-container cos-padding-2 cos-body-2 cos-no-padding-top"
+            class="co-info-container cos-body-2"
           >
             <div fxLayout="row" fxLayoutGap="10px" class="cos-body-3">
               <div
@@ -190,9 +225,11 @@
             </div>
           </div>
           <div
+            fxFlex
             fxLayout="row"
             fxLayoutGap="20px"
-            class="co-info-container cos-padding-2 cos-body-2 cos-no-padding-top"
+            fxLayoutAlign="end start"
+            class="co-info-container cos-body-2 cos-padding-2 cos-no-padding-left cos-no-padding-bottom"
           >
             <div>
               <div class="cos-body-0">
@@ -207,9 +244,9 @@
       </div>
       <div
         fxLayout="row"
-        fxFlex="90"
-        fxLayoutGap="20px"
-        class="cos-fluid-width"
+        fxFlex
+        fxLayoutGap="30px"
+        class="cos-fluid-width cos-bg-darker-gray"
       >
         <div class="co-filters">
           <div #filters fxLayout="column" class="co-filters-content">
@@ -217,7 +254,7 @@
               fxLayout="row"
               fxLayoutAlign="start center"
               fxLayoutGap="10px"
-              class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right"
+              class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
             >
               <mat-icon>filter_alt</mat-icon>
               <span>
@@ -226,7 +263,7 @@
             </div>
             <div
               fxLayoutGap="10px"
-              class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right"
+              class="cos-padding-1 cos-no-padding-left cos-no-padding-right cos-bg-darker-gray cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right"
             >
               <form
                 fxFlex
@@ -327,7 +364,7 @@
                   "
                 ></mat-slider>
 
-                <div fxLayout="column" fxLayoutGap="10px" class="cos-padding-1">
+                <div fxLayout="column" fxLayoutGap="10px">
                   <div fxFlex>
                     <mat-slide-toggle
                       [checked]="typesFilter.alphabet"
@@ -375,7 +412,7 @@
         >
           <div
             fxFlex="0 0 auto"
-            class="cos-padding-1 cos-bg-darker-gray cos-border-radius-2"
+            class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
           >
             <div fxFlex>
               <b> {{ "LABELS.DOMAINS" | translate }} </b>
@@ -389,7 +426,7 @@
               </mat-icon>
               <span class="cos-gray-text"> | </span>
               <mat-icon
-                class="cos-icon-can-activate"
+                class="cos-icon-can-activate cos-disappear-on-mobile"
                 [color]="displayMode === displayModes.CHUNK ? 'primary' : ''"
                 (click)="setDisplayMode(displayModes.CHUNK)"
               >
@@ -403,7 +440,7 @@
                 grid_view
               </mat-icon>
               <mat-icon
-                class="cos-icon-can-activate cos-disappear-on-mobile"
+                class="cos-icon-can-activate"
                 [color]="displayMode === displayModes.LINEAR ? 'primary' : ''"
                 (click)="setDisplayMode(displayModes.LINEAR)"
               >
@@ -434,23 +471,20 @@
           <div
             *ngIf="hasDomainsListLoaded === false"
             fxFlex
-            class="cos-fluid-width cos-fluid-height"
-            fxLayoutAlign="center center"
+            fxLayout="column"
+            fxLayoutAlign="start start"
+            class="cos-fluid-width cos-fluid-height cos-overflow-hidden"
           >
-            <div fxFlex="0 0 auto">
-              <app-custom-spinner
-                [spinnerText]="'SPINNER.LOADING_DATA'"
-                [spinnerSize]="150"
-                [mode]="spinnerModes.LOADING"
-                [customIcon]="'spin'"
-              >
-              </app-custom-spinner>
-            </div>
+            <div
+              *ngFor="let d of placeholders"
+              fxFlex="70px"
+              class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer cos-placeholder cos-border-radius-1"
+            ></div>
           </div>
           <div
+            *ngIf="hasDomainsListLoaded === true"
             fxFlex
             fxLayout="row wrap"
-            *ngIf="hasDomainsListLoaded === true"
             fxLayoutAlign="start start"
           >
             <ng-container *ngIf="displayMode === displayModes.LINEAR">
@@ -476,7 +510,7 @@
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
     <app-preview-image
       [preview]="'assets/img-blank.png'"
-      [error]="'assets/profile-blank.png'"
+      [error]="'assets/profile-blank.svg'"
       [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
       [style.height]="'auto'"
       class="co-item-with-avatar cos-border-radius-2 cos-pointer"
@@ -489,7 +523,7 @@
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
     <div
       class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer"
-      (click)="goToDomain(d.labelName)"
+      (click)="goToDomain(pretty(d.labelName))"
     >
       <mat-progress-bar
         *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
@@ -510,9 +544,16 @@
         <div
           fxFlex
           fxLayoutAlign="start center"
+          fxLayoutGap="10px"
           class="cos-wallet-address-text-cut"
         >
           {{ pretty(d.labelName) }}.eth
+          <mat-icon
+            *ngIf="domainValid(d.labelName) === false"
+            color="accent"
+            class="cos-small-icon cos-pointer"
+            >warning</mat-icon
+          >
         </div>
         <div
           fxFlex
@@ -522,7 +563,7 @@
           <span class="cos-gray-text">
             {{ "LABELS.REGISTRATION_DATE" | translate }}:&nbsp;
           </span>
-          {{ d.registrationDate | timeAgo }}
+          {{ d.registrationDate | formatTime }}
         </div>
         <div
           fxFlex
@@ -570,11 +611,18 @@
       >
         <div
           fxFlex
+          fxLayoutGap="10px"
           fxLayoutAlign="start center"
           class="cos-wallet-address-text-cut"
         >
           {{ pretty(d.labelName) }}.eth
         </div>
+        <mat-icon
+          *ngIf="domainValid(d.labelName) === false"
+          color="accent"
+          class="cos-small-icon cos-pointer"
+          >warning</mat-icon
+        >
       </div>
     </div>
   </ng-container>

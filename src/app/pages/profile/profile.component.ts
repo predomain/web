@@ -9,7 +9,14 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { delayWhen, map, retryWhen, switchMap, take } from 'rxjs/operators';
+import {
+  delay,
+  delayWhen,
+  map,
+  retryWhen,
+  switchMap,
+  take,
+} from 'rxjs/operators';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
@@ -47,6 +54,7 @@ export interface ProfileTexts {
   telegram?: string;
   url?: string;
   reddit?: string;
+  predomainBanner?: string;
 }
 
 @Component({
@@ -58,11 +66,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
-  starCount = new Array(3).fill(0);
+  placeholders = new Array(10).fill(0);
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   hasDomainsListLoaded = false;
+  avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
-  displayMode = DisplayModes.CHUNK;
+  displayMode = DisplayModes.LINEAR;
   profileTexts: ProfileTexts = {};
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
@@ -168,35 +177,43 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.userAddress = r;
           return this.userService.getUserDomains((r as string).toLowerCase());
         }),
+        delay(1000),
         map((r) => {
           this.userDomains = (r as any).registrations
+            .filter((d) => {
+              return d.domain.labelName !== null;
+            })
             .map((d) => {
-              const gPeriod = this.ensService.calculateGracePeriodPercentage(
-                parseInt(d.expiryDate, 10)
-              );
-              if (
-                isEthName === true &&
-                d.domain.labelName.toLowerCase() ===
-                  this.userName.replace('.eth', '').toLowerCase()
-              ) {
-                this.ethNameData = d.domain;
-                this.getProfileTexts();
+              try {
+                const gPeriod = this.ensService.calculateGracePeriodPercentage(
+                  parseInt(d.expiryDate, 10)
+                );
+                if (
+                  isEthName === true &&
+                  d.domain.labelName.toLowerCase() ===
+                    this.userName.replace('.eth', '').toLowerCase()
+                ) {
+                  this.ethNameData = d.domain;
+                  this.getProfileTexts();
+                }
+                const fData = {
+                  id: d.domain.id.toLowerCase(),
+                  labelName: d.domain.labelName.toLowerCase(),
+                  labelHash: d.domain.labelhash.toLowerCase(),
+                  isNotAvailable: false,
+                  expiry: (parseInt(d.expiryDate) * 1000).toString(),
+                  gracePeriodPercent:
+                    gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
+                  registrationDate: (
+                    parseInt(d.registrationDate) * 1000
+                  ).toString(),
+                  createdAt: (parseInt(d.domain.createdAt) * 1000).toString(),
+                } as ENSDomainMetadataModel;
+                this.hasDomainsListLoaded = true;
+                return fData;
+              } catch (e) {
+                throw e;
               }
-              const fData = {
-                id: d.domain.id.toLowerCase(),
-                labelName: d.domain.labelName.toLowerCase(),
-                labelHash: d.domain.labelhash.toLowerCase(),
-                isAvailable: false,
-                expiry: (parseInt(d.expiryDate) * 1000).toString(),
-                gracePeriodPercent:
-                  gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
-                registrationDate: (
-                  parseInt(d.registrationDate) * 1000
-                ).toString(),
-                createdAt: (parseInt(d.domain.createdAt) * 1000).toString(),
-              } as ENSDomainMetadataModel;
-              this.hasDomainsListLoaded = true;
-              return fData;
             })
             .sort((a, b) => b.registrationDate - a.registrationDate);
         }),
@@ -269,9 +286,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
           }
           return this.userService.getUserText(provider, ethName, 'url');
         }),
-        map((r) => {
+        switchMap((r) => {
           if (r !== null) {
             this.profileTexts.url = r as string;
+          }
+          return this.userService.getUserText(
+            provider,
+            ethName,
+            'predomain_banner'
+          );
+        }),
+        map((r) => {
+          if (r !== null) {
+            this.profileTexts.predomainBanner = r as string;
           }
         })
       )
@@ -380,7 +407,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   goToDomain(domain: string) {
     this.pagesFacade.gotoPageRoute(
-      'domain/' + domain + '.eth',
+      'domain/' +
+        this.ensService.performNormalisation(domain).replace(/#⃣/g, '%23') +
+        '.eth',
       PagesEnum.DOMAIN
     );
   }
@@ -436,6 +465,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return this.ensService.prettify(name);
   }
 
+  domainValid(name: string) {
+    return this.ensService.isDomainNameNotValid(name);
+  }
+
   isEmojiInLabel(label: string) {
     return this.miscUtils.testEmoji().test(label);
   }
@@ -457,7 +490,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getDomainLink(domain: string) {
-    return environment.baseUrl + '/#/domain/' + domain;
+    return environment.baseUrl + '/#/domain/' + domain.replace(/#⃣/g, '%23');
   }
 
   getDateToStamp(date: string) {

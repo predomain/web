@@ -3,7 +3,7 @@ export interface ENSDomainMetadataModel {
   labelName?: string;
   labelHash?: string;
   expiry?: string;
-  isAvailable?: boolean;
+  isNotAvailable?: boolean;
   gracePeriodPercent?: number;
   registrationDate?: string;
   owner?: string;

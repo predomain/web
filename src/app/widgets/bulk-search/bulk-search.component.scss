@@ -96,6 +96,7 @@
 
 .co-bulk-search-results {
   margin-top: -25px;
+  padding-bottom: 120px;
 }
 
 .co-advanced-input-container {
@@ -112,8 +113,15 @@
     max-width: 1050px;
     @media only screen and (max-width: 1000px) {
       height: 100% !important;
+      border-radius: 0 !important;
       max-width: 100%;
       flex: 1;
     }
+  }
+}
+
+.co-tool-button {
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
   }
 }

@@ -5,6 +5,7 @@ import { MiscUtilsService } from '../misc-utils';
 import { catchError, switchMap } from 'rxjs/operators';
 import { PagesFacadeService, UserFacadeService } from '../../store/facades';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { UserModel } from 'src/app/models/states/user-interfaces';
 
 declare const ethereum;
 @Injectable({
@@ -39,6 +40,13 @@ export class MetamaskService {
   chainChangedDetectionDaemon() {
     ethereum.on('chainChanged', (chainId) => {
       this.pagesFacade.setNetworkChainCode(parseInt(chainId, 16));
+    });
+    ethereum.on('accountsChanged', (chainId) => {
+      // this.userFacadeService.updateUser({
+      //     timestamp?: string;
+      //     walletAddress?: string;
+      //     originalConnectAddress?: string;
+      // } as UserModel);
     });
   }
 

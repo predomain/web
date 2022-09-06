@@ -10,6 +10,7 @@ import {
   ENSRegistrationRemoveMany,
   ENSRegistrationRemoveOne,
   ENSRegistrationUpdate,
+  ENSRegistrationUpsertMany,
   ENSRegistrationUpsertOne,
 } from '../actions';
 import {
@@ -50,6 +51,10 @@ export class ENSRegistrationFacadeService {
 
   upsertRegistration(registration: ENSDomainMetadataModel) {
     this.store.dispatch(new ENSRegistrationUpsertOne(registration));
+  }
+
+  upsertAllRegistration(registrations: ENSDomainMetadataModel[]) {
+    this.store.dispatch(new ENSRegistrationUpsertMany(registrations));
   }
 
   updateRegistration(registration: ENSDomainMetadataModel) {

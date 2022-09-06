@@ -11,39 +11,29 @@
   font-size: 30px;
 }
 
+.co-profile-banner {
+  width: calc(80% - 70px);
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: right;
+  height: 300px;
+  margin-top: 70px;
+  position: absolute;
+  z-index: -1;
+  border-bottom-right-radius: var(--cos-border-radius-2);
+  border-top-right-radius: var(--cos-border-radius-2);
+}
+
 .co-top-fade {
-  background-image: linear-gradient(
-    0deg,
-    rgb(0, 0, 0, 0) 0%,
-    rgb(0, 0, 0, 1) 50%,
-    rgb(0, 0, 0, 1) 100%
-  );
-  height: 150px;
-}
-
-.co-bg {
-  background: url(/assets/stars.webp);
-  opacity: 0.2;
-}
-
-.co-banner {
-  background-image: linear-gradient(
-    0deg,
-    rgb(0, 0, 0, 0) 0%,
-    rgb(0, 0, 0, 1) 50%,
-    rgb(0, 0, 0, 1) 100%
-  );
-  height: 350px;
-  z-index: 999;
+  background-color: var(--co-top-fade-color) !important;
+  height: 90px;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 10%), 0 4px 5px 0 rgb(0 0 0 / 5%),
+    0 1px 10px 0 rgb(0 0 0 / 5%) !important;
 }
 
 .co-profile-content-container {
-  padding-top: 120px;
+  padding-top: 70px;
 }
-.co-profile-content {
-  padding-bottom: 80px;
-}
-
 .co-profile-content,
 .co-content-container,
 .co-bg {
@@ -173,12 +163,13 @@
   }
 }
 
-.co-info-container {
-  @media only screen and (max-width: 1000px) {
-    padding-left: 10px !important;
-  }
-}
-
 .co-form-label {
   margin-top: 10px;
+}
+
+.co-no-name {
+  font-size: 1.7vw;
+  margin-top: 15.5%;
+  margin-left: 2%;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.225);
 }

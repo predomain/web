@@ -6,15 +6,20 @@
       height: 52px !important;
       overflow: hidden;
       th {
-        flex: 1;
+        flex: 1 1;
         justify-content: center;
         &:first-of-type {
-          flex: 1 1 10% !important;
+          flex: 1 1 20% !important;
         }
-        &:nth-of-type(3n) {
+        &:nth-of-type(2) {
+          @media only screen and (max-width: 1000px) {
+            display: none !important;
+          }
+        }
+        &:nth-of-type(3) {
           justify-content: flex-end !important;
         }
-        &:nth-of-type(4n) {
+        &:nth-of-type(4) {
           justify-content: flex-end !important;
         }
         &:last-of-type {
@@ -39,15 +44,20 @@
       height: 52px !important;
       overflow: hidden;
       th {
-        flex: 1;
+        flex: 1 1;
         justify-content: center;
         &:first-of-type {
-          flex: 1 1 10% !important;
+          flex: 1 1 20% !important;
         }
-        &:nth-of-type(3n) {
+        &:nth-of-type(2) {
+          @media only screen and (max-width: 1000px) {
+            display: none !important;
+          }
+        }
+        &:nth-of-type(3) {
           justify-content: flex-end !important;
         }
-        &:nth-of-type(4n) {
+        &:nth-of-type(4) {
           justify-content: flex-end !important;
         }
         &:last-of-type {
@@ -67,26 +77,31 @@
   }
   tbody {
     width: calc(80% - 60px) !important;
-    height: calc(100% - 305px) !important;
+    height: calc(100% - 290px) !important;
     @media only screen and (max-width: 1000px) {
-      width: calc(100% - 50px) !important;
-      height: calc(100% - 315px) !important;
+      width: 100% !important;
+      height: calc(100% - 285px) !important;
     }
     tr {
       height: 50px !important;
       overflow: hidden;
       td {
-        flex: 1;
+        flex: 1 1;
         align-items: center !important;
         &:first-of-type {
           overflow: hidden;
-          flex: 1 1 10% !important;
+          flex: 1 1 20% !important;
           align-items: flex-start !important;
         }
-        &:nth-of-type(3n) {
+        &:nth-of-type(2) {
+          @media only screen and (max-width: 1000px) {
+            display: none !important;
+          }
+        }
+        &:nth-of-type(3) {
           align-items: flex-end !important;
         }
-        &:nth-of-type(4n) {
+        &:nth-of-type(4) {
           align-items: flex-end !important;
         }
         &:last-of-type {

@@ -5,6 +5,9 @@ import {
   HostListener,
   AfterViewInit,
   OnDestroy,
+  HostBinding,
+  OnChanges,
+  DoCheck,
 } from '@angular/core';
 import { MatTab } from '@angular/material/tabs';
 import { Router } from '@angular/router';
@@ -20,8 +23,10 @@ const globalAny: any = global;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AppComponent implements OnInit, DoCheck, AfterViewInit {
+  @HostBinding('class') className = '';
   @ViewChild('navigation', { static: true }) navigation: MatTab;
+  lightMode = false;
 
   @HostListener('window:online', ['$event'])
   onNetworkOnline(target) {
@@ -50,7 +55,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pagesFacade.setNetworkChainCode(cId, false);
   }
 
-  ngOnDestroy() {}
+  ngDoCheck(): void {
+    const cdk = document.getElementsByClassName('cdk-overlay-container');
+    if (cdk.length > 0 && this.lightMode === true) {
+      cdk[0].classList.add('light-mode');
+    }
+  }
 
   ngAfterViewInit() {
     if (navigator.onLine === true) {

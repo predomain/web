@@ -58,6 +58,8 @@ export class CheckoutServicesService {
     if (Object.keys(payments).length > 0) {
       pending = Object.keys(payments).filter(
         (p) =>
+          (payments[p].paymentType === PaymentTypesEnum.COMMIT ||
+            payments[p].paymentType === PaymentTypesEnum.REGISTER) &&
           payments[p].paymentStatus === false &&
           payments[p].paymentHash !== '' &&
           payments[p].paymentHash !== undefined &&
@@ -66,6 +68,8 @@ export class CheckoutServicesService {
       );
       fulFilled = Object.keys(payments).filter(
         (p) =>
+          (payments[p].paymentType === PaymentTypesEnum.COMMIT ||
+            payments[p].paymentType === PaymentTypesEnum.REGISTER) &&
           payments[p].paymentStatus === true &&
           payments[p].paymentHash !== '' &&
           payments[p].paymentHash !== undefined &&

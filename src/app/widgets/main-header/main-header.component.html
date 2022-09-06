@@ -80,7 +80,7 @@
               fxLayoutAlign="center center"
               class="cos-body-5 cos-chip-regular cos-chip-dark cos-chip-padded cos-gray-text"
             >
-              {{ "LABELS.PROFILE" | translate }}
+              {{ "LABELS.GO_TO_PROFILE" | translate }}
             </div>
           </div>
         </div>
@@ -165,6 +165,19 @@
       >
         <mat-icon>layers</mat-icon>
       </div>
+      <!-- <div
+        *ngIf="
+          show === undefined ||
+          (show !== undefined && show.showManagement === true)
+        "
+        fxFlex="0 0 auto"
+        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        (click)="openConnect()"
+      >
+        <mat-icon>magic_button</mat-icon>
+      </div> -->
       <div
         fxFlex="0 0 auto"
         class="cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
@@ -279,6 +292,19 @@
       >
         <mat-icon>layers</mat-icon>
       </div>
+      <!-- <div
+        *ngIf="
+          show === undefined ||
+          (show !== undefined && show.showManagement === true)
+        "
+        fxFlex="0 0 auto"
+        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        (click)="goToManage()"
+      >
+        <mat-icon>magic_button</mat-icon>
+      </div> -->
       <div
         fxFlex="0 0 auto"
         class="cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
@@ -362,6 +388,10 @@
     >
     {{ "HEADER.BOOKMARKS" | translate }}
   </button>
+  <!-- <button mat-menu-item (click)="goToManage()" class="cos-show-on-mobile">
+    <mat-icon>magic_button</mat-icon>
+    {{ "HEADER.MANAGE_DOMAINS" | translate }}
+  </button> -->
   <button mat-menu-item (click)="openDocs()">
     <mat-icon>help</mat-icon>
     {{ "HEADER.DOCS" | translate }}

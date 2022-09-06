@@ -8,7 +8,13 @@ import {
   OnInit,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { HeaderBackgroundColorsEnum } from '../../models/states/header-interfaces';
 import {
   PagesEnum,
@@ -168,9 +174,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       .subscribe();
     this.paymentStateSubscription = this.paymentFacadeService.paymentState$
       .pipe(
-        switchMap((s) => {
+        map((s) => {
           this.paymentState = s;
-          return this.asseCheckoutStatus();
+          this.asseCheckoutStatus();
         })
       )
       .subscribe();
@@ -238,7 +244,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   asseCheckoutStatus() {
     if (this.assessCheckoutStatusSubscription !== undefined) {
-      return of(null);
+      return null;
     }
     let locked = false;
     this.assessCheckoutStatusSubscription = timer(0, 250)
@@ -296,6 +302,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
             );
           }
           locked = false;
+        }),
+        catchError((e) => {
+          return of(null);
         })
       )
       .subscribe();
@@ -350,7 +359,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
    *********************/
   commitRegistration() {
     if (
-      this.bulkSearchResults.filter((d) => d.isAvailable === true).length > 0
+      this.bulkSearchResults.filter((d) => d.isNotAvailable === true).length > 0
     ) {
       this.snackBar.open(
         'Cannot proceed with an already registered domain, pleaes try again.',
@@ -397,7 +406,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   completeRegistration() {
     if (
-      this.bulkSearchResults.filter((d) => d.isAvailable === true).length > 0
+      this.bulkSearchResults.filter((d) => d.isNotAvailable === true).length > 0
     ) {
       this.snackBar.open(
         'Cannot proceed with an already registered domain, pleaes try again.',
@@ -598,7 +607,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           });
           const fData = {
             labelName: f.toLowerCase(),
-            isAvailable: found === undefined ? false : true,
+            isNotAvailable: found === undefined ? false : true,
           } as ENSDomainMetadataModel;
           if (found === undefined) {
             this.bulkSearchAvailableCount++;
@@ -741,7 +750,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     let totalCostCalculated = 0.0;
     for (const d of Object.keys(this.registrationDomains)) {
       totalCostCalculated += this.ensService.calculateDomainsPrice(
-        this.registrationDomains[d],
+        this.registrationDomains[d].labelName,
         this.paymentState.ethUsdPrice,
         parseFloat(this.domainConfigurationForm.controls.duration.value)
       );

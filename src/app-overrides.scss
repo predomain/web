@@ -1004,17 +1004,14 @@ ol {
   min-height: 0 !important;
   box-shadow: 0 2px 4px -1px rgb(0 0 0 / 10%), 0 4px 5px 0 rgb(0 0 0 / 5%),
     0 1px 10px 0 rgb(0 0 0 / 5%) !important;
-  background: var(--co-gray-bg) !important;
+  background-color: var(--co-gray-bg) !important;
   .mat-menu-content {
     padding: 0 !important;
     .mat-menu-item {
       .mat-menu-submenu-icon {
-        color: white;
+        color: var(--co-default-text-color);
       }
-      mat-icon {
-        color: white !important;
-      }
-      color: white !important;
+      color: var(--co-default-text-color) !important;
       text-align: left;
       font-weight: bold;
       &:hover {
@@ -1043,7 +1040,7 @@ ol {
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     tbody {
-      border-bottom: solid 2px var(--co-bg-neutral-color) !important;
+      border-bottom: solid 2px var(--co-gray-bg) !important;
     }
   }
 
@@ -1057,7 +1054,7 @@ ol {
       height: 50px;
       th {
         height: 50px;
-        border-bottom: solid 2px var(--co-bg-neutral-color) !important;
+        border-bottom: solid 2px var(--co-gray-bg) !important;
       }
     }
   }
@@ -1077,7 +1074,7 @@ ol {
 
   tbody {
     .mat-row {
-      border-bottom: solid 2px var(--co-bg-neutral-color) !important;
+      border-bottom: solid 2px var(--co-gray-bg) !important;
       &:last-of-type {
         border-bottom: 0 !important;
       }
@@ -1358,9 +1355,9 @@ ol {
   background: rgb(47, 49, 49);
   background: linear-gradient(
       to right,
-      rgba(47, 49, 49, 1) 8%,
-      rgba(18, 22, 25, 1) 36%,
-      rgba(47, 49, 49, 1) 66%
+      var(--co-gray-bg) 8%,
+      var(--co-bg-neutral-color) 36%,
+      var(--co-gray-bg) 66%
     )
     90% 0% / 1200px;
 }

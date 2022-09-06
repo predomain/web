@@ -9,6 +9,7 @@
   ></div>
   <ng-container *ngTemplateOutlet="bulkSearchHeader"></ng-container>
   <ng-container *ngTemplateOutlet="bulkSearchContents"></ng-container>
+  <ng-container *ngTemplateOutlet="additionalTools"></ng-container>
 </div>
 
 <!-- BULK SEARCH CONTENTS -->
@@ -71,12 +72,12 @@
     <ng-container *ngFor="let d of bulkSearchResults">
       <div
         *ngIf="
-          (bulkSearchAvailableOnly === true && d.isAvailable === false) ||
+          (bulkSearchAvailableOnly === true && d.isNotAvailable === false) ||
           bulkSearchAvailableOnly === false
         "
         class="co-bulk-search-item-container"
         [ngClass]="
-          d.isAvailable === true ? 'co-bulk-search-item-not-available' : ''
+          d.isNotAvailable === true ? 'co-bulk-search-item-not-available' : ''
         "
       >
         <mat-progress-bar
@@ -103,7 +104,7 @@
             {{ pretty(d.labelName) }}.eth
           </div>
           <a
-            *ngIf="d.isAvailable === true && registrationListOpen === false"
+            *ngIf="d.isNotAvailable === true && registrationListOpen === false"
             href="{{ getDomainLink(d.labelName + '.eth') }}"
             target="_blank"
             class="cos-body-3"
@@ -125,7 +126,7 @@
             >bookmark_add</mat-icon
           >
           <mat-icon
-            *ngIf="d.isAvailable === false || registrationListOpen === true"
+            *ngIf="d.isNotAvailable === false || registrationListOpen === true"
             (click)="
               registrationService.isDomainOnRegistrationList(
                 registrationDomains,
@@ -138,7 +139,7 @@
               registrationService.isDomainOnRegistrationList(
                 registrationDomains,
                 d.labelName
-              ) === true
+              ) === true && registrationListOpen === false
                 ? 'primary'
                 : ''
             "
@@ -191,7 +192,12 @@
         id="co-bulk-advance-input"
         class="co-advanced-input cos-inner-box-sadow cos-body-1"
       ></textarea>
-      <div fxFlex fxLayout="row" fxLayoutGap="20px" class="cos-fluid-width">
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayoutGap="20px"
+        class="cos-fluid-width cos-disappear-on-mobile"
+      >
         <mat-form-field
           fxFlex
           fxFlexAlign="center"
@@ -230,13 +236,74 @@
         fxLayout="row"
         fxLayoutGap="20px"
         fxLayoutAlign="end center"
-        class="cos-fluid-width"
+        class="cos-fluid-width cos-disappear-on-mobile"
       >
         <div fxFlex class="cos-gray-text cos-body-3">
           <b>{{ "LABELS.TIP" | translate }}:</b>
           {{ "LABELS.ADVANCED_SEARCH_TIP" | translate }}
         </div>
         <div fxFlex fxLayoutAlign="end center">
+          <mat-slide-toggle
+            class="cos-body-3"
+            [checked]="bulkSearchAvailableOnly"
+            (change)="bulkSearchAvailableOnly = $event.checked"
+          >
+            {{ "BUTTON.SHOW_AVAILABLE_ONLY" | translate }}</mat-slide-toggle
+          >
+        </div>
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutGap="10px"
+        class="cos-fluid-width cos-show-on-mobile"
+      >
+        <mat-form-field
+          fxFlex
+          fxFlexAlign="center"
+          class="cos-body-0 cos-fluid-width cos-input-field-no-label cos-input-field-large"
+        >
+          <input
+            #prefix
+            class="cos-fluid-width cos-bg-gray"
+            matInput
+            type="text"
+            placeholder="{{ 'LABELS.ENTER_PREFIX' | translate }}..."
+            autocomplete="off"
+            maxlength="77"
+            value=""
+          />
+        </mat-form-field>
+        <mat-form-field
+          fxFlex
+          fxFlexAlign="center"
+          class="cos-body-0 cos-fluid-width cos-input-field-no-label cos-input-field-large"
+        >
+          <input
+            #suffix
+            class="cos-fluid-width cos-bg-gray"
+            matInput
+            type="text"
+            placeholder="{{ 'LABELS.ENTER_SUFFIX' | translate }}..."
+            autocomplete="off"
+            maxlength="77"
+            value=""
+          />
+        </mat-form-field>
+      </div>
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutGap="20px"
+        fxLayoutAlign="center center"
+        class="cos-fluid-width cos-show-on-mobile"
+      >
+        <div fxFlex class="cos-gray-text cos-body-3">
+          <b>{{ "LABELS.TIP" | translate }}:</b>
+          {{ "LABELS.ADVANCED_SEARCH_TIP" | translate }}
+        </div>
+        <div fxFlex fxLayoutAlign="start center">
           <mat-slide-toggle
             class="cos-body-3"
             [checked]="bulkSearchAvailableOnly"
@@ -359,5 +426,51 @@
         </div>
       </div>
     </div>
+  </div>
+</ng-template>
+
+<!-- ADDITIONAL TOOLS -->
+<ng-template #additionalTools>
+  <div
+    fxLayoutAlign="start start"
+    fxLayoutGap="20px"
+    class="cos-fluid-width cos-box-shadow cos-pos-fixed cos-pos-bottom-reset cos-padding-3 cos-bg-darker-gray"
+  >
+    <button
+      mat-button
+      class="co-tool-button"
+      *ngIf="registrationListOpen === true || bulkSearchBookmarksShow === true"
+      [disabled]="
+        (registrationListOpen === true && countRegistrations() === 0) ||
+        (bulkSearchBookmarksShow === true && countBookmarks() === 0)
+      "
+      (click)="
+        registrationListOpen === true
+          ? removeAllRegistrations()
+          : removeAllBookmarks()
+      "
+    >
+      {{ "BUTTON.REMOVE_ALL_ITEMS" | translate }}
+    </button>
+    <button
+      mat-button
+      class="co-tool-button"
+      *ngIf="
+        registrationListOpen === false && bulkSearchBookmarksShow === false
+      "
+      (click)="addAllToRegistration()"
+    >
+      {{ "BUTTON.ADD_ALL_TO_CART" | translate }}
+    </button>
+    <button
+      mat-button
+      class="co-tool-button"
+      *ngIf="
+        registrationListOpen === false && bulkSearchBookmarksShow === false
+      "
+      (click)="addAllToBookmark()"
+    >
+      {{ "BUTTON.BOOKMARK_ALL" | translate }}
+    </button>
   </div>
 </ng-template>

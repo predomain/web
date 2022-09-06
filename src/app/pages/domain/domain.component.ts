@@ -62,7 +62,7 @@ export enum EventTypes {
   styleUrls: ['./domain.component.scss'],
 })
 export class DomainComponent implements OnInit, OnDestroy {
-  starCount = new Array(10).fill(0);
+  placeholders = new Array(10).fill(0);
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
@@ -71,6 +71,7 @@ export class DomainComponent implements OnInit, OnDestroy {
   eventTypeIcons: typeof EnsEvensSymbolEnum = EnsEvensSymbolEnum;
   eventTypes: typeof EnsEventsEnum = EnsEventsEnum;
   hasDomainsListLoaded = false;
+  avatarResolved = false;
   metadataForm: FormGroup;
   metadata;
   userDomains;
@@ -155,7 +156,8 @@ export class DomainComponent implements OnInit, OnDestroy {
       this.getUserDomainsSubscripton.unsubscribe();
     }
     let retries = 0;
-    this.getUserDomainsSubscripton = of(this.domain)
+    console.log(this.domain);
+    this.getUserDomainsSubscripton = of(this.domain.replace(/#/g, '#⃣'))
       .pipe(
         switchMap((r) => {
           return this.ensService.getDomain(
@@ -175,7 +177,7 @@ export class DomainComponent implements OnInit, OnDestroy {
               id: d.id.toLowerCase(),
               labelName: d.labelName.toLowerCase(),
               labelHash: d.domain.labelhash.toLowerCase(),
-              isAvailable: false,
+              isNotAvailable: false,
               expiry: d.expiryDate,
               gracePeriodPercent:
                 gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
@@ -471,7 +473,7 @@ export class DomainComponent implements OnInit, OnDestroy {
   }
 
   pretty(name: string) {
-    return this.ensService.prettify(name);
+    return this.ensService.prettify(name.replace(/#/g, '#⃣'));
   }
 
   copyShareLink() {
@@ -535,6 +537,6 @@ export class DomainComponent implements OnInit, OnDestroy {
       return false;
     }
     const domain = this.activatedRoute.snapshot.params.domain;
-    return domain;
+    return domain.replace(/%23/g, '#⃣');
   }
 }

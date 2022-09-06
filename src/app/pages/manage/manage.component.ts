@@ -20,13 +20,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { BigNumber, ethers } from 'ethers';
 import { of, timer } from 'rxjs';
-import { delayWhen, map, retryWhen, take } from 'rxjs/operators';
-import { generalConfigurations } from 'src/app/configurations';
+import { delayWhen, map, retryWhen, switchMap, take } from 'rxjs/operators';
+import {
+  BlockExplorersEnum,
+  generalConfigurations,
+} from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { InputTypesEnum } from 'src/app/models/custom-adderss-dialog';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
-import { PaymentStateModel } from 'src/app/models/states/payment-interfaces';
+import {
+  PaymentStateModel,
+  PaymentTypesEnum,
+} from 'src/app/models/states/payment-interfaces';
 import { UserStateModel } from 'src/app/models/states/user-interfaces';
 import { FormatTimePipe, TimeAgoPipe } from 'src/app/modules/pipes';
 import { UserService } from 'src/app/services';
@@ -102,11 +108,13 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
   domainsTransferred: string[] = [];
   renewalDuration = RenewalDurationsEnum['6MONTHS'];
   renewalDurationTypes: typeof RenewalDurationsEnum = RenewalDurationsEnum;
+  hasPendingPayments = false;
   hasDomainsListLoaded = false;
   moreInfoEnabled = false;
-  managementOperation: ManagementOperationEnum;
   collapseAllItems = false;
   savingChangesInitiated = false;
+  pendingTx: string;
+  managementOperation: ManagementOperationEnum;
   transferDomainsTo: string;
   selectedDomain: ENSDomainMetadataModel;
   metadataForm: FormGroup;
@@ -133,6 +141,13 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     protected ensMarketplaceService: EnsMarketplaceService,
     public canvasService: CanvasServicesService
   ) {
+    /**
+     * !! TEMPORARY REMOVE ON PRODUCTION
+     */
+    this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+    /**
+     * END
+     */
     if (this.moreInfoEnabled === true) {
       this.displayedColumns.push('moreInfo');
     }
@@ -212,7 +227,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
                 id: d.domain.id.toLowerCase(),
                 labelName: d.domain.labelName.toLowerCase(),
                 labelHash: d.domain.labelhash.toLowerCase(),
-                isAvailable: false,
+                isNotAvailable: false,
                 expiry: (parseInt(d.expiryDate) * 1000).toString(),
                 gracePeriodPercent:
                   gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
@@ -537,5 +552,37 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   goToHome() {
     this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+  }
+
+  goToPendingTx() {
+    window.open(
+      BlockExplorersEnum[environment.defaultChain] + '/tx/' + this.pendingTx,
+      '_blank'
+    );
+  }
+
+  get pendingPayments() {
+    return this.paymentFacadeService.paymentState$.pipe(
+      switchMap((state) => {
+        const payments = Object.keys(state.entities).filter(
+          (p) =>
+            (state.entities[p].paymentType === PaymentTypesEnum.TX_APPROVAL ||
+              state.entities[p].paymentType === PaymentTypesEnum.TX_TRANSFER ||
+              state.entities[p].paymentType === PaymentTypesEnum.TX_RENEW) &&
+            state.entities[p].paymentStatus === false &&
+            ('archived' in state.entities[p] === false ||
+              ('archived' in state.entities[p] === true &&
+                state.entities[p].archived === false))
+        );
+        if (payments.length > 0) {
+          this.pendingTx =
+            state.entities[payments[payments.length - 1]].paymentHash;
+          this.hasPendingPayments = true;
+          return of(true);
+        }
+        this.hasPendingPayments = false;
+        return of(false);
+      })
+    );
   }
 }

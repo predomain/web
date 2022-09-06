@@ -14,11 +14,7 @@ export class NotFoundComponent implements OnInit {
   criticalErrorSilly = [
     'An error has occured while processing your request. Please try again.',
   ];
-  silly = [
-    "You can't park there mate.",
-    '.eth not found',
-    "Something went wrong. Don't panic.",
-  ];
+  silly = ['.eth not found'];
   sillyPicked = Math.floor(Math.random() * this.silly.length);
   sillyCriticalErrorPicked = Math.floor(
     Math.random() * this.criticalErrorSilly.length
