@@ -390,7 +390,7 @@ export class CheckoutServicesService {
         switchMap((registrationPacketAndGasLimit: any) => {
           const minimumAcceptableGasCostPerRegistration =
             compiledPacket.length === 1
-              ? ethers.BigNumber.from(200000)
+              ? ethers.BigNumber.from(150000)
               : ethers.BigNumber.from(110000).mul(compiledPacket.length);
           if (registrationPacketAndGasLimit === false) {
             throw 1;

@@ -27,6 +27,7 @@ import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { environment } from 'src/environments/environment';
 import { InputTypesEnum } from 'src/app/models/custom-adderss-dialog';
+import { generalConfigurations } from 'src/app/configurations';
 
 const globalAny: any = global;
 
@@ -90,6 +91,10 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     public ngZone: NgZone
   ) {
+    if (generalConfigurations.enabledTools.canvas === false) {
+      this.pagesFacadeService.showNotEnabledToolDialog();
+      this.pagesFacadeService.gotoPageRoute('home', PagesEnum.HOME);
+    }
     this.searchForm = new FormGroup({
       search: new FormControl(''),
     });

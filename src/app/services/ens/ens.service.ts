@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import request, { gql } from 'graphql-request';
 import { Observable } from 'rxjs';
-import { ens_normalize, ens_beautify } from '@adraffy/ens-normalize';
+import {
+  ens_normalize,
+  ens_beautify,
+  ens_tokenize,
+} from '@adraffy/ens-normalize';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
@@ -118,7 +122,10 @@ export class EnsService {
       return false;
     }
     try {
-      ens_normalize(name);
+      const normed = ens_normalize(name);
+      if (normed !== name) {
+        throw false;
+      }
       return true;
     } catch (e) {
       return false;
@@ -140,7 +147,8 @@ export class EnsService {
   ) {
     const ethUsdRate = parseInt(ethToUsdRate, 10);
     let nameCost = 5;
-    switch (name.length) {
+    const count = this.getNameLength(name);
+    switch (count) {
       case 3:
         {
           nameCost = 640;
@@ -153,5 +161,10 @@ export class EnsService {
         break;
     }
     return parseFloat((nameCost / ethUsdRate).toFixed(4)) * durationInYears;
+  }
+
+  getNameLength(name: string) {
+    const count = [...ens_normalize(name)].length;
+    return count;
   }
 }

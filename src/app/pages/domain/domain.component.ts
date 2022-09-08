@@ -101,6 +101,10 @@ export class DomainComponent implements OnInit, OnDestroy {
     public bookmarksService: BookmarksServiceService,
     public canvasService: CanvasServicesService
   ) {
+    if (generalConfigurations.enabledTools.domain === false) {
+      this.pagesFacade.showNotEnabledToolDialog();
+      this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+    }
     this.metadataForm = new FormGroup({
       creation: new FormControl({ disabled: true, value: '' }),
       registration: new FormControl({ disabled: true, value: '' }),

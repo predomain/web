@@ -141,13 +141,10 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     protected ensMarketplaceService: EnsMarketplaceService,
     public canvasService: CanvasServicesService
   ) {
-    /**
-     * !! TEMPORARY REMOVE ON PRODUCTION
-     */
-    this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
-    /**
-     * END
-     */
+    if (generalConfigurations.enabledTools.management === false) {
+      this.pagesFacade.showNotEnabledToolDialog();
+      this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+    }
     if (this.moreInfoEnabled === true) {
       this.displayedColumns.push('moreInfo');
     }

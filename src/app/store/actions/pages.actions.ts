@@ -1,4 +1,3 @@
-import { MatDialogRef } from '@angular/material/dialog';
 import { Action } from '@ngrx/store';
 import { IpfsErrorsEnum } from 'src/app/models/error-enums';
 import { IpfsStatesEnum } from 'src/app/models/ipfs';

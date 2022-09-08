@@ -103,6 +103,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     protected changeDetectorRef: ChangeDetectorRef,
     public canvasService: CanvasServicesService
   ) {
+    if (generalConfigurations.enabledTools.profile === false) {
+      this.pagesFacade.showNotEnabledToolDialog();
+      this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+    }
     this.filterForm = new FormGroup({
       minLength: new FormControl(3),
       maxLength: new FormControl(20),
@@ -462,7 +466,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   pretty(name: string) {
-    return this.ensService.prettify(name);
+    try {
+      const prettified = this.ensService.prettify(name);
+      return prettified;
+    } catch (e) {
+      return name;
+    }
   }
 
   domainValid(name: string) {

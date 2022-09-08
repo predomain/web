@@ -149,6 +149,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     protected dialog: MatDialog,
     protected ngZone: NgZone
   ) {
+    if (generalConfigurations.enabledTools.registration === false) {
+      this.pagesFacade.showNotEnabledToolDialog();
+      this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+    }
     this.domainConfigurationForm = new FormGroup({
       search: new FormControl(''),
       registrant: new FormControl(''),

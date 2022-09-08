@@ -41,7 +41,9 @@ export class MetamaskService {
     ethereum.on('chainChanged', (chainId) => {
       this.pagesFacade.setNetworkChainCode(parseInt(chainId, 16));
     });
-    ethereum.on('accountsChanged', (chainId) => {});
+    ethereum.on('accountsChanged', (accounts) => {
+      this.userFacadeService.removeUser();
+    });
   }
 
   getChainId() {

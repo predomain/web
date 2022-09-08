@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkweb=self.webpackChunkweb||[]).push([["src_app_modules_canvas_module_ts"],{40529:(t,E,s)=>{s.r(E),s.d(E,{CanvasModule:()=>u});var n=s(17426),M=s(10893),a=s(5187),d=s(14237),m=s(83981),o=s(15490),l=s(14001);let u=(()=>{class _{}return _.\u0275fac=function(P){return new(P||_)},_.\u0275mod=l.oAB({type:_}),_.\u0275inj=l.cJS({providers:[...M.h6,{provide:m.TP,useClass:d.Tl,multi:!0}],imports:[[o.m,n.Z_,a.bm,a.JT],o.m,a.bm,a.JT]}),_})()}}]);
+//# sourceMappingURL=src_app_modules_canvas_module_ts.6e39a4d07b342366.js.map

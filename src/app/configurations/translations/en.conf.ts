@@ -75,6 +75,7 @@ export default {
     SETUP_REQUIRED: 'Setup Required',
     MANAGE_DOMAINS: 'Manage Domains',
     APPROVE: 'Approve',
+    FEATURE_DISABLED: 'Feature Disabled',
   },
   IPFS: {
     INITIALISING: 'Starting p2p',
@@ -107,6 +108,7 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    FEATURE_DISABLED: 'This feature is currently disabled.',
     COMPLETE: 'Complete',
     ESTIMATED_COST: 'Estimated Cost',
     ADDRESS: 'Address',

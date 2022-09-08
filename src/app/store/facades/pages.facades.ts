@@ -37,6 +37,7 @@ import { environment } from '../../../environments/environment';
 import { IpfsErrorsEnum } from 'src/app/models/error-enums';
 import { IpfsStatesEnum } from 'src/app/models/ipfs';
 import { RPCProviderModel } from 'src/app/models/rpc/rpc-provider.model';
+import { GenericDialogComponent } from 'src/app/widgets/generic-dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -69,6 +70,16 @@ export class PagesFacadeService {
 
   showLoadingProgressBar() {
     this.store.dispatch(new PagesShowLoadingProgressBarOnLoad());
+  }
+
+  showNotEnabledToolDialog() {
+    this.dialog.open(GenericDialogComponent, {
+      data: {
+        titleText: 'HEADER.FEATURE_DISABLED',
+        subText: 'LABELS.FEATURE_DISABLED',
+      },
+      panelClass: 'cos-generic-dialog',
+    });
   }
 
   setPageCriticalError(errorOccured: boolean, redirect = true) {

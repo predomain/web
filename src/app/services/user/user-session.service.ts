@@ -57,9 +57,13 @@ export class UserSessionService {
   }
 
   createAlchemyFrontDefaultProvider(chain: number) {
+    const providerKeys = JSON.parse(
+      environment.networks[environment.defaultChain].providerKey
+    );
+    const providerKeyPicked = Math.floor(Math.random() * providerKeys.length);
     return new providers.AlchemyWebSocketProvider(
       chain,
-      environment.networks[environment.defaultChain].providerKey
+      providerKeys[providerKeyPicked]
     );
   }
 

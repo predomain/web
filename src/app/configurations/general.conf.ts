@@ -35,6 +35,13 @@ export const generalConfigurations = {
     icons: ['https://ecanvas.eth.limo/assets/logo.png'],
     name: 'Predomain.eth',
   },
+  enabledTools: {
+    management: false,
+    canvas: true,
+    registration: true,
+    profile: true,
+    domain: true,
+  },
   wallectConnectSupportedWallets: [
     'rainbow',
     'metamask',

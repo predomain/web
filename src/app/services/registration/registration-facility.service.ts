@@ -1,3 +1,4 @@
+import { ens_normalize, ens_tokenize } from '@adraffy/ens-normalize';
 import { Injectable } from '@angular/core';
 import { BigNumber, Contract, ethers } from 'ethers';
 import { Observable, of } from 'rxjs';
@@ -16,6 +17,7 @@ import {
 } from 'src/app/models/states/ens-registration-interfaces';
 import { environment } from 'src/environments/environment';
 import { ContractService } from '../contract';
+import { EnsService } from '../ens';
 import { MiscUtilsService } from '../misc-utils';
 import { PaymentService } from '../payment';
 
@@ -28,6 +30,7 @@ export class RegistrationFacilityService {
   constructor(
     protected miscUtilsService: MiscUtilsService,
     protected paymentService: PaymentService,
+    protected ensService: EnsService,
     protected contractService: ContractService
   ) {}
 
@@ -187,7 +190,7 @@ export class RegistrationFacilityService {
     const duration = commitments[0].duration;
     for (const c of commitments) {
       names.push(c.name);
-      namesLengths.push(c.name.length);
+      namesLengths.push(this.ensService.getNameLength(c.name));
     }
     const dataMethod =
       commitments[0].resolver === payNoMarketAddress
