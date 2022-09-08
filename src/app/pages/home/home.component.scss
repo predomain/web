@@ -3,6 +3,20 @@
   height: 100%;
 }
 
+.co-donate {
+  z-index: 1003;
+  width: 30%;
+  left: calc(50% - 15%);
+  margin-bottom: 30px;
+  border-radius: var(--cos-border-radius-2);
+  @media only screen and (max-width: 1000px) {
+    left: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+  }
+}
+
 .co-logo-text {
   top: 0;
   left: 0;

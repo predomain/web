@@ -19,6 +19,7 @@ export class HomeComponent {
   starCount = new Array(10).fill(0);
   currentUserData: UserModel;
   mainSearchForm: FormGroup;
+  donationBoxOpen = true;
 
   constructor(
     public ensService: EnsService,
@@ -46,6 +47,10 @@ export class HomeComponent {
 
   pretty(name: string) {
     return this.ensService.prettify(name);
+  }
+
+  goToDonate() {
+    window.open('https://gitcoin.co/grants/6743/predomain-project', '_blank');
   }
 
   get userData() {

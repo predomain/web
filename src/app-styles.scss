@@ -115,6 +115,7 @@ p {
 }
 
 textarea {
+  -webkit-user-select: auto !important;
   font-family: "os";
   background-color: var(--co-gray-bg) !important;
   color: white;

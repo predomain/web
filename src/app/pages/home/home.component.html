@@ -1,3 +1,31 @@
+<div
+  *ngIf="donationBoxOpen === true"
+  fxLayout="column"
+  fxLayoutGap="10px"
+  class="co-donate cos-pos-fixed cos-box-shadow cos-pos-bottom-reset cos-bg-darker-gray cos-padding-2"
+>
+  <div fxLayout="row" class="cos-body-0">
+    <div fxFlex>
+      <b> Support Predomain </b>
+    </div>
+    <div fxFlex class="cos-right-text">
+      <mat-icon
+        (click)="donationBoxOpen = !donationBoxOpen"
+        class="cos-icon-can-activate"
+        >close</mat-icon
+      >
+    </div>
+  </div>
+  <div>
+    We've recently opened our grant page on Gitcoin! Your support will be
+    invaluable to the development of this project. We would like to invite you
+    to donate to our grant at
+    <a href="https://gitcoin.co/grants/6743/predomain-project"
+      >Gitcoin - Predomain Project</a
+    >
+  </div>
+  <button (click)="goToDonate()" mat-button><b> Donate </b></button>
+</div>
 <div class="shooting_star" *ngFor="let s of starCount"></div>
 <div
   class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
