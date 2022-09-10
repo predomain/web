@@ -205,6 +205,14 @@ export class RegistrationFacilityService {
       dataParams
     );
     let gasLimit;
+    if (names.length === 1) {
+      return of([
+        dataInput,
+        ethers.BigNumber.from(
+          commitments[0].resolver === payNoMarketAddress ? '250000' : '350000'
+        ),
+      ]);
+    }
     return new Observable((observer) => {
       this.contractService
         .getGasLimitEstimation(
