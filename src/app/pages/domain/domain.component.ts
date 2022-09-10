@@ -160,7 +160,6 @@ export class DomainComponent implements OnInit, OnDestroy {
       this.getUserDomainsSubscripton.unsubscribe();
     }
     let retries = 0;
-    console.log(this.domain);
     this.getUserDomainsSubscripton = of(this.domain.replace(/#/g, '#⃣'))
       .pipe(
         switchMap((r) => {

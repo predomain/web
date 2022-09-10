@@ -77,6 +77,16 @@ export class EnsService {
     });
   }
 
+  downloadDomainsListNamesOnly(domains: ENSDomainMetadataModel[]) {
+    let finalForm = '';
+    finalForm += domains
+      .map((d) => {
+        return d.labelName;
+      })
+      .join('\n');
+    return finalForm;
+  }
+
   downloadDomainsListCSV(domains: ENSDomainMetadataModel[]) {
     let finalForm = '';
     finalForm +=

@@ -57,6 +57,8 @@ export default {
     REMOVE_ALL_ITEMS: 'Remove All Items',
     ADD_ALL_TO_CART: 'Add All To Cart',
     BOOKMARK_ALL: 'Bookmark All',
+    DOWNLOAD_LIST: 'Download List',
+    SHARE_LIST: 'Share List',
   },
   HEADER: {
     FAQ: 'FAQs',
@@ -108,6 +110,7 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    USER_PROFILE: 'User Profile',
     FEATURE_DISABLED: 'This feature is currently disabled.',
     COMPLETE: 'Complete',
     ESTIMATED_COST: 'Estimated Cost',

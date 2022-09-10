@@ -23,7 +23,7 @@ export const generalConfigurations = {
   maxTotalCostBuffer: 105,
   defaultCurrency: 'ETH',
   enableCustomRPC: true,
-  docsLink: 'https://predomain.gitbook.io/predomain-docs/',
+  docsLink: 'https://docs.predomain.xyz/',
   blockscanLink: 'https://chat.blockscan.com/index?a=',
   trezorManifest: {
     email: 'predomain@skiff.com',

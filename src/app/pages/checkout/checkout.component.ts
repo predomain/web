@@ -693,6 +693,23 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  get isRegistrationReadyForComplete() {
+    if (
+      this.registrationStatus !== ENSRegistrationStepsEnum.BEFORE_REGISTRATION
+    ) {
+      return true;
+    }
+    const commitPayment = this.registrationCurrentTrackedPayment;
+    const paymentDate = commitPayment.paymentDate;
+    const timeNow = new Date().getTime();
+    const timeDifference = timeNow - paymentDate;
+    const timeToQualify = 60000;
+    if (timeDifference < timeToQualify) {
+      return false;
+    }
+    return true;
+  }
+
   get gasPrice() {
     const timeNow = new Date().getTime();
     if (

@@ -57,6 +57,23 @@
       #auto="matAutocomplete"
       class="autocomplete-for-small-input"
     >
+      <ng-container *ngFor="let d of quickSearchKeysToChunk">
+        <mat-option
+          *ngIf="miscUtilsService?.checksumEtheruemAddress(d) === false"
+          class="cos-box-shadow"
+          (click)="goToDomain(d)"
+        >
+          <div fxLayout="row" class="cos-fluid-width cos-padding-1">
+            <div
+              fxFlex
+              fxLayoutAlign="start center"
+              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+            >
+              {{ pretty(d) }}
+            </div>
+            <div fxflex fxLayout="column" fxLayoutAlign="center end"></div></div
+        ></mat-option>
+      </ng-container>
       <mat-option
         *ngFor="let d of quickSearchKeysToChunk"
         class="cos-box-shadow"
@@ -80,28 +97,11 @@
               fxLayoutAlign="center center"
               class="cos-body-5 cos-chip-regular cos-chip-dark cos-chip-padded cos-gray-text"
             >
-              {{ "LABELS.GO_TO_PROFILE" | translate }}
+              {{ "LABELS.USER_PROFILE" | translate }}
             </div>
           </div>
         </div>
       </mat-option>
-      <ng-container *ngFor="let d of quickSearchKeysToChunk">
-        <mat-option
-          *ngIf="miscUtilsService?.checksumEtheruemAddress(d) === false"
-          class="cos-box-shadow"
-          (click)="goToDomain(d)"
-        >
-          <div fxLayout="row" class="cos-fluid-width cos-padding-1">
-            <div
-              fxFlex
-              fxLayoutAlign="start center"
-              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
-            >
-              {{ pretty(d) }}
-            </div>
-            <div fxflex fxLayout="column" fxLayoutAlign="center end"></div></div
-        ></mat-option>
-      </ng-container>
     </mat-autocomplete>
     <ng-container
       *ngIf="(userData | async) === false || (userData | async) === undefined"

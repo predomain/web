@@ -36,6 +36,8 @@ import {
 } from 'src/app/configurations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadService } from 'src/app/services/download/download.service';
+import { ens_normalize, ens_tokenize } from '@adraffy/ens-normalize';
+import { keccak256 } from 'ethers/lib/utils';
 
 const globalAny: any = global;
 
@@ -424,7 +426,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   downloadDomainList() {
     const csv = this.ensService.downloadDomainsListCSV(this.userDomains);
-    this.downloadService.download('text/csv', csv);
+    this.downloadService.download('text/csv;charset=utf-8', csv);
   }
 
   copyShareLink() {

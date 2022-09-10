@@ -369,7 +369,12 @@
                 [showText]="false"
               ></app-spinner>
             </ng-container>
-            <ng-container *ngIf="proceedPressed === false">
+            <ng-container
+              *ngIf="
+                proceedPressed === false &&
+                isRegistrationReadyForComplete === true
+              "
+            >
               {{ "BUTTON.PROCEED" | translate }}
             </ng-container>
           </a>

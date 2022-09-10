@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import * as ethers from 'ethers';
 import {
   Actions,
   createEffect,
@@ -173,10 +174,19 @@ export class PaymentEffects {
               }
             );
             if (user.connectType === WalletTypesEnum.LEDGER) {
-              const txHex = utils.serializeTransaction(preparedTx);
+              const txToFilter = {
+                ...preparedTx,
+                gasLimit: preparedTx.gas,
+                value:
+                  preparedTx.value === '0'
+                    ? '0x0'
+                    : ethers.BigNumber.from(preparedTx.value).toHexString(),
+              };
+              delete txToFilter.gas;
+              const txHex = utils.serializeTransaction(txToFilter);
               return this.ledgerService.signPayment(txHex).pipe(
                 switchMap((signed: any) => {
-                  const signedPacked = utils.serializeTransaction(preparedTx, {
+                  const signedPacked = utils.serializeTransaction(txToFilter, {
                     v: BigNumber.from('0x' + signed.v).toNumber(),
                     r: '0x' + signed.r,
                     s: '0x' + signed.s,
@@ -184,7 +194,7 @@ export class PaymentEffects {
                   return from(provider.sendTransaction(signedPacked));
                 }),
                 switchMap((r) => {
-                  return of([action, r, nonce]);
+                  return of([action, (r as any).hash, nonce]);
                 })
               );
             }

@@ -7,12 +7,17 @@ import { MiscUtilsService } from '../misc-utils';
 export class DownloadService {
   constructor(protected mistUtils: MiscUtilsService) {}
 
-  download(meta: string, dataRaw: any) {
+  download(meta: string, dataRaw: any, fileName = null) {
     const data = new TextEncoder().encode(dataRaw);
     const blob = new Blob(['\uFEFF', data], {
-      type: 'text/csv;charset=utf-8',
+      type: meta,
     });
-    var fileURL = URL.createObjectURL(blob);
+    let fileURL;
+    if (fileName === null) {
+      fileURL = URL.createObjectURL(blob);
+    } else {
+      fileURL = meta;
+    }
     window.open(fileURL, '_target');
   }
 }

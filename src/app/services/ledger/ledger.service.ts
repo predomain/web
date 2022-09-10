@@ -28,22 +28,19 @@ export class LedgerService {
   constructor(
     public miscUtils: MiscUtilsService,
     public pagesFacade: PagesFacadeService
-  ) {}
+  ) {
+    TransportUSB.create().then((r) => {
+      this.transport = r;
+      this.ledger = new LedgerEth(r);
+      return this.ledger.getAddress("m/44'/60'/0'/0/0");
+    });
+  }
 
   connect(time: number) {
     return new Observable((observer) => {
-      TransportUSB.create()
+      this.ledger
+        .getAddress("m/44'/60'/0'/0/0")
         .then((r) => {
-          this.transport = r;
-          this.ledger = new LedgerEth(r);
-          return this.ledger.getAddress("m/44'/60'/0'/0/0");
-        })
-        .then((r: any) => {
-          if (r === false) {
-            observer.next(false);
-            observer.complete();
-            return;
-          }
           const result = r as any as LedgerGetAddressResultModel;
           observer.next(result.address);
           observer.complete();

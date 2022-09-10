@@ -16,6 +16,7 @@ import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interf
 import { ENSRegistrationStateModel } from 'src/app/models/states/ens-registration-interfaces';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { BookmarksServiceService } from 'src/app/services/bookmarks';
+import { DownloadService } from 'src/app/services/download/download.service';
 import { EnsService } from 'src/app/services/ens';
 import { RegistrationServiceService } from 'src/app/services/registration';
 import {
@@ -35,6 +36,8 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   @ViewChild('prefix') prefix: ElementRef;
   @ViewChild('suffix') suffix: ElementRef;
+  @ViewChild('prefixMobile') prefixMobile: ElementRef;
+  @ViewChild('suffixMobile') suffixMobile: ElementRef;
   @Input() searchKeyword = '';
   registrationListOpen = false;
   registrationListLoaded = false;
@@ -56,6 +59,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
     public bookmarksService: BookmarksServiceService,
     public registrationService: RegistrationServiceService,
     public ensService: EnsService,
+    protected downloadService: DownloadService,
     protected bookmarkStore: Store<ENSBookmarkStateModel>,
     protected registrationStore: Store<ENSRegistrationStateModel>,
     protected bookmarkFacadeService: ENSBookmarkFacadeService,
@@ -225,6 +229,29 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
    * Bulk Search tools
    *
    *********************/
+  downloadBookmarks() {
+    const csv = this.ensService.downloadDomainsListNamesOnly(
+      this.bulkSearchResults
+    );
+    this.downloadService.download(
+      'data:application/octet-stream,' + csv,
+      csv,
+      'domains-list.txt'
+    );
+  }
+
+  shareBookmarks() {
+    const csv = this.ensService.downloadDomainsListNamesOnly(
+      this.bulkSearchResults
+    );
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        text: csv,
+      });
+    }
+  }
+
   performOnlyBulkSearch() {
     this.registrationListOpen = false;
     this.bulkSearchBookmarksShow = false;
@@ -310,12 +337,6 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       this.bulkSearchAdvancedOpen = !this.bulkSearchAdvancedOpen;
       return;
     }
-    if (this.prefix !== undefined) {
-      this.prefix.nativeElement.value = '';
-    }
-    if (this.suffix !== undefined) {
-      this.suffix.nativeElement.value = '';
-    }
     this.bulkSearchOpen = !this.bulkSearchOpen;
   }
 
@@ -363,16 +384,32 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    if (this.prefix !== undefined) {
-      const prefix = this.prefix.nativeElement.value;
+    if (
+      (this.prefix !== undefined && this.prefix.nativeElement.value !== '') ||
+      (this.prefixMobile !== undefined &&
+        this.prefixMobile.nativeElement.value !== '')
+    ) {
+      const prefix =
+        this.prefixMobile !== undefined &&
+        this.prefixMobile.nativeElement.value !== ''
+          ? this.prefixMobile.nativeElement.value
+          : this.prefix.nativeElement.value;
       if (prefix !== '' && prefix !== '') {
         toFind = toFind.map((d) => {
           return prefix + d;
         });
       }
     }
-    if (this.suffix !== undefined) {
-      const suffix = this.suffix.nativeElement.value;
+    if (
+      (this.suffix !== undefined && this.suffix.nativeElement.value !== '') ||
+      (this.suffixMobile !== undefined &&
+        this.suffixMobile.nativeElement.value !== '')
+    ) {
+      const suffix =
+        this.suffixMobile !== undefined &&
+        this.suffixMobile.nativeElement.value !== ''
+          ? this.suffixMobile.nativeElement.value
+          : this.suffix.nativeElement.value;
       if (suffix !== '' && suffix !== '') {
         toFind = toFind.map((d) => {
           return d + suffix;

@@ -265,7 +265,7 @@
           class="cos-body-0 cos-fluid-width cos-input-field-no-label cos-input-field-large"
         >
           <input
-            #prefix
+            #prefixMobile
             class="cos-fluid-width cos-bg-gray"
             matInput
             type="text"
@@ -281,7 +281,7 @@
           class="cos-body-0 cos-fluid-width cos-input-field-no-label cos-input-field-large"
         >
           <input
-            #suffix
+            #suffixMobile
             class="cos-fluid-width cos-bg-gray"
             matInput
             type="text"
@@ -432,7 +432,7 @@
 <!-- ADDITIONAL TOOLS -->
 <ng-template #additionalTools>
   <div
-    fxLayoutAlign="start start"
+    fxLayoutAlign="end start"
     fxLayoutGap="20px"
     class="cos-fluid-width cos-box-shadow cos-pos-fixed cos-pos-bottom-reset cos-padding-3 cos-bg-darker-gray"
   >
@@ -471,6 +471,22 @@
       (click)="addAllToBookmark()"
     >
       {{ "BUTTON.BOOKMARK_ALL" | translate }}
+    </button>
+    <button
+      mat-button
+      class="co-tool-button cos-disappear-on-mobile"
+      *ngIf="registrationListOpen === false && bulkSearchBookmarksShow === true"
+      (click)="downloadBookmarks()"
+    >
+      {{ "BUTTON.DOWNLOAD_LIST" | translate }}
+    </button>
+    <button
+      mat-button
+      class="co-tool-button cos-show-on-mobile"
+      *ngIf="registrationListOpen === false && bulkSearchBookmarksShow === true"
+      (click)="shareBookmarks()"
+    >
+      {{ "BUTTON.SHARE_LIST" | translate }}
     </button>
   </div>
 </ng-template>

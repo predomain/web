@@ -18,6 +18,7 @@ import {
 } from 'src/app/models/states/payment-interfaces';
 import { NonceTypesEnum } from 'src/app/models/states/wallet-interfaces';
 import { MiscUtilsService, WalletService } from 'src/app/services';
+import { EnsService } from 'src/app/services/ens';
 import { RegistrationFacilityService } from 'src/app/services/registration';
 import {
   ENSRegistrationFacadeService,
@@ -41,6 +42,7 @@ export class CheckoutServicesService {
     protected registrationFacilityService: RegistrationFacilityService,
     protected miscUtilsService: MiscUtilsService,
     protected registrationFacade: ENSRegistrationFacadeService,
+    protected ensService: EnsService,
     protected walletService: WalletService,
     protected paymentFacade: PaymentFacadeService,
     protected snackBar: MatSnackBar,
@@ -353,7 +355,7 @@ export class CheckoutServicesService {
       );
     const finalTotal = registrationsList
       .map((d) => {
-        const len = d.labelName.length;
+        const len = this.ensService.getNameLength(d.labelName);
         let price;
         const priceRanges = commmitPayment.paymentPriceRanges;
         switch (len) {
@@ -378,7 +380,6 @@ export class CheckoutServicesService {
       .reduce((a, b) => {
         return a.add(b);
       });
-
     return this.registrationFacilityService
       .completeRegistration(
         compiledPacket,
@@ -390,7 +391,7 @@ export class CheckoutServicesService {
         switchMap((registrationPacketAndGasLimit: any) => {
           const minimumAcceptableGasCostPerRegistration =
             compiledPacket.length === 1
-              ? ethers.BigNumber.from(150000)
+              ? ethers.BigNumber.from(170000)
               : ethers.BigNumber.from(110000).mul(compiledPacket.length);
           if (registrationPacketAndGasLimit === false) {
             throw 1;
