@@ -31,6 +31,12 @@
   border-radius: var(--cos-border-radius-1);
   outline: none;
   margin-top: 3px;
+  .mat-select-trigger {
+    .mat-select-arrow {
+      color: var(--co-anchor-color) !important;
+    }
+    height: 100% !important;
+  }
   .mat-select-value {
     padding: 13px;
     color: var(--co-default-text-color) !important;
@@ -801,8 +807,18 @@
     font-size: var(--co-font-size-3);
     color: white !important;
   }
+
   .mat-paginator-outer-container {
     .mat-paginator-container {
+      .mat-paginator-range-actions {
+        .mat-icon-button {
+          border-radius: var(--cos-border-radius-1) !important;
+          background-color: var(--co-main-color) !important;
+          &:first-of-type {
+            margin-right: 10px;
+          }
+        }
+      }
       .mat-paginator-page-size {
         .mat-paginator-page-size-select {
           width: auto !important;
@@ -813,6 +829,13 @@
 }
 .mat-select-panel-wrap {
   .mat-select-panel {
+    min-width: 100% !important;
+    margin-left: 25px !important;
+    margin-top: 38px !important;
+
+    @media only screen and (max-width: 1000px) {
+      margin-left: 15px !important;
+    }
     background-color: var(--co-gray-bg) !important;
     .mat-focus-indicator {
       &:hover {

@@ -446,6 +446,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     );
   }
 
+  goToNftyChat() {
+    window.open(
+      generalConfigurations.nftyChatLink + this.userAddress,
+      '_blank'
+    );
+  }
+
   goToEtherscan() {
     window.open(
       BlockExplorersEnum[environment.defaultChain] +

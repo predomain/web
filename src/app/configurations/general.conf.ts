@@ -25,6 +25,7 @@ export const generalConfigurations = {
   enableCustomRPC: true,
   docsLink: 'https://docs.predomain.xyz/',
   blockscanLink: 'https://chat.blockscan.com/index?a=',
+  nftyChatLink: 'https://nftychat.xyz/dm/',
   trezorManifest: {
     email: 'predomain@skiff.com',
     appUrl: 'https://predomain.eth.limo',

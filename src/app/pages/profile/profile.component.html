@@ -182,8 +182,8 @@
               </div>
               <div
                 class="co-external-link"
-                (click)="goToBlockscan()"
-                matTooltip="Contact user on Blockscan.com"
+                matTooltip="Contact user by chat"
+                [matMenuTriggerFor]="chatMenu"
               >
                 <mat-icon>chat</mat-icon>
               </div>
@@ -627,3 +627,14 @@
     </div>
   </ng-container>
 </ng-template>
+
+<mat-menu #chatMenu="matMenu" class="cos-menu" xPosition="after">
+  <button mat-menu-item (click)="goToNftyChat()">
+    <mat-icon>chat</mat-icon>
+    Nfty Chat
+  </button>
+  <button mat-menu-item (click)="goToBlockscan()">
+    <mat-icon>chat</mat-icon>
+    Blockscan
+  </button>
+</mat-menu>

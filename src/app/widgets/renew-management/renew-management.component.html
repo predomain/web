@@ -15,7 +15,7 @@
           {{ "HEADER.MANAGE_DOMAINS" | translate }}
         </b>
       </div>
-      <div fxFlex class="cos-right-text">
+      <div fxFlex="0 0 auto" class="cos-right-text">
         <a (click)="closeDialog()" class="cos-body-4">
           {{ "BUTTON.CLOSE" | translate }}
         </a>
@@ -44,6 +44,41 @@
               </div>
             </mat-panel-title>
           </mat-expansion-panel-header>
+
+          <p class="header-item cos-body-3 cos-gray-text">
+            <b> {{ "LABELS.RENEWAL_DURATION" | translate }}: </b>
+          </p>
+          <form
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            [formGroup]="renewForm"
+          >
+            <mat-form-field
+              fxFlexAlign="center"
+              class="cos-fluid-width cos-body-0 cos-input-field-no-label cos-input-field-large cos-gray-placeholder"
+            >
+              <mat-select formControlName="duration" fxFlex class="cos-bg-gray">
+                <mat-option [value]="renewalDurationTypes['6MONTHS']">
+                  {{ renewalDurationTypes["6MONTHS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['1YEAR']">
+                  {{ renewalDurationTypes["1YEAR"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['2YEARS']">
+                  {{ renewalDurationTypes["2YEARS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['3YEARS']">
+                  {{ renewalDurationTypes["3YEARS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['4YEARS']">
+                  {{ renewalDurationTypes["4YEARS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['5YEARS']">
+                  {{ renewalDurationTypes["5YEARS"] | translate }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
           <p>{{ "RENEW.ESTIMATED_RENEWAL_COST" | translate }}</p>
           <p class="header-item cos-body-3 cos-gray-text">
             <b> {{ "LABELS.ESTIMATED_COST" | translate }}: </b>
@@ -60,8 +95,19 @@
             >
           </div>
           <p [innerHTML]="'LABELS.CLICK_NEXT_TO_PROCEED' | translate"></p>
-          <p class="cos-body-1">
-            <a (click)="nextStep()">{{ "BUTTON.NEXT" | translate }}</a>
+          <p class="cos-fluid-width">
+            <button
+              fxFlex
+              mat-button
+              (click)="nextStep()"
+              [disabled]="renewing === true"
+            >
+              <div fxLayoutAlign="center center">
+                <span fxFlex>
+                  {{ "BUTTON.NEXT" | translate }}
+                </span>
+              </div>
+            </button>
           </p>
         </mat-expansion-panel>
         <mat-expansion-panel
@@ -120,6 +166,21 @@
                   </span>
                 </div>
               </button>
+            </p>
+            <p
+              *ngIf="
+                renewing === true &&
+                renewToCheck !== undefined &&
+                renewToCheck?.paymentHash !== '' &&
+                renewToCheck?.paymentHash !== null &&
+                renewToCheck?.paymentHash !== undefined
+              "
+              class="cos-center-text cos-padding-1 cos-border cos-border-radius-2"
+            >
+              <a (click)="goToPendingTx()" class="cos-body-3"
+                >1 {{ "BUTTON.PENDING" | translate }}
+                {{ "LABELS.TRANSACTION" | translate }}</a
+              >
             </p>
           </ng-container>
         </mat-expansion-panel>

@@ -209,7 +209,7 @@ export class RegistrationFacilityService {
       return of([
         dataInput,
         ethers.BigNumber.from(
-          commitments[0].resolver === payNoMarketAddress ? '250000' : '350000'
+          commitments[0].resolver === payNoMarketAddress ? '300000' : '350000'
         ),
       ]);
     }

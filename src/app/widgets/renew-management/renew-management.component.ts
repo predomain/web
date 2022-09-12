@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,7 +14,9 @@ import { Store } from '@ngrx/store';
 import { BigNumber, ethers } from 'ethers';
 import { of, Subject, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
+import { BlockExplorersEnum } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { RenewalDurationsEnum } from 'src/app/models/management';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import {
   PaymentModel,
@@ -26,6 +29,7 @@ import { WalletService } from 'src/app/services';
 import { EnsService } from 'src/app/services/ens';
 import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
+import { environment } from 'src/environments/environment';
 import { OnboardManagementComponent } from '../onboard-management';
 
 const globalAny: any = global;
@@ -41,10 +45,12 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
   @Input() step = 0;
   @Input() domainsToRenew;
   @Input() renewalDuration: BigNumber;
+  renewalDurationTypes: typeof RenewalDurationsEnum = RenewalDurationsEnum;
   userState: UserStateModel;
   paymentState: PaymentStateModel;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   renewToCheck: PaymentModel;
+  renewForm: FormGroup;
   renewing = false;
   renewComplete = false;
   closedByButton = false;
@@ -66,7 +72,11 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
     protected store: Store<PaymentStateModel>,
     public genericDialogRef: MatDialogRef<OnboardManagementComponent>,
     @Inject(MAT_DIALOG_DATA) public data: string
-  ) {}
+  ) {
+    this.renewForm = new FormGroup({
+      duration: new FormControl(RenewalDurationsEnum['6MONTHS']),
+    });
+  }
 
   ngOnInit() {
     this.genericDialogRef.backdropClick().subscribe(() => {
@@ -219,6 +229,8 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
               pendingRenewalPayments.push(payment);
             }
           }
+          this.renewToCheck =
+            pendingRenewalPayments[pendingRenewalPayments.length - 1];
           if (paymentState.paymentCancelled === true) {
             this.renewing = false;
             this.renewStatusCheckSubscription = undefined;
@@ -320,6 +332,15 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
       return;
     }
     this.genericDialogRef.close();
+  }
+
+  goToPendingTx() {
+    window.open(
+      BlockExplorersEnum[environment.defaultChain] +
+        '/tx/' +
+        this.renewToCheck.paymentHash,
+      '_blank'
+    );
   }
 
   get ensMarketplaceContract() {

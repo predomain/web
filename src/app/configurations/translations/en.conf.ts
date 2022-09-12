@@ -110,6 +110,8 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    RENEWAL_DURATION: 'Renewal Duration',
+    TRANSACTION: 'Transaction',
     USER_PROFILE: 'User Profile',
     FEATURE_DISABLED: 'This feature is currently disabled.',
     COMPLETE: 'Complete',

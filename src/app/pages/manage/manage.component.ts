@@ -13,6 +13,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -27,6 +28,10 @@ import {
 } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { InputTypesEnum } from 'src/app/models/custom-adderss-dialog';
+import {
+  RenewalDurationsEnum,
+  RenewalDurationsTimeMultiplierEnum,
+} from 'src/app/models/management';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import {
@@ -57,23 +62,6 @@ const EMPTY_DATA: ENSDomainMetadataModel[] = [
 export enum ManagementOperationEnum {
   TRANSFER,
   RENEW,
-}
-export enum RenewalDurationsEnum {
-  '6MONTHS' = 'RENEWAL_DURATIONS.SIX_MONTHS',
-  '1YEAR' = 'RENEWAL_DURATIONS.ONE_YEAR',
-  '2YEARS' = 'RENEWAL_DURATIONS.TWO_YEARS',
-  '3YEARS' = 'RENEWAL_DURATIONS.THREE_YEARS',
-  '4YEARS' = 'RENEWAL_DURATIONS.FOUR_YEARS',
-  '5YEARS' = 'RENEWAL_DURATIONS.FIVE_YEARS',
-}
-
-export enum RenewalDurationsTimeMultiplierEnum {
-  'RENEWAL_DURATIONS.SIX_MONTHS' = 0.5,
-  'RENEWAL_DURATIONS.ONE_YEAR' = 1,
-  'RENEWAL_DURATIONS.TWO_YEARS' = 2,
-  'RENEWAL_DURATIONS.THREE_YEARS' = 3,
-  'RENEWAL_DURATIONS.FOUR_YEARS' = 4,
-  'RENEWAL_DURATIONS.FIVE_YEARS' = 5,
 }
 
 const YEARS_IN_SECONDS = 31556952;
@@ -139,6 +127,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     protected dialog: MatDialog,
     protected snackBar: MatSnackBar,
     protected ensMarketplaceService: EnsMarketplaceService,
+    protected bottomSheet: MatBottomSheet,
     public canvasService: CanvasServicesService
   ) {
     if (generalConfigurations.enabledTools.management === false) {
@@ -213,7 +202,8 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
           const domains = (r as any).registrations
             .filter((d) => {
               return (
-                this.domainsTransferred.includes(d.domain.labelName) === false
+                this.domainsTransferred.includes(d.domain.labelName) ===
+                  false && d.domain.labelName !== null
               );
             })
             .map((d) => {
@@ -581,5 +571,37 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
         return of(false);
       })
     );
+  }
+
+  nextPage() {
+    this.paginator.nextPage();
+  }
+
+  previousPage() {
+    this.paginator.previousPage();
+  }
+
+  get currentPage() {
+    if (this.paginator === undefined) {
+      return '';
+    }
+    return this.paginator.pageIndex * this.paginator.pageSize;
+  }
+
+  get currentPageList() {
+    if (this.paginator === undefined) {
+      return '';
+    }
+    return (
+      this.paginator.pageIndex * this.paginator.pageSize +
+      this.paginator.pageSize
+    );
+  }
+
+  get entirePageSize() {
+    if (this.paginator === undefined) {
+      return '';
+    }
+    return this.paginator.length;
   }
 }
