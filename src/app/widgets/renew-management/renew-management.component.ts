@@ -14,7 +14,10 @@ import { Store } from '@ngrx/store';
 import { BigNumber, ethers } from 'ethers';
 import { of, Subject, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
-import { BlockExplorersEnum } from 'src/app/configurations';
+import {
+  BlockExplorersEnum,
+  generalConfigurations,
+} from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import {
   RenewalDurationsEnum,
@@ -169,7 +172,10 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
     const domainNames = domainsToRenew.map((d) => d.labelName);
     const totalCost = ethers.BigNumber.from(
       (this.getRenewalCost(domainNames, duration) * 10 ** 18).toString()
-    ).toHexString();
+    )
+      .mul(generalConfigurations.maxTotalCostBuffer)
+      .div(100)
+      .toHexString();
     this.renewSubscription = this.ensMarketplaceService
       .renew(
         domainNames,
