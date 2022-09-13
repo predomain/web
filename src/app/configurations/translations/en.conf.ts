@@ -110,6 +110,7 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    FILTER: 'Filter',
     RENEWAL_DURATION: 'Renewal Duration',
     TRANSACTION: 'Transaction',
     USER_PROFILE: 'User Profile',
@@ -238,6 +239,6 @@ export default {
     CONTRACT_APPROVAL_NOTE:
       'Contract approval allows the contract to perform transferring of domains on your behalf.',
     DOMAINS_READY_FOR_TRANSFER:
-      'Your domains are now ready for transfer. To complete your transfer press proceed.',
+      "Your domains are now ready for transfer. Enter the reciever's address and press proceed.",
   },
 };

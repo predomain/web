@@ -11,6 +11,6 @@ export const contractChainlinkMainnet =
   '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 export const bulkRegistrationMainnet =
   '0xC55079A6AB7A123746806748d847228aFe1d2397';
-export const marketplaceMainnet = '';
+export const marketplaceMainnet = '0x34c3f58058E2ad098ef437Ee5Ea1ff1fE2fe4214';
 
 export const acceptedCurrenciesMainnet = [] as AcceptedCurrencyModel[];

@@ -21,7 +21,8 @@
       showBookmark: true,
       showCanvas: true,
       showTranslation: true,
-      showManagement: true
+      showManagement: true,
+      showSearch: true
     }"
   ></app-main-header>
 </div>
@@ -49,6 +50,7 @@
       </button>
     </div>
   </div>
+
   <button
     class="cos-fluid-width"
     mat-button
@@ -127,7 +129,7 @@
               *ngIf="selectedDomain === undefined"
               fxFlex="0 0 auto"
               [preview]="'assets/img-blank.png'"
-              [error]="'assets/profile-blank.png'"
+              [error]="'assets/profile-blank.svg'"
               [style.height]="
                 canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
               "
@@ -137,7 +139,7 @@
               *ngIf="selectedDomain !== undefined"
               fxFlex="0 0 auto"
               [preview]="'assets/img-blank.png'"
-              [error]="'assets/profile-blank.png'"
+              [error]="'assets/profile-blank.svg'"
               [src]="
                 ensMetadataAPI +
                 hashToBigIntString(selectedDomain.labelHash) +
@@ -260,38 +262,30 @@
               fxLayoutAlign="end center"
               class="cos-disappear-on-mobile"
             >
-              <a
-                (click)="goToPendingTx()"
-                class="cos-body-3"
-                *ngIf="(pendingPayments | async) === true"
-                >1 {{ "BUTTON.PENDING" | translate }}</a
+              <form
+                fxFlex
+                fxLayoutAlign="end center"
+                class="co-main-form"
+                [formGroup]="quickSearchForm"
               >
-              <button
-                fxFlex="150px"
-                mat-button
-                (click)="saveChanges()"
-                [disabled]="
-                  savingChangesInitiated === true ||
-                  managementOperation === undefined
-                "
-              >
-                <div fxLayoutAlign="center center">
-                  <div
-                    fxFlex="0 0 auto"
-                    *ngIf="savingChangesInitiated === true"
-                  >
-                    <app-spinner
-                      [padded]="false"
-                      [lightColour]="true"
-                      [spinnerSize]="10"
-                      [showText]="false"
-                    ></app-spinner>
-                  </div>
-                  <span *ngIf="savingChangesInitiated === false" fxFlex>
-                    {{ "BUTTON.SAVE_CHANGES" | translate }}
-                  </span>
-                </div>
-              </button>
+                <mat-form-field
+                  fxLayoutAlign="center center"
+                  fxFlexAlign="center"
+                  class="co-main-search cos-body-0 cos-input-field-no-label"
+                >
+                  <input
+                    class="cos-fluid-width cos-bg-darker-gray"
+                    matInput
+                    type="text"
+                    placeholder="{{ 'LABELS.FILTER' | translate }}..."
+                    autocomplete="off"
+                    maxlength="50"
+                    (input)="performFilter()"
+                    formControlName="search"
+                  />
+                  <mat-icon matSuffix color="primary"> search </mat-icon>
+                </mat-form-field>
+              </form>
             </div>
           </div>
 
@@ -309,8 +303,8 @@
                 fxLayoutAlign="start center"
               >
                 <table
-                  *ngIf="dataSource.data[0].id === null"
                   mat-table
+                  *ngIf="dataSource.data[0].id === null"
                   [dataSource]="dataSource"
                   class="cos-fluid-width co-manage-domains-table-header cos-fluid-height cos-table cos-table-static cos-table-empty cos-topless cos-table-fluid cos-with-paging cos-body-4"
                 >
@@ -467,6 +461,7 @@
                   "
                   multiTemplateDataRowsstart
                   mat-table
+                  #tableFilled
                   [dataSource]="dataSource"
                   [ngClass]="moreInfoEnabled === true ? 'cos-expandable' : ''"
                   class="cos-fluid-width co-manage-domains-table cos-table cos-table-scrollable cos-table-80-percent cos-topless cos-with-paging cos-body-4"
@@ -732,9 +727,104 @@
                     ></tr>
                   </ng-container>
                 </table>
-                <div fxFlex fxLayoutAlign="end end" class="cos-fluid-width">
-                  <mat-paginator [pageSizeOptions]="[30]" hidePageSize="true">
-                  </mat-paginator>
+                <div
+                  fxFlex
+                  fxLayoutAlign="start end"
+                  class="cos-fluid-width cos-overflow-hidden"
+                >
+                  <div fxFlex fxLayoutAlign="start end">
+                    <div
+                      fxFlex="300px"
+                      fxLayout="row"
+                      class="cos-disappear-on-mobile"
+                    >
+                      <div fxFlex="0 0 auto">
+                        <button
+                          mat-button
+                          (click)="previousPage()"
+                          class="cos-button-cancel"
+                        >
+                          <mat-icon>arrow_back_ios</mat-icon>
+                        </button>
+                      </div>
+                      <div
+                        fxFlex
+                        fxLayoutAlign="center center"
+                        class="cos-body-1"
+                      >
+                        {{ currentPage }} - {{ currentPageList }} of
+                        {{ entirePageSize }}
+                      </div>
+                      <div fxFlex="0 0 auto">
+                        <button
+                          mat-button
+                          (click)="nextPage()"
+                          class="cos-button-cancel"
+                        >
+                          <mat-icon>arrow_forward_ios</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                    <mat-paginator
+                      [pageSizeOptions]="[30]"
+                      hidePageSize="true"
+                      class="cos-visibility-hidden"
+                    >
+                    </mat-paginator>
+                  </div>
+                  <div
+                    fxFlex
+                    fxLayoutAlign="end end"
+                    class="cos-disappear-on-mobile"
+                  >
+                    <button
+                      fxFlex="200px"
+                      class="cos-fluid-width"
+                      mat-button
+                      (click)="saveChanges()"
+                      [disabled]="
+                        savingChangesInitiated === true ||
+                        managementOperation === undefined
+                      "
+                    >
+                      <div fxLayoutAlign="center center">
+                        <div
+                          fxFlex="0 0 auto"
+                          fxLayout="row"
+                          fxLayoutAlign="center center"
+                          fxLayoutGap="10px"
+                          *ngIf="
+                            savingChangesInitiated === true ||
+                            (pendingPayments | async) === true
+                          "
+                        >
+                          <app-spinner
+                            [padded]="false"
+                            [lightColour]="true"
+                            [spinnerSize]="10"
+                            [showText]="false"
+                            *ngIf="savingChangesInitiated === true"
+                          ></app-spinner>
+                          <a
+                            (click)="goToPendingTx()"
+                            class="cos-body-3"
+                            *ngIf="(pendingPayments | async) === true"
+                            >1 {{ "BUTTON.PENDING" | translate }}
+                            {{ "LABELS.TRANSACTION" | translate }}</a
+                          >
+                        </div>
+                        <span
+                          *ngIf="
+                            savingChangesInitiated === false &&
+                            (pendingPayments | async) === false
+                          "
+                          fxFlex
+                        >
+                          {{ "BUTTON.SAVE_CHANGES" | translate }}
+                        </span>
+                      </div>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

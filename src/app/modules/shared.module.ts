@@ -67,6 +67,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   imports: [
@@ -106,6 +107,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatProgressBarModule,
     MatBadgeModule,
     MatPaginatorModule,
+    MatSortModule,
     TranslationModule,
     DragDropModule,
     OverlayModule,
@@ -180,6 +182,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatSnackBarModule,
     MatBadgeModule,
     MatPaginatorModule,
+    MatSortModule,
     DragDropModule,
     OverlayModule,
     GetScrollableXyDirective,

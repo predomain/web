@@ -37,7 +37,7 @@ export const generalConfigurations = {
     name: 'Predomain.eth',
   },
   enabledTools: {
-    management: false,
+    management: true,
     canvas: true,
     registration: true,
     profile: true,

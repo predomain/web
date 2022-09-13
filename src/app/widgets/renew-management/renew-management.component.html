@@ -25,7 +25,6 @@
       <mat-accordion class="cos-fluid-width" #stepper>
         <mat-expansion-panel
           [expanded]="step === 0"
-          [disabled]="step !== 0"
           (opened)="setStep(0)"
           hideToggle="true"
         >
@@ -57,7 +56,12 @@
               fxFlexAlign="center"
               class="cos-fluid-width cos-body-0 cos-input-field-no-label cos-input-field-large cos-gray-placeholder"
             >
-              <mat-select formControlName="duration" fxFlex class="cos-bg-gray">
+              <mat-select
+                formControlName="duration"
+                fxFlex
+                class="cos-bg-gray"
+                (selectionChange)="performRenewalCostCalculation()"
+              >
                 <mat-option [value]="renewalDurationTypes['6MONTHS']">
                   {{ renewalDurationTypes["6MONTHS"] | translate }}
                 </mat-option>
@@ -112,7 +116,6 @@
         </mat-expansion-panel>
         <mat-expansion-panel
           [expanded]="step === 1"
-          [disabled]="step !== 1"
           (opened)="setStep(1)"
           hideToggle="true"
         >
@@ -145,6 +148,26 @@
             <p>
               {{ "RENEW.DOMAINS_READY_FOR_RENEWAL" | translate }}
             </p>
+
+            <p class="header-item cos-body-3 cos-gray-text">
+              <b>{{ "LABELS.DOMAINS" | translate }}:</b>
+            </p>
+            <div
+              fxLayout="column"
+              fxLayoutGap="10px"
+              class="co-domains-list cos-overflow-y cos-body-4 cos-border-radius-1 cos-border cos-padding-1"
+            >
+              <div
+                *ngFor="let d of domainsToRenew"
+                fxLayoutGap="10px"
+                fxLayout="row"
+              >
+                <img fxFlex="20px" src="assets/ens.svg" />
+                <div>
+                  {{ d.labelName }}
+                </div>
+              </div>
+            </div>
             <p class="cos-fluid-width">
               <button
                 fxFlex

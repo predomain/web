@@ -180,7 +180,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       .pipe(
         map((s) => {
           this.paymentState = s;
-          this.asseCheckoutStatus();
+          this.assessCheckoutStatus();
         })
       )
       .subscribe();
@@ -246,7 +246,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  asseCheckoutStatus() {
+  assessCheckoutStatus() {
     if (this.assessCheckoutStatusSubscription !== undefined) {
       return null;
     }
@@ -756,6 +756,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       -1
     );
   }
+
   get registrant() {
     return this.domainConfigurationForm.controls.registrant.value;
   }

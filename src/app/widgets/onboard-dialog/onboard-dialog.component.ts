@@ -7,8 +7,6 @@ import { UserRegistrationModel } from '../../models/states/user-interfaces';
 import { WalletTypesEnum } from '../../models/states/wallet-interfaces';
 import { UserFacadeService } from '../../store/facades';
 import { SpinnerModesEnum } from 'src/app/models/spinner/spinner-modes.enum';
-import QRCodeModal from '@walletconnect/qrcode-modal';
-import WalletConnectQRCodeModal from '@walletconnect/qrcode-modal';
 
 import { WalletConnectService } from 'src/app/services/wallet-connect';
 const globalAny: any = global;

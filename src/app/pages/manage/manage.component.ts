@@ -8,6 +8,7 @@ import {
 import {
   AfterViewInit,
   Component,
+  OnChanges,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -18,6 +19,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { BigNumber, ethers } from 'ethers';
 import { of, timer } from 'rxjs';
@@ -27,11 +29,7 @@ import {
   generalConfigurations,
 } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
-import { InputTypesEnum } from 'src/app/models/custom-adderss-dialog';
-import {
-  RenewalDurationsEnum,
-  RenewalDurationsTimeMultiplierEnum,
-} from 'src/app/models/management';
+import { RenewalDurationsEnum } from 'src/app/models/management';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import {
@@ -101,9 +99,9 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
   moreInfoEnabled = false;
   collapseAllItems = false;
   savingChangesInitiated = false;
+  quickSearchForm: FormGroup;
   pendingTx: string;
   managementOperation: ManagementOperationEnum;
-  transferDomainsTo: string;
   selectedDomain: ENSDomainMetadataModel;
   metadataForm: FormGroup;
   paymentState: PaymentStateModel;
@@ -137,6 +135,9 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.moreInfoEnabled === true) {
       this.displayedColumns.push('moreInfo');
     }
+    this.quickSearchForm = new FormGroup({
+      search: new FormControl(''),
+    });
     this.metadataForm = new FormGroup({
       creation: new FormControl({ disabled: true, value: '' }),
       registration: new FormControl({ disabled: true, value: '' }),
@@ -228,12 +229,12 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
               } as ENSDomainMetadataModel;
               return fData;
             })
-            .sort((a, b) => b.registrationDate - a.registrationDate);
+            .sort((a, b) => a.expiry - b.expiry);
           this.hasDomainsListLoaded = true;
           this.userDomains = domains;
           this.selectDomain(this.userDomains[0], false);
           this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
-            domains
+            this.filterSearchDomains()
           );
           this.dataSource.paginator = this.paginator;
         }),
@@ -290,7 +291,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
         return { ...d, transfer: false };
       });
       this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
-        this.userDomains
+        this.filterSearchDomains()
       );
       this.dataSource.paginator = this.paginator;
       return;
@@ -302,7 +303,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       return d;
     });
     this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
-      this.userDomains
+      this.filterSearchDomains()
     );
     this.dataSource.paginator = this.paginator;
   }
@@ -319,7 +320,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
         return { ...d, renew: false };
       });
       this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
-        this.userDomains
+        this.filterSearchDomains()
       );
       this.dataSource.paginator = this.paginator;
       return;
@@ -331,7 +332,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       return d;
     });
     this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
-      this.userDomains
+      this.filterSearchDomains()
     );
     this.dataSource.paginator = this.paginator;
   }
@@ -356,23 +357,6 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.savingChangesInitiated = false;
       return;
     }
-    if (
-      this.transferDomainsTo === undefined &&
-      domainsToTransfer.length > 0 &&
-      this.managementOperation === ManagementOperationEnum.TRANSFER
-    ) {
-      this.snackBar.open(
-        'Select an address to transfer your domains.',
-        'close',
-        {
-          horizontalPosition: 'center',
-          verticalPosition: 'bottom',
-          duration: 5000,
-        }
-      );
-      this.savingChangesInitiated = false;
-      return;
-    }
     this.saveChangesSubscripton = this.ensMarketplaceService
       .checkApproval(tokenId, provider)
       .pipe(
@@ -394,14 +378,6 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
         panelClass: 'cos-settings-dialog',
       });
       dialogRef.componentInstance.domainsToRenew = domainsToRenew;
-      const durationMultiplier = ethers.BigNumber.from(
-        RenewalDurationsTimeMultiplierEnum[this.renewalDuration] * 100
-      );
-      dialogRef.componentInstance.renewalDuration = ethers.BigNumber.from(
-        YEARS_IN_SECONDS
-      )
-        .mul(durationMultiplier)
-        .div(100);
       this.managementDialogSubscription = dialogRef
         .beforeClosed()
         .subscribe((r) => {
@@ -422,7 +398,6 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       dialogRef.componentInstance.setStep(approvalStatus === true ? 2 : 0);
       dialogRef.componentInstance.domainsSelectedTransfer = domainsToTransfer;
-      dialogRef.componentInstance.domainsTransferTo = this.transferDomainsTo;
       this.managementDialogSubscription = dialogRef
         .beforeClosed()
         .subscribe((r) => {
@@ -444,20 +419,37 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  openAddressSetDialog() {
-    this.canvasServices.openCustomAddressDialog(
-      'FORM_LABELS.ENTER_RECEIVER_ADDRESS',
-      'FORM_ERRORS.INVALID_ADDRESS',
-      (p) => {
-        if (p === undefined || p === null || p === false) {
-          return of(false);
+  filterSearchDomains() {
+    const value = this.quickSearchForm.controls.search.value
+      .replaceAll(' ', '')
+      .replaceAll('.eth', '');
+    try {
+      if (value === undefined || value === '' || value === null) {
+        return this.userDomains;
+      }
+      const filterValue = (value as any).toLowerCase();
+      const domainsToSearch = this.userDomains.filter((d) => {
+        if (d.labelName.indexOf(filterValue) > -1) {
+          return true;
         }
-        this.transferDomainsTo = p;
-        return of(true);
-      },
-      '',
-      InputTypesEnum.ADDRESS
+        return false;
+      });
+      return domainsToSearch;
+    } catch (e) {
+      return this.userDomains;
+    }
+  }
+
+  performFilter() {
+    this.selectAllToRenew(this.userDomains, false);
+    this.selectAllToTransfer(this.userDomains, false);
+    this.renewAllCheckbox.checked = false;
+    this.transferAllCheckbox.checked = false;
+    const domainSearched = this.filterSearchDomains();
+    this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+      domainSearched
     );
+    this.dataSource.paginator = this.paginator;
   }
 
   selectDomainForTransfer(toTransfer) {
@@ -521,7 +513,12 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   pretty(name: string) {
-    return this.ensService.prettify(name);
+    try {
+      const prettified = this.ensService.prettify(name);
+      return prettified;
+    } catch (e) {
+      return name;
+    }
   }
 
   selectRenewalDuration(duration: RenewalDurationsEnum) {
@@ -548,6 +545,14 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  nextPage() {
+    this.paginator.nextPage();
+  }
+
+  previousPage() {
+    this.paginator.previousPage();
+  }
+
   get pendingPayments() {
     return this.paymentFacadeService.paymentState$.pipe(
       switchMap((state) => {
@@ -571,14 +576,6 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
         return of(false);
       })
     );
-  }
-
-  nextPage() {
-    this.paginator.nextPage();
-  }
-
-  previousPage() {
-    this.paginator.previousPage();
   }
 
   get currentPage() {

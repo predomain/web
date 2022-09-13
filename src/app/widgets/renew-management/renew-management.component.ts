@@ -16,7 +16,10 @@ import { of, Subject, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { BlockExplorersEnum } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
-import { RenewalDurationsEnum } from 'src/app/models/management';
+import {
+  RenewalDurationsEnum,
+  RenewalDurationsTimeMultiplierEnum,
+} from 'src/app/models/management';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import {
   PaymentModel,
@@ -42,9 +45,9 @@ const YEARS_IN_SECONDS = 31556952;
 })
 export class RenewManagementComponent implements OnInit, OnDestroy {
   @ViewChild('stepper') stepper: MatAccordion;
-  @Input() step = 0;
-  @Input() domainsToRenew;
-  @Input() renewalDuration: BigNumber;
+  step = 0;
+  domainsToRenew;
+  renewalDuration: BigNumber;
   renewalDurationTypes: typeof RenewalDurationsEnum = RenewalDurationsEnum;
   userState: UserStateModel;
   paymentState: PaymentStateModel;
@@ -76,6 +79,9 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
     this.renewForm = new FormGroup({
       duration: new FormControl(RenewalDurationsEnum['6MONTHS']),
     });
+    this.setRenewalDuration(
+      this.renewForm.controls.duration.value as RenewalDurationsEnum
+    );
   }
 
   ngOnInit() {
@@ -137,6 +143,21 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
+
+  setRenewalDuration(duration: RenewalDurationsEnum) {
+    const durationMultiplier = ethers.BigNumber.from(
+      RenewalDurationsTimeMultiplierEnum[duration] * 100
+    );
+    this.renewalDuration = ethers.BigNumber.from(YEARS_IN_SECONDS)
+      .mul(durationMultiplier)
+      .div(100);
+  }
+
+  performRenewalCostCalculation() {
+    setTimeout(() => {
+      this.setRenewalDuration(this.renewForm.controls.duration.value);
+    }, 100);
   }
 
   renewDomains(domainsToRenew: ENSDomainMetadataModel[], duration: BigNumber) {

@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,7 +23,8 @@ import {
 } from 'src/app/models/states/payment-interfaces';
 import { UserStateModel } from 'src/app/models/states/user-interfaces';
 import { NonceTypesEnum } from 'src/app/models/states/wallet-interfaces';
-import { WalletService } from 'src/app/services';
+import { CheckoutServicesService } from 'src/app/pages/checkout/checkout-services/checkout-services.service';
+import { UserService, WalletService } from 'src/app/services';
 import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
@@ -36,20 +38,23 @@ const globalAny: any = global;
 })
 export class OnboardManagementComponent implements OnInit, OnDestroy {
   @ViewChild('stepper') stepper: MatAccordion;
-  @Input() step = 0;
-  @Input() domainsSelectedTransfer;
-  @Input() domainsTransferTo;
+  step = 0;
+  domainsSelectedTransfer;
+  domainsTransferTo;
   userState: UserStateModel;
   paymentState: PaymentStateModel;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   approvalToCheck: PaymentModel;
   transferToCheck: PaymentModel;
+  transferForm: FormGroup;
   approving = false;
   transfering = false;
   transferComplete = false;
   closedByButton = false;
+  resolvingReceiverAddress = true;
   overlaysCountOnInit = 0;
   maxSteps = 2;
+  resolveRegistrantInputTimer;
   approvalSerial;
   userStateSubscription;
   paymentStateSubscription;
@@ -57,17 +62,25 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
   transferSubscription;
   approvalStatusCheckSubscription;
   transferStatusCheckSubscription;
+  resolveRegistrantAddressSubscription;
 
   constructor(
     protected userFacade: UserFacadeService,
     protected walletService: WalletService,
     protected paymentFacade: PaymentFacadeService,
+    protected userService: UserService,
     protected ensMarketplaceService: EnsMarketplaceService,
     protected snackBar: MatSnackBar,
     protected store: Store<PaymentStateModel>,
+    public checkoutService: CheckoutServicesService,
     public genericDialogRef: MatDialogRef<OnboardManagementComponent>,
     @Inject(MAT_DIALOG_DATA) public data: string
-  ) {}
+  ) {
+    this.transferForm = new FormGroup({
+      to: new FormControl(this.domainsTransferTo),
+      toEthName: new FormControl(null),
+    });
+  }
 
   ngOnInit() {
     this.genericDialogRef.backdropClick().subscribe(() => {
@@ -346,6 +359,8 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
               pendingTransferPayments.push(payment);
             }
           }
+          this.transferToCheck =
+            pendingTransferPayments[pendingTransferPayments.length - 1];
           if (paymentState.paymentCancelled === true) {
             this.transfering = false;
             this.transferStatusCheckSubscription = undefined;
@@ -375,6 +390,47 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
+
+  resolveRegistrantAddressInput() {
+    if (this.transferForm.controls.toEthName.value === '') {
+      this.resolvingReceiverAddress = true;
+      this.transferForm.controls.to.setValue(false);
+      return;
+    }
+    if (this.resolveRegistrantInputTimer !== undefined) {
+      clearTimeout(this.resolveRegistrantInputTimer);
+    }
+    this.resolvingReceiverAddress = false;
+    this.resolveRegistrantInputTimer = setTimeout(() => {
+      this.resolveRegistrantAddressSubscription = this.userService
+        .getEthAddress(
+          globalAny.canvasProvider,
+          this.transferForm.controls.toEthName.value
+        )
+        .pipe(
+          map((r) => {
+            this.resolvingReceiverAddress = true;
+            if (r === null || r === false) {
+              this.domainsTransferTo = undefined;
+              this.transferForm.controls.to.setValue(false);
+              return;
+            }
+            this.domainsTransferTo = r;
+            this.transferForm.controls.to.setValue(r);
+          })
+        )
+        .subscribe();
+    }, 1000);
+  }
+
+  goToPendingTx() {
+    window.open(
+      BlockExplorersEnum[environment.defaultChain] +
+        '/tx/' +
+        this.transferToCheck.paymentHash,
+      '_blank'
+    );
   }
 
   performTransfer() {
@@ -433,6 +489,14 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
       return;
     }
     this.genericDialogRef.close();
+  }
+
+  resetRegistrantInput() {
+    this.transferForm.controls.toEthName.setValue('');
+  }
+
+  get transferTo() {
+    return this.transferForm.controls.toEthName.value;
   }
 
   get ensMarketplaceContract() {

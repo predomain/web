@@ -1,0 +1,37 @@
+.co-domains-list {
+  height: 110px;
+}
+
+.co-reset-button-input {
+  top: -8px !important;
+  position: relative !important;
+  right: 20px !important;
+  &.co-spinner {
+    top: -4px !important;
+    right: -5px !important;
+  }
+}
+
+.co-error-resolved-address {
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+  margin-top: 2px;
+}
+
+.co-resolved-address {
+  color: var(--co-main-color);
+  text-overflow: ellipsis;
+  place-content: center flex-start;
+  align-items: center;
+  margin-left: 15px;
+  @media only screen and (max-width: 1000px) {
+    font-size: var(--co-font-size-5);
+    align-items: start;
+    place-content: start flex-start;
+    margin-top: 5px;
+    text-overflow: ellipsis;
+    height: 20px;
+    overflow: hidden;
+  }
+}
