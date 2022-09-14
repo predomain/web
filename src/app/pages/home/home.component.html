@@ -1,31 +1,9 @@
 <div
-  *ngIf="donationBoxOpen === true"
-  fxLayout="column"
-  fxLayoutGap="20px"
-  class="co-donate cos-pos-fixed cos-box-shadow cos-pos-bottom-reset cos-bg-darker-gray cos-padding-2"
->
-  <div fxLayout="row" class="cos-body-0">
-    <div fxFlex>
-      <b> Support Predomain </b>
-    </div>
-    <div fxFlex="0 0 auto" class="cos-right-text">
-      <mat-icon
-        (click)="donationBoxOpen = !donationBoxOpen"
-        class="cos-icon-can-activate"
-        >close</mat-icon
-      >
-    </div>
-  </div>
-  <div class="cos-justify-text">
-    We've recently opened our grant page on Gitcoin! Your support will be
-    invaluable to the development of this project. We would like to invite you
-    to donate to our grant at
-    <a href="https://gitcoin.co/grants/6743/predomain-project"
-      >Gitcoin - Predomain Project</a
-    >
-  </div>
-  <button (click)="goToDonate()" mat-button><b> Donate </b></button>
-</div>
+  #fadeTop
+  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
+  fxLayout="row"
+  fxLayoutAlign="center end"
+></div>
 <div class="shooting_star" *ngFor="let s of starCount"></div>
 <div
   class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
@@ -40,7 +18,7 @@
       showBasket: true,
       showBookmark: true,
       showCanvas: true,
-      showSearch: false,
+      showSearch: true,
       showTranslation: true,
       showManagement: true
     }"
@@ -48,21 +26,28 @@
   ></app-main-header>
 </div>
 <div
+  appGetScrollableXy
+  (scrollPosition)="
+    $event[1] > 50
+      ? (fadeTop.style.display = 'flex')
+      : (fadeTop.style.display = 'none')
+  "
   class="co-signin cos-pos-fixed cos-fluid-width cos-fluid-height"
   fxLayoutAlign="center center"
   fxLayout="column"
 >
   <div
     fxFlex
-    class="co-signin-content cos-fluid-width cos-fluid-height cos-body-3 cos-padding-4 cos-no-padding-left cos-no-padding-right"
+    class="co-signin-content cos-overflow-y cos-fluid-width cos-fluid-height cos-body-3 cos-padding-4 cos-no-padding-left cos-no-padding-right"
     fxLayout="column"
     fxLayoutGap="30px"
+    fxLayoutAlign="center center"
   >
     <div
       fxFlex="0 0 auto"
-      class="co-landing-text-container cos-fluid-width cos-body-4"
       fxLayout="column"
-      fxLayoutALign="center center"
+      fxLayoutAlign="center center"
+      class="co-landing-text-container cos-fluid-width cos-body-4"
     >
       <div
         fxFlex

@@ -8,6 +8,8 @@ import { EnsService } from 'src/app/services/ens';
 import { UserFacadeService } from 'src/app/store/facades';
 import { MainHeaderComponent } from 'src/app/widgets/main-header';
 import { MiscUtilsService } from 'src/app/services';
+import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +18,10 @@ import { MiscUtilsService } from 'src/app/services';
 })
 export class HomeComponent {
   @ViewChild('mainHeader') mainHeader: MainHeaderComponent;
+  ensMetadataAPI =
+    environment.networks[environment.defaultChain].ensMetadataAPI;
   starCount = new Array(10).fill(0);
+  placeholders = new Array(20).fill(0);
   currentUserData: UserModel;
   mainSearchForm: FormGroup;
   donationBoxOpen = true;
@@ -27,6 +32,7 @@ export class HomeComponent {
     protected userFacadeService: UserFacadeService,
     protected detectorRef: ChangeDetectorRef,
     protected ngZone: NgZone,
+    public canvasService: CanvasServicesService,
     public dialog: MatDialog
   ) {
     this.mainSearchForm = new FormGroup({

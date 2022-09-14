@@ -13,12 +13,16 @@ import { ENSMarketplaceMainnetABI } from 'src/app/configurations/contracts/ens-m
 import { ENSMarketplaceTestnetABI } from 'src/app/configurations/contracts/ens-marketplace-abi-testnet.model';
 import { environment } from 'src/environments/environment';
 import { ContractService } from '../contract';
+import { EnsService } from '../ens/ens.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EnsMarketplaceService {
-  constructor(protected contractService: ContractService) {}
+  constructor(
+    protected contractService: ContractService,
+    protected ensService: EnsService
+  ) {}
 
   checkApproval(tokenId: string, provider) {
     const contract = this.getENSTokenContract(provider);
@@ -132,7 +136,7 @@ export class EnsMarketplaceService {
     const contract = this.getENSMarketplaceContract(provider);
     const namesLengths = [];
     for (const c of domainNames) {
-      namesLengths.push(c.length);
+      namesLengths.push(this.ensService.getNameLength(c));
     }
     const dataMethod = 'renewDomains';
     const dataParams = [domainNames, namesLengths, duration];

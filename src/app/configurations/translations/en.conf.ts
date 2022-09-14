@@ -160,7 +160,7 @@ export default {
     ADVANCED_MODE: 'Advanced Mode',
     REGISTER_DOMAINS_TO: 'Register Domains To',
     NO_DOMAINS_SELECTED: 'No domains selected.',
-    FIND_AND_REGISTER: 'Find domains e.g. domain1, domain2...',
+    FIND_AND_REGISTER: 'Register domains e.g. domain1, domain2...',
     SELECTED_DOMAINS: 'Selected Domains',
     REGISTER: 'Register',
     BOOKMARKS: 'Bookmarks',
