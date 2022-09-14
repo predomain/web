@@ -306,6 +306,13 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
   }
 
   getRenewalCost(domainNames: string[], duration: BigNumber) {
+    if (domainNames.length === 1) {
+      return this.ensService.calculateDomainsPrice(
+        domainNames[0],
+        this.paymentState.ethUsdPrice,
+        duration.toNumber() / YEARS_IN_SECONDS
+      );
+    }
     const totalCost = domainNames
       .map((d) => {
         return this.ensService.calculateDomainsPrice(
