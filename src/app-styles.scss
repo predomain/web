@@ -187,27 +187,27 @@ textarea {
   Margin Styles
 ---------------------------------------------*/
 .cos-margin-0 {
-  margin: 0.5em !important;
+  margin: var(--co-margin-0) !important;
 }
 
 .cos-margin-1 {
-  margin: 1em !important;
+  margin: var(--co-margin-1) !important;
 }
 
 .cos-margin-2 {
-  margin: 1.5em !important;
+  margin: var(--co-margin-2) !important;
 }
 
 .cos-margin-3 {
-  margin: 2em !important;
+  margin: var(--co-margin-3) !important;
 }
 
 .cos-margin-4 {
-  margin: 2.5em !important;
+  margin: var(--co-margin-4) !important;
 }
 
 .cos-margin-5 {
-  margin: 3em !important;
+  margin: var(--co-margin-5) !important;
 }
 
 .cos-no-margin {
@@ -316,27 +316,27 @@ textarea {
   Padding Styles
 ---------------------------------------------*/
 .cos-padding-0 {
-  padding: 0.5em;
+  padding: var(--co-padding-0);
   box-sizing: border-box;
 }
 
 .cos-padding-1 {
-  padding: 1em;
+  padding: var(--co-padding-1);
   box-sizing: border-box;
 }
 
 .cos-padding-2 {
-  padding: 1.5em;
+  padding: var(--co-padding-2);
   box-sizing: border-box;
 }
 
 .cos-padding-3 {
-  padding: 2em;
+  padding: var(--co-padding-3);
   box-sizing: border-box;
 }
 
 .cos-padding-4 {
-  padding: 2.5em;
+  padding: var(--co-padding-4);
   box-sizing: border-box;
 }
 .cos-padding-px-30 {

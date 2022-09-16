@@ -137,6 +137,11 @@ export const ENSBulkRegistrationContractMainnetABI = [
         type: 'uint256[]',
       },
       {
+        internalType: 'uint256[]',
+        name: 'priceRanges',
+        type: 'uint256[]',
+      },
+      {
         internalType: 'address',
         name: 'owner',
         type: 'address',
@@ -168,6 +173,11 @@ export const ENSBulkRegistrationContractMainnetABI = [
       {
         internalType: 'uint256[]',
         name: 'nameLengths',
+        type: 'uint256[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'priceRanges',
         type: 'uint256[]',
       },
       {

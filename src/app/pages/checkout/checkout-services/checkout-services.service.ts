@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BigNumber, ethers } from 'ethers';
-import { of } from 'rxjs';
+import { from, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { ENSContracts, generalConfigurations } from 'src/app/configurations';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
@@ -336,6 +336,9 @@ export class CheckoutServicesService {
     ethUsdPrice: string,
     ownerEthName: string
   ) {
+    const provider = globalAny.canvasProvider;
+    const contract =
+      this.registrationFacilityService.getEnsBulkRegistrationContract(provider);
     const commitedRegistration = commmitPayment;
     const rawRegistrationRecord = commitedRegistration.paymentRawRecord;
     const registrationsList = rawRegistrationRecord.map((d) => {
@@ -353,84 +356,90 @@ export class CheckoutServicesService {
         resolver,
         registrationsList
       );
-    const finalTotal = registrationsList
-      .map((d) => {
-        const len = this.ensService.getNameLength(d.labelName);
-        let price;
-        const priceRanges = commmitPayment.paymentPriceRanges;
-        switch (len) {
-          case 3:
-            {
-              price = priceRanges[0];
-            }
-            break;
-          case 4:
-            {
-              price = priceRanges[1];
-            }
-            break;
-          default:
-            {
-              price = priceRanges[2];
-            }
-            break;
+    let finalTotal;
+    return from(contract.getPriceRanges(duration)).pipe(
+      switchMap((r) => {
+        if (r === false || r === null) {
+          throw 1;
         }
-        return ethers.BigNumber.from(price);
+        const priceRanges = r as string[];
+        finalTotal = registrationsList
+          .map((d) => {
+            const len = this.ensService.getNameLength(d.labelName);
+            let price;
+            switch (len) {
+              case 3:
+                {
+                  price = priceRanges[0];
+                }
+                break;
+              case 4:
+                {
+                  price = priceRanges[1];
+                }
+                break;
+              default:
+                {
+                  price = priceRanges[2];
+                }
+                break;
+            }
+            return ethers.BigNumber.from(price);
+          })
+          .reduce((a, b) => {
+            return a.add(b);
+          });
+        return this.registrationFacilityService.completeRegistration(
+          compiledPacket,
+          payer,
+          priceRanges,
+          finalTotal.toHexString(),
+          globalAny.canvasProvider
+        );
+      }),
+      switchMap((registrationPacketAndGasLimit: any) => {
+        const minimumAcceptableGasCostPerRegistration =
+          compiledPacket.length === 1
+            ? ethers.BigNumber.from(170000)
+            : ethers.BigNumber.from(110000).mul(compiledPacket.length);
+        if (registrationPacketAndGasLimit === false) {
+          throw 1;
+        }
+        const [registrationPacket, gasLimit] = registrationPacketAndGasLimit;
+        if (
+          (gasLimit as BigNumber).lt(minimumAcceptableGasCostPerRegistration)
+        ) {
+          throw 1;
+        }
+        const serial = this.walletService.produceNonce(NonceTypesEnum.SERIAL);
+        const p = {
+          id: serial,
+          paymentMarketAddress:
+            this.registrationFacilityService.bulkRegistrationContractAddress,
+          paymentExchangeRate: ethUsdPrice,
+          paymentPayer: payer,
+          paymentCurrency: 'ETH',
+          paymentPayee: registrantAddress,
+          paymentSerial: serial,
+          paymentDate: new Date().getTime(),
+          paymentType: PaymentTypesEnum.REGISTER,
+          paymentAbstractBytesSlot: registrationPacket,
+          paymentTotal: finalTotal.toHexString(),
+          paymentStatus: false,
+          paymentGasLimit: gasLimit.toHexString(),
+          paymentRawRecord: compiledPacket,
+          paymentError: -1,
+          paymentFee: '0',
+          paymentPayerEthName: ownerEthName,
+        } as PaymentModel;
+        this.paymentFacade.createPayment(p);
+        return of(true);
+      }),
+      catchError((e) => {
+        this.showErrorOnContractThrown();
+        return of(false);
       })
-      .reduce((a, b) => {
-        return a.add(b);
-      });
-    return this.registrationFacilityService
-      .completeRegistration(
-        compiledPacket,
-        payer,
-        finalTotal.toHexString(),
-        globalAny.canvasProvider
-      )
-      .pipe(
-        switchMap((registrationPacketAndGasLimit: any) => {
-          const minimumAcceptableGasCostPerRegistration =
-            compiledPacket.length === 1
-              ? ethers.BigNumber.from(170000)
-              : ethers.BigNumber.from(110000).mul(compiledPacket.length);
-          if (registrationPacketAndGasLimit === false) {
-            throw 1;
-          }
-          const [registrationPacket, gasLimit] = registrationPacketAndGasLimit;
-          if (
-            (gasLimit as BigNumber).lt(minimumAcceptableGasCostPerRegistration)
-          ) {
-            throw 1;
-          }
-          const serial = this.walletService.produceNonce(NonceTypesEnum.SERIAL);
-          const p = {
-            id: serial,
-            paymentMarketAddress:
-              this.registrationFacilityService.bulkRegistrationContractAddress,
-            paymentExchangeRate: ethUsdPrice,
-            paymentPayer: payer,
-            paymentCurrency: 'ETH',
-            paymentPayee: registrantAddress,
-            paymentSerial: serial,
-            paymentDate: new Date().getTime(),
-            paymentType: PaymentTypesEnum.REGISTER,
-            paymentAbstractBytesSlot: registrationPacket,
-            paymentTotal: finalTotal.toHexString(),
-            paymentStatus: false,
-            paymentGasLimit: gasLimit.toHexString(),
-            paymentRawRecord: compiledPacket,
-            paymentError: -1,
-            paymentFee: '0',
-            paymentPayerEthName: ownerEthName,
-          } as PaymentModel;
-          this.paymentFacade.createPayment(p);
-          return of(true);
-        }),
-        catchError((e) => {
-          this.showErrorOnContractThrown();
-          return of(false);
-        })
-      );
+    );
   }
 
   calculateTotalInUsd(ethUsdPrice: string, totalCost: number) {

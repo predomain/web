@@ -44,6 +44,11 @@ const routes: Routes = [
       import('./modules/checkout.module').then((m) => m.CheckoutModule),
   },
   {
+    path: 'category/:category',
+    loadChildren: () =>
+      import('./modules/category.module').then((m) => m.CategoryModule),
+  },
+  {
     path: 'checkout/:serial',
     loadChildren: () =>
       import('./modules/checkout.module').then((m) => m.CheckoutModule),

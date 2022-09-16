@@ -20,7 +20,7 @@ export const generalConfigurations = {
   maxIpfsSubscriptionRetries: 5,
   maxDomainsToRegister: 50,
   maxYearsRegistration: 1000,
-  maxTotalCostBuffer: 105,
+  maxTotalCostBuffer: 100,
   defaultCurrency: 'ETH',
   enableCustomRPC: true,
   docsLink: 'https://docs.predomain.xyz/',
@@ -37,6 +37,7 @@ export const generalConfigurations = {
     name: 'Predomain.eth',
   },
   enabledTools: {
+    category: false,
     management: true,
     canvas: true,
     registration: true,
@@ -53,4 +54,5 @@ export const generalConfigurations = {
     'pillar',
     'coinbase',
   ],
+  categoriesDomain: 'categories.predomain.eth',
 };

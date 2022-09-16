@@ -341,14 +341,45 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
   }
 
   getBulkSearchEntriesFromForm(keywordPrefilled = null) {
+    let prefixed = false;
+    let suffixed = false;
+    let prefixedOrSuffixed = false;
+    let prefixedAndSuffixed = false;
     let toFind;
+    if (
+      (this.prefix !== undefined && this.prefix.nativeElement.value !== '') ||
+      (this.prefixMobile !== undefined &&
+        this.prefixMobile.nativeElement.value !== '')
+    ) {
+      prefixed = true;
+    }
+    if (
+      (this.suffix !== undefined && this.suffix.nativeElement.value !== '') ||
+      (this.suffixMobile !== undefined &&
+        this.suffixMobile.nativeElement.value !== '')
+    ) {
+      suffixed = true;
+    }
+    prefixedOrSuffixed =
+      (prefixed === true || suffixed === true) === true &&
+      (prefixed === true && suffixed === true) === false
+        ? true
+        : false;
+    prefixedAndSuffixed = (prefixed === true && suffixed === true) === true;
     if (this.bulkSearchAdvancedOpen === true) {
       toFind = (document.getElementById('co-bulk-advance-input') as any).value
         .replaceAll('\n', ',')
         .replaceAll('.eth', '')
         .split(',')
         .map((d) => d.toLowerCase())
-        .filter((d) => this.ensService.isDomainNameNotValid(d) === true);
+        .filter(
+          (d) =>
+            this.ensService.isDomainNameNotValid(
+              d,
+              prefixedOrSuffixed,
+              prefixedAndSuffixed
+            ) === true
+        );
     } else if (keywordPrefilled !== null) {
       toFind = keywordPrefilled
         .replaceAll(' ', '')
@@ -357,8 +388,11 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
         .map((d) => d.toLowerCase())
         .filter(
           (d) =>
-            this.ensService.isDomainNameNotValid(d) === true &&
-            d.indexOf('.') <= -1
+            this.ensService.isDomainNameNotValid(
+              d,
+              prefixedOrSuffixed,
+              prefixedAndSuffixed
+            ) === true && d.indexOf('.') <= -1
         );
     } else {
       toFind = (this.searchKeyword as string)
@@ -368,8 +402,11 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
         .map((d) => d.toLowerCase())
         .filter(
           (d) =>
-            this.ensService.isDomainNameNotValid(d) === true &&
-            d.indexOf('.') <= -1
+            this.ensService.isDomainNameNotValid(
+              d,
+              prefixedOrSuffixed,
+              prefixedAndSuffixed
+            ) === true && d.indexOf('.') <= -1
         );
     }
     if (toFind.length > 1000) {
