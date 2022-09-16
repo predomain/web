@@ -1,6 +1,6 @@
 :root {
   --co-default-text-color: #ffffff;
-  --co-bg-neutral-color: black;
+  --co-bg-neutral-color: #121619;
   --co-main-color: #52a6f2;
   --co-placeholder-text-color: #87868b;
   --co-placeholder-text-lighter-color: #d6d6d8;
@@ -8,12 +8,12 @@
   --co-anchor-color: #52a6f2;
   --co-gray-color: #f6f6f6;
   --co-border-color: #4c505c;
-  --co-darker-border-color: #121619;
+  --co-darker-border-color: #21262a;
   --co-gray-elements-color: #eeeef0;
-  --co-button-disabled-color: #353840;
+  --co-button-disabled-color: #21262a;
   --co-button-disabled-text-color: #9e9e9e;
   --co-danger-color: red;
-  --co-gray-bg: #353840;
+  --co-gray-bg: #21262a;
   --co-darker-gray-bg: #202225;
   --co-icons-color: #ffffff;
   --co-top-fade-color: #202225;
@@ -40,6 +40,19 @@
     --co-top-fade-color: #ffffff;
     --co-hazard-color: #ffff00;
   }
+
+  --co-margin-0: 0.5em;
+  --co-margin-1: 1em;
+  --co-margin-2: 1.5em;
+  --co-margin-3: 2em;
+  --co-margin-4: 2.5em;
+  --co-margin-5: 3em;
+
+  --co-padding-0: 0.5em;
+  --co-padding-1: 1em;
+  --co-padding-2: 1.5em;
+  --co-padding-3: 2em;
+  --co-padding-4: 2.5em;
 
   --co-font-size-40: 40px;
   --co-font-size-30: 30px;

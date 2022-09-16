@@ -4,13 +4,6 @@
   fxLayout="row"
   fxLayoutAlign="center end"
 ></div>
-<div class="shooting_star" *ngFor="let s of starCount"></div>
-<div
-  class="co-bg cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
-></div>
-<div
-  class="cos-moon cos-fluid-width cos-fluid-height cos-pos-fixed cos-pos-top-reset"
-></div>
 <div class="co-main-header cos-pos-fixed cos-fluid-width cos-padding-2">
   <app-main-header
     #mainHeader
@@ -26,22 +19,21 @@
   ></app-main-header>
 </div>
 <div
-  appGetScrollableXy
-  (scrollPosition)="
-    $event[1] > 50
-      ? (fadeTop.style.display = 'flex')
-      : (fadeTop.style.display = 'none')
-  "
   class="co-signin cos-pos-fixed cos-fluid-width cos-fluid-height"
   fxLayoutAlign="center center"
   fxLayout="column"
 >
   <div
     fxFlex
-    class="co-signin-content cos-overflow-y cos-fluid-width cos-fluid-height cos-body-3 cos-padding-4 cos-no-padding-left cos-no-padding-right"
+    appGetScrollableXy
+    (scrollPosition)="
+      $event[1] > 50
+        ? (fadeTop.style.display = 'flex')
+        : (fadeTop.style.display = 'none')
+    "
+    class="co-signin-content cos-overflow-y cos-fluid-width cos-fluid-height cos-body-3 cos-padding-4 cos-no-padding-bottom cos-no-padding-left cos-no-padding-right"
     fxLayout="column"
     fxLayoutGap="30px"
-    fxLayoutAlign="center center"
   >
     <div
       fxFlex="0 0 auto"
@@ -193,6 +185,192 @@
           </div>
         </mat-option>
       </mat-autocomplete>
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        class="co-home-content-container cos-margin-4 cos-no-margin-bottom cos-no-margin-left cos-no-margin-right"
+      >
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutGap="20px"
+          class="cos-fluid-width co-learn-container"
+        >
+          <div fxFlex fxLayout="column" fxLayoutGap="20px" class="cos-body-0">
+            <div fxFlex class="cos-center-text">ENS & Web3</div>
+            <div
+              fxLayout="row wrap"
+              fxLayoutGap="20px"
+              fxLayoutAlign="center center"
+              class="cos-body-3"
+            >
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/ens.svg" class="mat-icon" />
+                <div>
+                  <a href="https://docs.ens.domains/"> ENS Docs </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/ens.svg" class="mat-icon" />
+                <div>
+                  <a href="https://discuss.ens.domains/"> ENS Forums </a>
+                </div>
+              </div>
+
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/dune.png" class="mat-icon" />
+                <div>
+                  <a href="https://dune.com/makoto/ens"> ENS Statistics </a>
+                </div>
+              </div>
+
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/web3domains.png" class="mat-icon" />
+                <div>
+                  <a href="https://web3domains.com/"> Web3Domains </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/esteroids.png" class="mat-icon" />
+                <div>
+                  <a href="https://esteroids.eth.limo/"> Esteroids </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/ens-grows.png" class="mat-icon" />
+                <div>
+                  <a href="https://ensgrows.substack.com/"> ENS Grows </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/me3.png" class="mat-icon" />
+                <div>
+                  <a href="https://me3.si/"> me3 </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/nimi.png" class="mat-icon" />
+                <div>
+                  <a href="https://nimi.eth.limo/"> Nimi </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/limo.png" class="mat-icon" />
+                <div>
+                  <a href="https://eth.limo/"> ETH LIMO </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/ipfs.png" class="mat-icon" />
+                <div>
+                  <a href="https://ipfs.io/"> IPFS </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/nfty.png" class="mat-icon" />
+                <div>
+                  <a href="https://nftychat.xyz/"> Nfty Chat </a>
+                </div>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                class="co-learn"
+              >
+                <img src="assets/social/ens-leaderboard.png" class="mat-icon" />
+                <div>
+                  <a href="https://ethleaderboard.xyz/"> ENS Leaderboard </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutGap="20px"
+          class="cos-fluid-width cos-padding-4 cos-border cos-no-border-left cos-no-border-right cos-no-border-bottom"
+        >
+          <div
+            fxFlex
+            fxLayoutGap="20px"
+            fxLayoutAlign="center center"
+            class="cos-body-3 co-footer-content"
+          >
+            <div
+              fxFlex="0 0 auto"
+              fxLayoutGap="20px"
+              fxLayoutAlign="start center"
+            >
+              <a href="https://discord.gg/ECMz2VNn97">Discord</a>
+              <a href="https://twitter.com/predomain_eth">Twitter</a>
+              <a href="https://docs.predomain.xyz">Docs</a>
+              <a href="https://github.com/predomain">Github</a>
+            </div>
+            <div fxFlex="0 0 auto" class="cos-right-text cos-gray-text">
+              Predomain v0.6.6
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -328,7 +328,7 @@
     box-shadow: none !important;
     margin: 30px !important;
     will-change: transform, opacity !important;
-    background-color: var(--co-darker-gray-bg) !important;
+    background-color: var(--co-bg-neutral-color) !important;
     border-radius: var(--cos-border-radius-2) !important;
   }
 
@@ -369,7 +369,7 @@
   }
 
   .mat-dialog-container {
-    background-color: var(--co-darker-gray-bg) !important;
+    background-color: var(--co-bg-neutral-color) !important;
     box-shadow: none !important;
     margin: 30px !important;
     will-change: transform, opacity !important;
@@ -1031,7 +1031,7 @@ ol {
 
 .cos-table {
   overflow: hidden;
-  background-color: var(--co-darker-gray-bg) !important;
+  background-color: var(--co-bg-neutral-color) !important;
   border-radius: var(--cos-border-radius-2) !important;
   box-shadow: -1px 0 2px 0 rgb(41 52 67 / 12%), 1px 0 2px 0 rgb(41 52 67 / 7%),
     0 1px 2px 0 rgb(41 52 67 / 10%) !important;
@@ -1062,7 +1062,7 @@ ol {
   .mat-header-cell {
     background-color: var(--co-gray-bg) !important;
     .mat-checkbox-inner-container {
-      background-color: var(--co-darker-gray-bg) !important;
+      background-color: var(--co-bg-neutral-color) !important;
     }
   }
 
@@ -1082,7 +1082,7 @@ ol {
         background-color: var(--co-gray-bg) !important;
         cursor: pointer;
         .mat-checkbox-inner-container {
-          background-color: var(--co-darker-gray-bg) !important;
+          background-color: var(--co-gray-bg) !important;
         }
       }
     }
@@ -1127,7 +1127,7 @@ ol {
       }
     }
     .mat-cell {
-      background-color: var(--co-darker-gray-bg) !important;
+      background-color: var(--co-bg-neutral-color) !important;
       padding-left: 0 !important;
     }
   }

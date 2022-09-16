@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Provider } from '@angular/core';
 import request, { gql } from 'graphql-request';
 import { Observable } from 'rxjs';
 import {
@@ -19,6 +19,30 @@ export class EnsService {
   getDomainMetadata(domainHash: string) {
     const url = environment.networks[environment.defaultChain].ensMetadataAPI;
     return this.http.get(url + domainHash);
+  }
+
+  getDomainContentHash(provider: Provider, ethName: string) {
+    return new Observable((observer) => {
+      (provider as any)
+        .getResolver(ethName)
+        .then((resolver) => {
+          return resolver.getContentHash();
+        })
+        .then((r) => {
+          let web2Link = 'https://';
+          if (r.indexOf('ipfs:') > -1) {
+            web2Link += 'ipfs.io/ipfs/' + r.replace('ipfs://', '');
+          } else if (r.indexOf('ipns:') > -1) {
+            web2Link += 'gateway.ipfs.io/ipns/' + r.replace('ipns://', '');
+          }
+          observer.next(web2Link);
+          observer.complete();
+        })
+        .catch((e) => {
+          observer.next(false);
+          observer.complete();
+        });
+    });
   }
 
   findDomains(domains: string[]) {
@@ -127,8 +151,19 @@ export class EnsService {
     return gracePeriodExact / gInPercent;
   }
 
-  isDomainNameNotValid(name: string) {
-    if (name === '' || name.length < 3) {
+  isDomainNameNotValid(
+    name: string,
+    prefixedOrSuffixed = false,
+    prefixedAndSuffixed = false
+  ) {
+    let minLength = 3;
+    if (prefixedOrSuffixed === true) {
+      minLength = 2;
+    }
+    if (prefixedAndSuffixed === true) {
+      minLength = 1;
+    }
+    if (name === '' || name.length < minLength) {
       return false;
     }
     try {

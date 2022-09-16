@@ -178,6 +178,7 @@ export class RegistrationFacilityService {
   completeRegistration(
     commitments: ENSRegistrationCommitmentModel[],
     payer: string,
+    priceRanges: string[],
     totalCost: string,
     provider
   ) {
@@ -198,8 +199,8 @@ export class RegistrationFacilityService {
         : 'completeRegistrationWithConfigs';
     const dataParams =
       commitments[0].resolver === payNoMarketAddress
-        ? [names, namesLengths, owner, duration, secret]
-        : [names, namesLengths, duration, secret, resolver, owner];
+        ? [names, namesLengths, priceRanges, owner, duration, secret]
+        : [names, namesLengths, priceRanges, duration, secret, resolver, owner];
     const dataInput = contract.interface.encodeFunctionData(
       dataMethod,
       dataParams

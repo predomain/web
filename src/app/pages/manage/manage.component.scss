@@ -31,7 +31,7 @@
 }
 
 .co-profile-content {
-  padding: 20px !important;
+  padding: var(--co-padding-2) !important;
   @media only screen and (max-width: 1000px) {
     padding: 0 !important;
   }
