@@ -20,7 +20,7 @@ export const generalConfigurations = {
   maxIpfsSubscriptionRetries: 5,
   maxDomainsToRegister: 50,
   maxYearsRegistration: 1000,
-  maxTotalCostBuffer: 100,
+  maxTotalCostBuffer: 105,
   defaultCurrency: 'ETH',
   enableCustomRPC: true,
   docsLink: 'https://docs.predomain.xyz/',

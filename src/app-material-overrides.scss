@@ -684,7 +684,7 @@
   .mat-expansion-panel {
     margin-bottom: 1px !important;
     margin-top: 0px !important;
-    background-color: var(--co-darker-gray-bg) !important;
+    background-color: var(--co-bg-netural-color) !important;
     color: white !important;
     border-radius: 0 !important;
     box-shadow: none !important;
@@ -702,7 +702,7 @@
     .mat-expansion-panel-header {
       padding-left: 0 !important;
       padding-right: 0 !important;
-      background-color: var(--co-darker-gray-bg) !important;
+      background-color: var(--co-bg-netural-color) !important;
       border-bottom: transparent !important;
       .mat-expansion-indicator {
         filter: invert(1);
