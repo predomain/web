@@ -362,7 +362,12 @@ export class CheckoutServicesService {
         if (r === false || r === null) {
           throw 1;
         }
-        const priceRanges = r as string[];
+        const priceRanges = (r as string[]).map((p) => {
+          return ethers.BigNumber.from(p)
+            .mul(generalConfigurations.maxTotalCostBuffer)
+            .div(100)
+            .toHexString();
+        });
         finalTotal = registrationsList
           .map((d) => {
             const len = this.ensService.getNameLength(d.labelName);

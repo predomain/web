@@ -87,8 +87,7 @@
             (click)="removeRegistrations(d.labelName)"
             fxFlex="24px"
             [ngClass]="
-              registrationStatus !== registrationStatusTypes.BEFORE_COMMIT &&
-              registrationStatus !== registrationStatusTypes.BEFORE_REGISTRATION
+              registrationStatus !== registrationStatusTypes.BEFORE_COMMIT
                 ? 'co-disabled-inputs'
                 : ''
             "
