@@ -9,6 +9,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { invalidChars } from 'src/app/configurations';
 
 @Injectable({
   providedIn: 'root',
@@ -163,10 +164,20 @@ export class EnsService {
     if (prefixedAndSuffixed === true) {
       minLength = 1;
     }
-    if (name === '' || name.length < minLength) {
+    if (name === '' || this.getNameLength(name) < minLength) {
       return false;
     }
     try {
+      const invalidCharsForcedFilter = invalidChars.join('');
+      const invalidCharDetect = [...name].filter((c) => {
+        if (invalidCharsForcedFilter.includes(c) === true) {
+          return true;
+        }
+        return false;
+      });
+      if (invalidCharDetect.length > 0) {
+        throw false;
+      }
       const normed = ens_normalize(name);
       if (normed !== name) {
         throw false;
