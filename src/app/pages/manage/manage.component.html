@@ -618,13 +618,17 @@
                       <mat-checkbox
                         class="no-label"
                         [checked]="element?.transfer"
-                        [disabled]="hasPendingPayments === true"
+                        [disabled]="
+                          hasPendingPayments === true ||
+                          element.gracePeriodPercent > 0
+                        "
                         (change)="
                           element.transfer = $event.checked;
                           selectDomainForTransfer($event.checked)
                         "
                         [style.opacity]="
                           hasPendingPayments === true ||
+                          element.gracePeriodPercent > 0 ||
                           (managementOperation !== undefined &&
                             managementOperation !==
                               managementOperationTypes.TRANSFER)
