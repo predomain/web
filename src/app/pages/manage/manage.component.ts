@@ -297,7 +297,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     this.userDomains = this.userDomains.map((d) => {
-      if (domainsToRenew.includes(d.labelName)) {
+      if (domainsToRenew.includes(d.labelName) && d.gracePeriodPercent <= 0) {
         return { ...d, transfer: true, renew: false };
       }
       return d;
@@ -339,7 +339,10 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   saveChanges() {
     const provider = globalAny.canvasProvider;
-    const tokenId = BigNumber.from(this.userDomains[0].labelHash).toString();
+    const qualifiedTokenId = this.userDomains.filter((d) => {
+      return d.gracePeriodPercent <= 0;
+    })[0];
+    const tokenId = BigNumber.from(qualifiedTokenId.labelHash).toString();
     if (this.saveChangesSubscripton) {
       this.saveChangesSubscripton.unsubscribe();
     }

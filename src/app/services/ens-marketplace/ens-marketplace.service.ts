@@ -39,7 +39,9 @@ export class EnsMarketplaceService {
         }
         return of(r);
       }),
-      catchError((e) => of(null))
+      catchError((e) => {
+        return of(null);
+      })
     );
   }
 
