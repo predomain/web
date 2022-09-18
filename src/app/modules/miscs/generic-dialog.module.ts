@@ -7,6 +7,7 @@ import { serviceProviders } from '../../models';
 import { GenericDialogComponent } from '../../widgets/generic-dialog/generic-dialog.component';
 import { IconModule } from './icon.module';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { CommonModule } from '@angular/common';
     TranslationModule,
     MatDialogModule,
     MatButtonModule,
+    MatIconModule,
     FlexLayoutModule,
     IconModule,
   ],

@@ -179,6 +179,11 @@ export default {
     CLICK_NEXT_TO_PROCEED: 'Click <b>Next</b> to proceed.',
   },
   REGISTRATION: {
+    REGISTRATION_CANCELLED_TITLE: 'Registration Cancelled',
+    REGISTRATION_CANCELLED_DESCRIPTION: 'Your registration has been cancelled.',
+    CANCEL_REGISTRATION_TITLE: 'Cancel Registration',
+    CANCEL_REGISTRATION_DESCRIPTION:
+      'Are you sure you want to cancel this registration? This action cannot be undone.',
     BEFORE_COMMIT: 'Step 1: request registration.',
     COMMIT_SENT: 'Processing request...',
     COMMIT_COMPLETE: 'Step 1: request registration received...',

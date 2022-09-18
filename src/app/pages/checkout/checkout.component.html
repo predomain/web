@@ -132,6 +132,9 @@
           class="cos-body-2 cos-margin-3 cos-no-margin-top cos-no-margin-bottom"
         >
           <a (click)="goToHome()">{{ "HEADER.BACK_TO_HOME" | translate }}</a>
+          <a (click)="openCancelationDialog()">{{
+            "HEADER.CANCEL_REGISTRATION" | translate
+          }}</a>
           <a href="https://discord.gg/ECMz2VNn97" target="_blank">{{
             "HEADER.HELP_SUPPORT" | translate
           }}</a>
@@ -300,16 +303,28 @@
     </div>
     <div
       fxFlex="0 0 auto"
-      fxLayoutAlign="start center"
+      fxLayout="column"
+      fxLayoutGap="20px"
+      fxLayoutAlign="start start"
       class="co-bulk-search-title-mobile cos-padding-2 cos-no-padding-top cos-no-padding-left cos-no-padding-right"
     >
       <b>
         {{ "LABELS.REGISTER" | translate }}
       </b>
-      <div fxFlex fxLayoutAlign="end end" class="cos-right-text">
-        <a href="" class="co-cancel-button-mobile cos-body-3">{{
-          "BUTTON.CANCEL" | translate
+      <div
+        fxFlex
+        fxLayoutAlign="end end"
+        fxLayoutGap="20px"
+        class="cos-right-text"
+      >
+        <a (click)="goToHome()" class="co-cancel-button-mobile cos-body-3">{{
+          "HEADER.BACK_TO_HOME" | translate
         }}</a>
+        <a
+          (click)="openCancelationDialog()"
+          class="co-cancel-button-mobile cos-body-3"
+          >{{ "HEADER.CANCEL_REGISTRATION" | translate }}</a
+        >
       </div>
     </div>
   </div>
@@ -337,7 +352,7 @@
           "
           fxFlex="0 0 auto"
           fxLayoutAlign="end center"
-          fxLayoutGap="5px"
+          fxLayoutGap="20px"
           class="cos-right-text cos-margin-3 cos-no-margin-left cos-no-margin-top cos-no-margin-bottom"
         >
           <a

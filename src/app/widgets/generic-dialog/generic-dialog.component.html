@@ -1,17 +1,42 @@
 <div mat-dialog-content>
   <ng-container *ngIf="data.showSpinner === true">
     <app-icon
-      *ngIf="data.lightColour === true"
+      *ngIf="data.customIcon !== undefined && data.lightColour === true"
       [iconSize]="data.spinnerSize"
       class="cos-padding-3"
     >
-      <ng-container *ngIf="data.customIcon === ''"> lspin </ng-container>
-      <ng-container *ngIf="data.customIcon !== ''">
+      <ng-container
+        *ngIf="
+          data.customIcon !== undefined &&
+          data.customIcon === '' &&
+          data.matIcon !== undefined &&
+          data.matIcon === ''
+        "
+      >
+        lspin
+      </ng-container>
+      <ng-container
+        *ngIf="data.customIcon !== undefined && data.customIcon !== ''"
+      >
         {{ data.customIcon }}
       </ng-container>
     </app-icon>
-    <!-- *ngIf="data.lightColour === false" -->
-    <app-icon [iconSize]="data.spinnerSize" class="cos-padding-3">
+    <ng-container *ngIf="data.matIcon !== undefined && data.matIcon !== ''">
+      <div
+        fxLayoutAlign="center center"
+        fxFlexAlign="center"
+        class="cos-fluid-width cos-fluid-height cos-padding-4"
+      >
+        <mat-icon color="primary" class="cos-large-icon">
+          {{ data.matIcon }}
+        </mat-icon>
+      </div>
+    </ng-container>
+    <app-icon
+      *ngIf="data.customIcon !== undefined && data.lightColour === false"
+      [iconSize]="data.spinnerSize"
+      class="cos-padding-3"
+    >
       <ng-container *ngIf="data.customIcon === ''"> spin </ng-container>
       <ng-container *ngIf="data.customIcon !== ''">
         {{ data.customIcon }}
@@ -46,14 +71,40 @@
   mat-dialog-actions
   [fxLayoutAlign]="data.textAlign === 'center' ? 'center center' : 'end center'"
 >
-  <button (click)="goToLink()" mat-button class="cos-body-4">
-    <b>
-      {{
-        (data.buttonTitle !== undefined && data.buttonTitle !== ""
-          ? data.buttonTitle
-          : "BUTTON.CLOSE"
-        ) | translate
-      }}
-    </b>
-  </button>
+  <ng-container *ngIf="data.showYesNo !== undefined && data.showYesNo === true">
+    <div fxFlex fxLayout="row">
+      <button
+        (click)="yesNoPressed(false)"
+        fxFlex
+        mat-button
+        class="cos-body-4"
+      >
+        <b>
+          {{ "BUTTON.CANCEL" | translate }}
+        </b>
+      </button>
+      <button (click)="yesNoPressed(true)" fxFlex mat-button class="cos-body-4">
+        <b>
+          {{ "BUTTON.PROCEED" | translate }}
+        </b>
+      </button>
+    </div>
+  </ng-container>
+  <ng-container
+    *ngIf="
+      data.showYesNo === undefined ||
+      (data.showYesNo !== undefined && data.showYesNo === false)
+    "
+  >
+    <button (click)="goToLink()" mat-button class="cos-body-4">
+      <b>
+        {{
+          (data.buttonTitle !== undefined && data.buttonTitle !== ""
+            ? data.buttonTitle
+            : "BUTTON.CLOSE"
+          ) | translate
+        }}
+      </b>
+    </button>
+  </ng-container>
 </div>
