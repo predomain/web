@@ -195,6 +195,73 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
+          class="co-home-categories cos-bg-gray cos-fluid-width cos-padding-4"
+        >
+          <div
+            fxFlex
+            fxLayout="row"
+            fxLayoutGap="20px"
+            fxLayoutAlign="center center"
+          >
+            <div fxFlex class="co-category-title">Categories</div>
+            <div fxFlex class="cos-body-0 cos-right-text"></div>
+          </div>
+          <div fxFlex fxLayout="row wrap" fxLayoutGap="10px">
+            <ng-container *ngIf="loadingCategories === true">
+              <div
+                *ngFor="let p of placeholders"
+                style="height: 150px"
+                class="co-category cos-placeholder cos-border-radius-2"
+              ></div>
+            </ng-container>
+            <div
+              *ngFor="let c of categories"
+              fxLayout="row"
+              fxLayoutGap="15px"
+              class="co-category"
+            >
+              <div>
+                <div
+                  fxLayoutAlign="stretch stretch"
+                  class="cos-fluid-height cos-fluid-width"
+                >
+                  <app-preview-image
+                    fxFlex
+                    [preview]="'assets/profile-blank.svg'"
+                    [error]="'assets/profile-blank.svg'"
+                    [style.width]="'130px'"
+                    class="cos-border-radius-2"
+                  ></app-preview-image>
+                </div>
+              </div>
+              <div fxLayout="column">
+                <div fxFlex="0 0 auto" class="cos-body-0">
+                  <a href="/#/category/{{ c }}" target="_blank"
+                    >{{ metadata.categoriesTitle[c] }}
+                    <mat-icon class="cos-small-icon">open_in_new</mat-icon>
+                  </a>
+                </div>
+                <div fxFlex="0 0 auto" class="cos-gray-text">
+                  {{ metadata.categoriesDescription[c] }}
+                </div>
+                <div fxFlex></div>
+                <div fxFlex="0 0 auto" class="cos-body-0">
+                  <b> 0.004 ETH </b>
+                </div>
+                <div
+                  fxFlex="0 0 auto"
+                  class="cos-margin-0 cos-no-margin-left cos-no-margin-right cos-no-margin-top cos-gray-text cos-body-4"
+                >
+                  Daily Volume
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutGap="20px"
           class="cos-fluid-width co-learn-container"
         >
           <div fxFlex fxLayout="column" fxLayoutGap="20px" class="cos-body-0">
@@ -366,7 +433,7 @@
               <a href="https://github.com/predomain">Github</a>
             </div>
             <div fxFlex="0 0 auto" class="cos-right-text cos-gray-text">
-              Predomain v0.7.0
+              Predomain v0.7.2
             </div>
           </div>
         </div>

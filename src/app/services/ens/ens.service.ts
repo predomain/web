@@ -1,11 +1,7 @@
 import { Injectable, Provider } from '@angular/core';
 import request, { gql } from 'graphql-request';
 import { Observable } from 'rxjs';
-import {
-  ens_normalize,
-  ens_beautify,
-  ens_tokenize,
-} from '@adraffy/ens-normalize';
+import { ens_normalize, ens_beautify } from '@adraffy/ens-normalize';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
@@ -59,6 +55,13 @@ export class EnsService {
             domain {
               id
               createdAt
+              labelName
+              labelhash
+              events {
+                id
+                blockNumber
+                transactionID
+              }
             }
           }
         }

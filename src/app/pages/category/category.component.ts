@@ -10,6 +10,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  catchError,
   delay,
   delayWhen,
   map,
@@ -36,8 +37,8 @@ import {
 } from 'src/app/configurations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadService } from 'src/app/services/download/download.service';
-import { ens_normalize, ens_tokenize } from '@adraffy/ens-normalize';
-import { keccak256 } from 'ethers/lib/utils';
+import { HttpClient } from '@angular/common/http';
+import { CategoryModel } from 'src/app/models/category';
 
 const globalAny: any = global;
 
@@ -47,17 +48,6 @@ export enum DisplayModes {
   LINEAR,
 }
 
-export interface ProfileTexts {
-  email?: string;
-  description?: string;
-  keywords?: string;
-  discord?: string;
-  twitter?: string;
-  telegram?: string;
-  url?: string;
-  reddit?: string;
-  predomainBanner?: string;
-}
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
@@ -67,13 +57,15 @@ export class CategoryComponent implements OnInit, OnDestroy {
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
+  pageCategory = this.category + '.' + generalConfigurations.categoriesDomain;
   placeholders = new Array(10).fill(0);
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   hasDomainsListLoaded = false;
   avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
   displayMode = DisplayModes.LINEAR;
-  profileTexts: ProfileTexts = {};
+  metadata: CategoryModel;
+  profileTexts: any;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   typesFilter = {
@@ -85,9 +77,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
   userDomains;
   userAddress;
   ethNameData;
-  getUserDomainsSubscripton;
   profileTextSubscription;
   activatedRouteSubscription;
+  getCategoriesSubscription;
 
   constructor(
     protected bookmarksService: BookmarksServiceService,
@@ -101,6 +93,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     protected miscUtils: MiscUtilsService,
     protected snackBar: MatSnackBar,
     protected router: Router,
+    protected httpClient: HttpClient,
     protected changeDetectorRef: ChangeDetectorRef,
     public canvasService: CanvasServicesService
   ) {
@@ -119,14 +112,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.userName === false) {
-      return;
-    }
     this.activatedRouteSubscription = this.activatedRoute.params
       .pipe(
         map((p) => {
           this.pageReset();
-          this.getUserDomains();
+          this.getCategory();
         })
       )
       .subscribe();
@@ -139,49 +129,53 @@ export class CategoryComponent implements OnInit, OnDestroy {
     if (this.profileTextSubscription) {
       this.profileTextSubscription.unsubscribe();
     }
-    if (this.getUserDomainsSubscripton) {
-      this.getUserDomainsSubscripton.unsubscribe();
+  }
+
+  getCategory() {
+    if (this.getCategoriesSubscription) {
+      this.getCategoriesSubscription.unsubscribe();
+      this.getCategoriesSubscription = undefined;
     }
+    const category = this.category;
+    if (category === false) {
+      this.pagesFacade.gotoPageRoute('not-found', PagesEnum.NOTFOUND);
+    }
+    const provider = globalAny.canvasProvider;
+    this.getCategoriesSubscription = this.ensService
+      .getDomainContentHash(provider, this.pageCategory)
+      .pipe(
+        switchMap((c) => {
+          return this.httpClient.get(c as any);
+        }),
+        switchMap((r) => {
+          if (r === false || r === null) {
+            throw false;
+          }
+          this.metadata = r as CategoryModel;
+          this.getProfileTexts();
+          return this.getCategoryDomains(this.metadata.valid_names);
+        }),
+        catchError((e) => {
+          this.pagesFacade.setPageCriticalError(true);
+          this.pagesFacade.gotoPageRoute('not-found', PagesEnum.NOTFOUND);
+          return of(false);
+        })
+      )
+      .subscribe();
   }
 
   pageReset() {
     this.hasDomainsListLoaded = false;
-    this.profileTexts = {};
     this.userDomains = undefined;
     this.userAddress = undefined;
     this.ethNameData = undefined;
   }
 
-  getUserDomains() {
-    const isEthName = this.userName.indexOf('.') <= -1 ? false : true;
-    if (this.getUserDomainsSubscripton) {
-      this.getUserDomainsSubscripton.unsubscribe();
-    }
-    if (
-      isEthName === false &&
-      this.miscUtils.checksumEtheruemAddress(this.userName) === false
-    ) {
-      this.pagesFacade.gotoPageRoute('notfound', PagesEnum.NOTFOUND);
-      return;
-    }
+  getCategoryDomains(domains: string[]) {
     let retries = 0;
-    this.getUserDomainsSubscripton = (
-      this.userName.indexOf('.')
-        ? this.userService.getEthAddress(
-            globalAny.canvasProvider,
-            this.userName
-          )
-        : of(this.userDomains)
-    )
+    return this.ensService
+      .findDomains(domains.map((r) => r.toLowerCase()))
       .pipe(
-        switchMap((r) => {
-          if (r === false || r === null) {
-            this.pagesFacade.gotoPageRoute('not-found', PagesEnum.NOTFOUND);
-            throw false;
-          }
-          this.userAddress = r;
-          return this.userService.getUserDomains((r as string).toLowerCase());
-        }),
         delay(1000),
         map((r) => {
           this.userDomains = (r as any).registrations
@@ -193,14 +187,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
                 const gPeriod = this.ensService.calculateGracePeriodPercentage(
                   parseInt(d.expiryDate, 10)
                 );
-                if (
-                  isEthName === true &&
-                  d.domain.labelName.toLowerCase() ===
-                    this.userName.replace('.eth', '').toLowerCase()
-                ) {
-                  this.ethNameData = d.domain;
-                  this.getProfileTexts();
-                }
                 const fData = {
                   id: d.domain.id.toLowerCase(),
                   labelName: d.domain.labelName.toLowerCase(),
@@ -235,79 +221,18 @@ export class CategoryComponent implements OnInit, OnDestroy {
             })
           )
         )
-      )
-      .subscribe();
+      );
   }
 
   getProfileTexts() {
-    if (this.profileTextSubscription) {
-      this.profileTextSubscription.unsubscribe();
-    }
-    if (this.userName === false) {
+    if (
+      'profileTexts' in this.metadata &&
+      this.metadata.profileTexts !== undefined
+    ) {
+      this.profileTexts = this.metadata.profileTexts;
       return;
     }
-    const ethName = this.userName;
-    const provider = globalAny.canvasProvider;
-    this.profileTextSubscription = this.userService
-      .getUserText(provider, ethName, 'email')
-      .pipe(
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.email = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'description');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.description = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'keywords');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.keywords = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'com.discord');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.discord = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'com.twitter');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.twitter = r as string;
-          }
-          return this.userService.getUserText(
-            provider,
-            ethName,
-            'org.telegram'
-          );
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.telegram = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'url');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.url = r as string;
-          }
-          return this.userService.getUserText(
-            provider,
-            ethName,
-            'predomain_banner'
-          );
-        }),
-        map((r) => {
-          if (r !== null) {
-            this.profileTexts.predomainBanner = r as string;
-          }
-        })
-      )
-      .subscribe();
+    this.profileTexts = {};
   }
 
   filterSearchDomains(value: any = '') {
@@ -527,11 +452,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
     return href;
   }
 
-  get userName() {
-    if ('user' in this.activatedRoute.snapshot.params === false) {
+  get category() {
+    if ('category' in this.activatedRoute.snapshot.params === false) {
       return false;
     }
-    const user = this.activatedRoute.snapshot.params.user;
-    return user;
+    const category = this.activatedRoute.snapshot.params.category.toLowerCase();
+    return category;
   }
 }

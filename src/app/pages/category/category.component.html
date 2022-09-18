@@ -112,10 +112,10 @@
             <div
               *ngIf="ethNameData === undefined && avatarResolved === true"
               class="co-no-name cos-wallet-address-text-cut cos-pos-absolute cos-right-text"
-              fxFlex="0 1 11.5"
+              fxFlex="0 1 100%"
             >
               <b>
-                {{ userName }}
+                {{ metadata?.category }}
               </b>
             </div>
           </div>
@@ -141,8 +141,16 @@
                 >arrow_forward</mat-icon
               >
             </span>
+            <span class="cos-gray-text"> Categories </span>
+            <span
+              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+            >
+              <mat-icon class="cos-small-icon" color="primary"
+                >arrow_forward</mat-icon
+              >
+            </span>
             <span class="cos-gray-text">
-              {{ userName }}
+              {{ metadata?.category }}
             </span>
           </div>
           <div fxFlex fxLayout="column" class="co-info-container">
@@ -152,7 +160,7 @@
                 class="cos-wallet-address-text-cut cos-overflow-hidden"
               >
                 <b>
-                  {{ userName }}
+                  {{ metadata?.category }}
                 </b>
               </div>
             </div>
@@ -161,7 +169,7 @@
                 {{
                   profileTexts?.description === undefined
                     ? "Ethereum Name service"
-                    : profileTexts.description
+                    : profileTexts?.description
                 }}
               </div>
             </div>
@@ -549,16 +557,6 @@
             class="cos-small-icon cos-pointer"
             >warning</mat-icon
           >
-        </div>
-        <div
-          fxFlex
-          fxLayoutAlign="start center"
-          class="cos-disappear-on-mobile"
-        >
-          <span class="cos-gray-text">
-            {{ "LABELS.REGISTRATION_DATE" | translate }}:&nbsp;
-          </span>
-          {{ d.registrationDate | formatTime }}
         </div>
         <div
           fxFlex

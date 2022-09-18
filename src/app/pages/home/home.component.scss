@@ -25,7 +25,10 @@
 .co-category {
   margin-bottom: var(--co-margin-1);
   width: calc(25% - 10px);
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (min-width: 501px) and (max-width: 1000px) {
+    width: calc(50% - 10px) !important;
+  }
+  @media only screen and (max-width: 500px) {
     width: calc(100% - 10px) !important;
   }
 }
@@ -40,7 +43,7 @@
 .co-signin {
   z-index: 1002;
   .co-signin-content {
-    justify-content: center;
+    justify-content: start;
   }
 }
 
@@ -49,8 +52,9 @@
 }
 
 .co-landing-text-container {
-  @media only screen and (max-width: 1000px) {
-    padding-top: 200px;
+  padding-top: 100px;
+  @media only screen and (max-width: 500px) {
+    padding-top: 150px;
   }
 }
 
@@ -211,13 +215,19 @@
 }
 .co-home-content-container {
   width: 75%;
+  .co-home-categories {
+    border-radius: var(--cos-border-radius-2) !important;
+  }
   @media only screen and (max-width: 1000px) {
+    .co-home-categories {
+      border-radius: 0 !important;
+    }
     width: 100% !important;
   }
 }
 .co-learn-container {
   padding: var(--co-padding-4);
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 500px) {
     padding: 0 !important;
     padding-left: var(--co-padding-2) !important;
     padding-right: var(--co-padding-2) !important;
