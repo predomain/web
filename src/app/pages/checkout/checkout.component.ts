@@ -65,6 +65,7 @@ import { InputTypesEnum } from 'src/app/models/custom-adderss-dialog';
 import { RegistrationFacilityService } from 'src/app/services/registration';
 import { ProgressBarMode } from '@angular/material/progress-bar';
 import { CheckoutServicesService } from './checkout-services/checkout-services.service';
+import { GenericDialogComponent } from 'src/app/widgets/generic-dialog';
 
 const globalAny: any = global;
 const YEARS_IN_SECONDS = 31556952;
@@ -117,6 +118,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   staticPaymentTranslatedTexts;
   registrationProcessSubscription;
   assessCheckoutStatusSubscription;
+  registrationCancellationSubscription;
 
   constructor(
     protected activatedRoute: ActivatedRoute,
@@ -220,6 +222,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.registrationCancellationSubscription) {
+      this.registrationCancellationSubscription.unsubscribe();
+    }
     if (this.assessCheckoutStatusSubscription) {
       this.assessCheckoutStatusSubscription.unsubscribe();
     }
@@ -469,6 +474,29 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         : this.domainConfigurationForm.controls.duration.value,
       InputTypesEnum.NUMERIC
     );
+  }
+
+  openCancelationDialog() {
+    const dialogRef = this.dialog.open(GenericDialogComponent, {
+      data: {
+        titleText: 'REGISTRATION.CANCEL_REGISTRATION_TITLE',
+        subText: 'REGISTRATION.CANCEL_REGISTRATION_DESCRIPTION',
+        showYesNo: true,
+        lightColour: false,
+        textAlign: 'center',
+      },
+      panelClass: 'cos-generic-dialog',
+    });
+    this.registrationCancellationSubscription =
+      dialogRef.componentInstance.yesNoButton.subscribe((r) => {
+        if (r === false) {
+          dialogRef.close();
+          return;
+        }
+        this.paymentFacadeService.removeAllPayment();
+        this.checkoutService.showRegistrationCancelledDialog();
+        dialogRef.close();
+      });
   }
 
   calculateNameCost(name: string) {

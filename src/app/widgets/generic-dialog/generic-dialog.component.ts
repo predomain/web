@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { PagesFacadeService } from 'src/app/store/facades';
 
@@ -12,6 +13,7 @@ import { PagesFacadeService } from 'src/app/store/facades';
 export class GenericDialogComponent implements OnInit {
   overlaysCountOnInit = 0;
   closedByButton = false;
+  yesNoButton: Subject<boolean> = new Subject();
 
   constructor(
     protected router: Router,
@@ -20,10 +22,12 @@ export class GenericDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       message: string;
+      showYesNo?: boolean;
       showSpinner?: boolean;
       lightColour?: boolean;
       spinnerSize?: number;
       customIcon?: string;
+      matIcon?: string;
       subText?: string;
       titleText?: string;
       textAlign?: string;
@@ -90,6 +94,11 @@ export class GenericDialogComponent implements OnInit {
         this.data.goToOnExitPage
       );
     }
+  }
+
+  yesNoPressed(type: boolean) {
+    this.yesNoButton.next(type);
+    this.yesNoButton.complete();
   }
 
   goToLink() {

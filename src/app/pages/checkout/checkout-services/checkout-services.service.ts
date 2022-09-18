@@ -185,6 +185,28 @@ export class CheckoutServicesService {
     }, 750);
   }
 
+  showRegistrationCancelledDialog() {
+    setTimeout(() => {
+      const dialogRef = this.dialog.open(GenericDialogComponent, {
+        data: {
+          titleText: 'REGISTRATION.REGISTRATION_CANCELLED_TITLE',
+          subText: 'REGISTRATION.REGISTRATION_CANCELLED_DESCRIPTION',
+          showSpinner: true,
+          lightColour: false,
+          spinnerSize: 200,
+          matIcon: 'clear',
+          textAlign: 'center',
+          buttonTitle: 'BUTTON.GO_TO_HOME',
+          buttonLink: 'home',
+          buttonLinkPageRef: PagesEnum.HOME,
+          goToOnExit: 'home',
+          goToOnExitPage: PagesEnum.HOME,
+        },
+        panelClass: 'cos-generic-dialog',
+      });
+    }, 250);
+  }
+
   showRegitrationCompletionDialog(address: string) {
     setTimeout(() => {
       const dialogRef = this.dialog.open(GenericDialogComponent, {
