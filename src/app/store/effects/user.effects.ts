@@ -6,7 +6,7 @@ import {
   ROOT_EFFECTS_INIT,
   createEffect,
 } from '@ngrx/effects';
-import { map, switchMap, catchError, delay } from 'rxjs/operators';
+import { map, switchMap, catchError, delay, timeout } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import {
@@ -147,12 +147,23 @@ export class UserEffects {
               break;
             case WalletTypesEnum.LEDGER:
               {
-                return this.ledgerService.connect(timeNow).pipe(
+                return this.ledgerService.createTransport().pipe(
+                  timeout(5000),
+                  delay(500),
+                  switchMap((t) => {
+                    if (t === false) {
+                      return of(UserStoreErrorsEnum.LEDGER_NO_DEVICE_SELECTED);
+                    }
+                    return this.ledgerService.connect(timeNow);
+                  }),
                   switchMap((r: any) => {
                     if (r === false) {
-                      return of(false);
+                      return of(UserStoreErrorsEnum.LEDGER_NO_DEVICE_SELECTED);
                     }
                     return of([timeNow, r, action.payload.walletType]);
+                  }),
+                  catchError((e) => {
+                    return of(UserStoreErrorsEnum.LEDGER_NO_DEVICE_SELECTED);
                   })
                 );
               }
@@ -160,6 +171,10 @@ export class UserEffects {
           }
         }),
         map((r: any) => {
+          if (r === UserStoreErrorsEnum.LEDGER_NO_DEVICE_SELECTED) {
+            this.store.dispatch(new UserErrorSet(r));
+            return;
+          }
           if (r === false) {
             this.store.dispatch(
               new UserErrorSet(UserStoreErrorsEnum.CONNECT_ERROR)

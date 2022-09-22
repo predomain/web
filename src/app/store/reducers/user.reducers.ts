@@ -1,4 +1,4 @@
-import { UserModel, UserStateModel } from "../../models/states/user-interfaces";
+import { UserModel, UserStateModel } from '../../models/states/user-interfaces';
 import {
   AddUser,
   GetUserState,
@@ -9,7 +9,7 @@ import {
   SetUserError,
   SetUserState,
   UpdateUser,
-} from "../actions";
+} from '../actions';
 
 const initialUserState: UserStateModel = {
   error: undefined,

@@ -135,6 +135,7 @@
             : registrationCount
         "
         matBadgeColor="primary"
+        matTooltip="Domains to register"
         (click)="openConnect()"
       >
         <mat-icon>shopping_cart</mat-icon>
@@ -149,6 +150,7 @@
             ? undefined
             : bookmarksCount
         "
+        matTooltip="Bookmarked Domains"
         (click)="showBookmarks()"
       >
         <mat-icon>bookmark</mat-icon>
@@ -161,6 +163,7 @@
         class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
         fxLayoutAlign="center center"
+        matTooltip="Canvas Tool"
         (click)="openConnect()"
       >
         <mat-icon>layers</mat-icon>
@@ -174,6 +177,7 @@
         class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
         fxLayoutAlign="center center"
+        matTooltip="Manage Domains"
         (click)="openConnect()"
       >
         <mat-icon>magic_button</mat-icon>
@@ -243,6 +247,7 @@
             : registrationCount
         "
         matBadgeColor="primary"
+        matTooltip="Domains to register"
         class="co-registration-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         (click)="
           hasPendingRegistrations === true ? goToCheckout() : showRegistration()
@@ -276,6 +281,7 @@
             : bookmarksCount
         "
         matBadgeColor="primary"
+        matTooltip="Bookmarked Domains"
         (click)="showBookmarks()"
       >
         <mat-icon>bookmark</mat-icon>
@@ -288,6 +294,7 @@
         class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
         fxLayoutAlign="center center"
+        matTooltip="Canvas Tool"
         (click)="goToCanvas()"
       >
         <mat-icon>layers</mat-icon>
@@ -301,6 +308,7 @@
         class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
         fxLayoutAlign="center center"
+        matTooltip="Manage Domains"
         (click)="goToManage()"
       >
         <mat-icon>magic_button</mat-icon>
@@ -310,6 +318,7 @@
         class="cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
         fxLayoutAlign="center center"
+        matTooltip="Menu"
         [matMenuTriggerFor]="menu"
       >
         <img src="assets/logo.png" fxFlex="20px" />
@@ -403,6 +412,10 @@
   >
     <mat-icon>settings</mat-icon>
     {{ "BUTTON.SETTINGS" | translate }}
+  </button>
+  <button mat-menu-item (click)="goToDiscord()">
+    <mat-icon>help</mat-icon>
+    {{ "HEADER.HELP" | translate }}
   </button>
   <button
     *ngIf="(userData | async) === false || (userData | async) === undefined"

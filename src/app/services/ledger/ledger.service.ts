@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { MiscUtilsService } from '../misc-utils';
 import TransportUSB from '@ledgerhq/hw-transport-webusb';
 import LedgerEth from '@ledgerhq/hw-app-eth';
-import { PagesFacadeService } from '../../store/facades';
+import { PagesFacadeService, UserFacadeService } from '../../store/facades';
 import detectEthereumProvider from '@metamask/detect-provider';
 
 interface LedgerSignResultModel {
@@ -27,14 +27,9 @@ export class LedgerService {
 
   constructor(
     public miscUtils: MiscUtilsService,
-    public pagesFacade: PagesFacadeService
-  ) {
-    TransportUSB.create().then((r) => {
-      this.transport = r;
-      this.ledger = new LedgerEth(r);
-      return this.ledger.getAddress("m/44'/60'/0'/0/0");
-    });
-  }
+    public pagesFacade: PagesFacadeService,
+    protected userFacadeService: UserFacadeService
+  ) {}
 
   connect(time: number) {
     return new Observable((observer) => {
@@ -56,7 +51,12 @@ export class LedgerService {
 
   createTransport() {
     return new Observable((observer) => {
-      TransportUSB.create().then((r) => {
+      TransportUSB.create().then((r: any) => {
+        if (r === false) {
+          observer.next(false);
+          observer.complete();
+          return;
+        }
         this.transport = r;
         this.ledger = new LedgerEth(r);
         observer.next(this.ledger);

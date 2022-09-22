@@ -1,5 +1,6 @@
 import { of, timer } from 'rxjs';
 import { ethers } from 'ethers';
+import * as d3 from 'd3';
 import {
   ChangeDetectorRef,
   Component,
@@ -11,7 +12,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   catchError,
-  delay,
   delayWhen,
   map,
   retryWhen,
@@ -42,6 +42,35 @@ import { CategoryModel } from 'src/app/models/category';
 
 const globalAny: any = global;
 
+const test = [
+  { letter: 'A', frequency: 0.08167 },
+  { letter: 'B', frequency: 0.01492 },
+  { letter: 'C', frequency: 0.02782 },
+  { letter: 'D', frequency: 0.04253 },
+  { letter: 'E', frequency: 0.12702 },
+  { letter: 'F', frequency: 0.02288 },
+  { letter: 'G', frequency: 0.02015 },
+  { letter: 'H', frequency: 0.06094 },
+  { letter: 'I', frequency: 0.06966 },
+  { letter: 'J', frequency: 0.00153 },
+  { letter: 'K', frequency: 0.00772 },
+  { letter: 'L', frequency: 0.04025 },
+  { letter: 'M', frequency: 0.02406 },
+  { letter: 'N', frequency: 0.06749 },
+  { letter: 'O', frequency: 0.07507 },
+  { letter: 'P', frequency: 0.01929 },
+  { letter: 'Q', frequency: 0.00095 },
+  { letter: 'R', frequency: 0.05987 },
+  { letter: 'S', frequency: 0.06327 },
+  { letter: 'T', frequency: 0.09056 },
+  { letter: 'U', frequency: 0.02758 },
+  { letter: 'V', frequency: 0.00978 },
+  { letter: 'W', frequency: 0.0236 },
+  { letter: 'X', frequency: 0.0015 },
+  { letter: 'Y', frequency: 0.01974 },
+  { letter: 'Z', frequency: 0.00074 },
+];
+
 export enum DisplayModes {
   CHUNK,
   AVATAR,
@@ -57,13 +86,14 @@ export class CategoryComponent implements OnInit, OnDestroy {
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
-  pageCategory = this.category + '.' + generalConfigurations.categoriesDomain;
   placeholders = new Array(10).fill(0);
+  pageCategory = this.category + '.' + generalConfigurations.categoriesDomain;
+  categoryChart = test;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   hasDomainsListLoaded = false;
   avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
-  displayMode = DisplayModes.LINEAR;
+  displayMode = DisplayModes.CHUNK;
   metadata: CategoryModel;
   profileTexts: any;
   ensMetadataAPI =
@@ -176,7 +206,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
     return this.ensService
       .findDomains(domains.map((r) => r.toLowerCase()))
       .pipe(
-        delay(1000),
         map((r) => {
           this.userDomains = (r as any).registrations
             .filter((d) => {

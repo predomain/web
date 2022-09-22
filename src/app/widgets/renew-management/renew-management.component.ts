@@ -12,7 +12,7 @@ import { MatAccordion } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { BigNumber, ethers } from 'ethers';
-import { of, Subject, timer } from 'rxjs';
+import { from, of, Subject, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import {
   BlockExplorersEnum,
@@ -168,23 +168,59 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
       this.renewSubscription.unsubscribe();
     }
     this.renewing = true;
+    const provider = globalAny.canvasProvider;
+    const contract =
+      this.ensMarketplaceService.getENSMarketplaceContract(provider);
     const userAddress = this.userState.user.walletAddress;
     const domainNames = domainsToRenew.map((d) => d.labelName);
-    const totalCost = ethers.BigNumber.from(
-      (this.getRenewalCost(domainNames, duration) * 10 ** 18).toString()
-    )
-      .mul(generalConfigurations.maxTotalCostBuffer)
-      .div(100)
-      .toHexString();
-    this.renewSubscription = this.ensMarketplaceService
-      .renew(
-        domainNames,
-        duration,
-        userAddress,
-        totalCost,
-        globalAny.canvasProvider
-      )
+    let finalTotal;
+    this.renewSubscription = from(contract.getENSPriceRanges(duration))
       .pipe(
+        switchMap((r) => {
+          if (r === false || r === null) {
+            throw 1;
+          }
+          const priceRanges = (r as string[]).map((p) => {
+            return ethers.BigNumber.from(p)
+              .mul(generalConfigurations.maxTotalCostBuffer)
+              .div(100)
+              .toHexString();
+          });
+          finalTotal = domainNames
+            .map((d) => {
+              const len = this.ensService.getNameLength(d);
+              let price;
+              switch (len) {
+                case 3:
+                  {
+                    price = priceRanges[0];
+                  }
+                  break;
+                case 4:
+                  {
+                    price = priceRanges[1];
+                  }
+                  break;
+                default:
+                  {
+                    price = priceRanges[2];
+                  }
+                  break;
+              }
+              return ethers.BigNumber.from(price);
+            })
+            .reduce((a, b) => {
+              return a.add(b);
+            });
+          return this.ensMarketplaceService.renew(
+            domainNames,
+            priceRanges,
+            duration,
+            userAddress,
+            finalTotal.toHexString(),
+            globalAny.canvasProvider
+          );
+        }),
         switchMap((transferDataAndGas: any) => {
           if (transferDataAndGas === false) {
             throw 1;
@@ -204,7 +240,7 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
             paymentDate: new Date().getTime(),
             paymentType: PaymentTypesEnum.TX_RENEW,
             paymentAbstractBytesSlot: renewData,
-            paymentTotal: totalCost,
+            paymentTotal: finalTotal.toHexString(),
             paymentStatus: false,
             paymentError: -1,
             paymentFee: '0',

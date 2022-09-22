@@ -35,15 +35,10 @@
 .co-main-header {
   z-index: 1003;
 }
-
-.co-bg {
-  background: url(/assets/stars.webp);
-  opacity: 0.2;
-}
 .co-signin {
   z-index: 1002;
   .co-signin-content {
-    justify-content: start;
+    justify-content: center;
   }
 }
 
@@ -52,7 +47,6 @@
 }
 
 .co-landing-text-container {
-  padding-top: 100px;
   @media only screen and (max-width: 500px) {
     padding-top: 150px;
   }
@@ -214,7 +208,7 @@
   margin-top: -15px;
 }
 .co-home-content-container {
-  width: 75%;
+  width: 60%;
   .co-home-categories {
     border-radius: var(--cos-border-radius-2) !important;
   }

@@ -120,6 +120,11 @@ export const ENSMarketplaceTestnetABI = [
         type: 'uint256[]',
       },
       {
+        internalType: 'uint256[]',
+        name: 'priceRanges',
+        type: 'uint256[]',
+      },
+      {
         internalType: 'uint256',
         name: 'duration',
         type: 'uint256',
@@ -227,6 +232,13 @@ export const ENSMarketplaceTestnetABI = [
       },
     ],
     name: 'changeController',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'collectFees',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

@@ -9,14 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  delay,
-  delayWhen,
-  map,
-  retryWhen,
-  switchMap,
-  take,
-} from 'rxjs/operators';
+import { delayWhen, map, retryWhen, switchMap, take } from 'rxjs/operators';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
@@ -36,8 +29,6 @@ import {
 } from 'src/app/configurations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadService } from 'src/app/services/download/download.service';
-import { ens_normalize, ens_tokenize } from '@adraffy/ens-normalize';
-import { keccak256 } from 'ethers/lib/utils';
 
 const globalAny: any = global;
 
@@ -73,7 +64,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   hasDomainsListLoaded = false;
   avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
-  displayMode = DisplayModes.LINEAR;
+  displayMode = DisplayModes.CHUNK;
   profileTexts: ProfileTexts = {};
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
@@ -183,7 +174,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.userAddress = r;
           return this.userService.getUserDomains((r as string).toLowerCase());
         }),
-        delay(1000),
         map((r) => {
           this.userDomains = (r as any).registrations
             .filter((d) => {

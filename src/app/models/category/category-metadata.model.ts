@@ -1,5 +1,6 @@
 export interface CategoryModel {
   category: string;
+  ticker: string;
   profileTexts?: {
     email?: string;
     description?: string;

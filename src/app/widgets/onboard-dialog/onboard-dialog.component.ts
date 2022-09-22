@@ -21,6 +21,7 @@ export class OnboardDialogComponent implements OnInit, OnDestroy {
   closedByButton = false;
   userFacadeSubscription: any;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
+  userErrorTypes: typeof UserStoreErrorsEnum = UserStoreErrorsEnum;
   chosenWalletType: WalletTypesEnum;
 
   constructor(
@@ -171,11 +172,20 @@ export class OnboardDialogComponent implements OnInit, OnDestroy {
       switchMap((r) => {
         if (
           r.error !== undefined &&
-          r.error === UserStoreErrorsEnum.CONNECT_ERROR
+          (r.error === UserStoreErrorsEnum.CONNECT_ERROR ||
+            r.error === UserStoreErrorsEnum.LEDGER_NO_DEVICE_SELECTED)
         ) {
           return of(true);
         }
         return of(false);
+      })
+    );
+  }
+
+  get errorOccured() {
+    return this.userFacadeService.userState$.pipe(
+      switchMap((r) => {
+        return of(r.error);
       })
     );
   }

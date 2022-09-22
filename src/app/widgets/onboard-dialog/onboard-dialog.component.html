@@ -35,6 +35,16 @@
       *ngIf="(hasErrorOccured | async) === true"
     >
       <app-spinner
+        *ngIf="
+          (errorOccured | async) === userErrorTypes.LEDGER_NO_DEVICE_SELECTED
+        "
+        [failureText]="'SPINNER.LEDGER_NO_DEVICE_SELECTED'"
+        [spinnerSize]="200"
+        [mode]="spinnerModes.FAILED"
+      >
+      </app-spinner>
+      <app-spinner
+        *ngIf="(errorOccured | async) === userErrorTypes.CONNECT_ERROR"
         [failureText]="'GENERIC.NETWORK_CHANGED_INCOMPATIBLE'"
         [spinnerSize]="200"
         [mode]="spinnerModes.FAILED"
