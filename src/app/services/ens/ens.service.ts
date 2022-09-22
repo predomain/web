@@ -167,10 +167,10 @@ export class EnsService {
     if (prefixedAndSuffixed === true) {
       minLength = 1;
     }
-    if (name === '' || this.getNameLength(name) < minLength) {
-      return false;
-    }
     try {
+      if (name === '' || this.getNameLength(name) < minLength) {
+        return false;
+      }
       const invalidCharsForcedFilter = invalidChars.join('');
       const invalidCharDetect = [...name].filter((c) => {
         if (invalidCharsForcedFilter.includes(c) === true) {

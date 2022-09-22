@@ -126,6 +126,12 @@ textarea {
   border-radius: var(--cos-border-radius-1) !important;
 }
 
+.cos-disabled {
+  pointer-events: none;
+  opacity: 0.25;
+  filter: grayscale(1);
+}
+
 /*-------------------------------------------
   Float Styles
 ---------------------------------------------*/

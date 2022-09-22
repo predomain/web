@@ -29,7 +29,6 @@ export class HomeComponent implements OnDestroy {
   @ViewChild('mainHeader') mainHeader: MainHeaderComponent;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
-  starCount = new Array(10).fill(0);
   placeholders = new Array(20).fill(0);
   categories;
   metadata;
@@ -55,6 +54,7 @@ export class HomeComponent implements OnDestroy {
       prefixSearch: new FormControl(''),
       suffixSearch: new FormControl(''),
     });
+    this.getCategories();
   }
 
   ngOnDestroy(): void {
@@ -100,6 +100,10 @@ export class HomeComponent implements OnDestroy {
 
   goToDonate() {
     window.open('https://gitcoin.co/grants/6743/predomain-project', '_blank');
+  }
+
+  get categoriesEnabled() {
+    return generalConfigurations.enabledTools.category;
   }
 
   get userData() {

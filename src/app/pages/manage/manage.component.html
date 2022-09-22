@@ -741,6 +741,15 @@
                       fxLayout="row"
                       fxLayoutAlign="center center"
                       class="cos-disappear-on-mobile"
+                      [ngClass]="
+                        managementOperation !== undefined &&
+                        (managementOperation ===
+                          managementOperationTypes.TRANSFER ||
+                          managementOperation ===
+                            managementOperationTypes.RENEW)
+                          ? 'cos-disabled'
+                          : ''
+                      "
                     >
                       <div fxFlex="0 0 auto">
                         <button
