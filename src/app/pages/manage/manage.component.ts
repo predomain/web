@@ -8,7 +8,6 @@ import {
 import {
   AfterViewInit,
   Component,
-  OnChanges,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -19,7 +18,6 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { BigNumber, ethers } from 'ethers';
 import { of, timer } from 'rxjs';
@@ -61,8 +59,6 @@ export enum ManagementOperationEnum {
   TRANSFER,
   RENEW,
 }
-
-const YEARS_IN_SECONDS = 31556952;
 
 @Component({
   selector: 'app-manage',

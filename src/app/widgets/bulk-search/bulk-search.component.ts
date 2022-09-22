@@ -165,7 +165,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
 
   addAllToRegistration() {
     if (
-      this.registrationDomains.length + this.bulkSearchResults.length >=
+      this.registrationDomains.length + this.bulkSearchResults.length >
       generalConfigurations.maxDomainsToRegister
     ) {
       this.snackBar.open(

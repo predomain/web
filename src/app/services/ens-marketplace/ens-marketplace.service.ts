@@ -130,6 +130,7 @@ export class EnsMarketplaceService {
 
   renew(
     domainNames: string[],
+    priceRanges: string[],
     duration: BigNumber,
     payer: string,
     totalCost: string,
@@ -141,7 +142,7 @@ export class EnsMarketplaceService {
       namesLengths.push(this.ensService.getNameLength(c));
     }
     const dataMethod = 'renewDomains';
-    const dataParams = [domainNames, namesLengths, duration];
+    const dataParams = [domainNames, namesLengths, priceRanges, duration];
     const dataInput = contract.interface.encodeFunctionData(
       dataMethod,
       dataParams

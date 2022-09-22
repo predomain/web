@@ -1,20 +1,21 @@
-import { Action } from "@ngrx/store";
-import { UserStoreErrorsEnum } from "../../models/error-enums";
+import { Action } from '@ngrx/store';
+import { UserStoreErrorsEnum } from '../../models/error-enums';
 import {
   UserModel,
   UserRegistrationModel,
-} from "../../models/states/user-interfaces";
+} from '../../models/states/user-interfaces';
+import LedgerEth from '@ledgerhq/hw-app-eth';
 
-export const SetUserState = "[UserState] New state set.";
-export const SetUserError = "[UserState] An error has occured.";
-export const GetUserState = "[UserState] Latest state retrieved.";
-export const RemoveUserError = "[UserState] Error removed.";
+export const SetUserState = '[UserState] New state set.';
+export const SetUserError = '[UserState] An error has occured.';
+export const GetUserState = '[UserState] Latest state retrieved.';
+export const RemoveUserError = '[UserState] Error removed.';
 export const RemoveUserState =
-  "[UserState] Latest state replaced (with Empty).";
-export const RemoveUser = "[UserState] Latest user replaced (with Empty).";
-export const AddUser = "[UserState] New user added.";
-export const UpdateUser = "[UserState] User updated added.";
-export const RegisterUser = "[UserState] New user registration.";
+  '[UserState] Latest state replaced (with Empty).';
+export const RemoveUser = '[UserState] Latest user replaced (with Empty).';
+export const AddUser = '[UserState] New user added.';
+export const UpdateUser = '[UserState] User updated added.';
+export const RegisterUser = '[UserState] New user registration.';
 
 export class UserErrorSet implements Action {
   readonly type = SetUserError;

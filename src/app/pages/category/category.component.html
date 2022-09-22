@@ -32,10 +32,12 @@
   fxLayoutAlign="center end"
 ></div>
 <div
-  class="cos-pos-fixed cos-pos-bottom-reset cos-pos-right-reset cos-padding-3"
+  class="co-back-to-top cos-pos-fixed cos-pos-bottom-reset cos-pos-right-reset cos-padding-3"
 >
-  <div class="cos-bg-darker-gray">
-    <mat-icon> </mat-icon>
+  <div
+    class="cos-bg-main cos-padding-0 cos-no-padding-bottom cos-border-radius-1 cos-box-shadow"
+  >
+    <mat-icon> arrow_upward</mat-icon>
   </div>
 </div>
 <div
@@ -44,10 +46,10 @@
     $event[1] > 50
       ? (fadeTop.style.display = 'flex')
       : (fadeTop.style.display = 'none');
-    $event[1] > 300
+    $event[1] > 150
       ? (filters.style.position = 'sticky')
       : (filters.style.position = 'static');
-    $event[1] > 300
+    $event[1] > 150
       ? (filters.style.top = '90px')
       : (filters.style.top = 'none')
   "
@@ -61,188 +63,141 @@
     <div
       fxFlex="100"
       fxLayout="column"
-      fxLayoutGap="20px"
       class="co-profile-content cos-padding-2"
     >
       <div
+        fxFlex="50px"
+        fxLayout="row"
+        fxFlexAlign="top"
+        fxLayoutAlign="start start"
+        class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
+      >
+        <a href="/home">Home</a>
+        <span class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom">
+          <mat-icon class="cos-small-icon" color="primary"
+            >arrow_forward</mat-icon
+          >
+        </span>
+        <span class="cos-gray-text"> Categories </span>
+        <span class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom">
+          <mat-icon class="cos-small-icon" color="primary"
+            >arrow_forward</mat-icon
+          >
+        </span>
+        <span class="cos-gray-text">
+          {{ metadata?.category }}
+        </span>
+      </div>
+      <div
         fxFlex="90"
         fxLayout="row"
-        fxLayoutGap="30px"
-        class="co-profile-header cos-fluid-width cos-overflow-hidden"
+        class="co-profile-header cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right cos-overflow-hidden cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
       >
-        <div fxLayout="column" fxFlex="20" class="co-avatar-container">
-          <div
-            id="canvas_size_guide"
-            class="cos-fluid-width cos-no-margin-bottom"
-            [style.visibility]="'hidden'"
-            [style.width]="'100%'"
-            [style.height]="'0px'"
-          ></div>
-          <div
-            fxLayoutAlign="stretch stretch"
-            class="cos-fluid-height cos-fluid-width"
-          >
-            <app-preview-image
-              *ngIf="ethNameData === undefined"
-              fxFlex
-              (imageLoaded)="avatarResolved = true"
-              [preview]="'assets/img-blank.png'"
-              [error]="'assets/profile-blank.svg'"
-              [style.height]="
-                canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
-              "
-              class="cos-border-radius-2"
-            ></app-preview-image>
-            <app-preview-image
-              *ngIf="ethNameData !== undefined"
-              fxFlex
-              (imageLoaded)="avatarResolved = true"
-              [preview]="'assets/img-blank.png'"
-              [error]="'assets/profile-blank.svg'"
-              [src]="
-                ensMetadataAPI +
-                hashToBigIntString(ethNameData.labelhash) +
-                '/image'
-              "
-              [style.height]="
-                canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
-              "
-              class="cos-border-radius-2"
-            ></app-preview-image>
-            <div
-              *ngIf="ethNameData === undefined && avatarResolved === true"
-              class="co-no-name cos-wallet-address-text-cut cos-pos-absolute cos-right-text"
-              fxFlex="0 1 11.5"
-            >
-              <b>
-                {{ userName }}
-              </b>
-            </div>
-          </div>
-        </div>
         <div
           fxFlex
-          fxLayout="column"
+          fxLayout="row"
           fxLayoutGap="20px"
           fxLayoutAlign="start start"
         >
-          <div
-            fxFlex="50px"
-            fxLayout="row"
-            fxFlexAlign="top"
-            fxLayoutAlign="start start"
-            class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
-          >
-            <a href="/home">Home</a>
-            <span
-              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+          <div fxLayout="column" fxFlex="9" class="co-avatar-container">
+            <div
+              id="canvas_size_guide"
+              class="cos-fluid-width cos-no-margin-bottom"
+              [style.visibility]="'hidden'"
+              [style.width]="'100%'"
+              [style.height]="'0px'"
+            ></div>
+            <div
+              fxLayoutAlign="stretch stretch"
+              class="cos-fluid-height cos-fluid-width"
             >
-              <mat-icon class="cos-small-icon" color="primary"
-                >arrow_forward</mat-icon
-              >
-            </span>
-            <span class="cos-gray-text">
-              {{ userName }}
-            </span>
-          </div>
-          <div fxFlex fxLayout="column" class="co-info-container">
-            <div fxFlex fxLayout="row" class="co-title-text">
+              <app-preview-image
+                *ngIf="ethNameData === undefined"
+                fxFlex
+                (imageLoaded)="avatarResolved = true"
+                [preview]="'assets/img-blank.png'"
+                [error]="'assets/category-profile-blank.svg'"
+                [style.height]="
+                  canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
+                "
+                class="cos-border-radius-2"
+              ></app-preview-image>
+              <app-preview-image
+                *ngIf="ethNameData !== undefined"
+                fxFlex
+                (imageLoaded)="avatarResolved = true"
+                [preview]="'assets/img-blank.png'"
+                [error]="'assets/category-profile-blank.svg'"
+                [src]="
+                  ensMetadataAPI +
+                  hashToBigIntString(ethNameData.labelhash) +
+                  '/image'
+                "
+                [style.height]="
+                  canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
+                "
+                class="cos-border-radius-2"
+              ></app-preview-image>
               <div
-                fxFlex="0 1 200px"
-                class="cos-wallet-address-text-cut cos-overflow-hidden"
+                *ngIf="ethNameData === undefined && avatarResolved === true"
+                class="co-no-name cos-wallet-address-text-cut cos-pos-absolute cos-right-text"
+                fxFlex="0 1 100%"
               >
                 <b>
-                  {{ userName }}
+                  {{ metadata?.ticker }}
                 </b>
               </div>
             </div>
-            <div fxLayoutAlign="start center" fxLayoutGap="5px">
-              <div>
-                {{
-                  profileTexts?.description === undefined
-                    ? "Ethereum Name service"
-                    : profileTexts.description
-                }}
+          </div>
+          <div fxFlex fxLayout="column" fxLayoutGap="10px">
+            <div fxFlex fxLayout="column" class="co-info-container">
+              <div fxFlex fxLayout="row" class="co-title-text">
+                <div
+                  fxFlex="0 1 200px"
+                  class="cos-wallet-address-text-cut cos-overflow-hidden"
+                >
+                  <b>
+                    {{ metadata?.category }}
+                  </b>
+                </div>
+              </div>
+              <div fxLayoutAlign="start center" fxLayoutGap="5px">
+                <div>
+                  {{
+                    profileTexts?.description === undefined
+                      ? "Ethereum Name service"
+                      : profileTexts?.description
+                  }}
+                </div>
+              </div>
+            </div>
+            <div
+              fxFlex
+              fxLayout="row"
+              fxLayoutGap="20px"
+              fxLayoutAlign="start end"
+              class="co-info-container cos-body-2"
+            >
+              <div fxFlex>
+                <div class="cos-body-0">0.00016 ETH</div>
+                <div class="cos-body-7 cos-uptrend-text">+3.20%</div>
+                <div class="cos-gray-text">
+                  {{ "LABELS.VOLUME" | translate }}
+                </div>
               </div>
             </div>
           </div>
-          <div
-            fxFlex
-            fxLayout="row"
-            fxLayoutGap="20px"
-            class="co-info-container cos-body-2"
-          >
-            <div fxLayout="row" fxLayoutGap="10px" class="cos-body-3">
-              <div
-                class="co-external-link"
-                (click)="copyShareLink()"
-                matTooltip="Share Link"
-              >
-                <mat-icon>share</mat-icon>
-              </div>
-              <div
-                class="co-external-link"
-                matTooltip="Contact user by chat"
-                [matMenuTriggerFor]="chatMenu"
-              >
-                <mat-icon>chat</mat-icon>
-              </div>
-              <div
-                class="co-external-link"
-                (click)="goToEtherscan()"
-                matTooltip="View user's Etherscan page"
-              >
-                <img src="assets/etherscan-logo-light-circle.png" />
-              </div>
-              <div
-                *ngIf="profileTexts?.telegram !== undefined"
-                [matTooltip]="profileTexts?.telegram"
-                class="co-external-link"
-              >
-                <img src="assets/social/telegram.png" />
-              </div>
-              <div
-                *ngIf="profileTexts?.discord !== undefined"
-                [matTooltip]="profileTexts?.discord"
-                class="co-external-link"
-              >
-                <img src="assets/social/discord.png" />
-              </div>
-              <div
-                *ngIf="profileTexts?.reddit !== undefined"
-                [matTooltip]="profileTexts?.reddit"
-                class="co-external-link"
-              >
-                <img src="assets/social/reddit.png" />
-              </div>
-              <div
-                *ngIf="profileTexts?.twitter !== undefined"
-                [matTooltip]="profileTexts?.twitter"
-                class="co-external-link"
-              >
-                <img src="assets/social/twitter.png" />
-              </div>
-            </div>
-          </div>
-          <div
-            fxFlex
-            fxLayout="row"
-            fxLayoutGap="20px"
-            fxLayoutAlign="end start"
-            class="co-info-container cos-body-2 cos-padding-2 cos-no-padding-left cos-no-padding-bottom"
-          >
-            <div>
-              <div class="cos-body-0">
-                {{ userDomains === undefined ? "..." : userDomains?.length }}
-              </div>
-              <div class="cos-gray-text">
-                {{ "LABELS.DOMAINS" | translate }}
-              </div>
-            </div>
+
+          <div class="co-bar-chart cos-pos-absolute cos-pos-right-reset">
+            <app-bar [chartMetadata]="{ width: 1000, height: 207 }"> </app-bar>
+            <div
+              class="co-bar-chart-fade cos-pos-absolute"
+              style="width: 400px; height: 208px; margin-top: -231px"
+            ></div>
           </div>
         </div>
       </div>
-      <div fxLayout="row" fxFlex fxLayoutGap="30px" class="cos-fluid-width">
+      <div fxFlex fxLayout="row" fxLayoutGap="30px" class="cos-fluid-width">
         <div class="co-filters">
           <div #filters fxLayout="column" class="co-filters-content">
             <div
@@ -556,16 +511,6 @@
           class="cos-disappear-on-mobile"
         >
           <span class="cos-gray-text">
-            {{ "LABELS.REGISTRATION_DATE" | translate }}:&nbsp;
-          </span>
-          {{ d.registrationDate | formatTime }}
-        </div>
-        <div
-          fxFlex
-          fxLayoutAlign="start center"
-          class="cos-disappear-on-mobile"
-        >
-          <span class="cos-gray-text">
             {{ "LABELS.EXPIRATION_DATE" | translate }}:&nbsp;
           </span>
           {{ d.expiry | timeAgo }}
@@ -595,7 +540,6 @@
         [value]="d.gracePeriodPercent"
       ></mat-progress-bar>
       <div
-        class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
         [ngClass]="
           d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
             ? ''
@@ -603,20 +547,32 @@
         "
         fxLayoutGap="15px"
         fxLayoutAlign="center center"
+        class="co-bulk-search-item cos-padding-2 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
       >
         <div
           fxFlex
-          fxLayoutGap="10px"
-          fxLayoutAlign="start center"
-          class="cos-wallet-address-text-cut"
+          fxLayout="column"
+          fxLayoutGap="5px"
+          fxLayoutAlign="center start"
         >
-          {{ pretty(d.labelName) }}.eth
+          <div fxFlex="0 0 auto" class="cos-body-2">
+            <b> {{ pretty(d.labelName) }}.eth </b>
+          </div>
+          <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
+            <div class="cos-body-5 cos-gray-text">Last Sale:</div>
+            <div class="cos-body-5">50.00 ETH</div>
+          </div>
+          <div fxFlex></div>
         </div>
         <mat-icon
           *ngIf="domainValid(d.labelName) === false"
           color="accent"
           class="cos-small-icon cos-pointer"
           >warning</mat-icon
+        >
+
+        <mat-icon fxFlex="24px" class="cos-icon-can-activate"
+          >bookmark_add</mat-icon
         >
       </div>
     </div>

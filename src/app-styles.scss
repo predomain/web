@@ -239,6 +239,7 @@ textarea {
 ---------------------------------------------*/
 .cos-border {
   border: solid 1px var(--co-gray-bg) !important;
+  border-color: var(--co-gray-bg) !important;
 }
 
 .cos-border-darker {
@@ -436,6 +437,10 @@ textarea {
   &:hover {
     text-decoration: underline;
   }
+}
+
+.cos-uptrend-text {
+  color: var(--co-uptrend-color) !important;
 }
 
 .cos-gray-text {

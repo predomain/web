@@ -10,11 +10,13 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SharedModule } from './shared.module';
 import { CategoryComponent } from '../pages/category/category.component';
 import { CategoryRoutingModule } from './routing';
+import { BarModule } from './miscs/charts';
 
 @NgModule({
   imports: [
     SharedModule,
     CategoryRoutingModule,
+    BarModule,
     OnboardDialogModule,
     MainHeaderModule,
   ],

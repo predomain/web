@@ -64,6 +64,7 @@ export default {
     FAQ: 'FAQs',
     BACK_TO_HOME: 'Back to Home',
     HELP_SUPPORT: 'Help & Support',
+    HELP: 'Help',
     CANCEL_REGISTRATION: 'Cancel Registration',
     PROFILE: 'Profile',
     SETTINGS: 'Settings',
@@ -102,6 +103,8 @@ export default {
       'A new transaction has been created. Please check your wallet.',
   },
   RENEWAL_DURATIONS: {
+    ONE_MONTH: '1 Month',
+    THREE_MONTHS: '3 Months',
     SIX_MONTHS: '6 Months',
     ONE_YEAR: '1 Year',
     TWO_YEARS: '2 Years',
@@ -110,6 +113,8 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    VOLUME: 'Volume',
+    FLOOR: 'Floor',
     FILTER: 'Filter',
     RENEWAL_DURATION: 'Renewal Duration',
     TRANSACTION: 'Transaction',
@@ -201,6 +206,8 @@ export default {
     PAYMENT_CANCELLED: 'Transaction cancelled. Please try again.',
   },
   SPINNER: {
+    LEDGER_NO_DEVICE_SELECTED:
+      'An error has occured while connecting to your wallet. Please try again.',
     NO_DATA_TO_DISPLAY: 'No items to display.',
     PERFORMING_SEARCH: 'Performing search...',
     LOADING_DATA: 'Loading Data...',
@@ -238,7 +245,7 @@ export default {
   },
   TRANSFER: {
     TRANSFER_TO: 'Transfer to',
-    TRANSFER_COMPLETE: 'Tranfer Complete!',
+    TRANSFER_COMPLETE: 'Transfer Complete!',
     SETUP_INSTRUCTION:
       'To enabled ENS domains management, your account must be configured to approve domain transfers.',
     CONTRACT_APPROVAL_NOTE:

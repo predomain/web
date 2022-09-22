@@ -110,7 +110,7 @@
       fxLayoutGap="10px"
       class="co-profile-content cos-fluid-height"
     >
-      <div fxFlex fxLayoutGap="30px">
+      <div fxFlex fxLayoutGap="20px">
         <div fxFlex="20" class="cos-fluid-height cos-disappear-on-mobile">
           <div
             id="canvas_size_guide"
@@ -125,6 +125,12 @@
             fxLayoutAlign="stretch stretch"
             class="cos-fluid-height cos-fluid-width cos-border-radius-2"
           >
+            <div
+              fxFlex="0 0 auto"
+              class="cos-body-0 cos-padding-0 cos-no-padding-top cos-no-padding-left cos-disappear-on-mobile"
+            >
+              <b> {{ "LABELS.MANAGE_DOMAINS" | translate }} </b>
+            </div>
             <app-preview-image
               *ngIf="selectedDomain === undefined"
               fxFlex="0 0 auto"
@@ -150,7 +156,7 @@
             <div
               fxFlex
               fxLayout="column"
-              class="co-filters-content cos-fluid-height"
+              class="co-filters-content cos-bg-gray cos-border-radius-2 cos-padding-2 cos-fluid-height"
             >
               <div
                 fxFlex="0 0 auto"
@@ -240,22 +246,15 @@
                 </form>
               </div>
             </div>
+            <div fxFlex="40px" class="cos-disappear-on-mobile"></div>
           </div>
         </div>
-        <div
-          fxFlex
-          fxLayout="column"
-          fxLayoutGap="2px"
-          class="cos-fluid-height"
-        >
+        <div fxFlex fxLayout="column" class="cos-fluid-height">
           <div
             fxFlex="0 0 auto"
             fxLayoutAlign="start center"
             class="cos-padding-1 cos-no-padding-left cos-no-padding-top cos-no-padding-right"
           >
-            <div fxFlex class="cos-body-0 cos-disappear-on-mobile">
-              <b> {{ "LABELS.MANAGE_DOMAINS" | translate }} </b>
-            </div>
             <div
               fxFlex
               fxLayoutGap="20px"
@@ -736,10 +735,11 @@
                   fxLayoutAlign="start end"
                   class="cos-fluid-width cos-overflow-hidden"
                 >
-                  <div fxFlex fxLayoutAlign="start end">
+                  <div fxFlex fxLayoutAlign="end center" class="cos-padding-0">
                     <div
                       fxFlex="300px"
                       fxLayout="row"
+                      fxLayoutAlign="center center"
                       class="cos-disappear-on-mobile"
                     >
                       <div fxFlex="0 0 auto">
@@ -754,7 +754,7 @@
                       <div
                         fxFlex
                         fxLayoutAlign="center center"
-                        class="cos-body-1"
+                        class="cos-body-3"
                       >
                         {{ currentPage }} - {{ currentPageList }} of
                         {{ entirePageSize }}
@@ -777,7 +777,7 @@
                     </mat-paginator>
                   </div>
                   <div
-                    fxFlex
+                    fxFlex="0 0 auto"
                     fxLayoutAlign="end end"
                     class="cos-disappear-on-mobile"
                   >
@@ -838,48 +838,3 @@
     </div>
   </div>
 </div>
-
-<mat-menu #renewMenu="matMenu" class="cos-menu" xPosition="after">
-  <button
-    mat-menu-item
-    (click)="selectRenewalDuration(renewalDurationTypes['6MONTHS'])"
-  >
-    <mat-icon>update</mat-icon>
-    {{ renewalDurationTypes["6MONTHS"] | translate }}
-  </button>
-  <button
-    mat-menu-item
-    (click)="selectRenewalDuration(renewalDurationTypes['1YEAR'])"
-  >
-    <mat-icon>update</mat-icon>
-    {{ renewalDurationTypes["1YEAR"] | translate }}
-  </button>
-  <button
-    mat-menu-item
-    (click)="selectRenewalDuration(renewalDurationTypes['2YEARS'])"
-  >
-    <mat-icon>update</mat-icon>
-    {{ renewalDurationTypes["2YEARS"] | translate }}
-  </button>
-  <button
-    mat-menu-item
-    (click)="selectRenewalDuration(renewalDurationTypes['3YEARS'])"
-  >
-    <mat-icon>update</mat-icon>
-    {{ renewalDurationTypes["3YEARS"] | translate }}
-  </button>
-  <button
-    mat-menu-item
-    (click)="selectRenewalDuration(renewalDurationTypes['4YEARS'])"
-  >
-    <mat-icon>update</mat-icon>
-    {{ renewalDurationTypes["4YEARS"] | translate }}
-  </button>
-  <button
-    mat-menu-item
-    (click)="selectRenewalDuration(renewalDurationTypes['5YEARS'])"
-  >
-    <mat-icon>update</mat-icon>
-    {{ renewalDurationTypes["5YEARS"] | translate }}
-  </button>
-</mat-menu>

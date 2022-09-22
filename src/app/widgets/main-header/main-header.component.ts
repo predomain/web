@@ -225,6 +225,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     window.open(generalConfigurations.docsLink, '_blank');
   }
 
+  goToDiscord() {
+    window.open('https://discord.gg/ECMz2VNn97', '_blank');
+  }
+
   openConnect() {
     const dialogRef = this.dialog.open(OnboardDialogComponent, {
       data: 'ERRORS.UNKNOWN',

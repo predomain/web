@@ -1040,7 +1040,7 @@ ol {
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     tbody {
-      border-bottom: solid 2px var(--co-gray-bg) !important;
+      border-bottom: solid 4px var(--co-gray-bg) !important;
     }
   }
 
@@ -1050,6 +1050,9 @@ ol {
   }
 
   thead {
+    overflow: hidden !important;
+    border-top-left-radius: var(--cos-border-radius-2) !important;
+    border-top-right-radius: var(--cos-border-radius-2) !important;
     tr {
       height: 50px;
       th {

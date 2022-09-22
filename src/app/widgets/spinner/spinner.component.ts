@@ -131,6 +131,12 @@ export class SpinnerComponent implements OnInit {
         }
         break;
 
+      case UserStoreErrorsEnum.LEDGER_NO_DEVICE_SELECTED:
+        {
+          return 'ERRORS.LEDGER_NO_DEVICE_SELECTED';
+        }
+        break;
+
       default:
         {
           return 'ERRORS.UNKNOWN';
