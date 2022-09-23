@@ -59,6 +59,8 @@ export default {
     BOOKMARK_ALL: 'Bookmark All',
     DOWNLOAD_LIST: 'Download List',
     SHARE_LIST: 'Share List',
+    MORE: 'More',
+    CHANGE: 'Change',
   },
   HEADER: {
     FAQ: 'FAQs',

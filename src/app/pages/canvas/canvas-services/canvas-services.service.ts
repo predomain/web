@@ -113,6 +113,13 @@ export class CanvasServicesService {
                     }
                   }
                   break;
+                case InputTypesEnum.NUMERIC_WHOLE:
+                  {
+                    if (this.miscUtils.testIntNumeric().test(t) === false) {
+                      throw false;
+                    }
+                  }
+                  break;
                 case InputTypesEnum.NUMERIC:
                   {
                     if (this.miscUtils.testNumeric().test(t) === false) {

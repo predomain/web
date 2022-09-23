@@ -66,6 +66,10 @@ import { RegistrationFacilityService } from 'src/app/services/registration';
 import { ProgressBarMode } from '@angular/material/progress-bar';
 import { CheckoutServicesService } from './checkout-services/checkout-services.service';
 import { GenericDialogComponent } from 'src/app/widgets/generic-dialog';
+import {
+  RenewalDurationsEnum,
+  RenewalDurationsTimeMultiplierEnum,
+} from 'src/app/models/management';
 
 const globalAny: any = global;
 const YEARS_IN_SECONDS = 31556952;
@@ -79,14 +83,15 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   headerBackgroundColors: typeof HeaderBackgroundColorsEnum =
     HeaderBackgroundColorsEnum;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
-  domainConfigurationForm: FormGroup;
-  currentUserData: UserModel;
-  pagesState: PagesStateModel;
-  paymentState: PaymentStateModel;
+  renewalDurationTypes: typeof RenewalDurationsEnum = RenewalDurationsEnum;
   registrationDomains: ENSDomainMetadataModel[] = [];
   registrationStatusTypes: typeof ENSRegistrationStepsEnum =
     ENSRegistrationStepsEnum;
   registrationStatus = ENSRegistrationStepsEnum.BEFORE_COMMIT;
+  domainConfigurationForm: FormGroup;
+  currentUserData: UserModel;
+  pagesState: PagesStateModel;
+  paymentState: PaymentStateModel;
   registrationState: ENSRegistrationStateModel;
   resolvingRegistrantAddress = true;
   registrationListLoaded = false;
@@ -472,7 +477,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.domainConfigurationForm.controls.duration.value === ''
         ? 1
         : this.domainConfigurationForm.controls.duration.value,
-      InputTypesEnum.NUMERIC
+      InputTypesEnum.NUMERIC_WHOLE
     );
   }
 
@@ -497,6 +502,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.checkoutService.showRegistrationCancelledDialog();
         dialogRef.close();
       });
+  }
+
+  setRenewalDuration(duration: RenewalDurationsEnum) {
+    this.domainConfigurationForm.controls.duration.setValue(
+      RenewalDurationsTimeMultiplierEnum[duration]
+    );
   }
 
   calculateNameCost(name: string) {
@@ -763,7 +774,15 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   get duration() {
-    return this.domainConfigurationForm.controls.duration.value;
+    const durations = Object.keys(RenewalDurationsTimeMultiplierEnum);
+    for (const k of durations) {
+      if (
+        RenewalDurationsTimeMultiplierEnum[k] ===
+        this.domainConfigurationForm.controls.duration.value
+      ) {
+        return k;
+      }
+    }
   }
 
   get durationInSeconds() {
