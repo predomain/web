@@ -1045,14 +1045,20 @@ ol {
   }
 
   &.cos-topless {
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
+    border-top-left-radius: var(--cos-border-radius-2) !important;
+    border-top-right-radius: var(--cos-border-radius-2) !important;
+    @media only screen and (max-width: 1000px) {
+      border-radius: 0 !important;
+    }
   }
 
   thead {
     overflow: hidden !important;
     border-top-left-radius: var(--cos-border-radius-2) !important;
     border-top-right-radius: var(--cos-border-radius-2) !important;
+    @media only screen and (max-width: 1000px) {
+      border-radius: 0 !important;
+    }
     tr {
       height: 50px;
       th {

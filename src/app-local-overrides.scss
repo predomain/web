@@ -82,15 +82,16 @@
     }
   }
   tbody {
-    width: calc(80% - 59px) !important;
+    width: calc(80% - 62.5px) !important;
     height: calc(100% - 295px) !important;
+    border-left: solid 4px var(--co-gray-bg) !important;
     @media only screen and (max-width: 1000px) {
+      border-left: 0 !important;
       width: 100% !important;
       height: calc(100% - 288px) !important;
     }
     tr {
       height: 50px !important;
-      border-left: solid 4px var(--co-gray-bg) !important;
       overflow: hidden;
       td {
         flex: 1 1;

@@ -289,14 +289,20 @@
           "
           class="co-duration cos-body-3"
         >
-          <div fxFlex class="cos-body-1">
-            <a (click)="openDurationSettingDialog()">
-              {{ duration }}
-              {{ duration > 1 ? "Years" : "Year" }}
-            </a>
+          <div fxFlex fxLayoutGap="5px" class="cos-body-1 cos-pointer">
+            {{ duration | translate }}
           </div>
           <div fxFlex class="cos-gray-text cos-body-5">
             {{ "LABELS.DURATION" | translate }}
+          </div>
+          <div
+            fxFlex
+            class="cos-gray-text cos-body-5"
+            [matMenuTriggerFor]="durationMenu"
+          >
+            <a>
+              {{ "BUTTON.CHANGE" | translate }}
+            </a>
           </div>
         </div>
       </div>
@@ -396,3 +402,48 @@
     <ng-container *ngTemplateOutlet="bulkSearchContents"></ng-container>
   </div>
 </ng-template>
+
+<mat-menu #durationMenu="matMenu" class="cos-menu" xPosition="after">
+  <button
+    mat-menu-item
+    (click)="setRenewalDuration(renewalDurationTypes['1MONTH'])"
+  >
+    <mat-icon>schedule</mat-icon>
+    {{ renewalDurationTypes["1MONTH"] | translate }}
+  </button>
+  <button
+    mat-menu-item
+    (click)="setRenewalDuration(renewalDurationTypes['3MONTHS'])"
+  >
+    <mat-icon>schedule</mat-icon>
+    {{ renewalDurationTypes["3MONTHS"] | translate }}
+  </button>
+  <button
+    mat-menu-item
+    (click)="setRenewalDuration(renewalDurationTypes['6MONTHS'])"
+  >
+    <mat-icon>schedule</mat-icon>
+    {{ renewalDurationTypes["6MONTHS"] | translate }}
+  </button>
+  <button
+    mat-menu-item
+    (click)="setRenewalDuration(renewalDurationTypes['1YEAR'])"
+  >
+    <mat-icon>schedule</mat-icon>
+    {{ renewalDurationTypes["1YEAR"] | translate }}
+  </button>
+  <button
+    mat-menu-item
+    (click)="setRenewalDuration(renewalDurationTypes['3YEARS'])"
+  >
+    <mat-icon>schedule</mat-icon>
+    {{ renewalDurationTypes["3YEARS"] | translate }}
+  </button>
+  <button
+    mat-menu-item
+    (click)="setRenewalDuration(renewalDurationTypes['5YEARS'])"
+  >
+    <mat-icon>schedule</mat-icon>
+    {{ renewalDurationTypes["5YEARS"] | translate }}
+  </button>
+</mat-menu>

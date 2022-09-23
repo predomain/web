@@ -246,7 +246,6 @@
                 </form>
               </div>
             </div>
-            <div fxFlex="40px" class="cos-disappear-on-mobile"></div>
           </div>
         </div>
         <div fxFlex fxLayout="column" class="cos-fluid-height">
@@ -302,8 +301,8 @@
                 fxLayoutAlign="start center"
               >
                 <table
-                  mat-table
                   *ngIf="dataSource.data[0].id === null"
+                  mat-table
                   [dataSource]="dataSource"
                   class="cos-fluid-width co-manage-domains-table-header cos-fluid-height cos-table cos-table-static cos-table-empty cos-topless cos-table-fluid cos-with-paging cos-body-4"
                 >
@@ -318,7 +317,10 @@
                     </th>
                     <td mat-cell *matCellDef="let element" [attr.colspan]="5">
                       <ng-container *ngIf="hasDomainsListLoaded === true">
-                        <div fxFlex class="cos-fluid-width cos-fuid-height">
+                        <div
+                          fxFlex
+                          class="co-table-loading cos-fluid-width cos-fluid-height"
+                        >
                           <app-custom-spinner
                             [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
                             [spinnerSize]="150"
@@ -329,7 +331,10 @@
                         </div>
                       </ng-container>
                       <ng-container *ngIf="hasDomainsListLoaded === false">
-                        <div fxFlex class="cos-fluid-width cos-fuid-height">
+                        <div
+                          fxFlex
+                          class="co-table-loading cos-fluid-width cos-fluid-height"
+                        >
                           <app-custom-spinner
                             [spinnerText]="'SPINNER.LOADING_DATA'"
                             [spinnerSize]="150"
@@ -733,14 +738,14 @@
                 <div
                   fxFlex
                   fxLayoutAlign="start end"
-                  class="cos-fluid-width cos-overflow-hidden"
+                  class="cos-fluid-width cos-overflow-hidden cos-bg-gray cos-border-radius-2 cos-padding-0 cos-no-border-radius-top-left cos-no-border-radius-top-right"
                 >
-                  <div fxFlex fxLayoutAlign="end center" class="cos-padding-0">
+                  <div fxFlex fxLayoutAlign="start center">
                     <div
                       fxFlex="300px"
                       fxLayout="row"
                       fxLayoutAlign="center center"
-                      class="cos-disappear-on-mobile"
+                      class="cos-disappear-on-mobile cos-margin-0 cos-no-margin-top cos-no-margin-left cos-no-margin-right"
                       [ngClass]="
                         managementOperation !== undefined &&
                         (managementOperation ===
@@ -757,7 +762,9 @@
                           (click)="previousPage()"
                           class="cos-button-cancel"
                         >
-                          <mat-icon>arrow_back_ios</mat-icon>
+                          <mat-icon class="cos-small-icon"
+                            >arrow_back_ios</mat-icon
+                          >
                         </button>
                       </div>
                       <div
@@ -774,7 +781,9 @@
                           (click)="nextPage()"
                           class="cos-button-cancel"
                         >
-                          <mat-icon>arrow_forward_ios</mat-icon>
+                          <mat-icon class="cos-small-icon"
+                            >arrow_forward_ios</mat-icon
+                          >
                         </button>
                       </div>
                     </div>
@@ -787,7 +796,7 @@
                   </div>
                   <div
                     fxFlex="0 0 auto"
-                    fxLayoutAlign="end end"
+                    fxLayoutAlign="end center"
                     class="cos-disappear-on-mobile"
                   >
                     <button

@@ -640,7 +640,7 @@
   height: 10px;
   filter: invert(1);
   &.active {
-    color: var(--co-main-color) !important;
+    fill: var(--co-main-color) !important;
     transform: rotate(90deg);
   }
 }

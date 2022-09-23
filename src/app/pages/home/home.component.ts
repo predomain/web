@@ -54,7 +54,9 @@ export class HomeComponent implements OnDestroy {
       prefixSearch: new FormControl(''),
       suffixSearch: new FormControl(''),
     });
-    this.getCategories();
+    if (generalConfigurations.enabledTools.category === true) {
+      this.getCategories();
+    }
   }
 
   ngOnDestroy(): void {

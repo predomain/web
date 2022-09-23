@@ -150,11 +150,11 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
 
   setRenewalDuration(duration: RenewalDurationsEnum) {
     const durationMultiplier = ethers.BigNumber.from(
-      RenewalDurationsTimeMultiplierEnum[duration] * 100
+      RenewalDurationsTimeMultiplierEnum[duration] * 10000
     );
     this.renewalDuration = ethers.BigNumber.from(YEARS_IN_SECONDS)
       .mul(durationMultiplier)
-      .div(100);
+      .div(10000);
   }
 
   performRenewalCostCalculation() {

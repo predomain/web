@@ -18,7 +18,7 @@ export const generalConfigurations = {
   gasLimitBuffer: 50000,
   maxCheckoutRetryUntilRehydrateProcessId: 5,
   maxIpfsSubscriptionRetries: 5,
-  maxDomainsToRegister: 50,
+  maxDomainsToRegister: 150,
   maxYearsRegistration: 1000,
   maxTotalCostBuffer: 105,
   defaultCurrency: 'ETH',
