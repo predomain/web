@@ -54,6 +54,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
   bulkSearchBookmarks: DomainMetadataModel[] = [];
   bulkSearchBookmarksShow = false;
   bulkSearchBookmarksLoaded = false;
+  skipNormalisation = false;
   bulkSearchResults: DomainMetadataModel[] = [];
   performBulkSearchSubscription;
   bookmarkStateSubscription;
@@ -376,14 +377,15 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
         .replaceAll('\n', ',')
         .replaceAll('.eth', '')
         .split(',')
-        .map((d) => d.toLowerCase())
+        .map((d) => (this.skipNormalisation === true ? d : d.toLowerCase()))
         .filter(
           (d) =>
             this.ensService.isDomainNameNotValid(
               d,
               prefixedOrSuffixed,
               prefixedAndSuffixed,
-              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3
+              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3,
+              this.skipNormalisation
             ) === true
         );
     } else if (keywordPrefilled !== null) {
@@ -391,14 +393,15 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
         .replaceAll(' ', '')
         .replaceAll('.eth', '')
         .split(',')
-        .map((d) => d.toLowerCase())
+        .map((d) => (this.skipNormalisation === true ? d : d.toLowerCase()))
         .filter(
           (d) =>
             this.ensService.isDomainNameNotValid(
               d,
               prefixedOrSuffixed,
               prefixedAndSuffixed,
-              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3
+              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3,
+              this.skipNormalisation
             ) === true && d.indexOf('.') <= -1
         );
     } else {
@@ -406,14 +409,15 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
         .replaceAll(' ', '')
         .replaceAll('.eth', '')
         .split(',')
-        .map((d) => d.toLowerCase())
+        .map((d) => (this.skipNormalisation === true ? d : d.toLowerCase()))
         .filter(
           (d) =>
             this.ensService.isDomainNameNotValid(
               d,
               prefixedOrSuffixed,
               prefixedAndSuffixed,
-              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3
+              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3,
+              this.skipNormalisation
             ) === true && d.indexOf('.') <= -1
         );
     }
@@ -468,6 +472,9 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
     }
     toFind = [...new Set(toFind)];
     return toFind.map((n) => {
+      if (this.skipNormalisation === true) {
+        return n;
+      }
       return this.ensService.performNormalisation(n);
     });
   }
@@ -505,8 +512,8 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
             });
           }
           const fData = {
-            id: f.toLowerCase(),
-            labelName: f.toLowerCase(),
+            id: this.skipNormalisation === true ? f : f.toLowerCase(),
+            labelName: this.skipNormalisation === true ? f : f.toLowerCase(),
             isNotAvailable: found === undefined ? false : true,
           } as DomainMetadataModel;
           if (found === undefined) {
@@ -532,6 +539,10 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
 
   changeDomainType(domainType: DomainTypeEnum) {
     this.domainTypeSelected = domainType;
+    this.skipNormalisation =
+      !generalConfigurations.domainNormalisationRequired.includes(
+        this.domainTypeSelected
+      );
   }
 
   getDomainLink(domain: string) {
@@ -539,6 +550,9 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
   }
 
   pretty(name: string) {
+    if (this.skipNormalisation === true) {
+      return name;
+    }
     return this.ensService.prettify(name);
   }
 
