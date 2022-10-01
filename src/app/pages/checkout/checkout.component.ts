@@ -828,13 +828,17 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
     const commitGasPrice = ethers.BigNumber.from(
       this.registrationDomains.length
-    ).mul(this.ensService.commitGasCost);
+    ).mul(
+      this.registrationDomains.length === 1
+        ? this.ensService.commitGasCost
+        : this.ensService.commitSingleGasCost
+    );
     let registrationGasPrice;
     if (this.registrationDomains.length === 1) {
       registrationGasPrice =
         this.domainConfigurationForm.controls.resolverSet.value === true
-          ? ethers.BigNumber.from(300000)
-          : ethers.BigNumber.from(350000);
+          ? ethers.BigNumber.from(350000)
+          : ethers.BigNumber.from(300000);
     } else {
       registrationGasPrice =
         this.domainConfigurationForm.controls.resolverSet.value === true
@@ -850,10 +854,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     ).div(100);
     const additionalCost = parseFloat(
       ethers.utils.formatEther(
-        registrationGasPrice
-          .add(commitGasPrice)
-          .mul(gasPrice)
-          .add(generalConfigurations.maxTotalCostBuffer)
+        registrationGasPrice.add(commitGasPrice).mul(gasPrice)
       )
     );
     totalCostCalculated += additionalCost;

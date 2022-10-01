@@ -11,9 +11,10 @@ import { HttpClient } from '@angular/common/http';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { invalidChars } from 'src/app/configurations';
 
-const REGISTER_GAS = 300000;
-const REGISTER_CONFIG_GAS = 350000;
-const COMMIT_GAS = 50000;
+const REGISTER_GAS = 175000;
+const REGISTER_CONFIG_GAS = 300000;
+const COMMIT_GAS = 25000;
+const COMMIT_SINGLE_GAS = 55000;
 const RENEW_GAS = 150000;
 
 @Injectable({
@@ -231,6 +232,10 @@ export class EnsService {
   getNameLength(name: string) {
     const count = [...ens_normalize(name)].length;
     return count;
+  }
+
+  get commitSingleGasCost() {
+    return COMMIT_SINGLE_GAS;
   }
 
   get commitGasCost() {
