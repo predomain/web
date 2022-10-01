@@ -64,7 +64,7 @@
             </div>
           </div>
         </div>
-        <span class="co-eth-text"><b>.eth</b></span>
+        <span class="co-eth-text"><b>Web3</b></span>
         <div class="co-carousel-element">
           {{ "LABELS.DOMAINS" | translate }}
         </div>
@@ -129,6 +129,38 @@
           </div>
         </mat-form-field>
       </form>
+      <div
+        class="co-domain-type-selection cos-body-3 cos-disappear-on-mobile cos-padding-1 cos-pointer"
+        fxLayoutAlign="start center"
+        fxLayoutGap="10px"
+      >
+        <span fxFlex="0 0 auto" class="cos-gray-text"
+          ><b> {{ "LABELS.SEARCH_FOR" | translate }}: </b> </span
+        >&nbsp;
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          [matMenuTriggerFor]="domainTypeMenu"
+        >
+          {{ tldTitle }} <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </div>
+      <div
+        class="co-domain-type-selection cos-body-3 cos-show-on-mobile cos-padding-1 cos-pointer"
+        fxLayoutAlign="start center"
+        fxLayoutGap="10px"
+      >
+        <span fxFlex="0 0 auto" class="cos-gray-text"
+          ><b> {{ "LABELS.SEARCH_FOR" | translate }}: </b> </span
+        >&nbsp;
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          [matMenuTriggerFor]="domainTypeMenu"
+        >
+          {{ tldTitle }} <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </div>
       <div class="cos-body-2 cos-show-on-mobile cos-center-text cos-padding-3">
         <a (click)="mainHeader?.bulksearch?.toggleBulkSearch(true)">
           {{ "LABELS.ADVANCED_MODE" | translate }}
@@ -247,7 +279,7 @@
                 </div>
                 <div fxFlex></div>
                 <div fxFlex="0 0 auto" class="cos-body-0">
-                  <b> 0.004 ETH </b>
+                  <b> 0.000 ETH </b>
                 </div>
                 <div
                   fxFlex="0 0 auto"
@@ -422,7 +454,7 @@
               <a href="https://github.com/predomain">Github</a>
             </div>
             <div fxFlex="0 0 auto" class="cos-right-text cos-gray-text">
-              Predomain v0.7.9
+              Predomain v0.8.0
             </div>
           </div>
         </div>
@@ -430,3 +462,14 @@
     </div>
   </div>
 </div>
+
+<mat-menu #domainTypeMenu="matMenu" class="cos-menu" xPosition="after">
+  <button mat-menu-item (click)="selectDomainSearchType(domainTypes.ENS)">
+    <mat-icon>language</mat-icon>
+    ENS - Ethereum Name Service
+  </button>
+  <button mat-menu-item (click)="selectDomainSearchType(domainTypes.LNR)">
+    <mat-icon>language</mat-icon>
+    LNR - Linagee Name Registrar
+  </button>
+</mat-menu>

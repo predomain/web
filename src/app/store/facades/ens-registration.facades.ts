@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSRegistrationStateModel } from 'src/app/models/states/ens-registration-interfaces';
 import {
   ENSRegistrationAddOne,
@@ -31,15 +31,15 @@ export class ENSRegistrationFacadeService {
     );
   }
 
-  addRegistration(registration: ENSDomainMetadataModel) {
+  addRegistration(registration: DomainMetadataModel) {
     this.store.dispatch(new ENSRegistrationAddOne(registration));
   }
 
-  removeRegistration(registration: ENSDomainMetadataModel) {
+  removeRegistration(registration: DomainMetadataModel) {
     this.store.dispatch(new ENSRegistrationRemoveOne(registration.id));
   }
 
-  removeRegistrations(registration: ENSDomainMetadataModel[]) {
+  removeRegistrations(registration: DomainMetadataModel[]) {
     this.store.dispatch(
       new ENSRegistrationRemoveMany(registration.map((n) => n.id))
     );
@@ -49,15 +49,15 @@ export class ENSRegistrationFacadeService {
     this.store.dispatch(new ENSRegistrationRemoveAll());
   }
 
-  upsertRegistration(registration: ENSDomainMetadataModel) {
+  upsertRegistration(registration: DomainMetadataModel) {
     this.store.dispatch(new ENSRegistrationUpsertOne(registration));
   }
 
-  upsertAllRegistration(registrations: ENSDomainMetadataModel[]) {
+  upsertAllRegistration(registrations: DomainMetadataModel[]) {
     this.store.dispatch(new ENSRegistrationUpsertMany(registrations));
   }
 
-  updateRegistration(registration: ENSDomainMetadataModel) {
+  updateRegistration(registration: DomainMetadataModel) {
     this.store.dispatch(new ENSRegistrationUpdate(registration));
   }
 

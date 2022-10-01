@@ -5,7 +5,7 @@ import { BigNumber, ethers } from 'ethers';
 import { from, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { ENSContracts, generalConfigurations } from 'src/app/configurations';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import {
   ENSRegistrationCommmitmentRequestResultModel,
   ENSRegistrationStepsEnum,
@@ -274,7 +274,7 @@ export class CheckoutServicesService {
   }
 
   commitRegistration(
-    domains: ENSDomainMetadataModel[],
+    domains: DomainMetadataModel[],
     payer: string,
     registrant: string,
     resolverSet: boolean,

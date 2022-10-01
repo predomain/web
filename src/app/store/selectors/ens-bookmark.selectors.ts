@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSBookmarkStateModel } from '../../models/states/ens-bookmark-interfaces';
 
 export const getENSBookmarkStateFull =
@@ -25,7 +25,7 @@ export const selectENSBookmark = (id: number) =>
     if ((state.ids as number[]).indexOf(id) <= -1) {
       return undefined;
     }
-    return state.entities[id] as ENSDomainMetadataModel;
+    return state.entities[id] as DomainMetadataModel;
   });
 
 export const getENSBookmarkStateError = createSelector(
@@ -41,7 +41,7 @@ export const getENSBookmarkStateLoading = createSelector(
 export const isENSBookmarkDuplicate = (id: string) =>
   createSelector(getENSBookmarkStateFull, (state) => {
     if (Object.keys(state.entities).indexOf(id) > -1) {
-      return state.entities[id] as ENSDomainMetadataModel;
+      return state.entities[id] as DomainMetadataModel;
     }
     return false;
   });

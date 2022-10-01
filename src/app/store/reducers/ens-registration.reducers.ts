@@ -1,5 +1,5 @@
 import { EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSRegistrationStateModel } from '../../models/states/ens-registration-interfaces';
 import {
   UpsertOneENSRegistration,
@@ -13,13 +13,13 @@ import {
 } from '../actions';
 
 export function selectENSRegistrationId(
-  registration: ENSDomainMetadataModel
+  registration: DomainMetadataModel
 ): string {
   return registration.id;
 }
 
-export const ensRegistrationAdapter: EntityAdapter<ENSDomainMetadataModel> =
-  createEntityAdapter<ENSDomainMetadataModel>({
+export const ensRegistrationAdapter: EntityAdapter<DomainMetadataModel> =
+  createEntityAdapter<DomainMetadataModel>({
     selectId: selectENSRegistrationId,
   });
 

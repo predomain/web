@@ -14,7 +14,7 @@ import { Store } from '@ngrx/store';
 import { of, Subject, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { BlockExplorersEnum, ENSContracts } from 'src/app/configurations';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import {
   PaymentModel,
@@ -276,7 +276,7 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
   }
 
   transferDomains(
-    domainsToTransfer: ENSDomainMetadataModel[],
+    domainsToTransfer: DomainMetadataModel[],
     transferTo: string
   ) {
     if (this.transferSubscription) {

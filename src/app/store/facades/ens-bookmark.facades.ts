@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
 import {
   ENSBookmarkAddOne,
@@ -28,11 +28,11 @@ export class ENSBookmarkFacadeService {
   constructor(public store: Store<ENSBookmarkStateModel>) {
     this.getENSBookmarkState$ = this.store.pipe(select(getENSBookmarkState));
   }
-  addBookmark(bookmark: ENSDomainMetadataModel) {
+  addBookmark(bookmark: DomainMetadataModel) {
     this.store.dispatch(new ENSBookmarkAddOne(bookmark));
   }
 
-  removeBookmark(bookmark: ENSDomainMetadataModel) {
+  removeBookmark(bookmark: DomainMetadataModel) {
     this.store.dispatch(new ENSBookmarkRemoveOne(bookmark.id));
   }
 
@@ -40,19 +40,19 @@ export class ENSBookmarkFacadeService {
     this.store.dispatch(new ENSBookmarkRemoveAll());
   }
 
-  removeBookmarks(bookmark: ENSDomainMetadataModel[]) {
+  removeBookmarks(bookmark: DomainMetadataModel[]) {
     this.store.dispatch(new ENSBookmarkRemoveMany(bookmark.map((n) => n.id)));
   }
 
-  upsertBookmark(bookmark: ENSDomainMetadataModel) {
+  upsertBookmark(bookmark: DomainMetadataModel) {
     this.store.dispatch(new ENSBookmarkUpsertOne(bookmark));
   }
 
-  upsertAllBookmark(bookmarks: ENSDomainMetadataModel[]) {
+  upsertAllBookmark(bookmarks: DomainMetadataModel[]) {
     this.store.dispatch(new ENSBookmarkUpsertMany(bookmarks));
   }
 
-  updateBookmark(bookmark: ENSDomainMetadataModel) {
+  updateBookmark(bookmark: DomainMetadataModel) {
     this.store.dispatch(new ENSBookmarkUpdate(bookmark));
   }
 

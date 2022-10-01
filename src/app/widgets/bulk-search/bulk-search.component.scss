@@ -70,7 +70,10 @@
     width: 100% !important;
   }
   cursor: pointer;
-  background: url("/assets/ens.svg");
+  background-image: url("/assets/logo.png");
+  &.ENS {
+    background-image: url("/assets/ens.svg") !important;
+  }
   background-size: 24px;
   background-repeat: no-repeat;
   background-position: 24px center;
@@ -123,5 +126,16 @@
 .co-tool-button {
   @media only screen and (max-width: 1000px) {
     width: 100%;
+  }
+}
+
+.co-select-domain-type {
+  &.co-selected-domain-type {
+    background-color: var(--co-main-color) !important;
+  }
+  border-radius: var(--cos-border-radius-4);
+  background-color: var(--co-button-disabled-color);
+  &:hover {
+    background-color: var(--co-main-color);
   }
 }

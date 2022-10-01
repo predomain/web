@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +24,7 @@ export class BookmarksServiceService {
     return [];
   }
 
-  saveAllBookmark(domainsData: ENSDomainMetadataModel[]) {
+  saveAllBookmark(domainsData: DomainMetadataModel[]) {
     const bookmarksRaw = this.loadBookmarksAndFeed().reduce(
       (accumulator, value) => {
         return { ...accumulator, [value.labelName]: value };
@@ -38,7 +38,7 @@ export class BookmarksServiceService {
     return bookmarks;
   }
 
-  saveBookmark(domainData: ENSDomainMetadataModel) {
+  saveBookmark(domainData: DomainMetadataModel) {
     const bookmarksRaw = this.loadBookmarksAndFeed().reduce(
       (accumulator, value) => {
         return { ...accumulator, [value.labelName]: value };
@@ -56,7 +56,7 @@ export class BookmarksServiceService {
     localStorage.setItem('canvas-bookmarks', JSON.stringify([]));
     return [];
   }
-  removeBookmark(bookmarks: ENSDomainMetadataModel[], domainName: string) {
+  removeBookmark(bookmarks: DomainMetadataModel[], domainName: string) {
     const bookmarksUpdated = [];
     bookmarks.filter((d) => {
       if (d.labelName !== domainName) {
@@ -71,7 +71,7 @@ export class BookmarksServiceService {
     localStorage.setItem('canvas-bookmarks', JSON.stringify([]));
   }
 
-  isDomainBookmarked(bookmarks: ENSDomainMetadataModel[], domainName: string) {
+  isDomainBookmarked(bookmarks: DomainMetadataModel[], domainName: string) {
     for (const d of bookmarks) {
       if (d.labelName === domainName) {
         return true;

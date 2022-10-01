@@ -24,6 +24,7 @@ import {
 import { DownloadService } from '../services/download/download.service';
 import { ContractService } from '../services/contract';
 import { EnsMarketplaceService } from '../services/ens-marketplace';
+import { LnrService } from '../services/lnr';
 
 export const serviceProviders = [
   UserService,
@@ -47,4 +48,5 @@ export const serviceProviders = [
   DownloadService,
   ContractService,
   EnsMarketplaceService,
+  LnrService,
 ];

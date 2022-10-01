@@ -26,7 +26,7 @@ import {
   BlockExplorersEnum,
   generalConfigurations,
 } from 'src/app/configurations';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { RenewalDurationsEnum } from 'src/app/models/management';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
@@ -50,7 +50,7 @@ import { environment } from 'src/environments/environment';
 import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
 
 const globalAny: any = global;
-const EMPTY_DATA: ENSDomainMetadataModel[] = [
+const EMPTY_DATA: DomainMetadataModel[] = [
   {
     id: null,
   },
@@ -84,7 +84,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = ['labelName', 'expiry', 'renew', 'transfer'];
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
-  dataSource = new MatTableDataSource<ENSDomainMetadataModel>(EMPTY_DATA);
+  dataSource = new MatTableDataSource<DomainMetadataModel>(EMPTY_DATA);
   managementOperationTypes: typeof ManagementOperationEnum =
     ManagementOperationEnum;
   domainsTransferred: string[] = [];
@@ -98,11 +98,11 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
   quickSearchForm: FormGroup;
   pendingTx: string;
   managementOperation: ManagementOperationEnum;
-  selectedDomain: ENSDomainMetadataModel;
+  selectedDomain: DomainMetadataModel;
   metadataForm: FormGroup;
   paymentState: PaymentStateModel;
   userState: UserStateModel;
-  userDomains: ENSDomainMetadataModel[];
+  userDomains: DomainMetadataModel[];
   paymentStateSubscription;
   userStateSubscription;
   getUserDomainsSubscripton;
@@ -222,14 +222,14 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
                 renew: false,
                 transfer: false,
                 detailExpanded: false,
-              } as ENSDomainMetadataModel;
+              } as DomainMetadataModel;
               return fData;
             })
             .sort((a, b) => a.expiry - b.expiry);
           this.hasDomainsListLoaded = true;
           this.userDomains = domains;
           this.selectDomain(this.userDomains[0], false);
-          this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+          this.dataSource = new MatTableDataSource<DomainMetadataModel>(
             this.filterSearchDomains()
           );
           this.dataSource.paginator = this.paginator;
@@ -251,7 +251,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
-  selectDomain(domain: ENSDomainMetadataModel, detailExpand = true) {
+  selectDomain(domain: DomainMetadataModel, detailExpand = true) {
     if (detailExpand === false) {
       this.collapseAllItems = true;
     } else {
@@ -275,7 +275,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  selectAllToTransfer(domains: ENSDomainMetadataModel[], toTransfer = false) {
+  selectAllToTransfer(domains: DomainMetadataModel[], toTransfer = false) {
     this.managementOperation = ManagementOperationEnum.TRANSFER;
     this.renewAllCheckbox.checked = false;
     if (toTransfer === false) {
@@ -286,7 +286,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.userDomains = this.userDomains.map((d) => {
         return { ...d, transfer: false };
       });
-      this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+      this.dataSource = new MatTableDataSource<DomainMetadataModel>(
         this.filterSearchDomains()
       );
       this.dataSource.paginator = this.paginator;
@@ -298,13 +298,13 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       return d;
     });
-    this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+    this.dataSource = new MatTableDataSource<DomainMetadataModel>(
       this.filterSearchDomains()
     );
     this.dataSource.paginator = this.paginator;
   }
 
-  selectAllToRenew(domains: ENSDomainMetadataModel[], toRenew = false) {
+  selectAllToRenew(domains: DomainMetadataModel[], toRenew = false) {
     this.managementOperation = ManagementOperationEnum.RENEW;
     this.transferAllCheckbox.checked = false;
     if (toRenew === false) {
@@ -315,7 +315,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.userDomains = this.userDomains.map((d) => {
         return { ...d, renew: false };
       });
-      this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+      this.dataSource = new MatTableDataSource<DomainMetadataModel>(
         this.filterSearchDomains()
       );
       this.dataSource.paginator = this.paginator;
@@ -327,7 +327,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       return d;
     });
-    this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+    this.dataSource = new MatTableDataSource<DomainMetadataModel>(
       this.filterSearchDomains()
     );
     this.dataSource.paginator = this.paginator;
@@ -382,7 +382,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
         .subscribe((r) => {
           this.managementOperation = undefined;
           this.renewAllCheckbox.checked = false;
-          this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+          this.dataSource = new MatTableDataSource<DomainMetadataModel>(
             EMPTY_DATA
           );
           this.hasDomainsListLoaded = false;
@@ -407,7 +407,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
             );
           }
           this.transferAllCheckbox.checked = false;
-          this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+          this.dataSource = new MatTableDataSource<DomainMetadataModel>(
             EMPTY_DATA
           );
           this.hasDomainsListLoaded = false;
@@ -445,7 +445,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.renewAllCheckbox.checked = false;
     this.transferAllCheckbox.checked = false;
     const domainSearched = this.filterSearchDomains();
-    this.dataSource = new MatTableDataSource<ENSDomainMetadataModel>(
+    this.dataSource = new MatTableDataSource<DomainMetadataModel>(
       domainSearched
     );
     this.dataSource.paginator = this.paginator;
@@ -479,7 +479,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     const domainsToTransfer = this.dataSource.data
       .filter((u, i) => i >= skip)
       .filter(
-        (u: ENSDomainMetadataModel, i: number) =>
+        (u: DomainMetadataModel, i: number) =>
           i < this.dataSource.paginator.pageSize
       );
     return domainsToTransfer;
@@ -491,7 +491,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     const domainsToTransfer = this.dataSource.data
       .filter((u, i) => i >= skip)
       .filter(
-        (u: ENSDomainMetadataModel, i: number) =>
+        (u: DomainMetadataModel, i: number) =>
           i < this.dataSource.paginator.pageSize
       )
       .filter((d) => d.transfer === true);
@@ -504,7 +504,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
     const domainsToTransfer = this.dataSource.data
       .filter((u, i) => i >= skip)
       .filter(
-        (u: ENSDomainMetadataModel, i: number) =>
+        (u: DomainMetadataModel, i: number) =>
           i < this.dataSource.paginator.pageSize
       )
       .filter((d) => d.renew === true);

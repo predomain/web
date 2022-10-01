@@ -10,7 +10,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delayWhen, map, retryWhen, switchMap, take } from 'rxjs/operators';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { MiscUtilsService, UserService } from 'src/app/services';
@@ -204,7 +204,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                     parseInt(d.registrationDate) * 1000
                   ).toString(),
                   createdAt: (parseInt(d.domain.createdAt) * 1000).toString(),
-                } as ENSDomainMetadataModel;
+                } as DomainMetadataModel;
                 this.hasDomainsListLoaded = true;
                 return fData;
               } catch (e) {
@@ -319,7 +319,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  extraFilters(d: ENSDomainMetadataModel) {
+  extraFilters(d: DomainMetadataModel) {
     const minL = this.filterForm.controls.minLength.value;
     const maxL = this.filterForm.controls.maxLength.value;
     const minD = this.getDateToStamp(this.filterForm.controls.creation.value);

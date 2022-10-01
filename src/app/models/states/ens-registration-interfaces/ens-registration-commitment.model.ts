@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { ENSDomainMetadataModel } from '../../canvas';
+import { DomainMetadataModel } from '../../domains';
 
 export interface ENSRegistrationCommitmentModel {
   name?: string;
@@ -13,7 +13,7 @@ export interface ENSRegistrationCommitmentModel {
   wrapperExpiry?: number;
 
   // Internal use, not included in contract interactions
-  metadata?: ENSDomainMetadataModel;
+  metadata?: DomainMetadataModel;
 }
 
 export interface ENSRegistrationCommmitmentRequestResultModel {

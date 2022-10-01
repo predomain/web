@@ -18,6 +18,7 @@ import { CanvasServicesService } from '../canvas/canvas-services/canvas-services
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { generalConfigurations } from 'src/app/configurations';
+import { DomainTypeEnum } from 'src/app/models/domains';
 
 const globalAny: any = global;
 @Component({
@@ -30,6 +31,7 @@ export class HomeComponent implements OnDestroy {
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   placeholders = new Array(20).fill(0);
+  domainTypes: typeof DomainTypeEnum = DomainTypeEnum;
   categories;
   metadata;
   currentUserData: UserModel;
@@ -102,6 +104,19 @@ export class HomeComponent implements OnDestroy {
 
   goToDonate() {
     window.open('https://gitcoin.co/grants/6743/predomain-project', '_blank');
+  }
+
+  selectDomainSearchType(domainType: DomainTypeEnum) {
+    this.mainHeader.bulksearch.domainTypeSelected = domainType;
+  }
+
+  get tldTitle() {
+    if (this.mainHeader === undefined) {
+      return DomainTypeEnum.ENS;
+    }
+    return generalConfigurations.domainTldTitles[
+      this.mainHeader.bulksearch.domainTypeSelected
+    ];
   }
 
   get categoriesEnabled() {

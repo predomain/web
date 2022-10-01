@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +30,7 @@ export class RegistrationServiceService {
     return [];
   }
 
-  saveAllRegistrations(domainsData: ENSDomainMetadataModel[]) {
+  saveAllRegistrations(domainsData: DomainMetadataModel[]) {
     const registrationsRaw = this.loadRegistrationsAndFeed().reduce(
       (accumulator, value) => {
         return { ...accumulator, [value.labelName]: value };
@@ -44,7 +44,7 @@ export class RegistrationServiceService {
     return registrations;
   }
 
-  saveRegistrations(domainData: ENSDomainMetadataModel) {
+  saveRegistrations(domainData: DomainMetadataModel) {
     const registrationsRaw = this.loadRegistrationsAndFeed().reduce(
       (accumulator, value) => {
         return { ...accumulator, [value.labelName]: value };
@@ -58,10 +58,7 @@ export class RegistrationServiceService {
     return registrations;
   }
 
-  removeRegistration(
-    registrations: ENSDomainMetadataModel[],
-    domainName: string
-  ) {
+  removeRegistration(registrations: DomainMetadataModel[], domainName: string) {
     const registrationsUpdated = [];
     registrations.filter((d) => {
       if (d.labelName !== domainName) {
@@ -80,7 +77,7 @@ export class RegistrationServiceService {
   }
 
   isDomainOnRegistrationList(
-    registrations: ENSDomainMetadataModel[],
+    registrations: DomainMetadataModel[],
     domainName: string
   ) {
     for (const d of registrations) {

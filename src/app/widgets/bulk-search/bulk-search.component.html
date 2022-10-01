@@ -91,7 +91,7 @@
           [ngClass]="
             d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
               ? ''
-              : 'co-bulk-search-item-fill-progress-bar-gap'
+              : bulkSearchItemLogo
           "
           fxLayoutGap="15px"
           fxLayoutAlign="center center"
@@ -101,16 +101,28 @@
             fxLayoutAlign="start center"
             class="cos-wallet-address-text-cut"
           >
-            {{ pretty(d.labelName) }}.eth
+            {{ pretty(d.labelName) }}{{ nameExtension }}
           </div>
           <a
-            *ngIf="d.isNotAvailable === true && registrationListOpen === false"
+            *ngIf="
+              d.isNotAvailable === true &&
+              registrationListOpen === false &&
+              canDomainTypeBeRegistered === true
+            "
             href="{{ getDomainLink(d.labelName + '.eth') }}"
             target="_blank"
             class="cos-body-3"
           >
             {{ "BUTTON.VIEW_DETAILS" | translate }}
           </a>
+          <span
+            *ngIf="
+              canDomainTypeBeRegistered === false && d.isNotAvailable === true
+            "
+            class="cos-gray-text"
+          >
+            {{ "LABELS.NOT_AVAILABLE" | translate }}
+          </span>
           <mat-icon
             (click)="toggleBookmark(d)"
             [color]="
@@ -126,7 +138,10 @@
             >bookmark_add</mat-icon
           >
           <mat-icon
-            *ngIf="d.isNotAvailable === false || registrationListOpen === true"
+            *ngIf="
+              canDomainTypeBeRegistered === true &&
+              (d.isNotAvailable === false || registrationListOpen === true)
+            "
             (click)="
               registrationService.isDomainOnRegistrationList(
                 registrationDomains,
@@ -186,6 +201,45 @@
             (click)="toggleBulkSearch(true)"
             ><mat-icon>close</mat-icon></a
           >
+        </div>
+      </div>
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayoutGap="10px"
+        class="cos-fluid-width cos-disappear-on-mobile"
+      >
+        <div
+          (click)="changeDomainType(domainTypes.ENS)"
+          [ngClass]="
+            domainTypeSelected === domainTypes.ENS
+              ? 'co-selected-domain-type'
+              : ''
+          "
+          class="co-select-domain-type cos-padding-0 cos-pointer"
+        >
+          &nbsp;&nbsp;ENS Domains Search&nbsp;&nbsp;
+        </div>
+        <div
+          (click)="changeDomainType(domainTypes.LNR)"
+          [ngClass]="
+            domainTypeSelected === domainTypes.LNR
+              ? 'co-selected-domain-type'
+              : ''
+          "
+          class="co-select-domain-type cos-chip-regular cos-padding-0 cos-pointer"
+        >
+          &nbsp;&nbsp;Linagee Names Search&nbsp;&nbsp;
+        </div>
+      </div>
+      <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start">
+        <div fxFlex>{{ "LABELS.ENTER_NAMES_TO_SEARCH" | translate }}...</div>
+        <div
+          fxFlex
+          fxLayoutAlign="end end"
+          class="cos-body-6 cos-right-text cos-gray-text"
+        >
+          {{ domainsOnSearch }} of {{ maxDomainsSearch }}
         </div>
       </div>
       <textarea
@@ -259,6 +313,37 @@
         fxLayoutGap="10px"
         class="cos-fluid-width cos-show-on-mobile"
       >
+        <div
+          fxFlex
+          fxLayout="row"
+          fxLayoutGap="10px"
+          class="cos-fluid-width cos-margin-2 cos-no-margin-left cos-no-margin-top cos-no-margin-right"
+        >
+          <div
+            fxFlex
+            (click)="changeDomainType(domainTypes.ENS)"
+            [ngClass]="
+              domainTypeSelected === domainTypes.ENS
+                ? 'co-selected-domain-type'
+                : ''
+            "
+            class="co-select-domain-type cos-padding-0 cos-pointer cos-center-text"
+          >
+            &nbsp;&nbsp;ENS Domains&nbsp;&nbsp;
+          </div>
+          <div
+            fxFlex
+            (click)="changeDomainType(domainTypes.LNR)"
+            [ngClass]="
+              domainTypeSelected === domainTypes.LNR
+                ? 'co-selected-domain-type'
+                : ''
+            "
+            class="co-select-domain-type cos-chip-regular cos-padding-0 cos-pointer cos-center-text"
+          >
+            &nbsp;&nbsp;Linagee Names&nbsp;&nbsp;
+          </div>
+        </div>
         <mat-form-field
           fxFlex
           fxFlexAlign="center"
@@ -394,14 +479,18 @@
       <div
         fxFlex="0 0 auto"
         fxLayout="row"
-        fxLayoutAlign="end center"
+        [fxLayoutAlign]="
+          canDomainTypeBeRegistered === true ? 'end center' : 'end end'
+        "
         fxLayoutGap="10px"
         class="cos-fluid-width cos-body-3"
       >
         <div
           fxFlex
           fxLayout="row"
-          fxLayoutAlign="center center"
+          [fxLayoutAlign]="
+            canDomainTypeBeRegistered === true ? 'center center' : 'end end'
+          "
           fxLayoutGap="10px"
           class="cos-body-0 cos-pointer"
           (click)="showBookmarks(false)"
@@ -412,6 +501,7 @@
           <mat-icon class="cos-icon-can-activate"> bookmark </mat-icon>
         </div>
         <div
+          *ngIf="canDomainTypeBeRegistered"
           fxFlex
           fxLayout="row"
           fxLayoutAlign="center center"
@@ -456,7 +546,9 @@
       mat-button
       class="co-tool-button"
       *ngIf="
-        registrationListOpen === false && bulkSearchBookmarksShow === false
+        registrationListOpen === false &&
+        bulkSearchBookmarksShow === false &&
+        canDomainTypeBeRegistered
       "
       (click)="addAllToRegistration()"
     >

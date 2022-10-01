@@ -18,7 +18,7 @@ import {
   BlockExplorersEnum,
   generalConfigurations,
 } from 'src/app/configurations';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import {
   RenewalDurationsEnum,
   RenewalDurationsTimeMultiplierEnum,
@@ -163,7 +163,7 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  renewDomains(domainsToRenew: ENSDomainMetadataModel[], duration: BigNumber) {
+  renewDomains(domainsToRenew: DomainMetadataModel[], duration: BigNumber) {
     if (this.renewSubscription) {
       this.renewSubscription.unsubscribe();
     }
