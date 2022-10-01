@@ -11,6 +11,11 @@ import { HttpClient } from '@angular/common/http';
 import { ENSDomainMetadataModel } from 'src/app/models/canvas';
 import { invalidChars } from 'src/app/configurations';
 
+const REGISTER_GAS = 300000;
+const REGISTER_CONFIG_GAS = 350000;
+const COMMIT_GAS = 50000;
+const RENEW_GAS = 150000;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -36,7 +41,7 @@ export class EnsService {
           } else if (r.indexOf('ipns:') > -1) {
             web2Link += 'gateway.ipfs.io/ipns/' + r.replace('ipns://', '');
           }
-          observer.next(web2Link);
+          observer.next(web2Link + '?v=' + Math.random());
           observer.complete();
         })
         .catch((e) => {
@@ -226,5 +231,21 @@ export class EnsService {
   getNameLength(name: string) {
     const count = [...ens_normalize(name)].length;
     return count;
+  }
+
+  get commitGasCost() {
+    return COMMIT_GAS;
+  }
+
+  get registerGasCost() {
+    return REGISTER_GAS;
+  }
+
+  get registerWithConfigGasCost() {
+    return REGISTER_CONFIG_GAS;
+  }
+
+  get renewGasCost() {
+    return RENEW_GAS;
   }
 }

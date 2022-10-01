@@ -88,6 +88,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   registrationStatusTypes: typeof ENSRegistrationStepsEnum =
     ENSRegistrationStepsEnum;
   registrationStatus = ENSRegistrationStepsEnum.BEFORE_COMMIT;
+  ethGasPriceRaw = 1;
   domainConfigurationForm: FormGroup;
   currentUserData: UserModel;
   pagesState: PagesStateModel;
@@ -765,6 +766,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               ethers.utils.formatUnits(r as ethers.BigNumber, 'gwei')
             ).toFixed(2)
           );
+          this.ethGasPriceRaw = r.toString();
           observer.next(this.registrationGasPrice);
           observer.complete();
         });
@@ -824,6 +826,37 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         parseFloat(this.domainConfigurationForm.controls.duration.value)
       );
     }
+    const commitGasPrice = ethers.BigNumber.from(
+      this.registrationDomains.length
+    ).mul(this.ensService.commitGasCost);
+    let registrationGasPrice;
+    if (this.registrationDomains.length === 1) {
+      registrationGasPrice =
+        this.domainConfigurationForm.controls.resolverSet.value === true
+          ? ethers.BigNumber.from(300000)
+          : ethers.BigNumber.from(350000);
+    } else {
+      registrationGasPrice =
+        this.domainConfigurationForm.controls.resolverSet.value === true
+          ? ethers.BigNumber.from(this.registrationDomains.length).mul(
+              this.ensService.registerWithConfigGasCost
+            )
+          : ethers.BigNumber.from(this.registrationDomains.length).mul(
+              this.ensService.registerGasCost
+            );
+    }
+    const gasPrice = ethers.BigNumber.from(
+      parseInt((this.ethGasPriceRaw * 100).toString(), 10)
+    ).div(100);
+    const additionalCost = parseFloat(
+      ethers.utils.formatEther(
+        registrationGasPrice
+          .add(commitGasPrice)
+          .mul(gasPrice)
+          .add(generalConfigurations.maxTotalCostBuffer)
+      )
+    );
+    totalCostCalculated += additionalCost;
     this.domainConfigurationForm.controls.totalCost.setValue(
       (totalCostCalculated * 10 ** 18).toString()
     );

@@ -99,7 +99,7 @@
           fxLayoutGap="20px"
           fxLayoutAlign="start start"
         >
-          <div fxLayout="column" fxFlex="9" class="co-avatar-container">
+          <div fxLayout="column" fxFlex="9.5" class="co-avatar-container">
             <div
               id="canvas_size_guide"
               class="cos-fluid-width cos-no-margin-bottom"
@@ -174,25 +174,46 @@
             <div
               fxFlex
               fxLayout="row"
-              fxLayoutGap="20px"
+              fxLayoutGap="10px"
               fxLayoutAlign="start end"
               class="co-info-container cos-body-2"
             >
-              <div fxFlex>
+              <div
+                fxFlex="150px"
+                class="cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+              >
+                <div class="cos-body-0">300</div>
+                <div class="cos-body-7 cos-uptrend-text">+5</div>
+                <div class="cos-gray-text cos-body-4">Unique Owners</div>
+              </div>
+
+              <div
+                fxFlex="150px"
+                class="cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+              >
                 <div class="cos-body-0">0.00016 ETH</div>
                 <div class="cos-body-7 cos-uptrend-text">+3.20%</div>
-                <div class="cos-gray-text">
+                <div class="cos-gray-text cos-body-4">
                   {{ "LABELS.VOLUME" | translate }}
                 </div>
+              </div>
+
+              <div
+                fxFlex="150px"
+                class="cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+              >
+                <div class="cos-body-0">3 Per Hour</div>
+                <div class="cos-body-7 cos-uptrend-text">+2</div>
+                <div class="cos-gray-text cos-body-4">Hourly Sales</div>
               </div>
             </div>
           </div>
 
           <div class="co-bar-chart cos-pos-absolute cos-pos-right-reset">
-            <app-bar [chartMetadata]="{ width: 1000, height: 207 }"> </app-bar>
+            <app-bar [chartMetadata]="{ width: 1000, height: 217 }"> </app-bar>
             <div
-              class="co-bar-chart-fade cos-pos-absolute"
-              style="width: 400px; height: 208px; margin-top: -231px"
+              class="co-bar-chart-fade cos-pos-absolute cos-border cos-no-border-left cos-no-border-right"
+              style="width: 400px; height: 217px; margin-top: -242px"
             ></div>
           </div>
         </div>
