@@ -62,8 +62,9 @@ export const generalConfigurations = {
   domainsCanBeRegistered: [DomainTypeEnum.ENS],
   domainExtensions: {
     ENS: '.eth',
-    LNR: '',
+    LNR: '.og',
   },
+  domainNormalisationRequired: [DomainTypeEnum.ENS],
   domainTldTitles: {
     ENS: 'ENS - Ethereum Name Service',
     LNR: 'LNR - Linagee Name Registrar',

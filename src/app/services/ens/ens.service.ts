@@ -165,8 +165,12 @@ export class EnsService {
     name: string,
     prefixedOrSuffixed = false,
     prefixedAndSuffixed = false,
-    minLengthOverride = 3
+    minLengthOverride = 3,
+    skipNormalisation = false
   ) {
+    if (skipNormalisation === true) {
+      return true;
+    }
     let minLength = minLengthOverride;
     if (prefixedOrSuffixed === true) {
       minLength = 2;
