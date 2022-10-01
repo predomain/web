@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSBookmarkStoreErrorsEnum } from '../../models/error-enums';
 export const AddOneENSBookmark = '[ENSBookmarkState] Add bookmark.';
 export const UpdateENSBookmark = '[ENSBookmarkState] Update bookmark.';
@@ -19,17 +19,17 @@ export class ENSBookmarkErrorSet implements Action {
 
 export class ENSBookmarkAddOne implements Action {
   readonly type = AddOneENSBookmark;
-  constructor(public payload: ENSDomainMetadataModel, public toSave = true) {}
+  constructor(public payload: DomainMetadataModel, public toSave = true) {}
 }
 
 export class ENSBookmarkUpsertOne implements Action {
   readonly type = UpsertOneENSBookmark;
-  constructor(public payload: ENSDomainMetadataModel, public toSave = true) {}
+  constructor(public payload: DomainMetadataModel, public toSave = true) {}
 }
 
 export class ENSBookmarkUpsertMany implements Action {
   readonly type = UpsertManyENSBookmark;
-  constructor(public payload: ENSDomainMetadataModel[], public toSave = true) {}
+  constructor(public payload: DomainMetadataModel[], public toSave = true) {}
 }
 
 export class ENSBookmarkGetOne implements Action {
@@ -59,7 +59,7 @@ export class ENSBookmarkRemoveAll implements Action {
 
 export class ENSBookmarkUpdate implements Action {
   readonly type = UpdateENSBookmark;
-  constructor(public payload: ENSDomainMetadataModel, public toSave = true) {}
+  constructor(public payload: DomainMetadataModel, public toSave = true) {}
 }
 
 export type ENSBookmarkActions =

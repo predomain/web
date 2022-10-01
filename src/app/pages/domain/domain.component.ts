@@ -13,7 +13,7 @@ import {
   takeUntil,
   withLatestFrom,
 } from 'rxjs/operators';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { UserService } from 'src/app/services';
@@ -67,7 +67,7 @@ export class DomainComponent implements OnInit, OnDestroy {
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   resolvedEvents: ENSEventModel[] = [];
-  bookmarks: ENSDomainMetadataModel[];
+  bookmarks: DomainMetadataModel[];
   eventTypeIcons: typeof EnsEvensSymbolEnum = EnsEvensSymbolEnum;
   eventTypes: typeof EnsEventsEnum = EnsEventsEnum;
   hasDomainsListLoaded = false;
@@ -188,7 +188,7 @@ export class DomainComponent implements OnInit, OnDestroy {
               createdAt: d.domain.createdAt,
               owner: d.registrant.id,
               events: d.events,
-            } as ENSDomainMetadataModel;
+            } as DomainMetadataModel;
             this.hasDomainsListLoaded = true;
             return fData;
           });
@@ -399,7 +399,7 @@ export class DomainComponent implements OnInit, OnDestroy {
         .subscribe();
   }
 
-  toggleBookmark(domain: ENSDomainMetadataModel) {
+  toggleBookmark(domain: DomainMetadataModel) {
     if (
       this.bookmarksService.isDomainBookmarked(
         this.bookmarks,
@@ -489,7 +489,7 @@ export class DomainComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDomainMetadata(domain: ENSDomainMetadataModel) {
+  getDomainMetadata(domain: DomainMetadataModel) {
     if (this.resolveMetadataSubscription) {
       this.resolveMetadataSubscription.unsubscribe();
     }

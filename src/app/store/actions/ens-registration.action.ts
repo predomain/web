@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSRegistrationStoreErrorsEnum } from '../../models/error-enums';
 export const AddOneENSRegistration = '[ENSRegistrationState] Add registration.';
 export const UpdateENSRegistration =
@@ -28,17 +28,17 @@ export class ENSRegistrationErrorSet implements Action {
 
 export class ENSRegistrationAddOne implements Action {
   readonly type = AddOneENSRegistration;
-  constructor(public payload: ENSDomainMetadataModel, public toSave = true) {}
+  constructor(public payload: DomainMetadataModel, public toSave = true) {}
 }
 
 export class ENSRegistrationUpsertOne implements Action {
   readonly type = UpsertOneENSRegistration;
-  constructor(public payload: ENSDomainMetadataModel, public toSave = true) {}
+  constructor(public payload: DomainMetadataModel, public toSave = true) {}
 }
 
 export class ENSRegistrationUpsertMany implements Action {
   readonly type = UpsertManyENSRegistration;
-  constructor(public payload: ENSDomainMetadataModel[], public toSave = true) {}
+  constructor(public payload: DomainMetadataModel[], public toSave = true) {}
 }
 
 export class ENSRegistrationGetOne implements Action {
@@ -68,7 +68,7 @@ export class ENSRegistrationRemoveAll implements Action {
 
 export class ENSRegistrationUpdate implements Action {
   readonly type = UpdateENSRegistration;
-  constructor(public payload: ENSDomainMetadataModel, public toSave = true) {}
+  constructor(public payload: DomainMetadataModel, public toSave = true) {}
 }
 
 export type ENSRegistrationActions =

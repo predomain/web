@@ -1,3 +1,4 @@
+import { DomainTypeEnum } from '../models/domains';
 import { PagesEnum } from '../models/states/pages-interfaces';
 
 export const generalConfigurations = {
@@ -21,6 +22,10 @@ export const generalConfigurations = {
   maxDomainsToRegister: 150,
   maxYearsRegistration: 1000,
   maxTotalCostBuffer: 105,
+  maxDomainSearch: {
+    ENS: 1000,
+    LNR: 100,
+  },
   defaultCurrency: 'ETH',
   enableCustomRPC: true,
   docsLink: 'https://docs.predomain.xyz/',
@@ -54,5 +59,14 @@ export const generalConfigurations = {
     'pillar',
     'coinbase',
   ],
+  domainsCanBeRegistered: [DomainTypeEnum.ENS],
+  domainExtensions: {
+    ENS: '.eth',
+    LNR: '',
+  },
+  domainTldTitles: {
+    ENS: 'ENS - Ethereum Name Service',
+    LNR: 'LNR - Linagee Name Registrar',
+  },
   categoriesDomain: 'categories.predomain.eth',
 };

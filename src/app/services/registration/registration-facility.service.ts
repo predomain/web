@@ -10,7 +10,7 @@ import {
 import { ENSBulkRegistrationContractMainnetABI } from 'src/app/configurations/contracts/ens-bulk-registration-mainnet.abi';
 import { ENSBulkRegistrationContractTestnetABI } from 'src/app/configurations/contracts/ens-bulk-registration-testnet.abi';
 import { payNoMarketAddress } from 'src/app/models';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import {
   ENSRegistrationCommitmentModel,
   ENSRegistrationCommmitmentRequestResultModel,
@@ -39,7 +39,7 @@ export class RegistrationFacilityService {
     duration: number,
     secret: string,
     resolver: string,
-    commitments: ENSDomainMetadataModel[]
+    commitments: DomainMetadataModel[]
   ) {
     let compiled = [];
     for (const c of commitments) {
@@ -65,7 +65,7 @@ export class RegistrationFacilityService {
   ) {
     let decompiled = [];
     for (const c of commitments) {
-      const nc = c.metadata as ENSDomainMetadataModel;
+      const nc = c.metadata as DomainMetadataModel;
       decompiled.push(nc);
     }
     return decompiled;

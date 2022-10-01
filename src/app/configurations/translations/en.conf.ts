@@ -115,6 +115,8 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    ENTER_NAMES_TO_SEARCH: 'Enter names to search',
+    NOT_AVAILABLE: 'Not Available',
     VOLUME: 'Volume',
     FLOOR: 'Floor',
     FILTER: 'Filter',
@@ -134,7 +136,7 @@ export default {
     MANAGE: 'Manage',
     COLLECT: 'Collect',
     LANDING_TEXT:
-      'Open-source, decentralised, ENS domains search, registration & marketplace.',
+      'Open-source, decentralised, Web3 domains search, registration & marketplace.',
     PROFILE: 'Profile',
     GO_TO_PROFILE: 'Go to Profile',
     SEARCH: 'Search',

@@ -10,7 +10,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { select, Store } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { generalConfigurations } from 'src/app/configurations';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
+import { DomainTypeEnum } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
 import { ENSRegistrationStateModel } from 'src/app/models/states/ens-registration-interfaces';
@@ -18,6 +19,7 @@ import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { BookmarksServiceService } from 'src/app/services/bookmarks';
 import { DownloadService } from 'src/app/services/download/download.service';
 import { EnsService } from 'src/app/services/ens';
+import { LnrService } from 'src/app/services/lnr';
 import { RegistrationServiceService } from 'src/app/services/registration';
 import {
   ENSBookmarkFacadeService,
@@ -39,18 +41,20 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
   @ViewChild('prefixMobile') prefixMobile: ElementRef;
   @ViewChild('suffixMobile') suffixMobile: ElementRef;
   @Input() searchKeyword = '';
+  domainTypes: typeof DomainTypeEnum = DomainTypeEnum;
+  domainTypeSelected: DomainTypeEnum = DomainTypeEnum.ENS;
   registrationListOpen = false;
   registrationListLoaded = false;
-  registrationDomains: ENSDomainMetadataModel[] = [];
+  registrationDomains: DomainMetadataModel[] = [];
   bulkSearchOpen = false;
   bulkSearchAdvancedOpen: any = false;
   bulkSearchAvailableOnly: any = false;
   bulkSearchComplete = false;
   bulkSearchAvailableCount = 0;
-  bulkSearchBookmarks: ENSDomainMetadataModel[] = [];
+  bulkSearchBookmarks: DomainMetadataModel[] = [];
   bulkSearchBookmarksShow = false;
   bulkSearchBookmarksLoaded = false;
-  bulkSearchResults: ENSDomainMetadataModel[] = [];
+  bulkSearchResults: DomainMetadataModel[] = [];
   performBulkSearchSubscription;
   bookmarkStateSubscription;
   registrationStateSubscription;
@@ -59,6 +63,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
     public bookmarksService: BookmarksServiceService,
     public registrationService: RegistrationServiceService,
     public ensService: EnsService,
+    public lnrService: LnrService,
     protected downloadService: DownloadService,
     protected bookmarkStore: Store<ENSBookmarkStateModel>,
     protected registrationStore: Store<ENSRegistrationStateModel>,
@@ -142,7 +147,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
     );
   }
 
-  addToRegistration(domain: ENSDomainMetadataModel) {
+  addToRegistration(domain: DomainMetadataModel) {
     if (
       this.registrationDomains.length >=
       generalConfigurations.maxDomainsToRegister
@@ -319,7 +324,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
     this.bookmarkFacadeService.upsertAllBookmark(validForBookmarking);
   }
 
-  toggleBookmark(domain: ENSDomainMetadataModel) {
+  toggleBookmark(domain: DomainMetadataModel) {
     if (
       this.bookmarksService.isDomainBookmarked(
         this.bulkSearchBookmarks,
@@ -377,7 +382,8 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
             this.ensService.isDomainNameNotValid(
               d,
               prefixedOrSuffixed,
-              prefixedAndSuffixed
+              prefixedAndSuffixed,
+              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3
             ) === true
         );
     } else if (keywordPrefilled !== null) {
@@ -391,7 +397,8 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
             this.ensService.isDomainNameNotValid(
               d,
               prefixedOrSuffixed,
-              prefixedAndSuffixed
+              prefixedAndSuffixed,
+              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3
             ) === true && d.indexOf('.') <= -1
         );
     } else {
@@ -405,13 +412,19 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
             this.ensService.isDomainNameNotValid(
               d,
               prefixedOrSuffixed,
-              prefixedAndSuffixed
+              prefixedAndSuffixed,
+              this.domainTypeSelected === DomainTypeEnum.LNR ? 1 : 3
             ) === true && d.indexOf('.') <= -1
         );
     }
-    if (toFind.length > 1000) {
+    if (
+      toFind.length >
+      generalConfigurations.maxDomainSearch[this.domainTypeSelected]
+    ) {
       this.snackBar.open(
-        'Only a maximum of 1000 search entries allowed.',
+        'Only a maximum of ' +
+          generalConfigurations.maxDomainSearch[this.domainTypeSelected] +
+          ' search entries allowed.',
         'close',
         {
           horizontalPosition: 'center',
@@ -469,21 +482,33 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
     }
     let toFind =
       entries !== null ? entries : this.getBulkSearchEntriesFromForm();
-    this.performBulkSearchSubscription = this.ensService
+    this.performBulkSearchSubscription = (
+      this.domainTypeSelected === DomainTypeEnum.LNR
+        ? this.lnrService
+        : this.ensService
+    )
       .findDomains(toFind)
       .subscribe((r) => {
         for (const f of toFind) {
           let found;
-          (r as any).registrations.map((d) => {
-            if (d.labelName === f && found === undefined) {
-              found = d;
-            }
-          });
+          if (this.domainTypeSelected === DomainTypeEnum.ENS) {
+            (r as any).registrations.map((d) => {
+              if (d.labelName === f && found === undefined) {
+                found = d;
+              }
+            });
+          } else if (this.domainTypeSelected === DomainTypeEnum.LNR) {
+            (r as any).map((d) => {
+              if (d.labelName === f && found === undefined) {
+                found = d;
+              }
+            });
+          }
           const fData = {
             id: f.toLowerCase(),
             labelName: f.toLowerCase(),
             isNotAvailable: found === undefined ? false : true,
-          } as ENSDomainMetadataModel;
+          } as DomainMetadataModel;
           if (found === undefined) {
             this.bulkSearchAvailableCount++;
           }
@@ -505,12 +530,32 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
     this.toggleBulkSearch();
   }
 
+  changeDomainType(domainType: DomainTypeEnum) {
+    this.domainTypeSelected = domainType;
+  }
+
   getDomainLink(domain: string) {
     return environment.baseUrl + '/#/domain/' + domain;
   }
 
   pretty(name: string) {
     return this.ensService.prettify(name);
+  }
+
+  get bulkSearchItemLogo() {
+    const iClass = {
+      'co-bulk-search-item-fill-progress-bar-gap': true,
+    };
+    if (this.domainTypeSelected === DomainTypeEnum.ENS) {
+      iClass['ENS'] = true;
+    }
+    return iClass;
+  }
+
+  get canDomainTypeBeRegistered() {
+    return generalConfigurations.domainsCanBeRegistered.includes(
+      this.domainTypeSelected
+    );
   }
 
   get searchResultTitle() {
@@ -522,11 +567,30 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
     return 'LABELS.SEARCH_RESULTS';
   }
 
+  get maxDomainsSearch() {
+    return generalConfigurations.maxDomainSearch[this.domainTypeSelected];
+  }
+
+  get domainsOnSearch() {
+    if (
+      (document.getElementById('co-bulk-advance-input') as any).value === ''
+    ) {
+      return 0;
+    }
+    return (
+      document.getElementById('co-bulk-advance-input') as any
+    ).value.split('\n').length;
+  }
+
   get registrationCount() {
     return this.countRegistrations();
   }
 
   get bookmarksCount() {
     return this.countBookmarks();
+  }
+
+  get nameExtension() {
+    return generalConfigurations.domainExtensions[this.domainTypeSelected];
   }
 }

@@ -1,14 +1,10 @@
 import { Injectable, Provider } from '@angular/core';
 import request, { gql } from 'graphql-request';
 import { Observable } from 'rxjs';
-import {
-  ens_normalize,
-  ens_beautify,
-  ens_tokenize,
-} from '@adraffy/ens-normalize';
+import { ens_normalize, ens_beautify } from '@adraffy/ens-normalize';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { invalidChars } from 'src/app/configurations';
 
 const REGISTER_GAS = 175000;
@@ -115,7 +111,7 @@ export class EnsService {
     });
   }
 
-  downloadDomainsListNamesOnly(domains: ENSDomainMetadataModel[]) {
+  downloadDomainsListNamesOnly(domains: DomainMetadataModel[]) {
     let finalForm = '';
     finalForm += domains
       .map((d) => {
@@ -125,7 +121,7 @@ export class EnsService {
     return finalForm;
   }
 
-  downloadDomainsListCSV(domains: ENSDomainMetadataModel[]) {
+  downloadDomainsListCSV(domains: DomainMetadataModel[]) {
     let finalForm = '';
     finalForm +=
       Object.keys(domains[0])
@@ -168,9 +164,10 @@ export class EnsService {
   isDomainNameNotValid(
     name: string,
     prefixedOrSuffixed = false,
-    prefixedAndSuffixed = false
+    prefixedAndSuffixed = false,
+    minLengthOverride = 3
   ) {
-    let minLength = 3;
+    let minLength = minLengthOverride;
     if (prefixedOrSuffixed === true) {
       minLength = 2;
     }

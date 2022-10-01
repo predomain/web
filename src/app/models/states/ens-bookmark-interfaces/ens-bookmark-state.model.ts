@@ -1,9 +1,9 @@
 import { EntityState } from '@ngrx/entity';
-import { ENSDomainMetadataModel } from '../../canvas';
+import { DomainMetadataModel } from '../../domains';
 import { ENSBookmarkStoreErrorsEnum } from '../../error-enums';
 
 export interface ENSBookmarkStateModel
-  extends EntityState<ENSDomainMetadataModel> {
+  extends EntityState<DomainMetadataModel> {
   error: ENSBookmarkStoreErrorsEnum;
   loading: boolean;
 }

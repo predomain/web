@@ -79,7 +79,7 @@
     height: 85px;
     text-align: left !important;
     &:first-of-type {
-      margin-right: 15px;
+      margin-right: 25px;
       text-align: right !important;
       @media only screen and (max-width: 1000px) {
         text-align: center !important;
@@ -151,7 +151,7 @@
     -webkit-animation: ethtextanim 50s ease infinite;
     -moz-animation: ethtextanim 50s ease infinite;
     animation: ethtextanim 50s ease infinite;
-    margin-right: 15px;
+    margin-right: 25px;
 
     @media only screen and (max-width: 1000px) {
       margin-right: 0 !important;
@@ -271,5 +271,15 @@
   width: 75%;
   @media only screen and (max-width: 1000px) {
     width: 100% !important;
+  }
+}
+
+.co-domain-type-selection {
+  align-items: center;
+  justify-content: center;
+  &.cos-show-on-mobile {
+    text-align: center;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }

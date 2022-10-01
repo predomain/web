@@ -1,5 +1,5 @@
 import { EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSBookmarkStateModel } from '../../models/states/ens-bookmark-interfaces';
 import {
   UpsertOneENSBookmark,
@@ -12,12 +12,12 @@ import {
   AddOneENSBookmark,
 } from '../actions';
 
-export function selectENSBookmarkId(bookmark: ENSDomainMetadataModel): string {
+export function selectENSBookmarkId(bookmark: DomainMetadataModel): string {
   return bookmark.id;
 }
 
-export const ensBookmarkAdapter: EntityAdapter<ENSDomainMetadataModel> =
-  createEntityAdapter<ENSDomainMetadataModel>({
+export const ensBookmarkAdapter: EntityAdapter<DomainMetadataModel> =
+  createEntityAdapter<DomainMetadataModel>({
     selectId: selectENSBookmarkId,
   });
 

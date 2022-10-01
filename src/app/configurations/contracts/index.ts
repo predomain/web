@@ -6,3 +6,4 @@ export * from './block-explorers.enum';
 export * from './ens-marketplace-abi-mainnet.model';
 export * from './ens-marketplace-abi-testnet.model';
 export * from './ens-token-nft-abi.model';
+export * from './lnr-contracts.model';

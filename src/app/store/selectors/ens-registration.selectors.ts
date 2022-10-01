@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSRegistrationStateModel } from '../../models/states/ens-registration-interfaces';
 
 export const getENSRegistrationStateFull =
@@ -25,7 +25,7 @@ export const selectENSRegistration = (id: number) =>
     if ((state.ids as number[]).indexOf(id) <= -1) {
       return undefined;
     }
-    return state.entities[id] as ENSDomainMetadataModel;
+    return state.entities[id] as DomainMetadataModel;
   });
 
 export const getENSRegistrationStateError = createSelector(
@@ -41,7 +41,7 @@ export const getENSRegistrationStateLoading = createSelector(
 export const isENSRegistrationDuplicate = (id: string) =>
   createSelector(getENSRegistrationStateFull, (state) => {
     if (Object.keys(state.entities).indexOf(id) > -1) {
-      return state.entities[id] as ENSDomainMetadataModel;
+      return state.entities[id] as DomainMetadataModel;
     }
     return false;
   });

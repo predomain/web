@@ -51,7 +51,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SpinnerModesEnum } from 'src/app/models/spinner/spinner-modes.enum';
 import { BookmarksServiceService } from 'src/app/services/bookmarks/bookmarks-service.service';
 import { RegistrationServiceService } from 'src/app/services/registration/registration-service.service';
-import { ENSDomainMetadataModel } from 'src/app/models/canvas';
+import { DomainMetadataModel } from 'src/app/models/domains';
 import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
 import { EnsService } from 'src/app/services/ens';
 import { generalConfigurations } from 'src/app/configurations';
@@ -84,7 +84,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     HeaderBackgroundColorsEnum;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   renewalDurationTypes: typeof RenewalDurationsEnum = RenewalDurationsEnum;
-  registrationDomains: ENSDomainMetadataModel[] = [];
+  registrationDomains: DomainMetadataModel[] = [];
   registrationStatusTypes: typeof ENSRegistrationStepsEnum =
     ENSRegistrationStepsEnum;
   registrationStatus = ENSRegistrationStepsEnum.BEFORE_COMMIT;
@@ -110,8 +110,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   bulkSearchComplete = false;
   bulkSearchBookmarksShow = false;
   bulkSearchAvailableCount = 0;
-  bulkSearchResults: ENSDomainMetadataModel[] = [];
-  bulkSearchBookmarks: ENSDomainMetadataModel[] = [];
+  bulkSearchResults: DomainMetadataModel[] = [];
+  bulkSearchBookmarks: DomainMetadataModel[] = [];
 
   performBulkSearchSubscription;
   userStateSubscription;
@@ -652,7 +652,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           const fData = {
             labelName: f.toLowerCase(),
             isNotAvailable: found === undefined ? false : true,
-          } as ENSDomainMetadataModel;
+          } as DomainMetadataModel;
           if (found === undefined) {
             this.bulkSearchAvailableCount++;
           }
