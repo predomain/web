@@ -2,12 +2,7 @@ import { of } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { Injectable, NgZone } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  Actions,
-  createEffect,
-  ofType,
-  ROOT_EFFECTS_INIT,
-} from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   Router,
   ActivatedRoute,
@@ -17,7 +12,14 @@ import {
 } from '@angular/router';
 import {
   GotoPageRoute,
+  InitEffectsCategory,
+  InitEffectsENSBookmark,
+  InitEffectsENSRegistration,
+  InitEffectsPages,
+  InitEffectsPayments,
+  InitEffectsUserState,
   PageGotoRoute,
+  PagesEffectsInit,
   PagesNetworkOfflineStateInvoke,
   PagesNetworkStateSet,
   PagesSetChainCode,
@@ -37,7 +39,14 @@ import {
   PagesStateModel,
 } from '../../models/states/pages-interfaces';
 import { BootController } from '../../../boot-control';
-import { PagesFacadeService } from '../facades';
+import {
+  CategoryFacadeService,
+  ENSBookmarkFacadeService,
+  ENSRegistrationFacadeService,
+  PagesFacadeService,
+  PaymentFacadeService,
+  UserFacadeService,
+} from '../facades';
 import { GenericDialogComponent } from '../../widgets/generic-dialog';
 import { environment } from '../../../environments/environment';
 import { UserService, UserSessionService } from '../../services';
@@ -64,6 +73,11 @@ export class PagesEffects {
     protected store: Store<PagesStateModel>,
     protected userSessionService: UserSessionService,
     protected pagesFacade: PagesFacadeService,
+    protected paymentFacade: PaymentFacadeService,
+    protected ensBookmarksFacade: ENSBookmarkFacadeService,
+    protected ensRegistrationFacade: ENSRegistrationFacadeService,
+    protected categoriesFacade: CategoryFacadeService,
+    protected userFacade: UserFacadeService,
     protected userService: UserService,
     protected rpcService: RpcService,
     public dialog: MatDialog,
@@ -85,7 +99,7 @@ export class PagesEffects {
   init$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(ROOT_EFFECTS_INIT),
+        ofType<PagesEffectsInit>(InitEffectsPages),
         switchMap((p) => {
           return this.route.events.pipe(
             takeUntil(
@@ -256,6 +270,7 @@ export class PagesEffects {
     );
     globalAny.chainId = chainId;
     globalAny.canvasProvider = newProvider;
+    this.initiateOtherEffects();
   }
 
   assessProviderChanges(chainId: number) {
@@ -268,5 +283,21 @@ export class PagesEffects {
     } else {
       this.store.dispatch(new PagesSetRPCProvider(JSON.parse(providerData)));
     }
+  }
+
+  initiateOtherEffects() {
+    this.paymentFacade.startEffects();
+    this.ensBookmarksFacade.startEffects();
+    this.ensRegistrationFacade.startEffects();
+    this.categoriesFacade.startEffects();
+    this.userFacade.startEffects();
+    globalAny.canvasEffectsInitialised = {
+      [InitEffectsPages]: false,
+      [InitEffectsPayments]: false,
+      [InitEffectsUserState]: false,
+      [InitEffectsENSBookmark]: false,
+      [InitEffectsENSRegistration]: false,
+      [InitEffectsCategory]: false,
+    };
   }
 }

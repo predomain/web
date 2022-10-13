@@ -5,3 +5,4 @@ export * from './user.facades';
 export * from './payment.facade';
 export * from './ens-bookmark.facades';
 export * from './ens-registration.facades';
+export * from './categories.facades';

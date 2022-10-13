@@ -1,4 +1,4 @@
-import { of, timer } from 'rxjs';
+import { of, Subject, timer } from 'rxjs';
 import { ethers } from 'ethers';
 import * as d3 from 'd3';
 import {
@@ -11,12 +11,12 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  catchError,
   delayWhen,
   map,
   retryWhen,
   switchMap,
   take,
+  takeUntil,
 } from 'rxjs/operators';
 import { DomainMetadataModel } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
@@ -28,7 +28,10 @@ import {
   RegistrationDataService,
   RegistrationServiceService,
 } from 'src/app/services/registration';
-import { PagesFacadeService } from 'src/app/store/facades';
+import {
+  CategoryFacadeService,
+  PagesFacadeService,
+} from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
 import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
 import {
@@ -38,7 +41,14 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadService } from 'src/app/services/download/download.service';
 import { HttpClient } from '@angular/common/http';
-import { CategoryModel } from 'src/app/models/category';
+import {
+  CategoriesRootModel,
+  CategoryMetaStatsModel,
+  CategoryModel,
+} from 'src/app/models/category';
+import { CategoriesStateModel } from 'src/app/models/states/categories-interfaces';
+import { CategoriesDataService } from 'src/app/services/categories-data';
+import { ResponseModel, ResponseTypesEnum } from 'src/app/models/http';
 
 const globalAny: any = global;
 
@@ -94,7 +104,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
   avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
   displayMode = DisplayModes.CHUNK;
-  metadata: CategoryModel;
+  rootCategoryData: CategoriesRootModel;
+  categoryNormalisedMetadata: CategoryMetaStatsModel;
+  categoryIpfsData: CategoryModel;
+  categoryApiData: CategoryModel;
   profileTexts: any;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
@@ -104,7 +117,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     emoji: false,
   };
   filterForm: FormGroup;
-  userDomains;
+  categoryDomains;
   userAddress;
   ethNameData;
   profileTextSubscription;
@@ -120,6 +133,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
     protected registrationDataService: RegistrationDataService,
     protected downloadService: DownloadService,
     protected activatedRoute: ActivatedRoute,
+    protected categoryFacade: CategoryFacadeService,
+    protected categoriesDataService: CategoriesDataService,
     protected miscUtils: MiscUtilsService,
     protected snackBar: MatSnackBar,
     protected router: Router,
@@ -170,33 +185,116 @@ export class CategoryComponent implements OnInit, OnDestroy {
     if (category === false) {
       this.pagesFacade.gotoPageRoute('not-found', PagesEnum.NOTFOUND);
     }
+    let retries = 0;
+    let retrieveDone = new Subject<boolean>();
     const provider = globalAny.canvasProvider;
-    this.getCategoriesSubscription = this.ensService
-      .getDomainContentHash(provider, this.pageCategory)
+    this.getCategoriesSubscription = this.categoryFacade.getCategoryState$
       .pipe(
-        switchMap((c) => {
-          return this.httpClient.get(c as any);
+        switchMap((r) => {
+          if (r.categoriesMetadata === undefined) {
+            throw false;
+          }
+          this.rootCategoryData = (r as CategoriesStateModel)
+            .categoriesMetadata as CategoriesRootModel;
+          return this.ensService.getDomainContentHash(
+            provider,
+            category + '.' + generalConfigurations.categoriesDomain
+          );
         }),
         switchMap((r) => {
+          console.log(r);
           if (r === false || r === null) {
             throw false;
           }
-          this.metadata = r as CategoryModel;
-          this.getProfileTexts();
-          return this.getCategoryDomains(this.metadata.valid_names);
+          return this.categoriesDataService.getCategoriesIpfsMetadata(
+            r as string
+          );
         }),
-        catchError((e) => {
-          this.pagesFacade.setPageCriticalError(true);
-          this.pagesFacade.gotoPageRoute('not-found', PagesEnum.NOTFOUND);
-          return of(false);
-        })
+        switchMap((r) => {
+          console.log(r);
+          if (r === false || r === null) {
+            throw false;
+          }
+          this.categoryIpfsData = r as any;
+          return this.categoriesDataService
+            .getCategoriesData(
+              this.rootCategoryData.activeProviders[0],
+              category
+            )
+            .pipe(switchMap((r) => of(r)));
+        }),
+        switchMap((r) => {
+          if (
+            r === false ||
+            ('statusCode' in (r as any) && (r as any)?.statusCode !== 200) ||
+            r === null ||
+            r === undefined
+          ) {
+            throw false;
+          }
+          const requestResult = r as ResponseModel;
+          if (requestResult.type === ResponseTypesEnum.FAILURE) {
+            throw false;
+          }
+          try {
+            this.categoryApiData = (r as ResponseModel).result as CategoryModel;
+            this.categoryNormalisedMetadata = {
+              previousHourlySales:
+                this.categoryApiData.volume.previous_hourly_sales,
+              hourlySales: this.categoryApiData.volume.hourly_sales,
+              previousDailyVolume:
+                this.categoryApiData.volume.previous_daily_volume,
+              dailyVolume: this.categoryApiData.volume.daily_volume,
+              topSale:
+                this.categoryApiData.volume.sales.length === 0
+                  ? 0.0
+                  : parseFloat(
+                      this.categoryApiData.volume.sales.sort(
+                        (a, b) => parseFloat(b.price) - parseFloat(a.price)
+                      )[0].price
+                    ),
+              topBuyer:
+                this.categoryApiData.volume.sales.length === 0
+                  ? 'N/A'
+                  : this.categoryApiData.volume.sales.sort(
+                      (a, b) => parseFloat(b.price) - parseFloat(a.price)
+                    )[0].buyer,
+              domainsCount: this.categoryIpfsData.valid_names.length,
+              sales: this.categoryApiData.volume.sales,
+            };
+            this.getProfileTexts();
+            return this.getCategoryDomains(this.categoryIpfsData.valid_names);
+          } catch (e) {
+            return of(false);
+          }
+        }),
+        map((r) => {
+          this.categoryDomains = r;
+          retrieveDone.next(false);
+        }),
+        retryWhen((error) =>
+          error.pipe(
+            take(generalConfigurations.maxRPCCallRetries),
+            takeUntil(retrieveDone),
+            delayWhen((e) => {
+              this.pageReset();
+              if (retries >= generalConfigurations.maxRPCCallRetries - 1) {
+                this.pagesFacade.setPageCriticalError(true);
+                this.pagesFacade.gotoPageRoute('not-found', PagesEnum.NOTFOUND);
+                return of(false);
+              }
+              retries++;
+              return timer(generalConfigurations.timeToUpdateCheckoutPipe);
+            })
+          )
+        )
       )
       .subscribe();
   }
 
   pageReset() {
     this.hasDomainsListLoaded = false;
-    this.userDomains = undefined;
+    this.categoryDomains = undefined;
     this.userAddress = undefined;
     this.ethNameData = undefined;
   }
@@ -206,41 +304,40 @@ export class CategoryComponent implements OnInit, OnDestroy {
     return this.ensService
       .findDomains(domains.map((r) => r.toLowerCase()))
       .pipe(
-        map((r) => {
-          this.userDomains = (r as any).registrations
+        switchMap((r) => {
+          console.log('A', r);
+          this.categoryDomains = (r as any).registrations
             .filter((d) => {
               return d.domain.labelName !== null;
             })
             .map((d) => {
-              try {
-                const gPeriod = this.ensService.calculateGracePeriodPercentage(
-                  parseInt(d.expiryDate, 10)
-                );
-                const fData = {
-                  id: d.domain.id.toLowerCase(),
-                  labelName: d.domain.labelName.toLowerCase(),
-                  labelHash: d.domain.labelhash.toLowerCase(),
-                  isNotAvailable: false,
-                  expiry: (parseInt(d.expiryDate) * 1000).toString(),
-                  gracePeriodPercent:
-                    gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
-                  registrationDate: (
-                    parseInt(d.registrationDate) * 1000
-                  ).toString(),
-                  createdAt: (parseInt(d.domain.createdAt) * 1000).toString(),
-                } as DomainMetadataModel;
-                this.hasDomainsListLoaded = true;
-                return fData;
-              } catch (e) {
-                throw e;
-              }
+              const gPeriod = this.ensService.calculateGracePeriodPercentage(
+                parseInt(d.expiryDate, 10)
+              );
+              const fData = {
+                id: d.domain.id.toLowerCase(),
+                labelName: d.domain.labelName.toLowerCase(),
+                labelHash: d.domain.labelhash.toLowerCase(),
+                isNotAvailable: false,
+                expiry: (parseInt(d.expiryDate) * 1000).toString(),
+                gracePeriodPercent:
+                  gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
+                registrationDate: (
+                  parseInt(d.registrationDate) * 1000
+                ).toString(),
+                createdAt: (parseInt(d.domain.createdAt) * 1000).toString(),
+              } as DomainMetadataModel;
+              this.hasDomainsListLoaded = true;
+              return fData;
             })
             .sort((a, b) => b.registrationDate - a.registrationDate);
+          return of(this.categoryDomains);
         }),
         retryWhen((error) =>
           error.pipe(
             take(generalConfigurations.maxRPCCallRetries),
             delayWhen((e) => {
+              console.log(error);
               this.pageReset();
               if (retries >= generalConfigurations.maxRPCCallRetries - 1) {
                 this.pagesFacade.setPageCriticalError(true);
@@ -253,12 +350,24 @@ export class CategoryComponent implements OnInit, OnDestroy {
       );
   }
 
+  priceToFixedString(price: string, decimals: number = 3) {
+    return parseFloat(price).toFixed(decimals);
+  }
+
+  priceToFixed(price: number, decimals: number = 3) {
+    return price.toFixed(decimals);
+  }
+
+  getTimeFromDate(date: string) {
+    return new Date(date).getTime().toString();
+  }
+
   getProfileTexts() {
     if (
-      'profileTexts' in this.metadata &&
-      this.metadata.profileTexts !== undefined
+      'profileTexts' in this.categoryApiData &&
+      this.categoryApiData.profileTexts !== undefined
     ) {
-      this.profileTexts = this.metadata.profileTexts;
+      this.profileTexts = this.categoryApiData.profileTexts;
       return;
     }
     this.profileTexts = {};
@@ -266,12 +375,12 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   filterSearchDomains(value: any = '') {
     if (value === undefined || value === '' || value === null) {
-      return this.userDomains.filter((d) => {
+      return this.categoryDomains.filter((d) => {
         return this.extraFilters(d);
       });
     }
     const filterValue = (value as any).toLowerCase();
-    return this.userDomains.filter((d) => {
+    return this.categoryDomains.filter((d) => {
       if (
         d.labelName.indexOf(filterValue) > -1 &&
         this.extraFilters(d) === true
@@ -378,7 +487,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   downloadDomainList() {
-    const csv = this.ensService.downloadDomainsListCSV(this.userDomains);
+    const csv = this.ensService.downloadDomainsListCSV(this.categoryDomains);
     this.downloadService.download('text/csv;charset=utf-8', csv);
   }
 
@@ -470,6 +579,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
     const d = new Date(date);
     return d.getTime();
+  }
+
+  get chartWidth() {
+    const toDeduct = (window.innerWidth / 100) * 20;
+    return window.innerWidth - toDeduct - 220;
   }
 
   get searchKeyword() {

@@ -1,10 +1,10 @@
-import { Action } from "@ngrx/store";
-import { NavigatorButtonsStateModel } from "../../models/states/navigator-interfaces";
+import { Action } from '@ngrx/store';
+import { NavigatorButtonsStateModel } from '../../models/states/navigator-interfaces';
 
 export const SetNavigatorButtonsState =
-  "[NavigatorButtonsState] New state set.";
+  '[NavigatorButtonsState] New state set.';
 export const GetNavigatorButtonsState =
-  "[NavigatorButtonsState] Latest state retrieved.";
+  '[NavigatorButtonsState] Latest state retrieved.';
 
 export class NavigatorButtonsStateSet implements Action {
   readonly type = SetNavigatorButtonsState;

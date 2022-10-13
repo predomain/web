@@ -4,8 +4,8 @@ import {
   UserModel,
   UserRegistrationModel,
 } from '../../models/states/user-interfaces';
-import LedgerEth from '@ledgerhq/hw-app-eth';
 
+export const InitEffectsUserState = '[UserState] Init effects users.';
 export const SetUserState = '[UserState] New state set.';
 export const SetUserError = '[UserState] An error has occured.';
 export const GetUserState = '[UserState] Latest state retrieved.';
@@ -16,6 +16,11 @@ export const RemoveUser = '[UserState] Latest user replaced (with Empty).';
 export const AddUser = '[UserState] New user added.';
 export const UpdateUser = '[UserState] User updated added.';
 export const RegisterUser = '[UserState] New user registration.';
+
+export class UserEffectsInit implements Action {
+  readonly type = InitEffectsUserState;
+  constructor() {}
+}
 
 export class UserErrorSet implements Action {
   readonly type = SetUserError;
@@ -63,6 +68,7 @@ export class UserAdd implements Action {
 }
 
 export type UserActions =
+  | UserEffectsInit
   | UserStateSet
   | UserUpdate
   | UserErrorSet

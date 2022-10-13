@@ -25,6 +25,7 @@ import {
   PaymentArchiveAll,
   PaymentETHUSDRatesSet,
   PaymentRemoveAll,
+  PaymentsEffectsInit,
 } from '../actions';
 import { PaymentStoreErrorsEnum } from '../../models/error-enums';
 
@@ -48,6 +49,10 @@ export class PaymentFacadeService {
       select(getPaymentStateLoading)
     );
     this.ethUsdPrice$ = this.store.pipe(select(getEthUsdPrice));
+  }
+
+  startEffects() {
+    this.store.dispatch(new PaymentsEffectsInit());
   }
 
   setEthUsdRate(usdRate: string) {

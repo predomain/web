@@ -1,6 +1,8 @@
 import { Action } from '@ngrx/store';
 import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSRegistrationStoreErrorsEnum } from '../../models/error-enums';
+export const InitEffectsENSRegistration =
+  '[CategoryState] Init effects registration.';
 export const AddOneENSRegistration = '[ENSRegistrationState] Add registration.';
 export const UpdateENSRegistration =
   '[ENSRegistrationState] Update registration.';
@@ -20,6 +22,11 @@ export const RemoveAllENSRegistration =
   '[ENSRegistrationState] Remove all registration.';
 export const SetENSRegistrationError =
   '[ENSRegistrationState] ENSRegistration error set.';
+
+export class ENSRegistrationEffectsInit implements Action {
+  readonly type = InitEffectsENSRegistration;
+  constructor() {}
+}
 
 export class ENSRegistrationErrorSet implements Action {
   readonly type = SetENSRegistrationError;
@@ -72,6 +79,7 @@ export class ENSRegistrationUpdate implements Action {
 }
 
 export type ENSRegistrationActions =
+  | ENSRegistrationEffectsInit
   | ENSRegistrationAddOne
   | ENSRegistrationRemoveOne
   | ENSRegistrationRemoveMany

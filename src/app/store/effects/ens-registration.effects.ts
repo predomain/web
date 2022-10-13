@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Actions,
-  createEffect,
-  ofType,
-  ROOT_EFFECTS_INIT,
-} from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { filter, map, withLatestFrom } from 'rxjs/operators';
 import { ENSRegistrationStateModel } from 'src/app/models/states/ens-registration-interfaces';
@@ -15,15 +10,19 @@ import {
 import {
   AddOneENSRegistration,
   ENSRegistrationAddOne,
+  ENSRegistrationEffectsInit,
   ENSRegistrationRemoveAll,
   ENSRegistrationUpsertMany,
   ENSRegistrationUpsertOne,
+  InitEffectsENSRegistration,
   RemoveAllENSRegistration,
   RemoveOneENSRegistration,
   UpsertManyENSRegistration,
   UpsertOneENSRegistration,
 } from '../actions';
 import { getENSRegistrations } from '../selectors';
+
+const globalAny: any = global;
 
 @Injectable()
 export class ENSRegistrationEffects {
@@ -37,7 +36,16 @@ export class ENSRegistrationEffects {
   init$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(ROOT_EFFECTS_INIT),
+        ofType<ENSRegistrationEffectsInit>(InitEffectsENSRegistration),
+        filter((r) => {
+          if (
+            globalAny.canvasEffectsInitialised[InitEffectsENSRegistration] ===
+            true
+          ) {
+            return false;
+          }
+          return true;
+        }),
         map((p) => {
           const registrations =
             this.registrationService.loadRegistrationsAndFeed();
@@ -52,6 +60,7 @@ export class ENSRegistrationEffects {
               )
             );
           }
+          globalAny.canvasEffectsInitialised[InitEffectsENSRegistration] = true;
         })
       ),
     {

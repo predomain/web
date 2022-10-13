@@ -151,6 +151,10 @@
   }
 }
 
+.co-avatar-container {
+  width: 100%;
+}
+
 .co-form-label {
   margin-top: 10px;
 }
@@ -177,4 +181,33 @@
 }
 .co-info-container {
   width: 50%;
+}
+
+.co-category-thumbnail {
+  margin-top: 0;
+  margin-left: -100%;
+  font-size: 130px;
+  width: 100%;
+  height: 175px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.co-statistics-box {
+  width: calc(50% - 5px);
+  margin-right: 10px;
+  margin-bottom: 10px;
+  &:nth-of-type(2n) {
+    width: calc(50% - 5px);
+    margin-right: 0 !important;
+  }
+  &:nth-of-type(5n),
+  &:nth-of-type(6n) {
+    margin-bottom: 0 !important;
+  }
+}
+
+.co-avatar {
+  width: calc(50% - 5px);
 }

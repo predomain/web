@@ -85,46 +85,45 @@
           >
         </span>
         <span class="cos-gray-text">
-          {{ metadata?.category }}
+          {{ categoryApiData?.category }}
         </span>
       </div>
       <div
         fxFlex="90"
         fxLayout="row"
+        fxLayoutGap="30px"
         class="co-profile-header cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right cos-overflow-hidden cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
       >
         <div
-          fxFlex
-          fxLayout="row"
+          fxFlex="20"
+          fxLayout="column"
           fxLayoutGap="20px"
           fxLayoutAlign="start start"
         >
-          <div fxLayout="column" fxFlex="9.5" class="co-avatar-container">
-            <div
-              id="canvas_size_guide"
-              class="cos-fluid-width cos-no-margin-bottom"
-              [style.visibility]="'hidden'"
-              [style.width]="'100%'"
-              [style.height]="'0px'"
-            ></div>
-            <div
-              fxLayoutAlign="stretch stretch"
-              class="cos-fluid-height cos-fluid-width"
-            >
+          <div
+            id="canvas_size_guide"
+            class="cos-fluid-width cos-no-margin-bottom"
+            [style.visibility]="'hidden'"
+            [style.width]="'50%'"
+            [style.height]="'0px'"
+          ></div>
+          <div
+            fxFlex
+            fxLayout="row"
+            fxLayoutGap="10px"
+            class="co-avatar-container"
+          >
+            <div fxFlex fxLayout="row" class="co-avatar cos-fluid-width">
               <app-preview-image
                 *ngIf="ethNameData === undefined"
-                fxFlex
                 (imageLoaded)="avatarResolved = true"
                 [preview]="'assets/img-blank.png'"
                 [error]="'assets/category-profile-blank.svg'"
-                [style.height]="
-                  canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
-                "
+                [style.width]="'100%'"
                 class="cos-border-radius-2"
               ></app-preview-image>
               <app-preview-image
                 *ngIf="ethNameData !== undefined"
-                fxFlex
                 (imageLoaded)="avatarResolved = true"
                 [preview]="'assets/img-blank.png'"
                 [error]="'assets/category-profile-blank.svg'"
@@ -133,89 +132,241 @@
                   hashToBigIntString(ethNameData.labelhash) +
                   '/image'
                 "
-                [style.height]="
-                  canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
-                "
+                [style.width]="'100%'"
                 class="cos-border-radius-2"
               ></app-preview-image>
-              <div
-                *ngIf="ethNameData === undefined && avatarResolved === true"
-                class="co-no-name cos-wallet-address-text-cut cos-pos-absolute cos-right-text"
-                fxFlex="0 1 100%"
+              <mat-icon
+                *ngIf="categoryApiData !== undefined"
+                class="co-category-thumbnail"
               >
-                <b>
-                  {{ metadata?.ticker }}
-                </b>
-              </div>
+                {{
+                  rootCategoryData.categoriesThumbnails[
+                    categoryApiData?.category
+                  ]
+                }}
+              </mat-icon>
             </div>
-          </div>
-          <div fxFlex fxLayout="column" fxLayoutGap="10px">
-            <div fxFlex fxLayout="column" class="co-info-container">
-              <div fxFlex fxLayout="row" class="co-title-text">
+
+            <div
+              fxFlex
+              fxLayout="column"
+              [fxLayoutGap]="categoryApiData === undefined ? '10px' : '5px'"
+              class="co-info-container"
+            >
+              <div fxFlex="0 0 auto" fxLayout="row" class="co-title-text">
                 <div
+                  *ngIf="categoryApiData === undefined"
+                  fxFlex="0 1 200px"
+                  class="cos-wallet-address-text-cut cos-overflow-hidden"
+                >
+                  <div
+                    style="height: 36px"
+                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                  ></div>
+                </div>
+                <div
+                  *ngIf="categoryApiData !== undefined"
                   fxFlex="0 1 200px"
                   class="cos-wallet-address-text-cut cos-overflow-hidden"
                 >
                   <b>
-                    {{ metadata?.category }}
+                    {{
+                      rootCategoryData?.categoriesTitle[
+                        categoryApiData?.category
+                      ]
+                    }}
                   </b>
                 </div>
               </div>
-              <div fxLayoutAlign="start center" fxLayoutGap="5px">
-                <div>
+              <div fxFlex fxLayoutAlign="start start" fxLayoutGap="5px">
+                <div fxFlex="0 1 200px" *ngIf="categoryApiData === undefined">
+                  <div
+                    style="height: 28px"
+                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                  ></div>
+                </div>
+                <div *ngIf="categoryApiData !== undefined">
                   {{
                     profileTexts?.description === undefined
-                      ? "Ethereum Name service"
+                      ? rootCategoryData?.categoriesDescription[
+                          categoryApiData?.category
+                        ]
                       : profileTexts?.description
                   }}
                 </div>
               </div>
             </div>
+          </div>
+          <div fxLayout="column" fxLayoutGap="10px" class="cos-fluid-width">
             <div
               fxFlex
-              fxLayout="row"
-              fxLayoutGap="10px"
-              fxLayoutAlign="start end"
-              class="co-info-container cos-body-2"
+              fxLayout="row wrap"
+              fxLayoutAlign="start start"
+              class="co-info-container cos-body-2 cos-fluid-width"
             >
               <div
-                fxFlex="150px"
-                class="cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
-                <div class="cos-body-0">300</div>
-                <div class="cos-body-7 cos-uptrend-text">+5</div>
-                <div class="cos-gray-text cos-body-4">Unique Owners</div>
+                <div
+                  *ngIf="categoryNormalisedMetadata === undefined"
+                  class="cos-body-0"
+                >
+                  <div
+                    style="height: 28px"
+                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                  ></div>
+                </div>
+                <div
+                  *ngIf="categoryNormalisedMetadata !== undefined"
+                  class="cos-body-0 cos-wallet-address-text-cut cos-fluid-width"
+                >
+                  {{ categoryNormalisedMetadata?.domainsCount }}
+                </div>
+                <div
+                  *ngIf="categoryNormalisedMetadata === undefined"
+                  class="cos-body-7 cos-uptrend-text"
+                >
+                  ...
+                </div>
+                <div
+                  *ngIf="categoryNormalisedMetadata !== undefined"
+                  class="cos-body-7"
+                >
+                  -
+                </div>
+                <div class="cos-gray-text cos-body-4">Total Assets</div>
               </div>
 
               <div
-                fxFlex="150px"
-                class="cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
-                <div class="cos-body-0">0.00016 ETH</div>
-                <div class="cos-body-7 cos-uptrend-text">+3.20%</div>
+                <div
+                  *ngIf="categoryNormalisedMetadata === undefined"
+                  class="cos-body-0"
+                >
+                  <div
+                    style="height: 28px"
+                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                  ></div>
+                </div>
+                <div
+                  *ngIf="categoryNormalisedMetadata !== undefined"
+                  class="cos-body-0 cos-wallet-address-text-cut cos-fluid-width"
+                >
+                  {{ priceToFixed(categoryNormalisedMetadata?.dailyVolume, 2) }}
+                  ETH
+                </div>
+                <div class="cos-body-7 cos-uptrend-text">0.0%</div>
                 <div class="cos-gray-text cos-body-4">
                   {{ "LABELS.VOLUME" | translate }}
                 </div>
               </div>
 
               <div
-                fxFlex="150px"
-                class="cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
-                <div class="cos-body-0">3 Per Hour</div>
-                <div class="cos-body-7 cos-uptrend-text">+2</div>
+                <div
+                  class="cos-body-0 cos-wallet-address-text-cut cos-fluid-width"
+                >
+                  3 Per Hour
+                </div>
+                <div class="cos-body-7 cos-uptrend-text">0</div>
                 <div class="cos-gray-text cos-body-4">Hourly Sales</div>
+              </div>
+
+              <div
+                class="co-statistics-box cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+              >
+                <div
+                  *ngIf="categoryNormalisedMetadata === undefined"
+                  class="cos-body-0"
+                >
+                  <div
+                    style="height: 28px"
+                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                  ></div>
+                </div>
+                <div
+                  *ngIf="categoryNormalisedMetadata !== undefined"
+                  class="cos-body-0 cos-wallet-address-text-cut cos-fluid-width"
+                >
+                  {{ priceToFixed(categoryNormalisedMetadata?.topSale, 2) }}
+                  ETH
+                </div>
+                <div class="cos-body-7 cos-uptrend-text">0</div>
+                <div class="cos-gray-text cos-body-4">Top Sale</div>
+              </div>
+
+              <div
+                class="co-statistics-box cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+              >
+                <div
+                  *ngIf="categoryNormalisedMetadata === undefined"
+                  class="cos-body-0"
+                >
+                  <div
+                    style="height: 28px"
+                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                  ></div>
+                </div>
+                <div
+                  *ngIf="categoryNormalisedMetadata !== undefined"
+                  class="cos-body-0 cos-wallet-address-text-cut cos-fluid-width"
+                >
+                  {{ priceToFixed(categoryNormalisedMetadata?.topSale, 2) }}
+                  ETH
+                </div>
+                <div class="cos-body-7 cos-uptrend-text">0</div>
+                <div class="cos-gray-text cos-body-4">Top Sale</div>
+              </div>
+
+              <div
+                class="co-statistics-box cos-border cos-bg-gray cos-padding-0 cos-border-radius-1"
+              >
+                <div
+                  *ngIf="categoryNormalisedMetadata === undefined"
+                  class="cos-body-0"
+                >
+                  <div
+                    style="height: 28px"
+                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                  ></div>
+                </div>
+                <div
+                  *ngIf="categoryNormalisedMetadata !== undefined"
+                  class="cos-body-0 cos-wallet-address-text-cut cos-fluid-width-half"
+                >
+                  {{ categoryNormalisedMetadata?.topBuyer }}
+                </div>
+                <div class="cos-body-7">-</div>
+                <div class="cos-gray-text cos-body-4">Top Buyer</div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="co-bar-chart cos-pos-absolute cos-pos-right-reset">
-            <app-bar [chartMetadata]="{ width: 1000, height: 217 }"> </app-bar>
-            <div
-              class="co-bar-chart-fade cos-pos-absolute cos-border cos-no-border-left cos-no-border-right"
-              style="width: 400px; height: 217px; margin-top: -242px"
-            ></div>
+        <div
+          fxFlex
+          fxLayout="column"
+          class="cos-border cos-bg-gray cos-border-radius-2 cos-fluid-width"
+        >
+          <div
+            fxFlex="0 0 auto"
+            id="co-chart-control"
+            fxLayoutGap="10px"
+            fxLayout="column"
+            class="cos-bg-neutral cos-border-radius-2 cos-margin-2 cos-no-margin-bottom cos-padding-1"
+          >
+            <div fxFlex class="cos-body-4">Sales Activity</div>
           </div>
+          <app-dot
+            fxFlex
+            [chartMetadata]="{
+              width: canvasService.getWidthOfDiv('co-chart-control'),
+              height: 370
+            }"
+          >
+          </app-dot>
         </div>
       </div>
       <div fxFlex fxLayout="row" fxLayoutGap="30px" class="cos-fluid-width">

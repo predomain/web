@@ -28,6 +28,8 @@ export const generalConfigurations = {
   },
   defaultCurrency: 'ETH',
   enableCustomRPC: true,
+  frontpageBlogsFeed:
+    'https://s3.amazonaws.com/revue/accounts/rss_feeds/000/527/060/original/rss_feed_527060.xml?1664402575',
   docsLink: 'https://docs.predomain.xyz/',
   blockscanLink: 'https://chat.blockscan.com/index?a=',
   nftyChatLink: 'https://nftychat.xyz/dm/',
@@ -42,7 +44,7 @@ export const generalConfigurations = {
     name: 'Predomain.eth',
   },
   enabledTools: {
-    category: false,
+    category: true,
     management: true,
     canvas: true,
     registration: true,

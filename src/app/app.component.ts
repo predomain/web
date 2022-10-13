@@ -47,11 +47,12 @@ export class AppComponent implements OnInit, DoCheck, AfterViewInit {
     protected userSessionService: UserSessionService,
     protected iconsRegistryService: IconRegistryService,
     protected pagesFacade: PagesFacadeService
-  ) {}
+  ) {
+    this.pagesFacade.startEffects();
+  }
 
   ngOnInit() {
     const cId = this.userSessionService.getDefaultChainId();
-    this.iconsRegistryService.perloadCustomIcons();
     this.pagesFacade.setNetworkChainCode(cId, false);
   }
 

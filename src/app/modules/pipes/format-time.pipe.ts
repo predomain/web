@@ -11,4 +11,11 @@ export class FormatTimePipe extends DatePipe implements PipeTransform {
       return super.transform(inputDate, 'MMM d y HH:MM');
     }
   }
+
+  transformShortened(value: string): any {
+    if (value) {
+      const inputDate = new Date(parseInt(value));
+      return super.transform(inputDate, 'MMM d');
+    }
+  }
 }

@@ -5,3 +5,4 @@ export * from './user.reducers';
 export * from './payment.reducers';
 export * from './ens-registration.reducers';
 export * from './ens-bookmark.reducers';
+export * from './categories.reducers';

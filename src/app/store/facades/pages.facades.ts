@@ -26,6 +26,7 @@ import {
   PagesSetIpfsState,
   PagesSetCriticalError,
   PagesSetRPCProvider,
+  PagesEffectsInit,
 } from '../actions';
 import {
   GotoPageRouteActionPayloadModel,
@@ -66,6 +67,10 @@ export class PagesFacadeService {
     this.pageLoadingState$ = this.store.pipe(select(getCurrentPageLoadState));
     this.pageCritiaclError$ = this.store.pipe(select(getCriticalErrorState));
     this.pageVisibility$ = this.store.pipe(select(getCurrentPageVisibility));
+  }
+
+  startEffects() {
+    this.store.dispatch(new PagesEffectsInit());
   }
 
   showLoadingProgressBar() {

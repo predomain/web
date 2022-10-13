@@ -5,6 +5,7 @@ import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
 import {
   ENSBookmarkAddOne,
+  ENSBookmarkEffectsInit,
   ENSBookmarkErrorSet,
   ENSBookmarkRemoveAll,
   ENSBookmarkRemoveMany,
@@ -28,6 +29,11 @@ export class ENSBookmarkFacadeService {
   constructor(public store: Store<ENSBookmarkStateModel>) {
     this.getENSBookmarkState$ = this.store.pipe(select(getENSBookmarkState));
   }
+
+  startEffects() {
+    this.store.dispatch(new ENSBookmarkEffectsInit());
+  }
+
   addBookmark(bookmark: DomainMetadataModel) {
     this.store.dispatch(new ENSBookmarkAddOne(bookmark));
   }

@@ -206,4 +206,8 @@ export class CanvasServicesService {
   getWidthOfDiv(divId: string) {
     return document.getElementById(divId).clientWidth;
   }
+
+  getHeightOfDiv(divId: string) {
+    return document.getElementById(divId).clientHeight;
+  }
 }

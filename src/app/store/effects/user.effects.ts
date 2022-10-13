@@ -1,12 +1,14 @@
 import { of } from 'rxjs';
 import { Injectable, NgZone } from '@angular/core';
+import { Actions, ofType, createEffect } from '@ngrx/effects';
 import {
-  Actions,
-  ofType,
-  ROOT_EFFECTS_INIT,
-  createEffect,
-} from '@ngrx/effects';
-import { map, switchMap, catchError, delay, timeout } from 'rxjs/operators';
+  map,
+  switchMap,
+  catchError,
+  delay,
+  timeout,
+  filter,
+} from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import {
@@ -16,9 +18,11 @@ import {
   UserSessionService,
 } from '../../services';
 import {
+  InitEffectsUserState,
   RegisterUser,
   RemoveUser,
   UserAdd,
+  UserEffectsInit,
   UserErrorSet,
   UserRegister,
   UserRemove,
@@ -52,7 +56,15 @@ export class UserEffects {
   init$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(ROOT_EFFECTS_INIT),
+        ofType<UserEffectsInit>(InitEffectsUserState),
+        filter((r) => {
+          if (
+            globalAny.canvasEffectsInitialised[InitEffectsUserState] === true
+          ) {
+            return false;
+          }
+          return true;
+        }),
         map((r) => {
           const timeNow = new Date().getTime();
           const userSessionStored = this.userSessionService.loadUserSession();
@@ -80,6 +92,7 @@ export class UserEffects {
           this.store.dispatch(
             new UserAdd(JSON.parse(userSessionStored as string))
           );
+          globalAny.canvasEffectsInitialised[InitEffectsUserState] = true;
         })
       ),
     { dispatch: false }

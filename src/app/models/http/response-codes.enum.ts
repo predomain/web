@@ -1,0 +1,6 @@
+export enum ResponseCodesEnum {
+  INAVLID_ROUTE,
+  SERVER_BUSY,
+  RETRIEVE_SUCCEEDED,
+  RETRIEVE_FAILED,
+}
