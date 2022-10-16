@@ -336,7 +336,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
   saveChanges() {
     const provider = globalAny.canvasProvider;
     const qualifiedTokenId = this.userDomains.filter((d) => {
-      return d.gracePeriodPercent <= 100;
+      return d.gracePeriodPercent < 100;
     })[0];
     const tokenId = BigNumber.from(qualifiedTokenId.labelHash).toString();
     if (this.saveChangesSubscripton) {
