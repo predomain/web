@@ -59,7 +59,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
-  placeholders = new Array(10).fill(0);
+  placeholders = new Array(50).fill(0);
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   hasDomainsListLoaded = false;
   avatarResolved = false;

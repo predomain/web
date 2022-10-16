@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslationModule } from '../translation.module';
 import { serviceProviders } from 'src/app/models';
 import { DotComponent } from 'src/app/widgets/charts/dot/dot.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { DotComponent } from 'src/app/widgets/charts/dot/dot.component';
     MatDialogModule,
     MatButtonModule,
     FlexLayoutModule,
+    NgChartsModule,
   ],
   providers: [...serviceProviders],
   declarations: [DotComponent],
@@ -25,6 +27,7 @@ import { DotComponent } from 'src/app/widgets/charts/dot/dot.component';
     MatIconModule,
     TranslationModule,
     FlexLayoutModule,
+    NgChartsModule,
   ],
   bootstrap: [],
   entryComponents: [],

@@ -4,6 +4,7 @@ import {
   Component,
   NgZone,
   OnDestroy,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -13,6 +14,7 @@ import { UserModel } from 'src/app/models/states/user-interfaces';
 import { EnsService } from 'src/app/services/ens';
 import {
   CategoryFacadeService,
+  PagesFacadeService,
   UserFacadeService,
 } from 'src/app/store/facades';
 import { MainHeaderComponent } from 'src/app/widgets/main-header';
@@ -25,6 +27,7 @@ import { DomainTypeEnum } from 'src/app/models/domains';
 import { XMLParser } from 'fast-xml-parser';
 import { CategoriesDataService } from 'src/app/services/categories-data';
 import { CategoriesRootModel } from 'src/app/models/category';
+import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 
 const globalAny: any = global;
 @Component({
@@ -32,7 +35,7 @@ const globalAny: any = global;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnDestroy {
+export class HomeComponent implements OnDestroy, OnInit {
   @ViewChild('mainHeader') mainHeader: MainHeaderComponent;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
@@ -42,6 +45,9 @@ export class HomeComponent implements OnDestroy {
   categories: string[];
   categoriesRootVolume: { category: string; volume: number }[];
   metadata: CategoriesRootModel;
+  userPoaps: string[];
+  requiredPoapsForCategoryDisplay =
+    generalConfigurations.poapRequiredTools.category.poapId;
   topCategories: {
     category: string;
     volume: number;
@@ -62,6 +68,7 @@ export class HomeComponent implements OnDestroy {
   donationBoxOpen = true;
   getBlogsListSubscription;
   getRootVolumeSubscription;
+  userStateSubscription;
 
   constructor(
     public ensService: EnsService,
@@ -70,6 +77,7 @@ export class HomeComponent implements OnDestroy {
     protected userFacadeService: UserFacadeService,
     protected categoryFacade: CategoryFacadeService,
     protected categoriesDataService: CategoriesDataService,
+    protected pagesFacade: PagesFacadeService,
     protected detectorRef: ChangeDetectorRef,
     protected ngZone: NgZone,
     public canvasService: CanvasServicesService,
@@ -85,6 +93,16 @@ export class HomeComponent implements OnDestroy {
     this.getBlogsList();
   }
 
+  ngOnInit(): void {
+    this.userStateSubscription = this.userFacadeService.user$
+      .pipe(
+        map((s) => {
+          this.userPoaps = s.poaps;
+        })
+      )
+      .subscribe();
+  }
+
   ngOnDestroy(): void {
     if (this.getBlogsListSubscription) {
       this.getBlogsListSubscription.unsubscribe();
@@ -93,6 +111,10 @@ export class HomeComponent implements OnDestroy {
     if (this.getRootVolumeSubscription) {
       this.getRootVolumeSubscription.unsubscribe();
       this.getRootVolumeSubscription = undefined;
+    }
+    if (this.userStateSubscription) {
+      this.userStateSubscription.unsubscribe();
+      this.userStateSubscription = undefined;
     }
   }
 
@@ -145,7 +167,10 @@ export class HomeComponent implements OnDestroy {
       .pipe(
         map((r) => {
           const rssParsed = new XMLParser().parse(r as any);
-          this.blogs = rssParsed.rss.channel.item;
+          this.blogs = rssParsed.rss.channel.item.slice(
+            0,
+            generalConfigurations.maxBlogsOnHome
+          );
         }),
         catchError((e) => {
           this.blogs = false;
@@ -178,6 +203,22 @@ export class HomeComponent implements OnDestroy {
 
   timestampToString(t: number) {
     return t.toString();
+  }
+
+  get isCategoryPoapRequired() {
+    const poapRequirement = generalConfigurations.poapRequiredTools.category;
+    return poapRequirement.required;
+  }
+
+  get showCategoryToUser() {
+    if (
+      this.isCategoryPoapRequired === true &&
+      (this.userPoaps === undefined ||
+        this.userPoaps.includes(this.requiredPoapsForCategoryDisplay) === false)
+    ) {
+      return false;
+    }
+    return true;
   }
 
   get tldTitle() {

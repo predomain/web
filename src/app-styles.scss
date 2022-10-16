@@ -449,6 +449,10 @@ textarea {
   color: var(--co-uptrend-color) !important;
 }
 
+.cos-downtrend-text {
+  color: var(--co-downtrend-color) !important;
+}
+
 .cos-gray-text {
   color: gray !important;
 }
@@ -615,6 +619,10 @@ textarea {
 
 .cos-bg-darker-gray {
   background-color: var(--co-darker-gray-bg) !important;
+}
+
+.cos-bg-faded-darker-gray {
+  background-color: var(--co-faded-dark-gray-bg) !important;
 }
 
 .cos-bg-transparent {

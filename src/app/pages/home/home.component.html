@@ -218,6 +218,7 @@
         </mat-option>
       </mat-autocomplete>
       <div
+        *ngIf="showCategoryToUser === true"
         fxFlex
         fxLayoutGap="20px"
         class="co-top-content-container cos-margin-4 cos-no-margin-bottom cos-no-margin-left cos-no-margin-right"
@@ -227,7 +228,7 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-bg-faded-darker-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
@@ -268,7 +269,7 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-bg-faded-darker-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
@@ -317,7 +318,7 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-bg-faded-darker-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
@@ -369,11 +370,11 @@
         class="co-home-content-container cos-margin-2 cos-no-margin-bottom cos-no-margin-left cos-no-margin-right"
       >
         <div
-          *ngIf="categoriesEnabled === true"
+          *ngIf="categoriesEnabled === true && showCategoryToUser === true"
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="co-home-categories cos-bg-gray cos-fluid-width cos-padding-4"
+          class="co-home-categories cos-bg-faded-darker-gray cos-fluid-width cos-padding-4"
         >
           <div fxFlex fxLayout="row wrap" fxLayoutGap="10px">
             <ng-container *ngIf="categories === undefined">
@@ -445,7 +446,7 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="10px"
-          class="co-home-blogs cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="co-home-blogs cos-bg-faded-darker-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
         >
           <div fxFlex="0 0 auto" class="cos-body-0">
             <a href="{{ b.link }}">
@@ -462,7 +463,7 @@
         fxFlex
         fxLayout="column"
         fxLayoutGap="20px"
-        class="cos-fluid-width-half co-learn-container"
+        class="cos-fluid-width-half co-learn-container cos-disappear-on-mobile"
       >
         <div fxFlex fxLayout="column" fxLayoutGap="20px" class="cos-body-0">
           <div fxFlex class="cos-center-text">ENS & Web3</div>
@@ -641,7 +642,7 @@
             <a href="https://github.com/predomain">Github</a>
           </div>
           <div fxFlex="0 0 auto" class="cos-right-text cos-gray-text">
-            Predomain v0.8.1
+            Predomain v0.8.3
           </div>
         </div>
       </div>

@@ -26,6 +26,7 @@ import { ContractService } from '../services/contract';
 import { EnsMarketplaceService } from '../services/ens-marketplace';
 import { LnrService } from '../services/lnr';
 import { CategoriesDataService } from '../services/categories-data';
+import { PoapService } from '../services/poap';
 
 export const serviceProviders = [
   UserService,
@@ -51,4 +52,5 @@ export const serviceProviders = [
   EnsMarketplaceService,
   LnrService,
   CategoriesDataService,
+  PoapService,
 ];

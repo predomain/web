@@ -15,10 +15,12 @@
   --co-danger-color: red;
   --co-gray-bg: #21262a;
   --co-darker-gray-bg: #202225;
+  --co-faded-dark-gray-bg: #1a1e22;
   --co-icons-color: #ffffff;
   --co-top-fade-color: #202225;
   --co-hazard-color: #ffff00;
   --co-uptrend-color: lawngreen;
+  --co-downtrend-color: red;
 
   .light-mode {
     --co-default-text-color: #04111d;
@@ -37,10 +39,12 @@
     --co-danger-color: red;
     --co-gray-bg: #e5e8eb80;
     --co-darker-gray-bg: #ffffff;
+    --co-faded-dark-gray-bg: #1a1e22;
     --co-icons-color: #707a83;
     --co-top-fade-color: #ffffff;
     --co-hazard-color: #ffff00;
     --co-uptrend-color: lawngreen;
+    --co-downtrend-color: red;
   }
 
   --co-margin-0: 0.5em;

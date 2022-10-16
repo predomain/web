@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import {
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -11,6 +12,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  delay,
   delayWhen,
   map,
   retryWhen,
@@ -31,6 +33,7 @@ import {
 import {
   CategoryFacadeService,
   PagesFacadeService,
+  UserFacadeService,
 } from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
 import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
@@ -45,41 +48,15 @@ import {
   CategoriesRootModel,
   CategoryMetaStatsModel,
   CategoryModel,
+  SaleDiscoveredModel,
 } from 'src/app/models/category';
 import { CategoriesStateModel } from 'src/app/models/states/categories-interfaces';
 import { CategoriesDataService } from 'src/app/services/categories-data';
 import { ResponseModel, ResponseTypesEnum } from 'src/app/models/http';
+import { ChartDataModel } from 'src/app/models/charts';
+import { DotComponent } from 'src/app/widgets/charts/dot/dot.component';
 
 const globalAny: any = global;
-
-const test = [
-  { letter: 'A', frequency: 0.08167 },
-  { letter: 'B', frequency: 0.01492 },
-  { letter: 'C', frequency: 0.02782 },
-  { letter: 'D', frequency: 0.04253 },
-  { letter: 'E', frequency: 0.12702 },
-  { letter: 'F', frequency: 0.02288 },
-  { letter: 'G', frequency: 0.02015 },
-  { letter: 'H', frequency: 0.06094 },
-  { letter: 'I', frequency: 0.06966 },
-  { letter: 'J', frequency: 0.00153 },
-  { letter: 'K', frequency: 0.00772 },
-  { letter: 'L', frequency: 0.04025 },
-  { letter: 'M', frequency: 0.02406 },
-  { letter: 'N', frequency: 0.06749 },
-  { letter: 'O', frequency: 0.07507 },
-  { letter: 'P', frequency: 0.01929 },
-  { letter: 'Q', frequency: 0.00095 },
-  { letter: 'R', frequency: 0.05987 },
-  { letter: 'S', frequency: 0.06327 },
-  { letter: 'T', frequency: 0.09056 },
-  { letter: 'U', frequency: 0.02758 },
-  { letter: 'V', frequency: 0.00978 },
-  { letter: 'W', frequency: 0.0236 },
-  { letter: 'X', frequency: 0.0015 },
-  { letter: 'Y', frequency: 0.01974 },
-  { letter: 'Z', frequency: 0.00074 },
-];
 
 export enum DisplayModes {
   CHUNK,
@@ -93,22 +70,19 @@ export enum DisplayModes {
   styleUrls: ['./category.component.scss'],
 })
 export class CategoryComponent implements OnInit, OnDestroy {
+  @ViewChild('scrollableContentContainer')
+  scrollableContentContainer: ElementRef;
+  @ViewChild('chart') chart: DotComponent;
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
-  placeholders = new Array(10).fill(0);
+  placeholders = new Array(48).fill(0);
   pageCategory = this.category + '.' + generalConfigurations.categoriesDomain;
-  categoryChart = test;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   hasDomainsListLoaded = false;
   avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
   displayMode = DisplayModes.CHUNK;
-  rootCategoryData: CategoriesRootModel;
-  categoryNormalisedMetadata: CategoryMetaStatsModel;
-  categoryIpfsData: CategoryModel;
-  categoryApiData: CategoryModel;
-  profileTexts: any;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   typesFilter = {
@@ -116,13 +90,32 @@ export class CategoryComponent implements OnInit, OnDestroy {
     numbers: false,
     emoji: false,
   };
+
+  chartData: ChartDataModel[];
+  domainsListPerPage = 48;
+  domainsListPage = 0;
+  domainsListResolving = false;
+
+  salesList: SaleDiscoveredModel[];
+  salesListPerPage = 28;
+  salesListPage = 0;
+  salesListResolving = false;
+
+  showSalesActivity = false;
+  rootCategoryData: CategoriesRootModel;
+  categoryNormalisedMetadata: CategoryMetaStatsModel;
+  categoryIpfsData: CategoryModel;
+  categoryApiData: CategoryModel;
+  profileTexts: any;
   filterForm: FormGroup;
   categoryDomains;
-  userAddress;
   ethNameData;
   profileTextSubscription;
   activatedRouteSubscription;
   getCategoriesSubscription;
+  domainListResolutionSubscription;
+  salesListResolutionSubscription;
+  userStateSubscription;
 
   constructor(
     protected bookmarksService: BookmarksServiceService,
@@ -133,6 +126,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     protected registrationDataService: RegistrationDataService,
     protected downloadService: DownloadService,
     protected activatedRoute: ActivatedRoute,
+    protected userFacade: UserFacadeService,
     protected categoryFacade: CategoryFacadeService,
     protected categoriesDataService: CategoriesDataService,
     protected miscUtils: MiscUtilsService,
@@ -146,6 +140,31 @@ export class CategoryComponent implements OnInit, OnDestroy {
       this.pagesFacade.showNotEnabledToolDialog();
       this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
     }
+    this.userStateSubscription = this.userFacade.user$
+      .pipe(
+        map((s) => {
+          if (
+            generalConfigurations.enablePoapResolution === false ||
+            s.poapsResolved === false ||
+            s.poapsResolved === undefined
+          ) {
+            return;
+          }
+          const userPoaps = s.poaps;
+          const poapRequirement =
+            generalConfigurations.poapRequiredTools.category;
+          if (
+            (poapRequirement.required === true && userPoaps === undefined) ||
+            s.walletAddress === undefined ||
+            s.walletAddress === null ||
+            userPoaps.includes(poapRequirement.poapId) === false
+          ) {
+            this.pagesFacade.showNotEnabledToolDialog();
+            this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+          }
+        })
+      )
+      .subscribe();
     this.filterForm = new FormGroup({
       minLength: new FormControl(3),
       maxLength: new FormControl(20),
@@ -173,6 +192,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
     if (this.profileTextSubscription) {
       this.profileTextSubscription.unsubscribe();
+    }
+    if (this.userStateSubscription) {
+      this.userStateSubscription.unsubscribe();
     }
   }
 
@@ -202,16 +224,15 @@ export class CategoryComponent implements OnInit, OnDestroy {
           );
         }),
         switchMap((r) => {
-          console.log(r);
           if (r === false || r === null) {
             throw false;
           }
           return this.categoriesDataService.getCategoriesIpfsMetadata(
-            r as string
+            r as string,
+            category
           );
         }),
         switchMap((r) => {
-          console.log(r);
           if (r === false || r === null) {
             throw false;
           }
@@ -259,18 +280,27 @@ export class CategoryComponent implements OnInit, OnDestroy {
                   : this.categoryApiData.volume.sales.sort(
                       (a, b) => parseFloat(b.price) - parseFloat(a.price)
                     )[0].buyer,
-              domainsCount: this.categoryIpfsData.valid_names.length,
-              sales: this.categoryApiData.volume.sales,
+              domainsCount: this.actualValidNames.length,
+              sales:
+                this.categoryApiData.volume.sales === null
+                  ? []
+                  : this.categoryApiData.volume.sales.sort(
+                      (a, b) => b.timestamp - a.timestamp
+                    ),
             };
+            this.loadMoreSales();
+            this.getChartData(this.categoryNormalisedMetadata.sales);
             this.getProfileTexts();
-            return this.getCategoryDomains(this.categoryIpfsData.valid_names);
+            return this.getCategoryDomains(this.domainsInPage);
           } catch (e) {
             return of(false);
           }
         }),
         map((r) => {
+          this.chart.initChart();
           this.categoryDomains = r;
           retrieveDone.next(false);
+          this.changeDetectorRef.markForCheck();
         }),
         retryWhen((error) =>
           error.pipe(
@@ -293,9 +323,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   pageReset() {
+    this.chartData = undefined;
     this.hasDomainsListLoaded = false;
     this.categoryDomains = undefined;
-    this.userAddress = undefined;
+    this.salesList = undefined;
     this.ethNameData = undefined;
   }
 
@@ -305,8 +336,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
       .findDomains(domains.map((r) => r.toLowerCase()))
       .pipe(
         switchMap((r) => {
-          console.log('A', r);
-          this.categoryDomains = (r as any).registrations
+          const domainsResolved = (r as any).registrations
             .filter((d) => {
               return d.domain.labelName !== null;
             })
@@ -331,15 +361,26 @@ export class CategoryComponent implements OnInit, OnDestroy {
               return fData;
             })
             .sort((a, b) => b.registrationDate - a.registrationDate);
+          if (this.domainListResolutionSubscription) {
+            this.domainListResolutionSubscription.unsubscribe();
+            this.domainListResolutionSubscription = undefined;
+          }
+          this.domainsListResolving = false;
+          this.domainsListPage++;
+          if (this.categoryDomains === undefined) {
+            this.categoryDomains = domainsResolved;
+            return of(this.categoryDomains);
+          }
+          this.categoryDomains = this.categoryDomains.concat(domainsResolved);
           return of(this.categoryDomains);
         }),
         retryWhen((error) =>
           error.pipe(
             take(generalConfigurations.maxRPCCallRetries),
             delayWhen((e) => {
-              console.log(error);
               this.pageReset();
               if (retries >= generalConfigurations.maxRPCCallRetries - 1) {
+                this.domainsListResolving = false;
                 this.pagesFacade.setPageCriticalError(true);
               }
               retries++;
@@ -348,6 +389,34 @@ export class CategoryComponent implements OnInit, OnDestroy {
           )
         )
       );
+  }
+
+  getChartData(salesData: SaleDiscoveredModel[]) {
+    let highesValue = 0.0;
+    const timeRangeMs = generalConfigurations.categoryChartTimeRange;
+    this.chartData = salesData
+      .map((s) => {
+        if (parseFloat(s.price) > highesValue) {
+          highesValue = parseFloat(s.price);
+        }
+        return s;
+      })
+      .map((s) => {
+        const radius = 10 + (5 - (5 / highesValue) * parseFloat(s.price));
+        if (s)
+          return {
+            y: parseFloat(s.price),
+            x: s.timestamp,
+            radius: 15 - radius < 4 ? 4 : radius,
+          };
+      })
+      .filter((s) => {
+        const timeRangeLimitInPast = new Date().getTime() - timeRangeMs;
+        if (s.x < timeRangeLimitInPast) {
+          return false;
+        }
+        return true;
+      });
   }
 
   priceToFixedString(price: string, decimals: number = 3) {
@@ -449,6 +518,68 @@ export class CategoryComponent implements OnInit, OnDestroy {
     return satisfied;
   }
 
+  loadMoreDomains() {
+    if (
+      this.domainsListResolving === true ||
+      this.domainListResolutionSubscription !== undefined ||
+      this.domainsInPage.length <= 0
+    ) {
+      return;
+    }
+    this.domainsListResolving = true;
+    if (this.domainListResolutionSubscription) {
+      this.domainListResolutionSubscription.unsubscribe();
+      this.domainListResolutionSubscription = undefined;
+    }
+    this.domainListResolutionSubscription = of(1)
+      .pipe(
+        delay(1000),
+        switchMap((r) => this.getCategoryDomains(this.domainsInPage))
+      )
+      .subscribe();
+  }
+
+  loadMoreSales() {
+    if (
+      this.salesListResolving === true ||
+      this.salesListResolutionSubscription !== undefined ||
+      this.salesInPage.length <= 0
+    ) {
+      return;
+    }
+    this.salesListResolving = true;
+    if (this.salesListResolutionSubscription) {
+      this.salesListResolutionSubscription.unsubscribe();
+      this.salesListResolutionSubscription = undefined;
+    }
+    this.salesListResolutionSubscription = of(1)
+      .pipe(
+        delay(1000),
+        map((r) => {
+          if (this.salesListResolutionSubscription) {
+            this.salesListResolutionSubscription.unsubscribe();
+            this.salesListResolutionSubscription = undefined;
+          }
+          this.salesListResolving = false;
+          this.salesListPage++;
+          if (this.salesList === undefined) {
+            this.salesList = this.salesInPage;
+            return;
+          }
+          this.salesList = this.salesList.concat(this.salesInPage);
+        })
+      )
+      .subscribe();
+  }
+
+  lazyLoad() {
+    if (this.showSalesActivity === true) {
+      this.loadMoreSales();
+      return;
+    }
+    this.loadMoreDomains();
+  }
+
   openExpiredPicker() {
     this.expiredPicker.open();
   }
@@ -501,27 +632,22 @@ export class CategoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  goToBlockscan() {
+  goToEtherscanTx(txHash: string) {
     window.open(
-      generalConfigurations.blockscanLink + this.userAddress,
+      BlockExplorersEnum[environment.defaultChain] + '/tx/' + txHash,
       '_blank'
     );
   }
 
-  goToNftyChat() {
+  goToEtherscanAddress(address: string) {
     window.open(
-      generalConfigurations.nftyChatLink + this.userAddress,
+      BlockExplorersEnum[environment.defaultChain] + '/address/' + address,
       '_blank'
     );
   }
 
-  goToEtherscan() {
-    window.open(
-      BlockExplorersEnum[environment.defaultChain] +
-        '/address/' +
-        this.userAddress,
-      '_blank'
-    );
+  doShowSalesActivity(show: boolean) {
+    this.showSalesActivity = show;
   }
 
   setDisplayMode(mode: DisplayModes) {
@@ -579,6 +705,152 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
     const d = new Date(date);
     return d.getTime();
+  }
+
+  hasViewBottomed(topHeight: number) {
+    return (
+      topHeight + document.body.clientHeight >
+      this.scrollableContentContainer.nativeElement.scrollHeight - 5
+    );
+  }
+
+  backScrollContentToTop() {
+    this.scrollableContentContainer.nativeElement.scrollTop = 0;
+  }
+
+  timeNumberToString(time: number) {
+    return time.toString();
+  }
+
+  get actualValidNames() {
+    if (this.categoryIpfsData.patterned === false) {
+      return Object.keys(this.categoryIpfsData.valid_names);
+    }
+    return this.categoryIpfsData.valid_names;
+  }
+
+  get containTextFilterIsOn() {
+    return this.filterForm.controls.contains.value !== '';
+  }
+
+  get salesInPage() {
+    const toFeedLazyLoad = this.categoryNormalisedMetadata.sales.slice(
+      this.salesListPage * this.salesListPerPage,
+      this.salesListPage * this.salesListPerPage + this.salesListPerPage
+    );
+    return toFeedLazyLoad;
+  }
+
+  get domainsInPage() {
+    const toFeedLazyLoad = this.actualValidNames.slice(
+      this.domainsListPage * this.domainsListPerPage,
+      this.domainsListPage * this.domainsListPerPage + this.domainsListPerPage
+    );
+    return toFeedLazyLoad;
+  }
+
+  get dailyVolumeTrend() {
+    if (
+      this.categoryNormalisedMetadata === undefined ||
+      this.categoryNormalisedMetadata.dailyVolume === 0
+    ) {
+      return 0;
+    }
+    const previousVolumeDivisible =
+      this.categoryNormalisedMetadata.previousDailyVolume / 100;
+    const difference =
+      this.categoryNormalisedMetadata.previousDailyVolume -
+      this.categoryNormalisedMetadata.dailyVolume;
+    const dailyVolumePercentage =
+      this.categoryNormalisedMetadata.dailyVolume / previousVolumeDivisible;
+    if (difference > 0) {
+      return (0 - (100 - dailyVolumePercentage)).toFixed(2);
+    }
+    return dailyVolumePercentage.toFixed(2);
+  }
+
+  get salesCountThisMonth() {
+    if (this.categoryNormalisedMetadata === undefined) {
+      return 0;
+    }
+    const date = new Date();
+    const startOfMonth = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      1
+    ).getTime();
+    return this.categoryNormalisedMetadata.sales.filter((s) => {
+      if (s.timestamp > startOfMonth) {
+        return true;
+      }
+      return false;
+    }).length;
+  }
+
+  get monthlySaleTrend() {
+    if (this.categoryNormalisedMetadata === undefined) {
+      return 0;
+    }
+    const date = new Date();
+    const previousMonth =
+      new Date(date.getFullYear(), date.getMonth(), 1).getTime() -
+      86400000 * 30;
+    const startOfMonth = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      1
+    ).getTime();
+    const previousMonthSales = this.categoryNormalisedMetadata.sales.filter(
+      (s) => {
+        if (s.timestamp > previousMonth && s.timestamp < startOfMonth) {
+          return true;
+        }
+        return false;
+      }
+    ).length;
+    if (previousMonthSales === 0) {
+      return this.salesCountThisMonth;
+    }
+    const difference = previousMonthSales - this.salesCountThisMonth;
+    return difference;
+  }
+
+  get salesCountToday() {
+    if (this.categoryNormalisedMetadata === undefined) {
+      return 0;
+    }
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    return this.categoryNormalisedMetadata.sales.filter((s) => {
+      if (s.timestamp > startOfDay.getTime()) {
+        return true;
+      }
+      return false;
+    }).length;
+  }
+
+  get dailySaleTrend() {
+    if (this.categoryNormalisedMetadata === undefined) {
+      return 0;
+    }
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    const previousDaySales = this.categoryNormalisedMetadata.sales.filter(
+      (s) => {
+        if (
+          s.timestamp > startOfDay.getTime() - 86400000 &&
+          s.timestamp < startOfDay.getTime()
+        ) {
+          return true;
+        }
+        return false;
+      }
+    ).length;
+    if (previousDaySales === 0) {
+      return this.salesCountToday;
+    }
+    const difference = previousDaySales - this.salesCountToday;
+    return difference;
   }
 
   get chartWidth() {

@@ -24,6 +24,7 @@ import {
   UserAdd,
   UserEffectsInit,
   UserErrorSet,
+  UserPoapsSet,
   UserRegister,
   UserRemove,
 } from '../actions';
@@ -34,6 +35,8 @@ import { WalletTypesEnum } from '../../models/states/wallet-interfaces';
 import { MetamaskService } from '../../services/metamask/metamask.service';
 import { LedgerService } from '../../services/ledger/ledger.service';
 import { GenericDialogComponent } from '../../widgets/generic-dialog';
+import { PoapService } from 'src/app/services/poap';
+import { generalConfigurations } from 'src/app/configurations';
 
 const globalAny: any = global;
 
@@ -48,6 +51,7 @@ export class UserEffects {
     public metamaskService: MetamaskService,
     public trezorService: TrezorService,
     public ledgerService: LedgerService,
+    public poapService: PoapService,
     public store: Store<UserModel>,
     public ngZone: NgZone,
     public dialog: MatDialog
@@ -65,11 +69,11 @@ export class UserEffects {
           }
           return true;
         }),
-        map((r) => {
+        switchMap((r) => {
           const timeNow = new Date().getTime();
           const userSessionStored = this.userSessionService.loadUserSession();
           if (userSessionStored === undefined || userSessionStored === null) {
-            return;
+            return of(false);
           }
           const userData = JSON.parse(userSessionStored) as UserModel;
           const defaultChainId = this.userSessionService.getDefaultChainId();
@@ -87,12 +91,42 @@ export class UserEffects {
               panelClass: 'cos-generic-dialog',
             });
             this.store.dispatch(new UserRemove());
+            return of(false);
+          }
+          const userDataParsed = JSON.parse(userSessionStored as string);
+          this.store.dispatch(new UserAdd(userDataParsed));
+          globalAny.canvasEffectsInitialised[InitEffectsUserState] = true;
+          if (generalConfigurations.enablePoapResolution === false) {
+            return of(false);
+          }
+          return this.poapService.getPoaps(userDataParsed.walletAddress);
+        }),
+        map((r) => {
+          if (r === false) {
+            this.store.dispatch(
+              new UserPoapsSet({
+                poapsResolved: true,
+                poaps: [],
+              })
+            );
+            return;
+          }
+          const userPoaps = this.poapService.getPoapIds(r);
+          if (userPoaps === false) {
+            this.store.dispatch(
+              new UserPoapsSet({
+                poapsResolved: true,
+                poaps: [],
+              })
+            );
             return;
           }
           this.store.dispatch(
-            new UserAdd(JSON.parse(userSessionStored as string))
+            new UserPoapsSet({
+              poapsResolved: true,
+              poaps: userPoaps,
+            })
           );
-          globalAny.canvasEffectsInitialised[InitEffectsUserState] = true;
         })
       ),
     { dispatch: false }

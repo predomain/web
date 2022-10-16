@@ -25,7 +25,19 @@ export class CategoriesDataService {
     return forkJoin(endPointRequests);
   }
 
-  getCategoriesIpfsMetadata(endPoint: string) {
+  getCategoriesIpfsMetadata(endPoint: string, category: string) {
+    if (generalConfigurations.categoriesUseFallback === true) {
+      return this.httpClient
+        .get('assets/categories/' + category + '-meta.json')
+        .pipe(
+          switchMap((r) => {
+            return of(r);
+          }),
+          catchError((e) => {
+            return of(false);
+          })
+        );
+    }
     return this.httpClient.get(endPoint).pipe(
       switchMap((r) => of(r)),
       catchError((e) => {
@@ -33,6 +45,7 @@ export class CategoriesDataService {
       })
     );
   }
+
   getCategoriesRootVolumeData(endPoint: string) {
     return this.httpClient
       .get(
