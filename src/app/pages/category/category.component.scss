@@ -198,8 +198,8 @@
   margin-top: 0;
   margin-left: -100%;
   font-size: 750%;
-  width: calc(100% + 5px);
-  height: 100%;
+  width: 100%;
+  height: calc(100% - 5px);
   align-items: center;
   justify-content: center;
   display: flex;
@@ -243,4 +243,8 @@
     flex: 1;
     max-width: 100% !important;
   }
+}
+
+.co-chart-container {
+  height: 480px;
 }

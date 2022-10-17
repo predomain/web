@@ -30,7 +30,13 @@ export class UserErrorSet implements Action {
 
 export class UserPoapsSet implements Action {
   readonly type = SetUserPoaps;
-  constructor(public payload: { poapsResolved: boolean; poaps: string[] }) {}
+  constructor(
+    public payload: {
+      poapsResolved: boolean;
+      poaps: string[];
+      poapTokens: any[];
+    }
+  ) {}
 }
 
 export class UserUpdate implements Action {

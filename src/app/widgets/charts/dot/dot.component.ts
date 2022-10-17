@@ -2,8 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ChartMetadataModel } from 'src/app/models/charts';
 import { ChartConfiguration } from 'chart.js';
 import { FormatTimePipe } from 'src/app/modules/pipes';
-import 'chartjs-adapter-date-fns';
-import { enUS } from 'date-fns/locale';
+import 'chartjs-adapter-moment';
 
 @Component({
   selector: 'app-dot',
@@ -24,7 +23,7 @@ export class DotComponent {
 
   initChart() {
     this.scatterChartOptions = {
-      responsive: true,
+      responsive: false,
       plugins: {
         legend: {
           display: false,
@@ -32,16 +31,18 @@ export class DotComponent {
       },
       scales: {
         x: {
+          ticks: {
+            maxTicksLimit: 15,
+            maxRotation: 0,
+            minRotation: 0,
+          },
           type: 'time',
           time: {
+            unit: 'minute',
             displayFormats: {
-              quarter: 'MMM YYYY',
+              minute: 'DD MMM',
             },
-          },
-          adapters: {
-            date: {
-              locale: enUS,
-            },
+            tooltipFormat: 'DD MMM hh:mm',
           },
         },
         y: {
@@ -56,7 +57,17 @@ export class DotComponent {
     this.scatterChartDatasets = [
       {
         data: this.data,
-        label: 'Dot Plot',
+        label: this.data
+          .map((d) => d.x)
+          .map((t) =>
+            t.toLocaleString([], {
+              month: '2-digit',
+              day: '2-digit',
+              year: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          ),
         pointRadius: this.data.map((d) => d.radius),
         backgroundColor: '#48b6f0',
         borderColor: '#48b6f0',

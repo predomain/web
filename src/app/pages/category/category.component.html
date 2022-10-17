@@ -99,6 +99,7 @@
         class="co-profile-header cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right cos-overflow-hidden cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
       >
         <div
+          id="co-stats-container"
           fxLayout="column"
           fxLayoutGap="20px"
           fxLayoutAlign="start start"
@@ -431,11 +432,25 @@
                 >
                   <div
                     fxFlex="0 0 auto"
-                    class="cos-wallet-address-text-cut cos-fluid-width-two-third"
+                    class="cos-wallet-address-text-cut cos-center-text cos-fluid-width"
                   >
-                    <b>
-                      {{ categoryNormalisedMetadata?.topBuyer }}
-                    </b>
+                    <a
+                      (click)="
+                        goToEtherscanAddress(
+                          categoryNormalisedMetadata?.topBuyer
+                        )
+                      "
+                      class="cos-center-text cos-body-3"
+                    >
+                      <b>
+                        {{
+                          this.categoryNormalisedMetadata.topBuyerEthName ===
+                          undefined
+                            ? categoryNormalisedMetadata?.topBuyer
+                            : this.categoryNormalisedMetadata.topBuyerEthName
+                        }}
+                      </b>
+                    </a>
                   </div>
                 </div>
                 <div
@@ -451,7 +466,7 @@
         <div
           fxFlex
           fxLayout="column"
-          class="cos-border cos-bg-faded-darker-gray cos-border-radius-2 cos-fluid-width cos-disappear-on-mobile"
+          class="co-chart-container cos-border cos-bg-faded-darker-gray cos-border-radius-2 cos-fluid-width cos-disappear-on-mobile"
         >
           <div
             fxFlex="0 0 auto"
@@ -462,15 +477,18 @@
           >
             <div fxFlex class="cos-body-4">Sales Activity</div>
           </div>
-          <div fxFlex class="cos-padding-2">
+          <div
+            fxFlex
+            class="cos-padding-2 cos-no-padding-right cos-fluid-height"
+          >
             <app-dot
               #chart
               *ngIf="chartData !== undefined"
               fxFlex
               [data]="chartData"
               [chartMetadata]="{
-                width: canvasService.getWidthOfDiv('co-chart-control') - 100,
-                height: 340
+                width: chartWidth,
+                height: 360
               }"
             >
             </app-dot>
