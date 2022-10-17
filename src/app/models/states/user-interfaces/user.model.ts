@@ -10,4 +10,5 @@ export interface UserModel {
   ethName?: string;
   poapsResolved?: boolean;
   poaps?: string[];
+  poapTokens?: string[];
 }

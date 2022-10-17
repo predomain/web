@@ -55,6 +55,7 @@ import { CategoriesDataService } from 'src/app/services/categories-data';
 import { ResponseModel, ResponseTypesEnum } from 'src/app/models/http';
 import { ChartDataModel } from 'src/app/models/charts';
 import { DotComponent } from 'src/app/widgets/charts/dot/dot.component';
+import { PoapService } from 'src/app/services/poap';
 
 const globalAny: any = global;
 
@@ -129,6 +130,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     protected userFacade: UserFacadeService,
     protected categoryFacade: CategoryFacadeService,
     protected categoriesDataService: CategoriesDataService,
+    protected poapService: PoapService,
     protected miscUtils: MiscUtilsService,
     protected snackBar: MatSnackBar,
     protected router: Router,
@@ -153,11 +155,18 @@ export class CategoryComponent implements OnInit, OnDestroy {
           const userPoaps = s.poaps;
           const poapRequirement =
             generalConfigurations.poapRequiredTools.category;
+          const validPoap = poapRequirement.poapId;
+          const userPoapTokens = this.poapService.getPoapTokensByPoapId(
+            s.poapTokens,
+            validPoap
+          );
           if (
             (poapRequirement.required === true && userPoaps === undefined) ||
             s.walletAddress === undefined ||
             s.walletAddress === null ||
-            userPoaps.includes(poapRequirement.poapId) === false
+            userPoaps.includes(poapRequirement.poapId) === false ||
+            (poapRequirement.allowedIds !== null &&
+              poapRequirement.allowedIds.includes(userPoapTokens[0]) === false)
           ) {
             this.pagesFacade.showNotEnabledToolDialog();
             this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
@@ -257,50 +266,57 @@ export class CategoryComponent implements OnInit, OnDestroy {
           if (requestResult.type === ResponseTypesEnum.FAILURE) {
             throw false;
           }
-          try {
-            this.categoryApiData = (r as ResponseModel).result as CategoryModel;
-            this.categoryNormalisedMetadata = {
-              previousHourlySales:
-                this.categoryApiData.volume.previous_hourly_sales,
-              hourlySales: this.categoryApiData.volume.hourly_sales,
-              previousDailyVolume:
-                this.categoryApiData.volume.previous_daily_volume,
-              dailyVolume: this.categoryApiData.volume.daily_volume,
-              topSale:
-                this.categoryApiData.volume.sales.length === 0
-                  ? 0.0
-                  : parseFloat(
-                      this.categoryApiData.volume.sales.sort(
-                        (a, b) => parseFloat(b.price) - parseFloat(a.price)
-                      )[0].price
-                    ),
-              topBuyer:
-                this.categoryApiData.volume.sales.length === 0
-                  ? 'N/A'
-                  : this.categoryApiData.volume.sales.sort(
+          this.categoryApiData = (r as ResponseModel).result as CategoryModel;
+          this.categoryNormalisedMetadata = {
+            previousHourlySales:
+              this.categoryApiData.volume.previous_hourly_sales,
+            hourlySales: this.categoryApiData.volume.hourly_sales,
+            previousDailyVolume:
+              this.categoryApiData.volume.previous_daily_volume,
+            dailyVolume: this.categoryApiData.volume.daily_volume,
+            topSale:
+              this.categoryApiData.volume.sales.length === 0
+                ? 0.0
+                : parseFloat(
+                    this.categoryApiData.volume.sales.sort(
                       (a, b) => parseFloat(b.price) - parseFloat(a.price)
-                    )[0].buyer,
-              domainsCount: this.actualValidNames.length,
-              sales:
-                this.categoryApiData.volume.sales === null
-                  ? []
-                  : this.categoryApiData.volume.sales.sort(
-                      (a, b) => b.timestamp - a.timestamp
-                    ),
-            };
-            this.loadMoreSales();
-            this.getChartData(this.categoryNormalisedMetadata.sales);
-            this.getProfileTexts();
-            return this.getCategoryDomains(this.domainsInPage);
-          } catch (e) {
-            return of(false);
-          }
+                    )[0].price
+                  ),
+            topBuyer:
+              this.categoryApiData.volume.sales.length === 0
+                ? 'N/A'
+                : this.categoryApiData.volume.sales.sort(
+                    (a, b) => parseFloat(b.price) - parseFloat(a.price)
+                  )[0].buyer,
+            domainsCount: this.actualValidNames.length,
+            sales:
+              this.categoryApiData.volume.sales === null
+                ? []
+                : this.categoryApiData.volume.sales.sort(
+                    (a, b) => b.timestamp - a.timestamp
+                  ),
+          };
+          this.loadMoreSales();
+          this.getChartData(this.categoryNormalisedMetadata.sales);
+          this.getProfileTexts();
+          return this.getCategoryDomains(this.domainsInPage);
         }),
-        map((r) => {
+        switchMap((r) => {
           this.chart.initChart();
           this.categoryDomains = r;
-          retrieveDone.next(false);
           this.changeDetectorRef.markForCheck();
+          return this.userService.getEthName(
+            provider,
+            this.categoryNormalisedMetadata.topBuyer
+          );
+        }),
+        map((r) => {
+          console.log(r);
+          retrieveDone.next(false);
+          if (r === false || r === null) {
+            return;
+          }
+          this.categoryNormalisedMetadata.topBuyerEthName = r as string;
         }),
         retryWhen((error) =>
           error.pipe(
@@ -855,7 +871,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   get chartWidth() {
     const toDeduct = (window.innerWidth / 100) * 20;
-    return window.innerWidth - toDeduct - 220;
+    return window.innerWidth - toDeduct - 110;
   }
 
   get searchKeyword() {

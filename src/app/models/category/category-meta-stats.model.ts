@@ -7,6 +7,7 @@ export interface CategoryMetaStatsModel {
   dailyVolume: number;
   topSale: number;
   topBuyer: string;
+  topBuyerEthName?: string;
   domainsCount: number;
   sales: SaleDiscoveredModel[];
 }

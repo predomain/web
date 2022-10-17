@@ -54,12 +54,16 @@ export const generalConfigurations = {
   },
   enablePoapResolution: true,
   poapRequiredTools: {
-    category: { required: true, poapId: '68199' },
-    management: { required: false, poapId: null },
-    canvas: { required: false, poapId: null },
-    registration: { required: false, poapId: null },
-    profile: { required: false, poapId: null },
-    domain: { required: false, poapId: null },
+    category: {
+      required: true,
+      poapId: '68199',
+      allowedIds: ['5688133', '5688119', '5782794'],
+    },
+    management: { required: false, poapId: null, allowedIds: null },
+    canvas: { required: false, poapId: null, allowedIds: null },
+    registration: { required: false, poapId: null, allowedIds: null },
+    profile: { required: false, poapId: null, allowedIds: null },
+    domain: { required: false, poapId: null, allowedIds: null },
   },
   wallectConnectSupportedWallets: [
     'rainbow',

@@ -39,6 +39,7 @@ export function UserReducers(
           ...state.user,
           poapsResolved: action.payload.poapsResolved,
           poaps: action.payload.poaps,
+          poapTokens: action.payload.poapTokens,
         },
         loading: false,
       };

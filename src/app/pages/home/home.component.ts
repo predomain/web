@@ -28,6 +28,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { CategoriesDataService } from 'src/app/services/categories-data';
 import { CategoriesRootModel } from 'src/app/models/category';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
+import { PoapService } from 'src/app/services/poap';
 
 const globalAny: any = global;
 @Component({
@@ -46,8 +47,11 @@ export class HomeComponent implements OnDestroy, OnInit {
   categoriesRootVolume: { category: string; volume: number }[];
   metadata: CategoriesRootModel;
   userPoaps: string[];
+  userTokenIds: string[];
   requiredPoapsForCategoryDisplay =
     generalConfigurations.poapRequiredTools.category.poapId;
+  requiredPoapTOkensForCategoryDisplay =
+    generalConfigurations.poapRequiredTools.category.allowedIds;
   topCategories: {
     category: string;
     volume: number;
@@ -77,6 +81,7 @@ export class HomeComponent implements OnDestroy, OnInit {
     protected userFacadeService: UserFacadeService,
     protected categoryFacade: CategoryFacadeService,
     protected categoriesDataService: CategoriesDataService,
+    protected poapService: PoapService,
     protected pagesFacade: PagesFacadeService,
     protected detectorRef: ChangeDetectorRef,
     protected ngZone: NgZone,
@@ -98,6 +103,13 @@ export class HomeComponent implements OnDestroy, OnInit {
       .pipe(
         map((s) => {
           this.userPoaps = s.poaps;
+          const poapRequirement =
+            generalConfigurations.poapRequiredTools.category;
+          const validPoap = poapRequirement.poapId;
+          this.userTokenIds = this.poapService.getPoapTokensByPoapId(
+            s.poapTokens,
+            validPoap
+          );
         })
       )
       .subscribe();
@@ -211,10 +223,14 @@ export class HomeComponent implements OnDestroy, OnInit {
   }
 
   get showCategoryToUser() {
+    const poapRequirement = generalConfigurations.poapRequiredTools.category;
     if (
-      this.isCategoryPoapRequired === true &&
-      (this.userPoaps === undefined ||
-        this.userPoaps.includes(this.requiredPoapsForCategoryDisplay) === false)
+      (this.isCategoryPoapRequired === true &&
+        (this.userPoaps === undefined ||
+          this.userPoaps.includes(this.requiredPoapsForCategoryDisplay) ===
+            false)) ||
+      (poapRequirement.allowedIds !== null &&
+        poapRequirement.allowedIds.includes(this.userTokenIds[0]) === false)
     ) {
       return false;
     }

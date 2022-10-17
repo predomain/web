@@ -43,4 +43,31 @@ export class PoapService {
       return t.event.id;
     });
   }
+
+  getPoapTokens(poapResult: any) {
+    if ('accounts' in poapResult === false) {
+      return false;
+    }
+    if (poapResult.accounts.length <= 0) {
+      return false;
+    }
+    return poapResult.accounts[0].tokens;
+  }
+
+  getPoapTokensByPoapId(poapTokens: any, poapId) {
+    if (
+      poapTokens === false ||
+      poapTokens === undefined ||
+      poapTokens.length <= 0
+    ) {
+      return false;
+    }
+    return poapTokens
+      .filter((t) => {
+        return t.event.id === poapId;
+      })
+      .map((t) => {
+        return t.id;
+      });
+  }
 }

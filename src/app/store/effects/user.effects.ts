@@ -107,16 +107,19 @@ export class UserEffects {
               new UserPoapsSet({
                 poapsResolved: true,
                 poaps: [],
+                poapTokens: [],
               })
             );
             return;
           }
           const userPoaps = this.poapService.getPoapIds(r);
+          const userPoapTokens = this.poapService.getPoapTokens(r);
           if (userPoaps === false) {
             this.store.dispatch(
               new UserPoapsSet({
                 poapsResolved: true,
                 poaps: [],
+                poapTokens: [],
               })
             );
             return;
@@ -125,6 +128,7 @@ export class UserEffects {
             new UserPoapsSet({
               poapsResolved: true,
               poaps: userPoaps,
+              poapTokens: userPoapTokens,
             })
           );
         })
