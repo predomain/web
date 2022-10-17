@@ -11,6 +11,7 @@
   "max_length": 3,
   "version": 2,
   "valid_names": [
+    "000",
     "001",
     "002",
     "003",

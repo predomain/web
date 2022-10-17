@@ -123,11 +123,13 @@
             fxFlex="50px"
             fxLayout="row"
             fxFlexAlign="top"
-            fxLayoutAlign="start start"
+            fxLayoutAlign="start center"
             class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
           >
-            <a href="/#/home">Home</a>
+            <a href="/#/home">{{ "HEADER.HOME" | translate }}</a>
             <span
+              fxFlex="0 0 auto"
+              fxLayoutAlign="center center"
               class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
             >
               <mat-icon class="cos-small-icon" color="primary"
@@ -147,6 +149,8 @@
               }}</a
             >
             <span
+              fxFlex="0 0 auto"
+              fxLayoutAlign="center center"
               class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
             >
               <mat-icon class="cos-small-icon" color="primary"

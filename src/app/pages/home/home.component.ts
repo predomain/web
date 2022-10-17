@@ -217,6 +217,10 @@ export class HomeComponent implements OnDestroy, OnInit {
     return t.toString();
   }
 
+  openCategory(category: string) {
+    window.open('/#/category/' + category);
+  }
+
   get isCategoryPoapRequired() {
     const poapRequirement = generalConfigurations.poapRequiredTools.category;
     return poapRequirement.required;

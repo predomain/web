@@ -311,7 +311,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
           );
         }),
         map((r) => {
-          console.log(r);
           retrieveDone.next(false);
           if (r === false || r === null) {
             return;
@@ -576,13 +575,15 @@ export class CategoryComponent implements OnInit, OnDestroy {
             this.salesListResolutionSubscription.unsubscribe();
             this.salesListResolutionSubscription = undefined;
           }
-          this.salesListResolving = false;
-          this.salesListPage++;
           if (this.salesList === undefined) {
             this.salesList = this.salesInPage;
+            this.salesListResolving = false;
+            this.salesListPage++;
             return;
           }
           this.salesList = this.salesList.concat(this.salesInPage);
+          this.salesListResolving = false;
+          this.salesListPage++;
         })
       )
       .subscribe();
@@ -739,7 +740,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   get actualValidNames() {
-    if (this.categoryIpfsData.patterned === false) {
+    if (
+      this.categoryIpfsData.patterned === false &&
+      this.categoryIpfsData.emojis === true
+    ) {
       return Object.keys(this.categoryIpfsData.valid_names);
     }
     return this.categoryIpfsData.valid_names;
@@ -870,7 +874,12 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   get chartWidth() {
-    const toDeduct = (window.innerWidth / 100) * 20;
+    let toDeduct;
+    if (window.innerWidth >= 1820) {
+      toDeduct = (window.innerWidth / 100) * 20;
+    } else {
+      toDeduct = 350;
+    }
     return window.innerWidth - toDeduct - 110;
   }
 
