@@ -28,7 +28,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/assets"],
+            "assets": ["src/assets", "src/assets/categories"],
             "styles": [
               "src/app-plugin-styles.scss",
               "src/app-material-setup.scss",
