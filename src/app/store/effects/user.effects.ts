@@ -1,12 +1,14 @@
 import { of } from 'rxjs';
 import { Injectable, NgZone } from '@angular/core';
+import { Actions, ofType, createEffect } from '@ngrx/effects';
 import {
-  Actions,
-  ofType,
-  ROOT_EFFECTS_INIT,
-  createEffect,
-} from '@ngrx/effects';
-import { map, switchMap, catchError, delay, timeout } from 'rxjs/operators';
+  map,
+  switchMap,
+  catchError,
+  delay,
+  timeout,
+  filter,
+} from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import {
@@ -16,10 +18,13 @@ import {
   UserSessionService,
 } from '../../services';
 import {
+  InitEffectsUserState,
   RegisterUser,
   RemoveUser,
   UserAdd,
+  UserEffectsInit,
   UserErrorSet,
+  UserPoapsSet,
   UserRegister,
   UserRemove,
 } from '../actions';
@@ -30,6 +35,8 @@ import { WalletTypesEnum } from '../../models/states/wallet-interfaces';
 import { MetamaskService } from '../../services/metamask/metamask.service';
 import { LedgerService } from '../../services/ledger/ledger.service';
 import { GenericDialogComponent } from '../../widgets/generic-dialog';
+import { PoapService } from 'src/app/services/poap';
+import { generalConfigurations } from 'src/app/configurations';
 
 const globalAny: any = global;
 
@@ -44,6 +51,7 @@ export class UserEffects {
     public metamaskService: MetamaskService,
     public trezorService: TrezorService,
     public ledgerService: LedgerService,
+    public poapService: PoapService,
     public store: Store<UserModel>,
     public ngZone: NgZone,
     public dialog: MatDialog
@@ -52,12 +60,20 @@ export class UserEffects {
   init$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(ROOT_EFFECTS_INIT),
-        map((r) => {
+        ofType<UserEffectsInit>(InitEffectsUserState),
+        filter((r) => {
+          if (
+            globalAny.canvasEffectsInitialised[InitEffectsUserState] === true
+          ) {
+            return false;
+          }
+          return true;
+        }),
+        switchMap((r) => {
           const timeNow = new Date().getTime();
           const userSessionStored = this.userSessionService.loadUserSession();
           if (userSessionStored === undefined || userSessionStored === null) {
-            return;
+            return of(false);
           }
           const userData = JSON.parse(userSessionStored) as UserModel;
           const defaultChainId = this.userSessionService.getDefaultChainId();
@@ -75,10 +91,45 @@ export class UserEffects {
               panelClass: 'cos-generic-dialog',
             });
             this.store.dispatch(new UserRemove());
+            return of(false);
+          }
+          const userDataParsed = JSON.parse(userSessionStored as string);
+          this.store.dispatch(new UserAdd(userDataParsed));
+          globalAny.canvasEffectsInitialised[InitEffectsUserState] = true;
+          if (generalConfigurations.enablePoapResolution === false) {
+            return of(false);
+          }
+          return this.poapService.getPoaps(userDataParsed.walletAddress);
+        }),
+        map((r) => {
+          if (r === false) {
+            this.store.dispatch(
+              new UserPoapsSet({
+                poapsResolved: true,
+                poaps: [],
+                poapTokens: [],
+              })
+            );
+            return;
+          }
+          const userPoaps = this.poapService.getPoapIds(r);
+          const userPoapTokens = this.poapService.getPoapTokens(r);
+          if (userPoaps === false) {
+            this.store.dispatch(
+              new UserPoapsSet({
+                poapsResolved: true,
+                poaps: [],
+                poapTokens: [],
+              })
+            );
             return;
           }
           this.store.dispatch(
-            new UserAdd(JSON.parse(userSessionStored as string))
+            new UserPoapsSet({
+              poapsResolved: true,
+              poaps: userPoaps,
+              poapTokens: userPoapTokens,
+            })
           );
         })
       ),

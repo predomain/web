@@ -1,12 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as ethers from 'ethers';
-import {
-  Actions,
-  createEffect,
-  ofType,
-  ROOT_EFFECTS_INIT,
-} from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   CurrencyExchangeService,
   CurrencyService,
@@ -33,12 +28,14 @@ import {
   AddOnePayment,
   ArchiveAllPayment,
   CheckPaymentFulfilled,
+  InitEffectsPayments,
   PaymentAddOne,
   PaymentArchiveAll,
   PaymentCancelled,
   PaymentCheckFulfilled,
   PaymentRemoveAll,
   PaymentRemoveOne,
+  PaymentsEffectsInit,
   PaymentUpsertMany,
   PaymentUpsertOne,
   RemoveAllPayment,
@@ -46,6 +43,7 @@ import {
 } from '../actions';
 import {
   catchError,
+  filter,
   map,
   mergeMap,
   switchMap,
@@ -102,7 +100,15 @@ export class PaymentEffects {
   init$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(ROOT_EFFECTS_INIT),
+        ofType<PaymentsEffectsInit>(InitEffectsPayments),
+        filter((r) => {
+          if (
+            globalAny.canvasEffectsInitialised[InitEffectsPayments] === true
+          ) {
+            return false;
+          }
+          return true;
+        }),
         switchMap((r) => {
           const payments = this.paymentStorageService.loadPayments();
           if (payments !== false) {
@@ -122,6 +128,7 @@ export class PaymentEffects {
               this.store.dispatch(new CheckPaymentFulfilled(p));
             }
           }
+          globalAny.canvasEffectsInitialised[InitEffectsPayments] = true;
           return this.currencyExchangeService.getPrices();
         })
       ),

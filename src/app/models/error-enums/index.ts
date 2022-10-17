@@ -5,3 +5,4 @@ export * from './ipfs-errors.enum';
 export * from './payment-store-errors.enum';
 export * from './ens-registration-store-errors.enum';
 export * from './ens-bookmark-store-errors.enum';
+export * from './categories-store-errors.enum';

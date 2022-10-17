@@ -87,4 +87,14 @@ export class MiscUtilsService {
     const reg = new RegExp('^[0-9]+$');
     return reg;
   }
+
+  parseXml(xml) {
+    var dom = null;
+    try {
+      dom = new DOMParser().parseFromString(xml, 'text/xml');
+    } catch (e) {
+      dom = null;
+    }
+    return dom;
+  }
 }

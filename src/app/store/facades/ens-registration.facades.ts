@@ -5,6 +5,7 @@ import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSRegistrationStateModel } from 'src/app/models/states/ens-registration-interfaces';
 import {
   ENSRegistrationAddOne,
+  ENSRegistrationEffectsInit,
   ENSRegistrationErrorSet,
   ENSRegistrationRemoveAll,
   ENSRegistrationRemoveMany,
@@ -29,6 +30,10 @@ export class ENSRegistrationFacadeService {
     this.getENSRegistrationState$ = this.store.pipe(
       select(getENSRegistrationState)
     );
+  }
+
+  startEffects() {
+    this.store.dispatch(new ENSRegistrationEffectsInit());
   }
 
   addRegistration(registration: DomainMetadataModel) {

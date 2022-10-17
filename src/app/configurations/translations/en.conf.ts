@@ -115,6 +115,7 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    DAILY_VOLUME: 'Daily Volume',
     ENTER_NAMES_TO_SEARCH: 'Enter names to search',
     NOT_AVAILABLE: 'Not Available',
     VOLUME: 'Volume',

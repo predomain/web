@@ -11,6 +11,7 @@ import {
   UserUpdate,
   UserRemove,
   UserRegister,
+  UserEffectsInit,
 } from '../actions';
 import {
   UserModel,
@@ -29,6 +30,10 @@ export class UserFacadeService {
   constructor(public store: Store<UserStateModel>) {
     this.userState$ = this.store.pipe(select(getCurrentUserState));
     this.user$ = this.store.pipe(select(getCurrentUser));
+  }
+
+  startEffects() {
+    this.store.dispatch(new UserEffectsInit());
   }
 
   registerUser(userData: UserRegistrationModel) {

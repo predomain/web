@@ -5,3 +5,4 @@ export * from './user.selectors';
 export * from './payment.selectors';
 export * from './ens-registration.selectors';
 export * from './ens-bookmark.selectors';
+export * from './categories.selectors';

@@ -38,7 +38,7 @@ export class EnsService {
           } else if (r.indexOf('ipns:') > -1) {
             web2Link += 'gateway.ipfs.io/ipns/' + r.replace('ipns://', '');
           }
-          observer.next(web2Link + '?v=' + Math.random());
+          observer.next(web2Link);
           observer.complete();
         })
         .catch((e) => {

@@ -7,6 +7,7 @@ import {
   RemoveUserError,
   RemoveUserState,
   SetUserError,
+  SetUserPoaps,
   SetUserState,
   UpdateUser,
 } from '../actions';
@@ -28,6 +29,19 @@ export function UserReducers(
         ...state,
         loading: false,
         error: action.payload,
+      };
+    }
+
+    case SetUserPoaps: {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          poapsResolved: action.payload.poapsResolved,
+          poaps: action.payload.poaps,
+          poapTokens: action.payload.poapTokens,
+        },
+        loading: false,
       };
     }
 

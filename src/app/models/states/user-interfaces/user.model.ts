@@ -8,4 +8,7 @@ export interface UserModel {
   deviceLanguage?: string;
   connectType?: WalletTypesEnum;
   ethName?: string;
+  poapsResolved?: boolean;
+  poaps?: string[];
+  poapTokens?: string[];
 }

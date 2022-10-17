@@ -1,6 +1,8 @@
 import { Action } from '@ngrx/store';
 import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSBookmarkStoreErrorsEnum } from '../../models/error-enums';
+export const InitEffectsENSBookmark =
+  '[ENSBookmarkState] Init effects bookmark.';
 export const AddOneENSBookmark = '[ENSBookmarkState] Add bookmark.';
 export const UpdateENSBookmark = '[ENSBookmarkState] Update bookmark.';
 export const UpsertOneENSBookmark = '[ENSBookmarkState] Upsert one bookmark.';
@@ -11,6 +13,11 @@ export const RemoveOneENSBookmark = '[ENSBookmarkState] Remove one bookmark.';
 export const RemoveManyENSBookmark = '[ENSBookmarkState] Remove many bookmark.';
 export const RemoveAllENSBookmark = '[ENSBookmarkState] Remove all bookmark.';
 export const SetENSBookmarkError = '[ENSBookmarkState] ENSBookmark error set.';
+
+export class ENSBookmarkEffectsInit implements Action {
+  readonly type = InitEffectsENSBookmark;
+  constructor() {}
+}
 
 export class ENSBookmarkErrorSet implements Action {
   readonly type = SetENSBookmarkError;

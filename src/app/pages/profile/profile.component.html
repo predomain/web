@@ -463,7 +463,7 @@
               </app-custom-spinner>
             </div>
           </div>
-          <div
+          <!-- <div
             *ngIf="hasDomainsListLoaded === false"
             fxFlex="0 0 auto"
             fxLayout="column"
@@ -475,22 +475,36 @@
               fxFlex="70px"
               class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer cos-placeholder cos-border-radius-1"
             ></div>
-          </div>
-          <div
-            *ngIf="hasDomainsListLoaded === true"
-            fxFlex
-            fxLayout="row wrap"
-            fxLayoutAlign="start start"
-          >
-            <ng-container *ngIf="displayMode === displayModes.LINEAR">
+          </div> -->
+          <div fxFlex fxLayout="row wrap" fxLayoutAlign="start start">
+            <ng-container *ngIf="hasDomainsListLoaded === false">
+              <ng-container *ngTemplateOutlet="placeHolderTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === true &&
+                displayMode === displayModes.LINEAR
+              "
+            >
               <ng-container *ngTemplateOutlet="linearDomainTemplate">
               </ng-container>
             </ng-container>
-            <ng-container *ngIf="displayMode === displayModes.AVATAR">
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === true &&
+                displayMode === displayModes.AVATAR
+              "
+            >
               <ng-container *ngTemplateOutlet="avatarDomainTemplate">
               </ng-container>
             </ng-container>
-            <ng-container *ngIf="displayMode === displayModes.CHUNK">
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === true &&
+                displayMode === displayModes.CHUNK
+              "
+            >
               <ng-container *ngTemplateOutlet="chunkDomainTemplate">
               </ng-container>
             </ng-container>
@@ -527,7 +541,7 @@
         [value]="d.gracePeriodPercent"
       ></mat-progress-bar>
       <div
-        class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
+        class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
         [ngClass]="
           d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
             ? ''
@@ -595,7 +609,7 @@
         [value]="d.gracePeriodPercent"
       ></mat-progress-bar>
       <div
-        class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hiddenw cos-bg-gray"
+        class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
         [ngClass]="
           d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
             ? ''
@@ -619,6 +633,18 @@
           >warning</mat-icon
         >
       </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #placeHolderTemplate>
+  <ng-container *ngFor="let d of placeholders">
+    <div class="co-bulk-search-item-container cos-placeholder">
+      <div
+        fxLayoutGap="15px"
+        fxLayoutAlign="center center"
+        class="co-bulk-search-item cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+      ></div>
     </div>
   </ng-container>
 </ng-template>

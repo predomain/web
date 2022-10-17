@@ -1,6 +1,8 @@
 import { Action } from '@ngrx/store';
 import { PaymentStoreErrorsEnum } from '../../models/error-enums';
 import { PaymentModel } from '../../models/states/payment-interfaces/payment.model';
+
+export const InitEffectsPayments = '[PaymentState] Init effects payments.';
 export const PaymentCheckFulfilled =
   '[PaymentState] Payment checking status if fulfilled.';
 export const PaymentTriggerStatusChecking =
@@ -19,6 +21,10 @@ export const RemoveAllPayment = '[PaymentState] Remove all payment.';
 export const ArchiveAllPayment = '[PaymentState] Archive all payment.';
 export const SetPaymentError = '[PaymentState] Payment error set.';
 
+export class PaymentsEffectsInit implements Action {
+  readonly type = InitEffectsPayments;
+  constructor() {}
+}
 export class PaymentCancelled implements Action {
   readonly type = CancelledPayment;
   constructor() {}
@@ -90,6 +96,7 @@ export class PaymentUpdate implements Action {
 }
 
 export type PaymentActions =
+  | PaymentsEffectsInit
   | PaymentCancelled
   | PaymentAddOne
   | PaymentRemoveOne

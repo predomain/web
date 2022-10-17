@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Actions,
-  createEffect,
-  ofType,
-  ROOT_EFFECTS_INIT,
-} from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { filter, map, withLatestFrom } from 'rxjs/operators';
 import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
@@ -12,16 +7,20 @@ import { BookmarksServiceService } from 'src/app/services/bookmarks';
 import {
   AddOneENSBookmark,
   ENSBookmarkAddOne,
+  ENSBookmarkEffectsInit,
   ENSBookmarkRemoveAll,
   ENSBookmarkRemoveOne,
   ENSBookmarkUpsertMany,
   ENSBookmarkUpsertOne,
+  InitEffectsENSBookmark,
   RemoveAllENSBookmark,
   RemoveOneENSBookmark,
   UpsertManyENSBookmark,
   UpsertOneENSBookmark,
 } from '../actions';
 import { getENSBookmarks } from '../selectors';
+
+const globalAny: any = global;
 
 @Injectable()
 export class ENSBookmarkEffects {
@@ -34,7 +33,15 @@ export class ENSBookmarkEffects {
   init$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(ROOT_EFFECTS_INIT),
+        ofType<ENSBookmarkEffectsInit>(InitEffectsENSBookmark),
+        filter((r) => {
+          if (
+            globalAny.canvasEffectsInitialised[InitEffectsENSBookmark] === true
+          ) {
+            return false;
+          }
+          return true;
+        }),
         map((p) => {
           const bookmarks = this.bookMarkService.loadBookmarksAndFeed();
           for (const b of Object.keys(bookmarks)) {
@@ -48,6 +55,7 @@ export class ENSBookmarkEffects {
               )
             );
           }
+          globalAny.canvasEffectsInitialised[InitEffectsENSBookmark] = true;
         })
       ),
     {

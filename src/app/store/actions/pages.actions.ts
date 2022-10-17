@@ -7,6 +7,7 @@ import {
   PagesStateModel,
 } from '../../models/states/pages-interfaces';
 
+export const InitEffectsPages = '[PagesState] Init effects pages.';
 export const ShowLoadingProgressBarOnLoad = '[PagesState] Spinner dialog set.';
 export const HideLoadingProgressBarOnLoadFinished =
   '[PagesState] Spinner dialog unset.';
@@ -25,6 +26,10 @@ export const SetPagesNetworkStateOffline =
 export const GetPagesState = '[PagesState] Latest state retrieved.';
 export const GotoPageRoute = '[PagesState] Going to page route.';
 
+export class PagesEffectsInit implements Action {
+  readonly type = InitEffectsPages;
+  constructor() {}
+}
 export class PagesSetRPCProvider implements Action {
   readonly type = SetRPCProvider;
   constructor(public payload: RPCProviderModel) {}
@@ -101,6 +106,7 @@ export class PageGotoRoute implements Action {
 }
 
 export type PagesActions =
+  | PagesEffectsInit
   | PagesSetRPCProvider
   | PagesSetChainCode
   | PagesSetIpfsError

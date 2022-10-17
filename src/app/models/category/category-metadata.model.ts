@@ -1,6 +1,9 @@
+import { SaleDiscoveredModel } from './sale-discovered.model';
+
 export interface CategoryModel {
-  category: string;
-  ticker: string;
+  id?: string;
+  category?: string;
+  ticker?: string;
   profileTexts?: {
     email?: string;
     description?: string;
@@ -12,6 +15,30 @@ export interface CategoryModel {
     reddit?: string;
     predomainBanner?: string;
   };
-  data_providers: string[];
-  valid_names: string[];
+  data_providers?: string[];
+  alphabetical?: boolean;
+  emojis?: boolean;
+  max_length?: number;
+  numeric?: boolean;
+  pattern?: string;
+  patterned?: boolean;
+  special_characters?: boolean;
+  version?: number;
+  valid_names?: string[];
+  volume?: {
+    daily_volume?: number;
+    hourly_sales?: number;
+    hourly_volume?: number;
+    minutely_volume?: number;
+    previous_daily_volume?: number;
+    previous_hourly_sales?: number;
+    previous_hourly_volume?: number;
+    previous_minutely_volume?: number;
+    sales?: SaleDiscoveredModel[];
+    tracking_annually?: number;
+    tracking_daily?: number;
+    tracking_hourly?: number;
+    tracking_minutely?: number;
+    tracking_monthly?: number;
+  };
 }

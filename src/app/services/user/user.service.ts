@@ -102,9 +102,9 @@ export class UserService {
         .then((r) => {
           let web2Link = 'https://';
           if (r.indexOf('ipfs:') > -1) {
-            web2Link += 'ipfs.io/ipfs/' + r.replace('ipfs://', '');
+            web2Link += 'dweb.link/ipfs/' + r.replace('ipfs://', '');
           } else if (r.indexOf('ipns:') > -1) {
-            web2Link += 'gateway.ipfs.io/ipns/' + r.replace('ipns://', '');
+            web2Link += 'dweb.link/ipns/' + r.replace('ipns://', '');
           }
           observer.next(web2Link);
           observer.complete();

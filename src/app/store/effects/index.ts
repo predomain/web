@@ -5,3 +5,4 @@ export * from './user.effects';
 export * from './payment.effects';
 export * from './ens-bookmark.effects';
 export * from './ens-registration.effects';
+export * from './categories.effects';

@@ -5,3 +5,4 @@ export * from './user.actions';
 export * from './payment.actions';
 export * from './ens-registration.action';
 export * from './ens-bookmark.action';
+export * from './categories.action';

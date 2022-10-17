@@ -4,8 +4,9 @@ import {
   UserModel,
   UserRegistrationModel,
 } from '../../models/states/user-interfaces';
-import LedgerEth from '@ledgerhq/hw-app-eth';
 
+export const InitEffectsUserState = '[UserState] Init effects users.';
+export const SetUserPoaps = '[UserState] New poaps state set.';
 export const SetUserState = '[UserState] New state set.';
 export const SetUserError = '[UserState] An error has occured.';
 export const GetUserState = '[UserState] Latest state retrieved.';
@@ -17,9 +18,25 @@ export const AddUser = '[UserState] New user added.';
 export const UpdateUser = '[UserState] User updated added.';
 export const RegisterUser = '[UserState] New user registration.';
 
+export class UserEffectsInit implements Action {
+  readonly type = InitEffectsUserState;
+  constructor() {}
+}
+
 export class UserErrorSet implements Action {
   readonly type = SetUserError;
   constructor(public payload: UserStoreErrorsEnum) {}
+}
+
+export class UserPoapsSet implements Action {
+  readonly type = SetUserPoaps;
+  constructor(
+    public payload: {
+      poapsResolved: boolean;
+      poaps: string[];
+      poapTokens: any[];
+    }
+  ) {}
 }
 
 export class UserUpdate implements Action {
@@ -63,6 +80,8 @@ export class UserAdd implements Action {
 }
 
 export type UserActions =
+  | UserPoapsSet
+  | UserEffectsInit
   | UserStateSet
   | UserUpdate
   | UserErrorSet

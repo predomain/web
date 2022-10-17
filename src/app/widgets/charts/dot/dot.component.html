@@ -1,0 +1,12 @@
+<ng-container *ngIf="chartRendered === true">
+  <canvas
+    baseChart
+    [datasets]="scatterChartDatasets"
+    [options]="scatterChartOptions"
+    [type]="'scatter'"
+    class="co-chart"
+    [style.width]="chartMetadata.width + 'px'"
+    [style.height]="chartMetadata.height + 'px'"
+  >
+  </canvas>
+</ng-container>

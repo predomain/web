@@ -24,6 +24,7 @@ import { serviceProviders } from './models';
 import { NetworkStatusDialogComponent } from './widgets/network-status-dialog';
 import { GenericDialogModule, TranslationModule } from './modules/miscs';
 import {
+  CategoryReducers,
   ENSBookmarkReducers,
   ENSRegistrationReducers,
   NavigatorButtonsReducers,
@@ -33,6 +34,7 @@ import {
   UserReducers,
 } from './store/reducers';
 import {
+  CategoryEffects,
   ENSBookmarkEffects,
   NavigatorEffects,
   PagesEffects,
@@ -65,6 +67,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         NavigatorButtonsState: NavigatorButtonsReducers,
         ENSRegistrationState: ENSRegistrationReducers,
         ENSBookmarkState: ENSBookmarkReducers,
+        CategoriesState: CategoryReducers,
       },
       {
         runtimeChecks: {
@@ -79,6 +82,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
       PaymentEffects,
       ENSRegistrationEffects,
       ENSBookmarkEffects,
+      CategoryEffects,
     ]),
     environment.deployed === true
       ? []

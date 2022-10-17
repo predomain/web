@@ -6,3 +6,4 @@ export * from './image-to-preload.conf';
 export * from './contracts';
 export * from './private-pages.conf';
 export * from './invalid-chars.conf';
+export * from './data-node-endpoints.conf';
