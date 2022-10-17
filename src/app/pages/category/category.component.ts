@@ -776,6 +776,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
     ) {
       return 0;
     }
+    if (this.categoryNormalisedMetadata.previousDailyVolume === 0) {
+      return 0;
+    }
     const previousVolumeDivisible =
       this.categoryNormalisedMetadata.previousDailyVolume / 100;
     const difference =
