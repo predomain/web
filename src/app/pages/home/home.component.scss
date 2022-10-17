@@ -49,7 +49,7 @@
 .co-landing-text-container {
   padding-top: 150px;
   @media only screen and (max-width: 500px) {
-    padding-top: 150px;
+    padding-top: 50px;
   }
 }
 
@@ -210,6 +210,7 @@
 }
 .co-home-content-container {
   width: 75%;
+  min-width: 1200px;
   .co-home-categories {
     border-radius: var(--cos-border-radius-2) !important;
   }
@@ -303,6 +304,7 @@
 .co-top-content-container,
 .co-blogs-content-container {
   width: 75%;
+  min-width: 1200px;
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;

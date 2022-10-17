@@ -241,7 +241,7 @@
               fxLayoutAlign="center center"
             >
               <mat-icon fxFlex="0 0 auto">insights</mat-icon>
-              <div fxFlex>Top Categories</div>
+              <div fxFlex>{{ "LABELS.TOP_CATEGORIES" | translate }}</div>
             </div>
           </div>
           <div fxLayout="column" fxLayoutGap="5px" class="cos-body-1">
@@ -282,7 +282,7 @@
               fxLayoutAlign="center center"
             >
               <mat-icon fxFlex="0 0 auto">magic_button</mat-icon>
-              <div fxFlex>Top Sales</div>
+              <div fxFlex>{{ "LABELS.TOP_SALES" | translate }}</div>
             </div>
           </div>
           <div fxLayout="column" fxLayoutGap="5px" class="cos-body-1">
@@ -331,7 +331,7 @@
               fxLayoutAlign="center center"
             >
               <mat-icon fxFlex="0 0 auto">list_alt</mat-icon>
-              <div fxFlex>Recent Sales</div>
+              <div fxFlex>{{ "LABELS.RECENT_SALES" | translate }}</div>
             </div>
           </div>
           <div fxLayout="column" fxLayoutGap="5px" class="cos-body-1">
@@ -393,7 +393,8 @@
               <div>
                 <div
                   fxLayoutAlign="stretch stretch"
-                  class="cos-fluid-height cos-fluid-width"
+                  class="cos-fluid-height cos-fluid-width cos-pointer"
+                  (click)="openCategory(c)"
                 >
                   <app-preview-image
                     fxFlex
@@ -428,7 +429,7 @@
                   fxFlex="0 0 auto"
                   class="cos-margin-0 cos-no-margin-left cos-no-margin-right cos-no-margin-top cos-gray-text cos-body-4"
                 >
-                  Daily Volume
+                  {{ "LABELS.MONTHLY_VOLUME" | translate }}
                 </div>
               </div>
             </div>
@@ -612,6 +613,16 @@
               class="co-learn"
             >
               <div>
+                <a href="https://mask.io/"> Mask Network </a>
+              </div>
+            </div>
+            <div
+              fxFlex="0 0 auto"
+              fxLayoutAlign="start center"
+              fxLayoutGap="10px"
+              class="co-learn"
+            >
+              <div>
                 <a href="https://www.enskit.com/"> ENS Kit </a>
               </div>
             </div>
@@ -642,7 +653,7 @@
             <a href="https://github.com/predomain">Github</a>
           </div>
           <div fxFlex="0 0 auto" class="cos-right-text cos-gray-text">
-            Predomain v0.8.4
+            Predomain v0.8.5
           </div>
         </div>
       </div>

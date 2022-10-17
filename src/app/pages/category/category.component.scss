@@ -136,6 +136,7 @@
   flex: 0 0 20%;
   flex-direction: column;
   width: 100%;
+  min-width: 350px;
   @media only screen and (max-width: 1000px) {
     display: none;
   }
@@ -239,6 +240,7 @@
   flex: 20% !important;
   flex-direction: row;
   max-width: 20%;
+  min-width: 350px;
   @media only screen and (max-width: 1000px) {
     flex: 1;
     max-width: 100% !important;

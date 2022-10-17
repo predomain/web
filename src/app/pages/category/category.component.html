@@ -74,23 +74,35 @@
         fxFlex="50px"
         fxLayout="row"
         fxFlexAlign="top"
-        fxLayoutAlign="start start"
+        fxLayoutAlign="start center"
         class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
       >
-        <a href="/home">Home</a>
-        <span class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom">
-          <mat-icon class="cos-small-icon" color="primary"
-            >arrow_forward</mat-icon
-          >
-        </span>
-        <span class="cos-gray-text"> Categories </span>
-        <span class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom">
+        <a href="/#/home">{{ "HEADER.HOME" | translate }}</a>
+        <span
+          fxFlex="0 0 auto"
+          fxLayoutAlign="center center"
+          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+        >
           <mat-icon class="cos-small-icon" color="primary"
             >arrow_forward</mat-icon
           >
         </span>
         <span class="cos-gray-text">
-          {{ categoryApiData?.category }}
+          {{ "HEADER.CATEGORIES" | translate }}
+        </span>
+        <span
+          fxFlex="0 0 auto"
+          fxLayoutAlign="center center"
+          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+        >
+          <mat-icon class="cos-small-icon" color="primary"
+            >arrow_forward</mat-icon
+          >
+        </span>
+        <span class="cos-gray-text">
+          {{
+            categoryApiData === undefined ? "..." : categoryApiData?.category
+          }}
         </span>
       </div>
       <div
@@ -161,7 +173,7 @@
               <div fxFlex="0 0 auto" fxLayout="row" class="co-title-text">
                 <div
                   *ngIf="categoryApiData === undefined"
-                  fxFlex="0 1 200px"
+                  fxFlex
                   class="cos-wallet-address-text-cut cos-overflow-hidden"
                 >
                   <div
@@ -171,7 +183,7 @@
                 </div>
                 <div
                   *ngIf="categoryApiData !== undefined"
-                  fxFlex="0 1 200px"
+                  fxFlex
                   class="cos-wallet-address-text-cut cos-overflow-hidden"
                 >
                   <b>
@@ -183,12 +195,8 @@
                   </b>
                 </div>
               </div>
-              <div
-                fxFlex="0 0 auto"
-                fxLayoutAlign="start start"
-                fxLayoutGap="5px"
-              >
-                <div fxFlex="0 1 200px" *ngIf="categoryApiData === undefined">
+              <div fxFlex fxLayoutAlign="start start" fxLayoutGap="5px">
+                <div fxFlex *ngIf="categoryApiData === undefined">
                   <div
                     style="height: 28px"
                     class="cos-fluid-width cos-placeholder cos-border-radius-1"
@@ -248,7 +256,7 @@
                 <div
                   class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
                 >
-                  Total Assets
+                  {{ "LABELS.TOTAL_ASSETS" | translate }}
                 </div>
               </div>
 
@@ -342,7 +350,7 @@
                 <div
                   class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
                 >
-                  Monthly Sales
+                  {{ "LABELS.MONTHLY_SALES" | translate }}
                 </div>
               </div>
 
@@ -374,7 +382,7 @@
                 <div
                   class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
                 >
-                  Daily Sales
+                  {{ "LABELS.DAILY_SALES" | translate }}
                 </div>
               </div>
 
@@ -407,7 +415,7 @@
                 <div
                   class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
                 >
-                  Top Sale
+                  {{ "LABELS.TOP_SALE" | translate }}
                 </div>
               </div>
 
@@ -456,7 +464,7 @@
                 <div
                   class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
                 >
-                  Top Buyer
+                  {{ "LABELS.TOP_BUYER" | translate }}
                 </div>
               </div>
             </div>
@@ -475,7 +483,9 @@
             fxLayout="column"
             class="cos-bg-neutral cos-border-radius-2 cos-margin-1 cos-no-margin-bottom cos-padding-1"
           >
-            <div fxFlex class="cos-body-4">Sales Activity</div>
+            <div fxFlex class="cos-body-4">
+              {{ "LABELS.SALES_ACTIVITY" | translate }}
+            </div>
           </div>
           <div
             fxFlex
@@ -764,6 +774,26 @@
             fxLayout="column"
             fxLayoutAlign="start start"
           >
+            <div
+              *ngIf="
+                salesListResolving === false &&
+                (salesList === null || salesList === undefined)
+              "
+              fxFlex
+              fxLayout="column"
+              fxLayoutAlign="center center"
+              class="cos-fluid-width cos-fluid-height"
+            >
+              <div fxFlex="0 0 auto">
+                <app-custom-spinner
+                  [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
+                  [spinnerSize]="150"
+                  [mode]="spinnerModes.LOADING"
+                  [customIcon]="'llayers'"
+                >
+                </app-custom-spinner>
+              </div>
+            </div>
             <ng-container *ngTemplateOutlet="linearSalesTemplate">
             </ng-container>
             <ng-container *ngIf="salesListResolving === true">
@@ -893,7 +923,7 @@
         fxLayoutAlign="center center"
       >
         <div
-          fxFlex
+          fxFlex="25"
           fxLayoutAlign="start center"
           fxLayoutGap="10px"
           class="cos-wallet-address-text-cut"
@@ -905,6 +935,16 @@
             class="cos-small-icon cos-pointer"
             >warning</mat-icon
           >
+        </div>
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          class="cos-disappear-on-mobile"
+        >
+          <span class="cos-gray-text">
+            {{ "LABELS.REGISTRATION_DATE" | translate }}:&nbsp;
+          </span>
+          {{ d.registrationDate | timeAgo }}
         </div>
         <div
           fxFlex
