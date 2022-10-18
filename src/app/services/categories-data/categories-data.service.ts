@@ -96,9 +96,6 @@ export class CategoriesDataService {
   }
 
   getCategoriesRootFallbackData() {
-    if (environment.development === false) {
-      return of(false);
-    }
     return this.httpClient.get('assets/categories/root.json').pipe(
       switchMap((r) => of(r)),
       catchError((e) => {
