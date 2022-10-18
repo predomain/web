@@ -57,7 +57,6 @@ export const generalConfigurations = {
     category: {
       required: true,
       poapId: '68199',
-      allowedIds: ['5688133', '5688119', '5782794'],
     },
     management: { required: false, poapId: null, allowedIds: null },
     canvas: { required: false, poapId: null, allowedIds: null },
@@ -85,6 +84,7 @@ export const generalConfigurations = {
     ENS: 'ENS - Ethereum Name Service',
     LNR: 'LNR - Linagee Name Registrar',
   },
+  categoiesDataSourceFallback: 'https://localhost:42069',
   categoriesUseFallback: true,
   categoryChartTimeRange: 2629800000,
   categoriesDomain: 'categories.predomain.eth',
