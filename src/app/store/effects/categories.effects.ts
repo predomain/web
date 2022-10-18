@@ -68,6 +68,20 @@ export class CategoryEffects {
         switchMap((p) => {
           const provider = globalAny.canvasProvider;
           const hasRootCategoryDataBeenResolved = new Subject<boolean>();
+          if (generalConfigurations.categoriesUseFallback === true) {
+            return this.categoriesDataService
+              .getCategoriesRootFallbackData()
+              .pipe(
+                switchMap((r) => {
+                  if (r === false || r === null) {
+                    throw false;
+                  }
+                  const categoryMetdata = r as CategoriesRootModel;
+                  hasRootCategoryDataBeenResolved.next(false);
+                  return of(categoryMetdata);
+                })
+              );
+          }
           return this.ensService
             .getDomainContentHash(
               provider,

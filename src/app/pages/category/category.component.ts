@@ -227,6 +227,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
           }
           this.rootCategoryData = (r as CategoriesStateModel)
             .categoriesMetadata as CategoriesRootModel;
+          if (generalConfigurations.categoriesUseFallback === true) {
+            return of('fallback');
+          }
           return this.ensService.getDomainContentHash(
             provider,
             category + '.' + generalConfigurations.categoriesDomain
@@ -248,7 +251,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
           this.categoryIpfsData = r as any;
           return this.categoriesDataService
             .getCategoriesData(
-              this.rootCategoryData.activeProviders[0],
+              environment.development === true
+                ? generalConfigurations.categoiesDataSourceFallback
+                : this.rootCategoryData.activeProviders[0],
               category
             )
             .pipe(switchMap((r) => of(r)));

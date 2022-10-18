@@ -85,6 +85,7 @@ export const generalConfigurations = {
     ENS: 'ENS - Ethereum Name Service',
     LNR: 'LNR - Linagee Name Registrar',
   },
+  categoiesDataSourceFallback: 'https://localhost:42069',
   categoriesUseFallback: true,
   categoryChartTimeRange: 2629800000,
   categoriesDomain: 'categories.predomain.eth',

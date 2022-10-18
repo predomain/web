@@ -62,6 +62,9 @@
                 class="cos-bg-gray"
                 (selectionChange)="performRenewalCostCalculation()"
               >
+                <mat-option [value]="renewalDurationTypes['1WEEK']">
+                  {{ renewalDurationTypes["1WEEK"] | translate }}
+                </mat-option>
                 <mat-option [value]="renewalDurationTypes['1MONTH']">
                   {{ renewalDurationTypes["1MONTH"] | translate }}
                 </mat-option>

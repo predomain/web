@@ -49,7 +49,7 @@
 .co-landing-text-container {
   padding-top: 150px;
   @media only screen and (max-width: 500px) {
-    padding-top: 50px;
+    padding-top: 100px;
   }
 }
 
@@ -209,7 +209,7 @@
   margin-top: -15px;
 }
 .co-home-content-container {
-  width: 75%;
+  width: 85%;
   min-width: 1200px;
   .co-home-categories {
     border-radius: var(--cos-border-radius-2) !important;
@@ -218,6 +218,7 @@
     .co-home-categories {
       border-radius: 0 !important;
     }
+    min-width: 100%;
     width: 100% !important;
   }
 }
@@ -303,13 +304,14 @@
 
 .co-top-content-container,
 .co-blogs-content-container {
-  width: 75%;
+  width: 85%;
   min-width: 1200px;
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
   @media only screen and (max-width: 1000px) {
     width: 100%;
+    min-width: 100%;
     flex-direction: column !important;
     align-items: start !important;
     justify-content: center !important;

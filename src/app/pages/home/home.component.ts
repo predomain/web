@@ -137,7 +137,7 @@ export class HomeComponent implements OnDestroy, OnInit {
           this.metadata = s.categoriesMetadata;
           this.categories = s.categoriesMetadata?.categories;
           this.categoriesRootVolume =
-            s.categoriesRootVolumeData?.categories_daily_volume;
+            s.categoriesRootVolumeData?.categories_monthly_volume;
           this.topCategories = s.categoriesRootVolumeData?.top_categories;
           this.topSales = s.categoriesRootVolumeData?.top_sales;
           this.recentSales = s.categoriesRootVolumeData?.recent_sales;

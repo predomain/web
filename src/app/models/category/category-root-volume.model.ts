@@ -18,4 +18,8 @@ export interface CategoryRootVolumeModel {
     category: string;
     volume: number;
   }[];
+  categories_monthly_volume: {
+    category: string;
+    volume: number;
+  }[];
 }
