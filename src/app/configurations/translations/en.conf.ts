@@ -107,6 +107,7 @@ export default {
       'A new transaction has been created. Please check your wallet.',
   },
   RENEWAL_DURATIONS: {
+    ONE_WEEK: '1 Week',
     ONE_MONTH: '1 Month',
     THREE_MONTHS: '3 Months',
     SIX_MONTHS: '6 Months',

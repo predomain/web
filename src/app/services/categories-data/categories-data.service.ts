@@ -6,6 +6,7 @@ import {
   dataNodeEndpoints,
   generalConfigurations,
 } from 'src/app/configurations';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,11 @@ export class CategoriesDataService {
   constructor(protected httpClient: HttpClient) {}
 
   pingCategoriesDataProviders(endPoints: string[]) {
-    const endPointRequests = endPoints.map((e) => {
+    let useEnpoints = endPoints;
+    if (environment.development === true) {
+      useEnpoints = [generalConfigurations.categoiesDataSourceFallback];
+    }
+    const endPointRequests = useEnpoints.map((e) => {
       return this.httpClient.get([e, dataNodeEndpoints.ping].join('/')).pipe(
         switchMap((r) => of({ provider: e, result: r })),
         catchError((e) => {
@@ -47,10 +52,14 @@ export class CategoriesDataService {
   }
 
   getCategoriesRootVolumeData(endPoint: string) {
+    let useEnpoint = endPoint;
+    if (environment.development === true) {
+      useEnpoint = generalConfigurations.categoiesDataSourceFallback;
+    }
     return this.httpClient
       .get(
         [
-          endPoint,
+          useEnpoint,
           dataNodeEndpoints.checkout,
           'root_volume',
           'root_volume',
@@ -65,10 +74,14 @@ export class CategoriesDataService {
   }
 
   getCategoriesData(endPoint: string, collection: string) {
+    let useEnpoint = endPoint;
+    if (environment.development === true) {
+      useEnpoint = generalConfigurations.categoiesDataSourceFallback;
+    }
     return this.httpClient
       .get(
         [
-          endPoint,
+          useEnpoint,
           dataNodeEndpoints.checkout,
           'collections',
           collection + '.' + generalConfigurations.categoriesDomain,
@@ -80,5 +93,17 @@ export class CategoriesDataService {
           return of(false);
         })
       );
+  }
+
+  getCategoriesRootFallbackData() {
+    if (environment.development === false) {
+      return of(false);
+    }
+    return this.httpClient.get('assets/categories/root.json').pipe(
+      switchMap((r) => of(r)),
+      catchError((e) => {
+        return of(false);
+      })
+    );
   }
 }
