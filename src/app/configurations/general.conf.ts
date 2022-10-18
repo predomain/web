@@ -57,6 +57,7 @@ export const generalConfigurations = {
     category: {
       required: true,
       poapId: '68199',
+      allowedIds: null,
     },
     management: { required: false, poapId: null, allowedIds: null },
     canvas: { required: false, poapId: null, allowedIds: null },
