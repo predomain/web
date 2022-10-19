@@ -57,13 +57,13 @@
       opacity: 0.25;
     }
   }
-  &:hover {
+  &:hover:not(.cos-placeholder) {
     .co-bulk-search-item-expiration-bar {
       opacity: 1 !important;
     }
     .co-bulk-search-item {
       opacity: 1 !important;
-      box-shadow: 0px 0px 15px 7px var(--co-main-color);
+      box-shadow: 0px 0px 2px 2px var(--co-main-color);
     }
   }
 }

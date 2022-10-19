@@ -525,4 +525,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const user = this.activatedRoute.snapshot.params.user;
     return user;
   }
+
+  get isDeviceMobile() {
+    return window.innerWidth <= 1000;
+  }
 }
