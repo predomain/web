@@ -201,6 +201,8 @@
 
 .co-main-search {
   width: 75% !important;
+  min-width: 800px;
+  max-width: 1000px;
   @media only screen and (max-width: 1000px) {
     width: 90% !important;
   }
@@ -211,6 +213,7 @@
 .co-home-content-container {
   width: 85%;
   min-width: 1200px;
+  max-width: 1500px;
   .co-home-categories {
     border-radius: var(--cos-border-radius-2) !important;
   }
@@ -306,6 +309,7 @@
 .co-blogs-content-container {
   width: 85%;
   min-width: 1200px;
+  max-width: 1500px;
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
@@ -316,4 +320,8 @@
     align-items: start !important;
     justify-content: center !important;
   }
+}
+
+.co-category-title {
+  font-size: 25px;
 }

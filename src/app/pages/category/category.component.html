@@ -101,7 +101,11 @@
         </span>
         <span class="cos-gray-text">
           {{
-            categoryApiData === undefined ? "..." : categoryApiData?.category
+            categoryApiData === undefined
+              ? "..."
+              : rootCategoryData?.categoriesDescription[
+                  categoryApiData?.category
+                ]
           }}
         </span>
       </div>
@@ -695,6 +699,15 @@
           fxLayoutGap="10px"
         >
           <div
+            class="cos-fluid-width cos-show-on-mobile cos-no-margin-bottom"
+            [style.height]="'0px'"
+          >
+            <div
+              id="co-avatar-item-size-guide-mobile"
+              [style.width]="'calc(50% - 5px)'"
+            ></div>
+          </div>
+          <div
             fxFlex="0 0 auto"
             class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-1 cos-no-padding-left cos-no-padding-right"
           >
@@ -727,6 +740,11 @@
                 Activity
               </div>
             </div>
+            <div
+              id="co-avatar-item-size-guide"
+              class="cos-disappear-on-mobile"
+              [style.width]="'calc(16.77% - 10px)'"
+            ></div>
             <div
               fxFlex
               fxLayoutGap="10px"
@@ -807,8 +825,31 @@
             fxLayout="row wrap"
             fxLayoutAlign="start start"
           >
-            <ng-container *ngIf="hasDomainsListLoaded === false">
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === false &&
+                displayMode === displayModes.CHUNK
+              "
+            >
               <ng-container *ngTemplateOutlet="placeHolderTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === false &&
+                displayMode === displayModes.LINEAR
+              "
+            >
+              <ng-container *ngTemplateOutlet="placeHolderFullTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === false &&
+                displayMode === displayModes.AVATAR
+              "
+            >
+              <ng-container *ngTemplateOutlet="placeHolderAvatarTemplate">
               </ng-container>
             </ng-container>
             <div
@@ -863,10 +904,21 @@
                 hasDomainsListLoaded === true &&
                 categoryDomains !== undefined &&
                 domainsListResolving === true &&
-                displayMode !== displayModes.LINEAR
+                displayMode === displayModes.CHUNK
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === true &&
+                categoryDomains !== undefined &&
+                domainsListResolving === true &&
+                displayMode === displayModes.AVATAR
+              "
+            >
+              <ng-container *ngTemplateOutlet="placeHolderAvatarTemplate">
               </ng-container>
             </ng-container>
             <ng-container
@@ -889,14 +941,45 @@
 
 <ng-template #avatarDomainTemplate>
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
-    <app-preview-image
-      [preview]="'assets/img-blank.png'"
-      [error]="'assets/profile-blank.svg'"
-      [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
-      [style.height]="'auto'"
-      class="co-item-with-avatar cos-border-radius-2 cos-pointer"
-      (click)="goToDomain(d.labelName)"
-    ></app-preview-image>
+    <div
+      fxLayout="column"
+      class="co-item-with-avatar cos-border-radius-2 cos-pointer cos-border cos-bg-gray"
+    >
+      <app-preview-image
+        [preview]="'assets/img-blank.png'"
+        [error]="'assets/profile-blank.svg'"
+        [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
+        [style.height]="'auto'"
+        class="cos-fluid-width cos-border-radius-2 cos-pointer"
+        (click)="goToDomain(d.labelName)"
+      ></app-preview-image>
+      <div class="cos-padding-0" fxLayoutAlign="start center">
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutGap="5px"
+          fxLayoutAlign="center start"
+        >
+          <div fxFlex="0 0 auto" class="cos-body-3">
+            <b> {{ pretty(d.labelName) }}.eth </b>
+          </div>
+          <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
+            <div class="cos-body-5 cos-gray-text">Exp:</div>
+            <div class="cos-body-5">{{ d.expiry | timeAgo }}</div>
+          </div>
+          <div fxFlex></div>
+        </div>
+        <mat-icon
+          *ngIf="domainValid(d.labelName) === false"
+          color="accent"
+          class="cos-small-icon cos-pointer"
+          >warning</mat-icon
+        >
+        <mat-icon fxFlex="24px" class="cos-icon-can-activate"
+          >bookmark_add</mat-icon
+        >
+      </div>
+    </div>
   </ng-container>
 </ng-template>
 
@@ -1011,7 +1094,6 @@
           class="cos-small-icon cos-pointer"
           >warning</mat-icon
         >
-
         <mat-icon fxFlex="24px" class="cos-icon-can-activate"
           >bookmark_add</mat-icon
         >
@@ -1115,6 +1197,27 @@
 <ng-template #placeHolderFullTemplate>
   <ng-container *ngFor="let d of placeholders">
     <div class="co-bulk-search-item-container cos-placeholder cos-fluid-width">
+      <div
+        fxLayoutGap="15px"
+        fxLayoutAlign="center center"
+        class="co-bulk-search-item cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+      ></div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #placeHolderAvatarTemplate>
+  <ng-container *ngFor="let d of placeholders">
+    <div
+      class="co-bulk-search-item-container cos-placeholder cos-bulk-sarch-item-for-avatar"
+      [style.height]="
+        isDeviceMobile === true
+          ? canvasService.getWidthOfDiv('co-avatar-item-size-guide-mobile') +
+            60 +
+            'px'
+          : canvasService.getWidthOfDiv('co-avatar-item-size-guide') + 60 + 'px'
+      "
+    >
       <div
         fxLayoutGap="15px"
         fxLayoutAlign="center center"

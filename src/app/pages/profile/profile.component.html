@@ -465,19 +465,6 @@
               </app-custom-spinner>
             </div>
           </div>
-          <!-- <div
-            *ngIf="hasDomainsListLoaded === false"
-            fxFlex="0 0 auto"
-            fxLayout="column"
-            fxLayoutAlign="start start"
-            class="co-placeholder-container cos-fluid-width cos-overflow-hidden"
-          >
-            <div
-              *ngFor="let d of placeholders"
-              fxFlex="70px"
-              class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer cos-placeholder cos-border-radius-1"
-            ></div>
-          </div> -->
           <div fxFlex fxLayout="row wrap" fxLayoutAlign="start start">
             <ng-container *ngIf="hasDomainsListLoaded === false">
               <ng-container *ngTemplateOutlet="placeHolderTemplate">
@@ -519,14 +506,45 @@
 
 <ng-template #avatarDomainTemplate>
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
-    <app-preview-image
-      [preview]="'assets/img-blank.png'"
-      [error]="'assets/profile-blank.svg'"
-      [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
-      [style.height]="'auto'"
-      class="co-item-with-avatar cos-border-radius-2 cos-pointer"
-      (click)="goToDomain(d.labelName)"
-    ></app-preview-image>
+    <div
+      fxLayout="column"
+      class="co-item-with-avatar cos-border-radius-2 cos-pointer cos-border cos-bg-gray"
+    >
+      <app-preview-image
+        [preview]="'assets/img-blank.png'"
+        [error]="'assets/profile-blank.svg'"
+        [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
+        [style.height]="'auto'"
+        class="cos-fluid-width cos-border-radius-2 cos-pointer"
+        (click)="goToDomain(d.labelName)"
+      ></app-preview-image>
+      <div class="cos-padding-0" fxLayoutAlign="start center">
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutGap="5px"
+          fxLayoutAlign="center start"
+        >
+          <div fxFlex="0 0 auto" class="cos-body-3">
+            <b> {{ pretty(d.labelName) }}.eth </b>
+          </div>
+          <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
+            <div class="cos-body-5 cos-gray-text">Exp:</div>
+            <div class="cos-body-5">{{ d.expiry | timeAgo }}</div>
+          </div>
+          <div fxFlex></div>
+        </div>
+        <mat-icon
+          *ngIf="domainValid(d.labelName) === false"
+          color="accent"
+          class="cos-small-icon cos-pointer"
+          >warning</mat-icon
+        >
+        <mat-icon fxFlex="24px" class="cos-icon-can-activate"
+          >bookmark_add</mat-icon
+        >
+      </div>
+    </div>
   </ng-container>
 </ng-template>
 

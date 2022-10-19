@@ -424,7 +424,7 @@
                 </div>
               </div>
               <div fxLayout="column">
-                <div fxFlex="0 0 auto" class="cos-body-0">
+                <div fxFlex="0 0 auto" class="co-category-title">
                   <a href="/#/category/{{ c }}" target="_blank"
                     >{{ metadata.categoriesTitle[c] }}
                     <mat-icon class="cos-small-icon">open_in_new</mat-icon>
@@ -467,8 +467,15 @@
             </a>
           </div>
           <div fxFlex [innerHtml]="b.description"></div>
-          <div fxFlex="0 0 auto" class="cos-gray-text" fxLayoutAlign="end end">
-            {{ getTimeFromDate(b.pubDate) | timeAgo }}
+          <div
+            fxFlex="0 0 auto"
+            fxLayoutAlign="start end"
+            class="cos-gray-text cos-fluid-width"
+          >
+            <a href="{{ b.link }}">Read Blog</a>
+            <span fxFlex class="cos-right-text">
+              {{ getTimeFromDate(b.pubDate) | timeAgo }}
+            </span>
           </div>
         </div>
       </div>
@@ -665,7 +672,7 @@
             <a href="https://github.com/predomain">Github</a>
           </div>
           <div fxFlex="0 0 auto" class="cos-right-text cos-gray-text">
-            Predomain v0.8.6
+            Predomain v0.8.7
           </div>
         </div>
       </div>
