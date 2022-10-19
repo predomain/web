@@ -83,7 +83,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   hasDomainsListLoaded = false;
   avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
-  displayMode = DisplayModes.CHUNK;
+  displayMode = DisplayModes.AVATAR;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   typesFilter = {
@@ -428,6 +428,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
             y: parseFloat(s.price),
             x: s.timestamp,
             radius: 15 - radius < 4 ? 4 : radius,
+            domain: s.domain + '.eth',
+            price: this.priceToFixedString(s.price),
           };
       })
       .filter((s) => {
@@ -906,5 +908,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
     const category = this.activatedRoute.snapshot.params.category.toLowerCase();
     return category;
+  }
+
+  get isDeviceMobile() {
+    return window.innerWidth <= 1000;
   }
 }

@@ -28,6 +28,28 @@ export class DotComponent {
         legend: {
           display: false,
         },
+        tooltip: {
+          mode: 'point',
+          intersect: false,
+          callbacks: {
+            title: (item) => {
+              return 'Sale';
+            },
+            label: (item) =>
+              item.label +
+              '  -  ' +
+              this.data[item.dataIndex].domain +
+              '  -  ' +
+              this.data[item.dataIndex].price +
+              ' ETH',
+          },
+          bodyFont: {
+            size: 15,
+          },
+          titleFont: {
+            size: 15,
+          },
+        },
       },
       scales: {
         x: {
@@ -35,6 +57,9 @@ export class DotComponent {
             maxTicksLimit: 15,
             maxRotation: 0,
             minRotation: 0,
+            font: {
+              size: 14,
+            },
           },
           type: 'time',
           time: {
@@ -49,6 +74,9 @@ export class DotComponent {
           ticks: {
             callback: function (value, index, ticks) {
               return value + ' ETH';
+            },
+            font: {
+              size: 14,
             },
           },
         },
@@ -71,8 +99,8 @@ export class DotComponent {
         pointRadius: this.data.map((d) => d.radius),
         backgroundColor: '#48b6f0',
         borderColor: '#48b6f0',
-        hoverBackgroundColor: '#48b6f0',
-        hoverBorderColor: '#48b6f0',
+        hoverBackgroundColor: 'lawngreen',
+        hoverBorderColor: 'lawngreen',
         pointHoverRadius: this.data.map((d) => d.radius * 2),
       },
     ];

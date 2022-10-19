@@ -51,6 +51,30 @@
     margin-right: 0px !important;
   }
 
+  &.cos-bulk-sarch-item-for-avatar {
+    width: calc(16.77% - 10px);
+    border-radius: var(--cos-border-radius-2);
+    &:nth-of-type(4n) {
+      margin-right: 10px !important;
+    }
+    &:nth-of-type(6n) {
+      margin-right: 0px !important;
+    }
+    @media only screen and (max-width: 1000px) {
+      width: calc(50% - 5px) !important;
+      margin-right: 10px !important;
+      &:nth-of-type(4n) {
+        margin-right: 0px !important;
+      }
+      &:nth-of-type(6n) {
+        margin-right: 0px !important;
+      }
+      &:nth-of-type(2n) {
+        margin-right: 0px !important;
+      }
+    }
+  }
+
   @media only screen and (max-width: 1000px) {
     width: 100% !important;
     margin-right: 0 !important;
@@ -145,7 +169,7 @@
 .co-item-with-avatar {
   width: calc(16.77% - 10px);
   margin-right: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   &:nth-of-type(6n) {
     margin-right: 0px;
   }

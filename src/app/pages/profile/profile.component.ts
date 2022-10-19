@@ -64,7 +64,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   hasDomainsListLoaded = false;
   avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
-  displayMode = DisplayModes.CHUNK;
+  displayMode = DisplayModes.AVATAR;
   profileTexts: ProfileTexts = {};
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
