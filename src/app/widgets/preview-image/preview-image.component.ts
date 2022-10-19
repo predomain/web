@@ -20,6 +20,7 @@ export class PreviewImageComponent implements OnChanges {
   @Input() errored = false;
   @Input() loaded = false;
   @Input() dontLoad = false;
+  @Input() enableBorderRadius = true;
   @Output() imageLoaded = new EventEmitter<boolean>();
 
   constructor(public changeDetectorRef: ChangeDetectorRef) {}

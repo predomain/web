@@ -19,6 +19,7 @@ import {
   switchMap,
   take,
   takeUntil,
+  withLatestFrom,
 } from 'rxjs/operators';
 import { DomainMetadataModel } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
@@ -32,6 +33,7 @@ import {
 } from 'src/app/services/registration';
 import {
   CategoryFacadeService,
+  ENSBookmarkFacadeService,
   PagesFacadeService,
   UserFacadeService,
 } from 'src/app/store/facades';
@@ -56,6 +58,9 @@ import { ResponseModel, ResponseTypesEnum } from 'src/app/models/http';
 import { ChartDataModel } from 'src/app/models/charts';
 import { DotComponent } from 'src/app/widgets/charts/dot/dot.component';
 import { PoapService } from 'src/app/services/poap';
+import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
+import { select, Store } from '@ngrx/store';
+import { getENSBookmarks } from 'src/app/store/selectors';
 
 const globalAny: any = global;
 
@@ -103,6 +108,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   salesListResolving = false;
 
   showSalesActivity = false;
+  bookmarks: DomainMetadataModel[];
   rootCategoryData: CategoriesRootModel;
   categoryNormalisedMetadata: CategoryMetaStatsModel;
   categoryIpfsData: CategoryModel;
@@ -117,9 +123,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
   domainListResolutionSubscription;
   salesListResolutionSubscription;
   userStateSubscription;
+  bookmarkStateSubscription;
 
   constructor(
-    protected bookmarksService: BookmarksServiceService,
+    public bookmarkService: BookmarksServiceService,
     protected registrationService: RegistrationServiceService,
     protected userService: UserService,
     protected ensService: EnsService,
@@ -128,8 +135,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
     protected downloadService: DownloadService,
     protected activatedRoute: ActivatedRoute,
     protected userFacade: UserFacadeService,
+    protected bookmarkFacadeService: ENSBookmarkFacadeService,
     protected categoryFacade: CategoryFacadeService,
     protected categoriesDataService: CategoriesDataService,
+    protected bookmarkStore: Store<ENSBookmarkStateModel>,
     protected poapService: PoapService,
     protected miscUtils: MiscUtilsService,
     protected snackBar: MatSnackBar,
@@ -185,6 +194,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loadBookmarks();
     this.activatedRouteSubscription = this.activatedRoute.params
       .pipe(
         map((p) => {
@@ -596,12 +606,38 @@ export class CategoryComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
+  loadBookmarks() {
+    this.bookmarkStateSubscription =
+      this.bookmarkFacadeService.getENSBookmarkState$
+        .pipe(
+          withLatestFrom(this.bookmarkStore.pipe(select(getENSBookmarks))),
+          map((state) => {
+            const [bookmarkState, bookmarks] = state;
+            this.bookmarks = bookmarks;
+          })
+        )
+        .subscribe();
+  }
+
   lazyLoad() {
     if (this.showSalesActivity === true) {
       this.loadMoreSales();
       return;
     }
     this.loadMoreDomains();
+  }
+
+  toggleBookmark(domain: DomainMetadataModel) {
+    if (
+      this.bookmarkService.isDomainBookmarked(
+        this.bookmarks,
+        domain.labelName
+      ) === true
+    ) {
+      this.bookmarkFacadeService.removeBookmark(domain);
+      return;
+    }
+    this.bookmarkFacadeService.upsertBookmark(domain);
   }
 
   openExpiredPicker() {
@@ -617,7 +653,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   countBookmarks() {
-    return this.bookmarksService.countBookmarks();
+    return this.bookmarkService.countBookmarks();
   }
 
   countRegistrations() {

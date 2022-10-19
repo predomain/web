@@ -288,6 +288,10 @@ textarea {
   border-radius: var(--cos-border-radius-4);
 }
 
+.cos-no-border-radius {
+  border-radius: 0 !important;
+}
+
 .cos-no-border-radius-bottom-left {
   border-bottom-left-radius: 0 !important;
 }

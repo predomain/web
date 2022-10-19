@@ -761,6 +761,7 @@
 }
 
 .mat-progress-bar {
+  filter: none !important;
   &.cos-main-progress-bar {
     height: 2px !important;
     @media only screen and (max-width: 400px) {

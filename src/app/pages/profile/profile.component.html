@@ -408,6 +408,15 @@
           fxLayoutGap="10px"
         >
           <div
+            class="cos-fluid-width cos-show-on-mobile cos-no-margin-bottom"
+            [style.height]="'0px'"
+          >
+            <div
+              id="co-avatar-item-size-guide-mobile"
+              [style.width]="'calc(50% - 5px)'"
+            ></div>
+          </div>
+          <div
             fxFlex="0 0 auto"
             class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
           >
@@ -446,6 +455,11 @@
             </div>
           </div>
           <div
+            id="co-avatar-item-size-guide"
+            class="cos-disappear-on-mobile"
+            [style.width]="'calc(16.77% - 10px)'"
+          ></div>
+          <div
             *ngIf="
               hasDomainsListLoaded === true &&
               !(filterSearchDomains(searchKeyword).length > 0)
@@ -466,10 +480,25 @@
             </div>
           </div>
           <div fxFlex fxLayout="row wrap" fxLayoutAlign="start start">
-            <ng-container *ngIf="hasDomainsListLoaded === false">
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === false &&
+                displayMode === displayModes.CHUNK
+              "
+            >
               <ng-container *ngTemplateOutlet="placeHolderTemplate">
               </ng-container>
             </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === false &&
+                displayMode === displayModes.AVATAR
+              "
+            >
+              <ng-container *ngTemplateOutlet="placeHolderAvatarTemplate">
+              </ng-container>
+            </ng-container>
+
             <ng-container
               *ngIf="
                 hasDomainsListLoaded === true &&
@@ -508,16 +537,23 @@
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
     <div
       fxLayout="column"
-      class="co-item-with-avatar cos-border-radius-2 cos-pointer cos-border cos-bg-gray"
+      class="co-item-with-avatar cos-pointer cos-border cos-bg-gray cos-border-radius-2 cos-overflow-hidden"
     >
       <app-preview-image
         [preview]="'assets/img-blank.png'"
         [error]="'assets/profile-blank.svg'"
         [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
         [style.height]="'auto'"
-        class="cos-fluid-width cos-border-radius-2 cos-pointer"
+        class="cos-fluid-width cos-pointer"
         (click)="goToDomain(d.labelName)"
+        [enableBorderRadius]="false"
       ></app-preview-image>
+      <mat-progress-bar
+        *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
+        class="co-bulk-search-item-expiration-bar co-bar-for-avatar cos-hazard-progress-bar cos-no-border-radius"
+        mode="determinate"
+        [value]="d.gracePeriodPercent"
+      ></mat-progress-bar>
       <div class="cos-padding-0" fxLayoutAlign="start center">
         <div
           fxFlex
@@ -525,7 +561,11 @@
           fxLayoutGap="5px"
           fxLayoutAlign="center start"
         >
-          <div fxFlex="0 0 auto" class="cos-body-3">
+          <div
+            fxFlex="0 0 auto"
+            class="cos-body-3"
+            (click)="goToDomain(d.labelName)"
+          >
             <b> {{ pretty(d.labelName) }}.eth </b>
           </div>
           <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
@@ -660,6 +700,27 @@
 <ng-template #placeHolderTemplate>
   <ng-container *ngFor="let d of placeholders">
     <div class="co-bulk-search-item-container cos-placeholder">
+      <div
+        fxLayoutGap="15px"
+        fxLayoutAlign="center center"
+        class="co-bulk-search-item cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+      ></div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #placeHolderAvatarTemplate>
+  <ng-container *ngFor="let d of placeholders">
+    <div
+      class="co-bulk-search-item-container cos-placeholder cos-bulk-sarch-item-for-avatar"
+      [style.height]="
+        isDeviceMobile === true
+          ? canvasService.getWidthOfDiv('co-avatar-item-size-guide-mobile') +
+            60 +
+            'px'
+          : canvasService.getWidthOfDiv('co-avatar-item-size-guide') + 60 + 'px'
+      "
+    >
       <div
         fxLayoutGap="15px"
         fxLayoutAlign="center center"
