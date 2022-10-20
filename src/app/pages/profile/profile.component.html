@@ -560,13 +560,16 @@
           fxLayout="column"
           fxLayoutGap="5px"
           fxLayoutAlign="center start"
+          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right"
         >
           <div
             fxFlex="0 0 auto"
             class="cos-body-3"
             (click)="goToDomain(d.labelName)"
           >
-            <b> {{ pretty(d.labelName) }}.eth </b>
+            <a (click)="goToDomain(d.labelName)">
+              <b> {{ pretty(d.labelName) }}.eth </b>
+            </a>
           </div>
           <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
             <div class="cos-body-5 cos-gray-text">Exp:</div>
@@ -580,7 +583,15 @@
           class="cos-small-icon cos-pointer"
           >warning</mat-icon
         >
-        <mat-icon fxFlex="24px" class="cos-icon-can-activate"
+        <mat-icon
+          fxFlex="24px"
+          (click)="toggleBookmark(d)"
+          class="cos-icon-can-activate"
+          [ngClass]="
+            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
+              ? 'mat-primary'
+              : ''
+          "
           >bookmark_add</mat-icon
         >
       </div>
@@ -591,7 +602,7 @@
 <ng-template #linearDomainTemplate>
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
     <div
-      class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer"
+      class="co-bulk-search-item-container co-linear-item cos-fluid-width cos-no-margin-right cos-pointer"
       (click)="goToDomain(pretty(d.labelName))"
     >
       <mat-progress-bar
@@ -616,7 +627,9 @@
           fxLayoutGap="10px"
           class="cos-wallet-address-text-cut"
         >
-          {{ pretty(d.labelName) }}.eth
+          <a (click)="goToDomain(d.labelName)">
+            <b> {{ pretty(d.labelName) }}.eth </b>
+          </a>
           <mat-icon
             *ngIf="domainValid(d.labelName) === false"
             color="accent"
@@ -658,10 +671,7 @@
 
 <ng-template #chunkDomainTemplate>
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
-    <div
-      class="co-bulk-search-item-container"
-      (click)="goToDomain(d.labelName)"
-    >
+    <div class="co-bulk-search-item-container">
       <mat-progress-bar
         *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
         class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
@@ -684,13 +694,33 @@
           fxLayoutAlign="start center"
           class="cos-wallet-address-text-cut"
         >
-          {{ pretty(d.labelName) }}.eth
+          <div fxFlex="0 0 auto" class="cos-body-2">
+            <a (click)="goToDomain(d.labelName)">
+              <b> {{ pretty(d.labelName) }}.eth </b>
+            </a>
+          </div>
+          <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
+            <div class="cos-body-5 cos-gray-text">Reg:</div>
+            <div class="cos-body-5">{{ d.registrationDate | timeAgo }}</div>
+          </div>
+          <div fxFlex></div>
         </div>
         <mat-icon
           *ngIf="domainValid(d.labelName) === false"
           color="accent"
           class="cos-small-icon cos-pointer"
           >warning</mat-icon
+        >
+        <mat-icon
+          fxFlex="24px"
+          (click)="toggleBookmark(d)"
+          class="cos-icon-can-activate"
+          [ngClass]="
+            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
+              ? 'mat-primary'
+              : ''
+          "
+          >bookmark_add</mat-icon
         >
       </div>
     </div>
