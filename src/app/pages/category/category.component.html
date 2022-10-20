@@ -702,7 +702,7 @@
           >
             <div
               id="co-avatar-item-size-guide-mobile"
-              [style.width]="'calc(50% - 5px)'"
+              [style.width]="guideAvatarSize + 'px'"
             ></div>
           </div>
           <div
@@ -741,7 +741,7 @@
             <div
               id="co-avatar-item-size-guide"
               class="cos-disappear-on-mobile"
-              [style.width]="'calc(16.77% - 10px)'"
+              [style.width]="guideAvatarSize + 'px'"
             ></div>
             <div
               fxFlex
@@ -1230,9 +1230,8 @@
       [style.height]="
         isDeviceMobile === true
           ? canvasService.getWidthOfDiv('co-avatar-item-size-guide-mobile') +
-            60 +
             'px'
-          : canvasService.getWidthOfDiv('co-avatar-item-size-guide') + 60 + 'px'
+          : canvasService.getWidthOfDiv('co-avatar-item-size-guide') - 30 + 'px'
       "
     >
       <div

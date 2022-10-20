@@ -527,6 +527,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   get isDeviceMobile() {
-    return window.innerWidth <= 1000;
+    return document.body.clientWidth <= 600;
+  }
+
+  get guideAvatarSize() {
+    const windowW = document.body.clientWidth;
+    if (windowW <= 600) {
+      return windowW / 2 - 5;
+    }
+    if (windowW > 600 && windowW <= 1200) {
+      return windowW / 4 - 8;
+    }
+    if (windowW > 1200 && windowW <= 1999) {
+      return windowW / 5 - 8;
+    }
+    return (windowW / 100) * 12.5 - 9;
   }
 }
