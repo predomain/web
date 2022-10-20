@@ -9,7 +9,14 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { delayWhen, map, retryWhen, switchMap, take } from 'rxjs/operators';
+import {
+  delayWhen,
+  map,
+  retryWhen,
+  switchMap,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { DomainMetadataModel } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
@@ -20,7 +27,10 @@ import {
   RegistrationDataService,
   RegistrationServiceService,
 } from 'src/app/services/registration';
-import { PagesFacadeService } from 'src/app/store/facades';
+import {
+  ENSBookmarkFacadeService,
+  PagesFacadeService,
+} from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
 import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
 import {
@@ -29,6 +39,9 @@ import {
 } from 'src/app/configurations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadService } from 'src/app/services/download/download.service';
+import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
+import { select, Store } from '@ngrx/store';
+import { getENSBookmarks } from 'src/app/store/selectors';
 
 const globalAny: any = global;
 
@@ -74,20 +87,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
     emoji: false,
   };
   filterForm: FormGroup;
+  bookmarks: DomainMetadataModel[];
   userDomains;
   userAddress;
   ethNameData;
   getUserDomainsSubscripton;
   profileTextSubscription;
   activatedRouteSubscription;
+  bookmarkStateSubscription;
 
   constructor(
-    protected bookmarksService: BookmarksServiceService,
+    public bookmarksService: BookmarksServiceService,
     protected registrationService: RegistrationServiceService,
     protected userService: UserService,
     protected ensService: EnsService,
     protected pagesFacade: PagesFacadeService,
     protected registrationDataService: RegistrationDataService,
+    protected bookmarkFacadeService: ENSBookmarkFacadeService,
+    protected bookmarkStore: Store<ENSBookmarkStateModel>,
     protected downloadService: DownloadService,
     protected activatedRoute: ActivatedRoute,
     protected miscUtils: MiscUtilsService,
@@ -111,6 +128,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loadBookmarks();
     if (this.userName === false) {
       return;
     }
@@ -301,6 +319,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
+  loadBookmarks() {
+    this.bookmarkStateSubscription =
+      this.bookmarkFacadeService.getENSBookmarkState$
+        .pipe(
+          withLatestFrom(this.bookmarkStore.pipe(select(getENSBookmarks))),
+          map((state) => {
+            const [bookmarkState, bookmarks] = state;
+            this.bookmarks = bookmarks;
+          })
+        )
+        .subscribe();
+  }
+
   filterSearchDomains(value: any = '') {
     if (value === undefined || value === '' || value === null) {
       return this.userDomains.filter((d) => {
@@ -317,6 +348,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
       return false;
     });
+  }
+
+  toggleBookmark(domain: DomainMetadataModel) {
+    if (
+      this.bookmarksService.isDomainBookmarked(
+        this.bookmarks,
+        domain.labelName
+      ) === true
+    ) {
+      this.bookmarkFacadeService.removeBookmark(domain);
+      return;
+    }
+    this.bookmarkFacadeService.upsertBookmark(domain);
   }
 
   extraFilters(d: DomainMetadataModel) {

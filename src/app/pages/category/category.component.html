@@ -964,13 +964,16 @@
           fxLayout="column"
           fxLayoutGap="5px"
           fxLayoutAlign="center start"
+          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right"
         >
           <div
             fxFlex="0 0 auto"
             class="cos-body-3"
             (click)="goToDomain(d.labelName)"
           >
-            <b> {{ pretty(d.labelName) }}.eth </b>
+            <a (click)="goToDomain(d.labelName)">
+              <b> {{ pretty(d.labelName) }}.eth </b>
+            </a>
           </div>
           <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
             <div class="cos-body-5 cos-gray-text">Exp:</div>
@@ -1003,7 +1006,7 @@
 <ng-template #linearDomainTemplate>
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
     <div
-      class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer"
+      class="co-bulk-search-item-container co-linear-item cos-no-margin-right cos-pointer"
       (click)="goToDomain(pretty(d.labelName))"
     >
       <mat-progress-bar
@@ -1028,7 +1031,9 @@
           fxLayoutGap="10px"
           class="cos-wallet-address-text-cut"
         >
-          {{ pretty(d.labelName) }}.eth
+          <a (click)="goToDomain(d.labelName)">
+            <b> {{ pretty(d.labelName) }}.eth </b>
+          </a>
           <mat-icon
             *ngIf="domainValid(d.labelName) === false"
             color="accent"
@@ -1070,10 +1075,7 @@
 
 <ng-template #chunkDomainTemplate>
   <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
-    <div
-      class="co-bulk-search-item-container"
-      (click)="goToDomain(d.labelName)"
-    >
+    <div class="co-bulk-search-item-container">
       <mat-progress-bar
         *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
         class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
@@ -1088,7 +1090,7 @@
         "
         fxLayoutGap="15px"
         fxLayoutAlign="center center"
-        class="co-bulk-search-item cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+        class="co-bulk-search-item cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
       >
         <div
           fxFlex
@@ -1097,10 +1099,12 @@
           fxLayoutAlign="center start"
         >
           <div fxFlex="0 0 auto" class="cos-body-2">
-            <b> {{ pretty(d.labelName) }}.eth </b>
+            <a (click)="goToDomain(d.labelName)">
+              <b> {{ pretty(d.labelName) }}.eth </b>
+            </a>
           </div>
           <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
-            <div class="cos-body-5 cos-gray-text">Reg. since:</div>
+            <div class="cos-body-5 cos-gray-text">Reg:</div>
             <div class="cos-body-5">{{ d.registrationDate | timeAgo }}</div>
           </div>
           <div fxFlex></div>
@@ -1111,7 +1115,15 @@
           class="cos-small-icon cos-pointer"
           >warning</mat-icon
         >
-        <mat-icon fxFlex="24px" class="cos-icon-can-activate"
+        <mat-icon
+          fxFlex="24px"
+          (click)="toggleBookmark(d)"
+          class="cos-icon-can-activate"
+          [ngClass]="
+            bookmarkService.isDomainBookmarked(bookmarks, d.labelName)
+              ? 'mat-primary'
+              : ''
+          "
           >bookmark_add</mat-icon
         >
       </div>
@@ -1122,7 +1134,7 @@
 <ng-template #linearSalesTemplate>
   <ng-container *ngFor="let s of salesList">
     <div
-      class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer"
+      class="co-bulk-search-item-container co-linear-item cos-fluid-width cos-no-margin-right cos-pointer"
     >
       <div
         fxFlex
@@ -1143,7 +1155,9 @@
             Sale
           </div>
           <div fxFlex>
-            {{ pretty(s.domain) }}.eth
+            <a (click)="goToDomain(s.domain)">
+              <b> {{ pretty(s.domain) }}.eth </b>
+            </a>
             <mat-icon
               *ngIf="domainValid(s.domain) === false"
               color="accent"
