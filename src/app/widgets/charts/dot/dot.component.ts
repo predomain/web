@@ -73,7 +73,7 @@ export class DotComponent {
         y: {
           ticks: {
             callback: function (value, index, ticks) {
-              return value + ' ETH';
+              return (value as number).toFixed(3) + ' ETH';
             },
             font: {
               size: 14,
