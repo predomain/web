@@ -82,7 +82,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
-  placeholders = new Array(48).fill(0);
+  placeholders = new Array(this.suitableItemPageWidthForWindow * 4).fill(0);
   pageCategory = this.category + '.' + generalConfigurations.categoriesDomain;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   hasDomainsListLoaded = false;
@@ -98,7 +98,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   };
 
   chartData: ChartDataModel[];
-  domainsListPerPage = 48;
+  domainsListPerPage = this.suitableItemPageWidthForWindow * 4;
   domainsListPage = 0;
   domainsListResolving = false;
 
@@ -920,12 +920,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   get chartWidth() {
-    let toDeduct;
-    if (window.innerWidth >= 1820) {
-      toDeduct = (window.innerWidth / 100) * 20;
-    } else {
-      toDeduct = 350;
-    }
+    let toDeduct = 350;
     return window.innerWidth - toDeduct - 110;
   }
 
@@ -947,6 +942,35 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   get isDeviceMobile() {
-    return window.innerWidth <= 1000;
+    return document.body.clientWidth <= 600;
+  }
+
+  get suitableItemPageWidthForWindow() {
+    const windowW = document.body.clientWidth;
+    console.log(windowW);
+    if (windowW <= 600) {
+      return 2;
+    }
+    if (windowW > 600 && windowW <= 1200) {
+      return 4;
+    }
+    if (windowW > 1200 && windowW <= 1999) {
+      return 5;
+    }
+    return 8;
+  }
+
+  get guideAvatarSize() {
+    const windowW = document.body.clientWidth;
+    if (windowW <= 600) {
+      return windowW / 2 - 5;
+    }
+    if (windowW > 600 && windowW <= 1200) {
+      return windowW / 4 - 8;
+    }
+    if (windowW > 1200 && windowW <= 1999) {
+      return windowW / 5 - 8;
+    }
+    return (windowW / 100) * 12.5 - 9;
   }
 }

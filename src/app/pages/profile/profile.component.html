@@ -70,7 +70,7 @@
         fxLayoutGap="30px"
         class="co-profile-header cos-fluid-width cos-overflow-hidden"
       >
-        <div fxLayout="column" fxFlex="20" class="co-avatar-container">
+        <div fxLayout="column" class="co-avatar-container">
           <div
             id="canvas_size_guide"
             class="cos-fluid-width cos-no-margin-bottom"
@@ -112,7 +112,7 @@
             <div
               *ngIf="ethNameData === undefined && avatarResolved === true"
               class="co-no-name cos-wallet-address-text-cut cos-pos-absolute cos-right-text"
-              fxFlex="0 1 11.5"
+              fxFlex
             >
               <b>
                 {{ userName }}
@@ -413,7 +413,7 @@
           >
             <div
               id="co-avatar-item-size-guide-mobile"
-              [style.width]="'calc(50% - 5px)'"
+              [style.width]="guideAvatarSize + 'px'"
             ></div>
           </div>
           <div
@@ -457,7 +457,7 @@
           <div
             id="co-avatar-item-size-guide"
             class="cos-disappear-on-mobile"
-            [style.width]="'calc(16.77% - 10px)'"
+            [style.width]="guideAvatarSize + 'px'"
           ></div>
           <div
             *ngIf="
@@ -716,9 +716,8 @@
       [style.height]="
         isDeviceMobile === true
           ? canvasService.getWidthOfDiv('co-avatar-item-size-guide-mobile') +
-            60 +
             'px'
-          : canvasService.getWidthOfDiv('co-avatar-item-size-guide') + 60 + 'px'
+          : canvasService.getWidthOfDiv('co-avatar-item-size-guide') - 30 + 'px'
       "
     >
       <div
