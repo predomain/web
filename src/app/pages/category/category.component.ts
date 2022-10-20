@@ -1,6 +1,5 @@
 import { of, Subject, timer } from 'rxjs';
 import { ethers } from 'ethers';
-import * as d3 from 'd3';
 import {
   ChangeDetectorRef,
   Component,
@@ -947,7 +946,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   get suitableItemPageWidthForWindow() {
     const windowW = document.body.clientWidth;
-    console.log(windowW);
     if (windowW <= 600) {
       return 2;
     }
