@@ -811,26 +811,65 @@ export class CategoryComponent implements OnInit, OnDestroy {
     return toFeedLazyLoad;
   }
 
+  get dailySalesVolume() {
+    if (this.categoryNormalisedMetadata === undefined) {
+      return 0.0;
+    }
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    const sales = this.categoryNormalisedMetadata.sales.filter((s) => {
+      if (
+        s.timestamp >= startOfDay.getTime() - 43200000 &&
+        s.timestamp < startOfDay.getTime() + 43200000
+      ) {
+        return true;
+      }
+      return false;
+    });
+    return sales.reduce((a, b) => {
+      return a + parseFloat(b.price);
+    }, 0);
+  }
+
+  get previousDailySalesVolume() {
+    if (this.categoryNormalisedMetadata === undefined) {
+      return 0.0;
+    }
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    const previousVolume = this.categoryNormalisedMetadata.sales
+      .filter((s) => {
+        if (
+          s.timestamp > startOfDay.getTime() - 86400000 &&
+          s.timestamp < startOfDay.getTime()
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .reduce((a, b) => a + parseFloat(b.price), 0);
+    return previousVolume;
+  }
+
   get dailyVolumeTrend() {
     if (
       this.categoryNormalisedMetadata === undefined ||
-      this.categoryNormalisedMetadata.dailyVolume === 0
+      this.dailySalesVolume === 0
     ) {
       return 0;
     }
-    if (this.categoryNormalisedMetadata.previousDailyVolume === 0) {
+    if (this.previousDailySalesVolume === 0) {
       return 0;
     }
-    const previousVolumeDivisible =
-      this.categoryNormalisedMetadata.previousDailyVolume / 100;
-    const difference =
-      this.categoryNormalisedMetadata.previousDailyVolume -
-      this.categoryNormalisedMetadata.dailyVolume;
-    const dailyVolumePercentage =
-      this.categoryNormalisedMetadata.dailyVolume / previousVolumeDivisible;
+    const difference = this.dailySalesVolume - this.previousDailySalesVolume;
     if (difference > 0) {
-      return (0 - (100 - dailyVolumePercentage)).toFixed(2);
+      const volumeDivisible = this.dailySalesVolume / 100;
+      const dailyVolumePercentage = difference / volumeDivisible;
+      return dailyVolumePercentage.toFixed(2);
     }
+    const previousVolumeDivisible = this.previousDailySalesVolume / 100;
+    const dailyVolumePercentage =
+      0 - Math.abs(difference) / previousVolumeDivisible;
     return dailyVolumePercentage.toFixed(2);
   }
 
@@ -887,7 +926,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     const startOfDay = new Date();
     startOfDay.setUTCHours(0, 0, 0, 0);
     return this.categoryNormalisedMetadata.sales.filter((s) => {
-      if (s.timestamp > startOfDay.getTime()) {
+      if (s.timestamp > startOfDay.getTime() - 43200000) {
         return true;
       }
       return false;
@@ -903,8 +942,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
     const previousDaySales = this.categoryNormalisedMetadata.sales.filter(
       (s) => {
         if (
-          s.timestamp > startOfDay.getTime() - 86400000 &&
-          s.timestamp < startOfDay.getTime()
+          s.timestamp > startOfDay.getTime() - 43200000 &&
+          s.timestamp < startOfDay.getTime() + 43200000
         ) {
           return true;
         }
