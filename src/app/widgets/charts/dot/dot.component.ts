@@ -75,6 +75,7 @@ export class DotComponent {
           },
         },
         y: {
+          beginAtZero: true,
           grid: {
             color: '#4a4a4a',
             borderWidth: 0,
