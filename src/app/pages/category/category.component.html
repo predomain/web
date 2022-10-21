@@ -289,9 +289,7 @@
                 >
                   <div fxFlex="0 0 auto">
                     <b>
-                      {{
-                        priceToFixed(categoryNormalisedMetadata?.dailyVolume, 2)
-                      }}
+                      {{ priceToFixed(dailySalesVolume, 2) }}
                       ETH
                     </b>
                   </div>
@@ -1196,7 +1194,7 @@
         </div>
         <div fxFlex fxLayoutAlign="end center">
           <a
-            href="{{ getDomainLink(s.domain + '.eth') }}"
+            (click)="goToEtherscanTx(s.tx)"
             target="_blank"
             class="cos-body-3"
             fxLayoutAlign="center center"
