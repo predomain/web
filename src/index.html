@@ -47,8 +47,38 @@
     <script>
       __Zone_enable_cross_context_check = true;
     </script>
+    <style>
+      .co-splash-container {
+        perspective: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .co-splash {
+        width: 100px;
+        height: 100px;
+        background: url(assets/logo.png);
+        background-size: 100%;
+        transform: rotateY(45deg);
+        animation: rotateAnimation 1s linear infinite;
+      }
+
+      @keyframes rotateAnimation {
+        from {
+          transform: rotateY(45deg);
+        }
+        to {
+          transform: rotateY(225deg);
+        }
+      }
+    </style>
   </head>
   <body>
+    <div id="app-splash-container" class="co-splash-container">
+      <div class="co-splash"></div>
+    </div>
     <app-root></app-root>
     <div style="clear: both"></div>
   </body>
