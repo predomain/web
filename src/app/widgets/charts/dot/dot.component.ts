@@ -53,6 +53,10 @@ export class DotComponent {
       },
       scales: {
         x: {
+          grid: {
+            color: '#1a1e22',
+            borderWidth: 0,
+          },
           ticks: {
             maxTicksLimit: 15,
             maxRotation: 0,
@@ -71,6 +75,10 @@ export class DotComponent {
           },
         },
         y: {
+          grid: {
+            color: '#4a4a4a',
+            borderWidth: 0,
+          },
           ticks: {
             callback: function (value, index, ticks) {
               return (value as number).toFixed(3) + ' ETH';

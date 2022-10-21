@@ -11,7 +11,7 @@ export class TimeAgoPipe implements PipeTransform {
   constructor(protected formatTimePipe: FormatTimePipe) {}
 
   transform(value: string): any {
-    const timeAgo = new TimeAgo('en-US');
+    const timeAgo = new TimeAgo('en-GB');
     if (value) {
       const time = timeAgo.format(new Date(parseInt(value)));
       if (time.toLowerCase().indexOf('year') > -1) {
