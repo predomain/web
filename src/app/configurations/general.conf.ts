@@ -34,6 +34,8 @@ export const generalConfigurations = {
   docsLink: 'https://docs.predomain.xyz/',
   blockscanLink: 'https://chat.blockscan.com/index?a=',
   nftyChatLink: 'https://nftychat.xyz/dm/',
+  appName: 'predomain',
+  appStagingName: 'staging.predomain',
   trezorManifest: {
     email: 'predomain@skiff.com',
     appUrl: 'https://predomain.eth.limo',
