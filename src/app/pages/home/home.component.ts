@@ -208,9 +208,13 @@ export class HomeComponent implements OnDestroy, OnInit {
     if (this.categoriesRootVolume === undefined) {
       return '...';
     }
-    return this.categoriesRootVolume
-      .filter((c) => c.category === category)[0]
-      .volume.toFixed(decimals);
+    const filteredCategories = this.categoriesRootVolume.filter(
+      (c) => c.category === category
+    );
+    if (filteredCategories.length <= 0) {
+      return (0).toFixed(decimals);
+    }
+    return filteredCategories[0].volume.toFixed(decimals);
   }
 
   timestampToString(t: number) {
@@ -254,8 +258,22 @@ export class HomeComponent implements OnDestroy, OnInit {
     if (this.categoriesRootVolume === undefined) {
       return this.categories;
     }
-    const sorted = this.categoriesRootVolume
-      .map((c) => c)
+    const sorted = this.categories
+      .map((c) => {
+        let categoryFoundMonthlyVolume;
+        for (const m of this.categoriesRootVolume) {
+          if (m.category === c) {
+            categoryFoundMonthlyVolume = m;
+          }
+        }
+        if (categoryFoundMonthlyVolume !== undefined) {
+          return categoryFoundMonthlyVolume;
+        }
+        return {
+          category: c,
+          volume: 0,
+        };
+      })
       .sort((a, b) => {
         return b.volume - a.volume;
       })
