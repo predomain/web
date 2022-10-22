@@ -52,7 +52,7 @@ export const generalConfigurations = {
     profile: true,
     domain: true,
   },
-  enablePoapResolution: true,
+  enablePoapResolution: false,
   poapRequiredTools: {
     category: {
       required: false,
