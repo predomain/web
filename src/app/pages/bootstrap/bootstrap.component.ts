@@ -30,6 +30,7 @@ export class BootstrapComponent implements OnDestroy, AfterViewInit {
         'profile/#/' + primaryDomain,
         PagesEnum.PROFILE
       );
+      return;
     }
     this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
   }
