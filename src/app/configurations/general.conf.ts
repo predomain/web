@@ -55,8 +55,8 @@ export const generalConfigurations = {
   enablePoapResolution: true,
   poapRequiredTools: {
     category: {
-      required: true,
-      poapId: '68199',
+      required: false,
+      poapId: null,
       allowedIds: null,
     },
     management: { required: false, poapId: null, allowedIds: null },
