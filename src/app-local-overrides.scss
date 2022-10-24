@@ -84,7 +84,7 @@
   tbody {
     width: calc(80% - 62.5px) !important;
     height: calc(100% - 295px) !important;
-    border-left: solid 4px var(--co-gray-bg) !important;
+    border-left: solid 4px var(--co-faded-dark-gray-bg) !important;
     @media only screen and (max-width: 1000px) {
       border-left: 0 !important;
       width: 100% !important;

@@ -24,11 +24,11 @@
 
 ::-webkit-scrollbar-track {
   border-radius: var(--cos-border-radius-1);
-  background-color: var(--co-gray-bg);
+  background-color: var(--co-faded-dark-gray-bg);
 }
 ::-webkit-scrollbar {
   width: 4px;
-  background-color: var(--co-gray-bg);
+  background-color: var(--co-faded-dark-gray-bg);
 }
 ::-webkit-scrollbar-thumb {
   border-radius: var(--cos-border-radius-1);

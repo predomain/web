@@ -1040,7 +1040,7 @@ ol {
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     tbody {
-      border-bottom: solid 4px var(--co-gray-bg) !important;
+      border-bottom: solid 4px var(--co-faded-dark-gray-bg) !important;
     }
   }
 
@@ -1063,13 +1063,13 @@ ol {
       height: 50px;
       th {
         height: 50px;
-        border-bottom: solid 2px var(--co-gray-bg) !important;
+        border-bottom: solid 2px var(--co-faded-dark-gray-bg) !important;
       }
     }
   }
 
   .mat-header-cell {
-    background-color: var(--co-gray-bg) !important;
+    background-color: var(--co-faded-dark-gray-bg) !important;
     .mat-checkbox-inner-container {
       background-color: var(--co-bg-neutral-color) !important;
     }
@@ -1083,12 +1083,12 @@ ol {
 
   tbody {
     .mat-row {
-      border-bottom: solid 2px var(--co-gray-bg) !important;
+      border-bottom: solid 2px var(--co-faded-dark-gray-bg) !important;
       &:last-of-type {
         border-bottom: 0 !important;
       }
       &:hover {
-        background-color: var(--co-gray-bg) !important;
+        background-color: var(--co-faded-dark-gray-bg) !important;
         cursor: pointer;
         .mat-checkbox-inner-container {
           background-color: var(--co-bg-neutral-color) !important;

@@ -156,7 +156,7 @@
             <div
               fxFlex
               fxLayout="column"
-              class="co-filters-content cos-bg-gray cos-border-radius-2 cos-padding-2 cos-fluid-height"
+              class="co-filters-content cos-bg-faded-darker-gray cos-border-radius-2 cos-padding-2 cos-fluid-height"
             >
               <div
                 fxFlex="0 0 auto"
@@ -164,10 +164,20 @@
                 fxLayoutAlign="start start"
                 fxLayoutGap="10px"
               >
-                <mat-icon>info</mat-icon>
-                <span>
-                  <b> {{ "LABELS.DETAILS" | translate }} </b>
-                </span>
+                <div fxFlex fxLayoutAlign="start center" fxLayoutGap="10px">
+                  <mat-icon>info</mat-icon>
+                  <span>
+                    <b> {{ "LABELS.DETAILS" | translate }} </b>
+                  </span>
+                </div>
+                <div
+                  fxFlex
+                  fxLayout="row"
+                  fxLayoutAlign="end end"
+                  class="cos-body-3"
+                >
+                  <a href="">Setup Domain</a>
+                </div>
               </div>
               <div
                 *ngIf="selectedDomain === undefined"
@@ -201,11 +211,24 @@
                   class="cos-fluid-width cos-body-4 cos-gray-text"
                 >
                   <div class="co-form-label">
+                    {{ "LABELS.DOMAIN" | translate }}
+                  </div>
+                  <mat-form-field class="co-main-search cos-body-0">
+                    <input
+                      class="cos-fluid-width cos-bg-faded-darker-gray"
+                      matInput
+                      type="text"
+                      autocomplete="off"
+                      maxlength="50"
+                      formControlName="name"
+                    />
+                  </mat-form-field>
+                  <div class="co-form-label">
                     {{ "LABELS.CREATION_DATE" | translate }}
                   </div>
                   <mat-form-field class="co-main-search cos-body-0">
                     <input
-                      class="cos-fluid-width cos-bg-darker-gray"
+                      class="cos-fluid-width cos-bg-faded-darker-gray"
                       matInput
                       type="text"
                       autocomplete="off"
@@ -738,7 +761,7 @@
                 <div
                   fxFlex
                   fxLayoutAlign="start end"
-                  class="cos-fluid-width cos-overflow-hidden cos-bg-gray cos-border-radius-2 cos-padding-0 cos-no-border-radius-top-left cos-no-border-radius-top-right"
+                  class="cos-fluid-width cos-overflow-hidden cos-bg-faded-darker-gray cos-border-radius-2 cos-padding-0 cos-no-border-radius-top-left cos-no-border-radius-top-right"
                 >
                   <div fxFlex fxLayoutAlign="start center">
                     <div

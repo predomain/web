@@ -135,6 +135,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       search: new FormControl(''),
     });
     this.metadataForm = new FormGroup({
+      name: new FormControl({ disabled: true, value: '' }),
       creation: new FormControl({ disabled: true, value: '' }),
       registration: new FormControl({ disabled: true, value: '' }),
       expiration: new FormControl({ disabled: true, value: '' }),
@@ -258,6 +259,7 @@ export class ManageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.collapseAllItems = false;
     }
     this.selectedDomain = domain;
+    this.metadataForm.controls.name.setValue(domain.labelName + '.eth');
     this.metadataForm.controls.creation.setValue(
       this.formatTimeService.transform(
         parseInt(this.selectedDomain.createdAt).toString()

@@ -1,0 +1,220 @@
+<div mat-dialog-content>
+  <div
+    class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
+    fxLayoutAlign="start start"
+    fxLayout="column"
+    fxLayoutGap="10px"
+  >
+    <div
+      fxFlex
+      fxLayoutAlign="center center"
+      class="cos-fluid-width cos-padding-1 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
+    >
+      <div fxFlex class="cos-body-0">
+        <b>
+          {{ "HEADER.MANAGE_DOMAINS" | translate }}
+        </b>
+      </div>
+      <div fxFlex="0 0 auto" class="cos-right-text">
+        <a (click)="closeDialog()" class="cos-body-4">
+          {{ "BUTTON.CLOSE" | translate }}
+        </a>
+      </div>
+    </div>
+    <div class="cos-fluid-width">
+      <mat-accordion class="cos-fluid-width" #stepper>
+        <mat-expansion-panel
+          [expanded]="step === 0"
+          (opened)="setStep(0)"
+          hideToggle="true"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row">
+                <div fxFlex>
+                  <b> {{ "RENEW.RENEWAL_COST" | translate }} </b>
+                </div>
+                <div fxFlex class="cos-right-text cos-body-4">
+                  <a> {{ "STEP.STEP_1" | translate }} </a>
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <p class="header-item cos-body-3 cos-gray-text">
+            <b> {{ "LABELS.RENEWAL_DURATION" | translate }}: </b>
+          </p>
+          <form
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            [formGroup]="renewForm"
+          >
+            <mat-form-field
+              fxFlexAlign="center"
+              class="cos-fluid-width cos-body-0 cos-input-field-no-label cos-input-field-large cos-gray-placeholder"
+            >
+              <mat-select
+                formControlName="duration"
+                fxFlex
+                class="cos-bg-gray"
+                (selectionChange)="performRenewalCostCalculation()"
+              >
+                <mat-option [value]="renewalDurationTypes['1WEEK']">
+                  {{ renewalDurationTypes["1WEEK"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['1MONTH']">
+                  {{ renewalDurationTypes["1MONTH"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['3MONTHS']">
+                  {{ renewalDurationTypes["3MONTHS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['6MONTHS']">
+                  {{ renewalDurationTypes["6MONTHS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['1YEAR']">
+                  {{ renewalDurationTypes["1YEAR"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['2YEARS']">
+                  {{ renewalDurationTypes["2YEARS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['3YEARS']">
+                  {{ renewalDurationTypes["3YEARS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['4YEARS']">
+                  {{ renewalDurationTypes["4YEARS"] | translate }}
+                </mat-option>
+                <mat-option [value]="renewalDurationTypes['5YEARS']">
+                  {{ renewalDurationTypes["5YEARS"] | translate }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+          <p>{{ "RENEW.ESTIMATED_RENEWAL_COST" | translate }}</p>
+          <p class="header-item cos-body-3 cos-gray-text">
+            <b> {{ "LABELS.ESTIMATED_COST" | translate }}: </b>
+          </p>
+          <div
+            class="cos-fluid-width cos-light-note cos-light-note-dark cos-body-0 cos-center-text cos-bg-gray"
+          >
+            <a>
+              {{
+                getRenewalCost(namesOfDomainsToRenew, renewalDuration)
+                  | fixedEther
+              }}
+              ETH</a
+            >
+          </div>
+          <p [innerHTML]="'LABELS.CLICK_NEXT_TO_PROCEED' | translate"></p>
+          <p class="cos-fluid-width">
+            <button
+              fxFlex
+              mat-button
+              (click)="nextStep()"
+              [disabled]="renewing === true"
+            >
+              <div fxLayoutAlign="center center">
+                <span fxFlex>
+                  {{ "BUTTON.NEXT" | translate }}
+                </span>
+              </div>
+            </button>
+          </p>
+        </mat-expansion-panel>
+        <mat-expansion-panel
+          [expanded]="step === 1"
+          (opened)="setStep(1)"
+          hideToggle="true"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row">
+                <div fxFlex>
+                  <b> {{ "LABELS.COMPLETE" | translate }} </b>
+                </div>
+                <div fxFlex class="cos-right-text cos-body-4">
+                  <a> {{ "STEP.STEP_2" | translate }} </a>
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ng-container *ngIf="renewComplete === true">
+            <p class="cos-padding-3 cos-no-padding-bottom">
+              <app-icon [iconSize]="150">
+                <ng-container> check </ng-container>
+              </app-icon>
+            </p>
+            <p class="cos-body-0 cos-center-text">
+              {{ "RENEW.RENEWAL_COMPLETE" | translate }}!
+            </p>
+          </ng-container>
+          <ng-container *ngIf="renewComplete === false">
+            <p>
+              {{ "RENEW.DOMAINS_READY_FOR_RENEWAL" | translate }}
+            </p>
+
+            <p class="header-item cos-body-3 cos-gray-text">
+              <b>{{ "LABELS.DOMAINS" | translate }}:</b>
+            </p>
+            <div
+              fxLayout="column"
+              fxLayoutGap="10px"
+              class="co-domains-list cos-overflow-y cos-body-4 cos-border-radius-1 cos-border cos-padding-1"
+            >
+              <div
+                *ngFor="let d of domainsToRenew"
+                fxLayoutGap="10px"
+                fxLayout="row"
+              >
+                <img fxFlex="20px" src="assets/ens.svg" />
+                <div>{{ d.labelName }}.eth</div>
+              </div>
+            </div>
+            <p class="cos-fluid-width">
+              <button
+                fxFlex
+                mat-button
+                (click)="performRenewal()"
+                [disabled]="renewing === true"
+              >
+                <div fxLayoutAlign="center center">
+                  <div fxFlex="0 0 auto" *ngIf="renewing === true">
+                    <app-spinner
+                      [padded]="false"
+                      [lightColour]="true"
+                      [spinnerSize]="10"
+                      [showText]="false"
+                    ></app-spinner>
+                  </div>
+                  <span *ngIf="renewing === false" fxFlex>
+                    {{ "BUTTON.PROCEED" | translate }}
+                  </span>
+                </div>
+              </button>
+            </p>
+            <p
+              *ngIf="
+                renewing === true &&
+                renewToCheck !== undefined &&
+                renewToCheck?.paymentHash !== '' &&
+                renewToCheck?.paymentHash !== null &&
+                renewToCheck?.paymentHash !== undefined
+              "
+              class="cos-center-text cos-padding-1 cos-border cos-border-radius-2"
+            >
+              <a (click)="goToPendingTx()" class="cos-body-3"
+                >1 {{ "BUTTON.PENDING" | translate }}
+                {{ "LABELS.TRANSACTION" | translate }}</a
+              >
+            </p>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>
