@@ -8,4 +8,7 @@ export enum PaymentTypesEnum {
   TX_APPROVAL = 3,
   TX_TRANSFER = 4,
   TX_RENEW = 5,
+  TX_SET_ENS_NAME = 6,
+  TX_SET_ENS_CONTENT_HASH = 7,
+  TX_SET_ENS_TEXT = 8,
 }

@@ -13,7 +13,7 @@ import {
   takeUntil,
   withLatestFrom,
 } from 'rxjs/operators';
-import { DomainMetadataModel } from 'src/app/models/domains';
+import { DomainMetadataModel, DomainTypeEnum } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { UserService } from 'src/app/services';
@@ -29,7 +29,7 @@ import {
 } from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
 import { ethers } from 'ethers';
-import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
+import { CanvasServicesService } from '../../services/canvas-services/canvas-services.service';
 import { FormatTimePipe, TimeAgoPipe } from 'src/app/modules/pipes';
 import {
   EnsEvensSymbolEnum,
@@ -46,6 +46,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
 import { select, Store } from '@ngrx/store';
 import { getENSBookmarks } from 'src/app/store/selectors';
+import { SaleManagementComponent } from 'src/app/widgets/sale-management/sale-management.component';
+import { MatDialog } from '@angular/material/dialog';
 
 const globalAny: any = global;
 
@@ -62,11 +64,12 @@ export enum EventTypes {
   styleUrls: ['./domain.component.scss'],
 })
 export class DomainComponent implements OnInit, OnDestroy {
-  placeholders = new Array(10).fill(0);
+  placeholders = new Array(5).fill(0);
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   resolvedEvents: ENSEventModel[] = [];
+  domainTypeSelected: DomainTypeEnum = DomainTypeEnum.ENS;
   bookmarks: DomainMetadataModel[];
   eventTypeIcons: typeof EnsEvensSymbolEnum = EnsEvensSymbolEnum;
   eventTypes: typeof EnsEventsEnum = EnsEventsEnum;
@@ -97,6 +100,7 @@ export class DomainComponent implements OnInit, OnDestroy {
     protected timeAgoService: TimeAgoPipe,
     protected formatTimeService: FormatTimePipe,
     protected router: Router,
+    protected dialog: MatDialog,
     protected snackBar: MatSnackBar,
     public bookmarksService: BookmarksServiceService,
     public canvasService: CanvasServicesService
@@ -181,6 +185,7 @@ export class DomainComponent implements OnInit, OnDestroy {
               labelName: d.labelName.toLowerCase(),
               labelHash: d.domain.labelhash.toLowerCase(),
               isNotAvailable: false,
+              domainType: this.domainTypeSelected,
               expiry: d.expiryDate,
               gracePeriodPercent:
                 gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
@@ -437,6 +442,13 @@ export class DomainComponent implements OnInit, OnDestroy {
     this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
   }
 
+  openPurchasePanel(domain: DomainMetadataModel) {
+    const dialogRef = this.dialog.open(SaleManagementComponent, {
+      panelClass: 'cos-settings-dialog',
+    });
+    dialogRef.componentInstance.domain = domain;
+  }
+
   hashToBigIntString(hash: string) {
     return ethers.BigNumber.from(hash).toString();
   }
@@ -519,6 +531,10 @@ export class DomainComponent implements OnInit, OnDestroy {
 
   shortenAddress(address: string) {
     return address.substring(6);
+  }
+
+  get isDeviceMobile() {
+    return document.body.clientWidth <= 600;
   }
 
   get domainBookable() {

@@ -1,10 +1,6 @@
 <div
-  #fadeTop
-  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
-  fxLayout="row"
-  fxLayoutAlign="center end"
-></div>
-<div class="co-main-header cos-pos-fixed cos-fluid-width cos-padding-2">
+  class="co-header-container cos-pos-fixed cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right"
+>
   <app-main-header
     #mainHeader
     [show]="{
@@ -19,7 +15,13 @@
   ></app-main-header>
 </div>
 <div
-  class="co-signin cos-pos-fixed cos-fluid-width cos-fluid-height"
+  #fadeTop
+  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
+  fxLayout="row"
+  fxLayoutAlign="center end"
+></div>
+<div
+  class="co-content-container cos-pos-fixed cos-fluid-width cos-fluid-height"
   fxLayoutAlign="center center"
   fxLayout="column"
 >
@@ -31,7 +33,7 @@
         ? (fadeTop.style.display = 'flex')
         : (fadeTop.style.display = 'none')
     "
-    class="co-signin-content cos-overflow-y cos-fluid-width cos-fluid-height cos-body-3 cos-padding-4 cos-no-padding-bottom cos-no-padding-left cos-no-padding-right"
+    class="co-content-container-content cos-overflow-y cos-fluid-width cos-fluid-height cos-body-3 cos-padding-4 cos-no-padding-bottom cos-no-padding-left cos-no-padding-right"
     fxLayout="column"
     fxLayoutGap="30px"
   >
@@ -93,11 +95,11 @@
       >
         <mat-form-field
           fxFlexAlign="center"
-          class="co-main-search cos-body-0 cos-input-field-no-label cos-input-field-large cos-gray-placeholder"
+          class="co-main-search cos-body-0 cos-input-field-no-label cos-input-field-large cos-field-width-shadow cos-gray-placeholder"
         >
           <input
             #autoCompleteTrigger="matAutocompleteTrigger"
-            class="cos-fluid-width cos-bg-darker-gray"
+            class="cos-fluid-width cos-bg-darker-gray cos-box-shadow"
             matInput
             type="text"
             placeholder="{{ 'LABELS.FIND_AND_REGISTER' | translate }}"
@@ -122,7 +124,10 @@
               <div fxFlex>{{ "BUTTON.PRESS_ENTER" | translate }}</div>
             </div>
             <div class="co-advanced-mode cos-body-3 cos-pos-absolute">
-              <a (click)="mainHeader?.bulksearch?.toggleBulkSearch(true)">
+              <a
+                (click)="mainHeader?.bulksearch?.toggleBulkSearch(true)"
+                class="cos-main-text"
+              >
                 {{ "LABELS.ADVANCED_MODE" | translate }}
               </a>
             </div>
@@ -228,12 +233,12 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-bg-faded-darker-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
             fxLayoutAlign="center center"
-            class="cos-body-0 cos-bg-neutral cos-padding-0 cos-border-radius-2"
+            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
           >
             <div
               fxFlex="0 0 auto"
@@ -260,7 +265,11 @@
             </ng-container>
             <div fxFlex fxLayout="row" *ngFor="let t of topCategories">
               <div fxFlex>
-                <a href="/#/category/{{ t.category }}" target="_blank">
+                <a
+                  href="/#/category/{{ t.category }}"
+                  target="_blank"
+                  class="cos-main-text"
+                >
                   {{ metadata.categoriesDescription[t.category] }}
                 </a>
               </div>
@@ -275,12 +284,12 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-bg-faded-darker-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
             fxLayoutAlign="center center"
-            class="cos-body-0 cos-bg-neutral cos-padding-0 cos-border-radius-2"
+            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
           >
             <div
               fxFlex="0 0 auto"
@@ -312,7 +321,11 @@
                 fxLayoutGap="10px"
                 fxLayoutAlign="start center"
               >
-                <a href="/#/domain/{{ t.domain }}.eth" target="_blank">
+                <a
+                  href="/#/domain/{{ t.domain }}.eth"
+                  target="_blank"
+                  class="cos-main-text"
+                >
                   {{ t.domain }}.eth
                 </a>
                 <div class="cos-body-4 cos-gray-text">
@@ -330,12 +343,12 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-bg-faded-darker-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
             fxLayoutAlign="center center"
-            class="cos-body-0 cos-bg-neutral cos-padding-0 cos-border-radius-2"
+            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
           >
             <div
               fxFlex="0 0 auto"
@@ -361,7 +374,11 @@
                 fxLayoutGap="10px"
                 fxLayoutAlign="start center"
               >
-                <a href="/#/domain/{{ t.domain }}.eth" target="_blank">
+                <a
+                  href="/#/domain/{{ t.domain }}.eth"
+                  target="_blank"
+                  class="cos-main-text"
+                >
                   {{ t.domain }}.eth
                 </a>
                 <div class="cos-body-4 cos-gray-text">
@@ -385,10 +402,9 @@
           *ngIf="categoriesEnabled === true && showCategoryToUser === true"
           fxFlex
           fxLayout="column"
-          fxLayoutGap="20px"
-          class="co-home-categories cos-bg-faded-darker-gray cos-fluid-width cos-padding-4"
+          class="co-home-categories cos-fluid-width"
         >
-          <div fxFlex fxLayout="row wrap" fxLayoutGap="10px">
+          <div fxFlex fxLayout="row wrap" fxLayoutGap="20px">
             <ng-container *ngIf="categories === undefined">
               <div
                 *ngFor="let p of placeholders"
@@ -397,15 +413,15 @@
               ></div>
             </ng-container>
             <div
-              *ngFor="let c of categoriesSorted"
+              *ngFor="let c of categoriesSorted; let i = index"
               fxLayout="row"
-              fxLayoutGap="15px"
-              class="co-category"
+              class="co-category cos-border-radius-2 cos-overflow-hidden"
+              (click)="openCategory(c)"
             >
               <div>
                 <div
                   fxLayoutAlign="stretch stretch"
-                  class="cos-fluid-height cos-fluid-width cos-pointer"
+                  class="cos-fluid-height cos-fluid-width cos-pointer cos-box-shadow"
                   (click)="openCategory(c)"
                 >
                   <app-preview-image
@@ -415,32 +431,40 @@
                     [loaded]="true"
                     [preview]="'assets/category-profile-blank.svg'"
                     [error]="'assets/category-profile-blank.svg'"
-                    [style.width]="'130px'"
+                    [style.width]="'90px'"
+                    [style.height]="'90px'"
+                    [enableBorderRadius]="false"
                   ></app-preview-image>
                   <mat-icon class="co-category-thumbnail">
                     {{ metadata.categoriesThumbnails[c] }}
                   </mat-icon>
                 </div>
               </div>
-              <div fxLayout="column">
-                <div fxFlex="0 0 auto" class="co-category-title">
-                  <a href="/#/category/{{ c }}" target="_blank"
-                    >{{ metadata.categoriesTitle[c] }}
-                    <mat-icon class="cos-small-icon">open_in_new</mat-icon>
-                  </a>
-                </div>
-                <div fxFlex="0 0 auto" class="cos-gray-text">
-                  {{ metadata.categoriesDescription[c] }}
-                </div>
-                <div fxFlex></div>
-                <div fxFlex="0 0 auto" class="cos-body-0">
-                  <b> {{ getCategoryVolume(c) }} ETH </b>
-                </div>
+              <div
+                fxLayout="row"
+                class="co-category-description cos-pointer cos-fluid-width cos-bg-gray cos-padding-1"
+              >
                 <div
                   fxFlex="0 0 auto"
-                  class="cos-margin-0 cos-no-margin-left cos-no-margin-right cos-no-margin-top cos-gray-text cos-body-4"
+                  fxLayout="column"
+                  fxLayoutAlign="center start"
                 >
-                  {{ "LABELS.MONTHLY_VOLUME" | translate }}
+                  <div class="cos-body-0 cos-main-text">
+                    {{ metadata.categoriesTitle[c] }}
+                    <mat-icon class="cos-small-icon">open_in_new</mat-icon>
+                  </div>
+                  <div fxFlex="0 0 auto" class="cos-gray-text cos-body-4">
+                    {{ metadata.categoriesDescription[c] }}
+                  </div>
+                </div>
+                <div fxFlex></div>
+                <div fxLayout="column" fxLayoutAlign="center end">
+                  <div fxFlex="0 0 auto" class="cos-body-0">
+                    <b> {{ getCategoryVolume(c) }} ETH </b>
+                  </div>
+                  <div fxFlex="0 0 auto" class="cos-gray-text cos-body-4">
+                    {{ "LABELS.MONTHLY_VOLUME" | translate }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -478,194 +502,8 @@
           </div>
         </div>
       </div>
-      <div
-        fxFlex
-        fxLayout="column"
-        fxLayoutGap="20px"
-        class="cos-fluid-width-half co-learn-container cos-disappear-on-mobile"
-      >
-        <div fxFlex fxLayout="column" fxLayoutGap="20px" class="cos-body-0">
-          <div fxFlex class="cos-center-text">ENS & Web3</div>
-          <div
-            fxLayout="row wrap"
-            fxLayoutGap="20px"
-            fxLayoutAlign="center center"
-            class="cos-body-3"
-          >
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://docs.ens.domains/"> ENS Docs </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://discuss.ens.domains/"> ENS Forums </a>
-              </div>
-            </div>
-
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://dune.com/makoto/ens"> ENS Statistics </a>
-              </div>
-            </div>
-
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://web3domains.com/"> Web3Domains </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://esteroids.eth.limo/"> Esteroids </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://ensgrows.substack.com/"> ENS Grows </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://me3.si/"> me3 </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://nimi.eth.limo/"> Nimi </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://eth.limo/"> ETH LIMO </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://ipfs.io/"> IPFS </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://nftychat.xyz/"> Nfty Chat </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://ethleaderboard.xyz/"> ENS Leaderboard </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://dwebservices.xyz/"> DWebServices </a>
-              </div>
-            </div>
-            <div
-              fxFlex="0 0 auto"
-              fxLayoutAlign="start center"
-              fxLayoutGap="10px"
-              class="co-learn"
-            >
-              <div>
-                <a href="https://mask.io/"> Mask Network </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        fxFlex
-        fxLayout="column"
-        fxLayoutGap="20px"
-        class="cos-fluid-width cos-padding-4 cos-border cos-no-border-left cos-no-border-right cos-no-border-bottom"
-      >
-        <div
-          fxFlex
-          fxLayoutGap="20px"
-          fxLayoutAlign="center center"
-          class="cos-body-3 co-footer-content"
-        >
-          <div
-            fxFlex="0 0 auto"
-            fxLayoutGap="20px"
-            fxLayoutAlign="start center"
-          >
-            <a href="https://discord.gg/ECMz2VNn97">Discord</a>
-            <a href="https://twitter.com/predomain_eth">Twitter</a>
-            <a href="https://docs.predomain.xyz">Docs</a>
-            <a href="https://github.com/predomain">Github</a>
-          </div>
-          <div fxFlex="0 0 auto" class="cos-right-text cos-gray-text">
-            Predomain v0.9.9
-          </div>
-        </div>
-      </div>
     </div>
+    <app-footer></app-footer>
   </div>
 </div>
 

@@ -21,8 +21,10 @@ export const generalConfigurations = {
   maxCheckoutRetryUntilRehydrateProcessId: 5,
   maxIpfsSubscriptionRetries: 5,
   maxDomainsToRegister: 150,
+  maxDomainsToTransfer: 150,
+  maxDomainsToRenew: 150,
   maxYearsRegistration: 1000,
-  maxTotalCostBuffer: 105,
+  maxTotalCostBuffer: [101, 101, 105],
   maxDomainSearch: {
     ENS: 1000,
     LNR: 100,
@@ -30,7 +32,7 @@ export const generalConfigurations = {
   defaultCurrency: 'ETH',
   enableCustomRPC: true,
   frontpageBlogsFeed:
-    'https://s3.amazonaws.com/revue/accounts/rss_feeds/000/527/060/original/rss_feed_527060.xml?1664402575',
+    'https://cors-anywhere.herokuapp.com/https://predomain.medium.com/feed',
   docsLink: 'https://docs.predomain.xyz/',
   blockscanLink: 'https://chat.blockscan.com/index?a=',
   nftyChatLink: 'https://nftychat.xyz/dm/',

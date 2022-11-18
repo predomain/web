@@ -10,6 +10,8 @@
   "special_characters": false,
   "max_length": 15,
   "version": 2,
+  "prefix_offset": 0,
+  "suffix_offset": 0,
   "valid_names": {
     "thefrugalhousewife": "10233267357696505578030959843498746879603100069755980426122581480010985240",
     "translate": "1098927714822775546425072598659095918661235307089729703180786597279533512489",

@@ -11,9 +11,7 @@
       class="cos-fluid-width cos-padding-1 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
     >
       <div fxFlex class="cos-body-0">
-        <b>
-          {{ "HEADER.MANAGE_DOMAINS" | translate }}
-        </b>
+        <b> {{ "LABELS.RENEW_DOMAINS" | translate }} </b>
       </div>
       <div fxFlex="0 0 auto" class="cos-right-text">
         <a (click)="closeDialog()" class="cos-body-4">
@@ -61,6 +59,7 @@
                 fxFlex
                 class="cos-bg-gray"
                 (selectionChange)="performRenewalCostCalculation()"
+                panelClass="select-panel-floating"
               >
                 <mat-option [value]="renewalDurationTypes['1WEEK']">
                   {{ renewalDurationTypes["1WEEK"] | translate }}

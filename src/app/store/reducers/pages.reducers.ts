@@ -1,6 +1,9 @@
 import { IpfsStatesEnum } from 'src/app/models/ipfs';
 import { generalConfigurations } from '../../configurations';
-import { PagesStateModel } from '../../models/states/pages-interfaces';
+import {
+  PageModesEnum,
+  PagesStateModel,
+} from '../../models/states/pages-interfaces';
 import {
   GetPagesState,
   GotoPageRoute,
@@ -9,6 +12,7 @@ import {
   SetPageIpfsErrors,
   SetPageIpfsState,
   SetPagesCriticalError,
+  SetPagesMode,
   SetPagesNewPageState,
   SetPagesPageSlide,
   SetPagesState,
@@ -29,6 +33,7 @@ const initialPagesState: PagesStateModel = {
   networkStatus: undefined,
   networkChainCode: undefined,
   isPageLoading: false,
+  pageMode: undefined,
 };
 
 export function PagesReducers(
@@ -54,6 +59,14 @@ export function PagesReducers(
         currentPageSlide: state.currentPageSlide,
         errorCode:
           'errorCode' in action.payload ? action.payload.errorCode : undefined,
+      };
+      return newState;
+    }
+
+    case SetPagesMode: {
+      const newState = {
+        ...state,
+        pageMode: action.payload,
       };
       return newState;
     }

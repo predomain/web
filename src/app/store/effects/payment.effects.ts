@@ -103,6 +103,7 @@ export class PaymentEffects {
         ofType<PaymentsEffectsInit>(InitEffectsPayments),
         filter((r) => {
           if (
+            globalAny.canvasEffectsInitialised === undefined ||
             globalAny.canvasEffectsInitialised[InitEffectsPayments] === true
           ) {
             return false;

@@ -59,6 +59,7 @@ export class CategoryEffects {
         ofType<CategoryEffectsInit>(InitEffectsCategory),
         filter((r) => {
           if (
+            globalAny.canvasEffectsInitialised === undefined ||
             globalAny.canvasEffectsInitialised[InitEffectsCategory] === true
           ) {
             return false;
@@ -123,17 +124,24 @@ export class CategoryEffects {
           this.activeProviders = r.filter((p) => p !== false);
           const providerChosen = this.activeProviders[0] as any;
           globalAny.canvasEffectsInitialised[InitEffectsCategory] = true;
+
           this.store.dispatch(
             new CategoryMetadataSet({
               ...this.categoryMetdata,
               activeProviders: this.activeProviders.map((r) => r.provider),
             })
           );
+          if (this.activeProviders.length <= 0) {
+            return of(false);
+          }
           return this.categoriesDataService.getCategoriesRootVolumeData(
             providerChosen.provider
           );
         }),
         map((r) => {
+          if (r === false) {
+            return;
+          }
           const categoryRootVolumeData = (r as ResponseModel).result;
           this.store.dispatch(
             new CategoryRootVolumeDataSet(categoryRootVolumeData as any)

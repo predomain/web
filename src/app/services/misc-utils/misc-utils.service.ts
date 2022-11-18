@@ -7,6 +7,34 @@ import { ethers } from 'ethers';
 export class MiscUtilsService {
   constructor() {}
 
+  moveArray(arr: any[], oldIndex: number, newIndex: number) {
+    if (newIndex >= arr.length) {
+      let k = newIndex - arr.length + 1;
+      while (k--) {
+        arr.push(undefined);
+      }
+    }
+    arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+    return arr;
+  }
+
+  shuffleArray(arr: any) {
+    if (typeof arr === 'object') {
+      return arr;
+    }
+    let currentIndex = arr.length,
+      randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [arr[currentIndex], arr[randomIndex]] = [
+        arr[randomIndex],
+        arr[currentIndex],
+      ];
+    }
+    return arr;
+  }
+
   roundUp(num: number, roundTo: number) {
     return Math.round(num / roundTo) * roundTo;
   }
@@ -88,6 +116,21 @@ export class MiscUtilsService {
     return reg;
   }
 
+  testPalindrome(str: string) {
+    const len = str.length;
+    for (let i = 0; i < len / 2; i++) {
+      if (str[i] !== str[len - 1 - i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  testRepeating(str: string) {
+    const chars = [...new Set(str)];
+    return chars.length === 1;
+  }
+
   parseXml(xml) {
     var dom = null;
     try {
@@ -96,5 +139,13 @@ export class MiscUtilsService {
       dom = null;
     }
     return dom;
+  }
+
+  getDateToStamp(date: string) {
+    if (date === '') {
+      return null;
+    }
+    const d = new Date(date);
+    return d.getTime();
   }
 }

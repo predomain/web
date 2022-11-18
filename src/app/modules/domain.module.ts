@@ -4,7 +4,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { serviceProviders } from '../models';
-import { MainHeaderModule, OnboardDialogModule } from './miscs';
+import { FooterModule, MainHeaderModule, OnboardDialogModule } from './miscs';
 import { Intercept } from '../services';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SharedModule } from './shared.module';
@@ -17,6 +17,7 @@ import { DomainComponent } from '../pages/domain/domain.component';
     DomainRoutingModule,
     OnboardDialogModule,
     MainHeaderModule,
+    FooterModule,
   ],
   providers: [
     ...serviceProviders,

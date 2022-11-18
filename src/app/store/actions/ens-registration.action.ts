@@ -2,7 +2,7 @@ import { Action } from '@ngrx/store';
 import { DomainMetadataModel } from 'src/app/models/domains';
 import { ENSRegistrationStoreErrorsEnum } from '../../models/error-enums';
 export const InitEffectsENSRegistration =
-  '[CategoryState] Init effects registration.';
+  '[ENSRegistrationState] Init effects registration.';
 export const AddOneENSRegistration = '[ENSRegistrationState] Add registration.';
 export const UpdateENSRegistration =
   '[ENSRegistrationState] Update registration.';

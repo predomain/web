@@ -1,3 +1,5 @@
+import { DomainTypeEnum } from './domain-type.enum';
+
 export interface DomainMetadataModel {
   id?: string;
   labelName?: string;
@@ -8,6 +10,7 @@ export interface DomainMetadataModel {
   registrationDate?: string;
   owner?: string;
   createdAt?: string;
+  domainType?: DomainTypeEnum;
   events?: { blockNumber: number; transactionID: string }[];
 
   /**

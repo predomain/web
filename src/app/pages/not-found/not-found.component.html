@@ -1,21 +1,8 @@
-<div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
-  <div
-    fxFlex="90"
-    fxLayout="row"
-    fxLayoutAlign="start center"
-    fxLayoutGap="30px"
-    class="co-profile-header cos-fluid-width"
-  >
-    <span fxLayoutAlign="center center" fxLayoutGap="10px" (click)="goToHome()">
-      <mat-icon class="cos-icon-can-activate" color="primary"
-        >arrow_back_ios</mat-icon
-      >
-      <a class="co-back-button cos-disappear-on-mobile">
-        {{ "HEADER.BACK_TO_HOME" | translate }}
-      </a>
-    </span>
-  </div>
+<div
+  class="co-header-container cos-pos-fixed cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right"
+>
   <app-main-header
+    #mainHeader
     [show]="{
       showBasket: true,
       showBookmark: true,
@@ -38,20 +25,23 @@
   fxLayout="column"
   fxLayoutAlign="center center"
 >
-  <ng-container *ngIf="(hasCriticalErrorOccured | async) === false">
-    <span class="co-404"> 404 </span>
-    <span class="cos-body-0 cos-center-text cos-padding-2"
-      ><b>
-        {{ sillyDescription }}
-      </b>
-    </span>
-  </ng-container>
-  <ng-container *ngIf="(hasCriticalErrorOccured | async) === true">
-    <span class="co-404"> 503 </span>
-    <span class="cos-body-0 cos-center-text cos-padding-2"
-      ><b>
-        {{ sillyCriticalDescription }}
-      </b>
-    </span>
-  </ng-container>
+  <div fxLayout="column" fxFlex fxLayoutAlign="center center">
+    <ng-container *ngIf="(hasCriticalErrorOccured | async) === false">
+      <span class="co-404"> 404 </span>
+      <span class="cos-body-0 cos-center-text cos-padding-1"
+        ><b>
+          {{ sillyDescription }}
+        </b>
+      </span>
+    </ng-container>
+    <ng-container *ngIf="(hasCriticalErrorOccured | async) === true">
+      <span class="co-404"> 503 </span>
+      <span class="cos-body-0 cos-center-text cos-padding-1"
+        ><b>
+          {{ sillyCriticalDescription }}
+        </b>
+      </span>
+    </ng-container>
+  </div>
+  <app-footer></app-footer>
 </div>

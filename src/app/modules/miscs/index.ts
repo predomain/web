@@ -10,3 +10,5 @@ export * from './blocky.module';
 export * from './settings-dialog.module';
 export * from './onboard-management-dialog.module';
 export * from './renew-management-dialog.module';
+export * from './sale-management-dialog.module';
+export * from './footer.module';

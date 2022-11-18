@@ -25,6 +25,10 @@ export interface CategoryModel {
   special_characters?: boolean;
   version?: number;
   valid_names?: string[];
+  prefix_offset?: number;
+  suffix_offset?: number;
+  filters?: any;
+  optimised?: any;
   volume?: {
     daily_volume?: number;
     hourly_sales?: number;

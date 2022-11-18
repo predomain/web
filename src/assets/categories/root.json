@@ -56,7 +56,17 @@
     "p1k",
     "p100",
     "w99",
-    "w999"
+    "w999",
+    "di99",
+    "di999",
+    "di10k",
+    "0xemoji99",
+    "0xemoji999",
+    "0xemoji10k",
+    "aposemojis",
+    "i10k",
+    "i99",
+    "i999"
   ],
   "categoriesTitle": {
     "999": "999",
@@ -113,7 +123,17 @@
     "p1k": "Prepunk 1k",
     "p100": "Prepunk 100",
     "w99": "Winged 99",
-    "w999": "Winged 999"
+    "w999": "Winged 999",
+    "di99": "Diamond 99",
+    "di999": "Diamond 999",
+    "di10k": "Diamond 10k",
+    "0xemoji99": "0x Emoji 99",
+    "0xemoji999": "0x Emoji 999",
+    "0xemoji10k": "0x Emoji 10k",
+    "aposemojis": "Emoji’s",
+    "i10k": "i10k",
+    "i99": "i99",
+    "i999": "i999"
   },
   "categoriesDescription": {
     "999": "999 Club",
@@ -170,7 +190,17 @@
     "p1k": "Top 1000 Pre-punk",
     "p100": "Top 100 Pre-punk",
     "w99": "Hyphened Pre/suffixed",
-    "w999": "Hyphened Pre/suffixed"
+    "w999": "Hyphened Pre/suffixed",
+    "di99": "Diamond Prefixed",
+    "di999": "Diamond Prefixed",
+    "di10k": "Diamond Prefixed",
+    "0xemoji99": "0x Keycaps",
+    "0xemoji999": "0x Keycaps",
+    "0xemoji10k": "0x Keycaps",
+    "aposemojis": "Apostrophe Emojis",
+    "i10k": "i Prefixed",
+    "i99": "i Prefixed",
+    "i999": "i Prefixed"
   },
   "categoriesThumbnails": {
     "999": "123",
@@ -227,6 +257,16 @@
     "p1k": "history_toggle_off",
     "p100": "history_toggle_off",
     "w99": "remove",
-    "w999": "remove"
+    "w999": "remove",
+    "di99": "diamond",
+    "di999": "diamond",
+    "di10k": "diamond",
+    "0xemoji99": "hexagon",
+    "0xemoji999": "hexagon",
+    "0xemoji10k": "hexagon",
+    "aposemojis": "format_quote",
+    "i10k": "info",
+    "i99": "info",
+    "i999": "info"
   }
 }

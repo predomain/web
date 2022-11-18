@@ -1,41 +1,45 @@
 <div
-  fxLayoutAlign="end center"
-  fxLayoutGap="40px"
-  class="cos-fluid-width cos-body-3"
+  fxLayoutAlign="start center"
+  [fxLayoutGap]="isDeviceMobile === true ? '0' : '25px'"
+  class="co-header-container cos-body-3"
+  [ngClass]="
+    isDeviceMobile === true
+      ? { 'cos-padding-2': true, 'cos-no-padding-top': true }
+      : ''
+  "
 >
   <div
     fxFlex="0 0 auto"
     fxLayout="row"
-    fxLayoutGap="10px"
-    fxLayoutAlign="end center"
+    fxLayoutGap="15px"
+    fxLayoutAlign="center center"
+    class="cos-pointer cos-body-0"
+    (click)="goToHome()"
   >
-    <div
-      *ngIf="
-        show === undefined ||
-        (show !== undefined && show.showTranslation === true)
-      "
-      fxLayoutGap="5px"
-      fxLayoutAlign="center center"
-      [matMenuTriggerFor]="languageMenu"
-      class="cos-pointer"
-    >
-      <span>{{ languageUsed }}</span> <mat-icon>arrow_drop_down</mat-icon>
-    </div>
+    <img src="assets/logo.png" fxFlex="28px" />
+    <span class="co-logo cos-disappear-on-mobile"> Predomain </span>
+  </div>
+  <div
+    fxFlex="50"
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="start start"
+    class="cos-padding-2 cos-no-padding-top cos-no-padding-right cos-no-padding-right cos-no-padding-bottom"
+  >
     <form
       *ngIf="show?.showSearch === true || show?.showSearch === undefined"
       fxFlex
-      fxLayoutAlign="center center"
-      fxFlexAlign="center"
+      fxLayoutAlign="start center"
       class="co-main-form"
       [formGroup]="quickSearchForm"
     >
       <mat-form-field
         fxLayoutAlign="center center"
         fxFlexAlign="center"
-        class="co-main-search cos-body-0 cos-input-field-no-label"
+        class="co-main-search cos-fluid-width cos-body-0 cos-input-field-no-label cos-field-width-shadow cos-input-prefixed co-input-field-small-prefix"
       >
         <input
-          class="cos-fluid-width cos-bg-darker-gray"
+          class="cos-fluid-width cos-bg-darker-gray cos-box-shadow"
           matInput
           type="text"
           placeholder="{{ 'LABELS.SEARCH' | translate }}..."
@@ -50,7 +54,7 @@
               : ''
           "
         />
-        <mat-icon matSuffix color="primary"> search </mat-icon>
+        <mat-icon matPrefix> search </mat-icon>
       </mat-form-field>
     </form>
     <mat-autocomplete
@@ -103,32 +107,105 @@
         </div>
       </mat-option>
     </mat-autocomplete>
+  </div>
+  <div
+    fxFlex="0 0 auto"
+    class="cos-show-on-mobile cos-padding-2 cos-no-padding-top cos-no-padding-right cos-no-padding-bottom"
+    [matMenuTriggerFor]="menu"
+  >
+    <mat-icon class="cos-medium-icon cos-icon-can-activate">menu</mat-icon>
+  </div>
+  <div
+    *ngIf="
+      show === undefined ||
+      (show !== undefined && show.showTranslation === true)
+    "
+    fxLayoutGap="5px"
+    fxLayoutAlign="center center"
+    [matMenuTriggerFor]="languageMenu"
+    class="cos-pointer cos-body-5 cos-gray-text cos-padding-2 cos-disappear-on-mobile cos-no-padding-left cos-no-padding-top cos-no-padding-bottom"
+  >
+    <span>{{ languageUsed }}</span> <mat-icon>arrow_drop_down</mat-icon>
+  </div>
+  <div
+    fxFlex="0 0 auto"
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="start start"
+    class="cos-body-2 cos-disappear-on-mobile"
+  >
+    <a
+      *ngIf="
+        show === undefined ||
+        (show !== undefined && show.showManagement === true)
+      "
+      (click)="goToHome()"
+      >{{ "HEADER.HOME" | translate }}</a
+    >
+  </div>
+  <div
+    fxFlex="0 0 auto"
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="start start"
+    class="cos-body-2 cos-disappear-on-mobile"
+  >
+    <a
+      *ngIf="
+        show === undefined ||
+        (show !== undefined && show.showManagement === true)
+      "
+      (click)="goToHome()"
+      >{{ "HEADER.CATEGORIES" | translate }}</a
+    >
+  </div>
+  <div
+    fxFlex="0 0 auto"
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="start start"
+    class="cos-body-2 cos-disappear-on-mobile"
+  >
+    <a
+      *ngIf="
+        show === undefined ||
+        (show !== undefined && show.showManagement === true)
+      "
+      (click)="goToDiscord()"
+      >{{ "HEADER.HELP" | translate }}</a
+    >
+  </div>
+  <div
+    fxFlex="0 0 auto"
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="start start"
+    class="cos-body-2 cos-disappear-on-mobile"
+  >
+    <a
+      *ngIf="
+        show === undefined ||
+        (show !== undefined && show.showManagement === true)
+      "
+      (click)="openDocs()"
+      >{{ "HEADER.ABOUT" | translate }}</a
+    >
+  </div>
+  <div
+    fxFlex="0 0 auto"
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="end center"
+    class="cos-disappear-on-mobile cos-padding-2 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right"
+  >
     <ng-container
       *ngIf="(userData | async) === false || (userData | async) === undefined"
     >
       <div
-        class="cos-chip-regular cos-pointer cos-chip-primary co-address-chip cos-padding-px-0 cos-disappear-on-mobile"
         fxFlex="0 0 auto"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-        (click)="openConnect()"
-      >
-        <div
-          fxFlex
-          fxLayoutAlign="start center"
-          fxLayout="row"
-          class="cos-padding-px-0 cos-no-padding-bottom cos-no-padding-top"
-        >
-          <div class="cos-body-3">
-            {{ "BUTTON.CONNECT_TO_PROCEED" | translate }}
-          </div>
-        </div>
-      </div>
-      <div
-        fxFlex="0 0 auto"
-        class="co-registration-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
         fxLayoutAlign="center center"
+        class="co-registration-button cos-pointer co-cart-icon cos-padding-px-0"
         [matBadge]="
           registrationCount === undefined || registrationCount === 0
             ? undefined
@@ -142,9 +219,9 @@
       </div>
       <div
         fxFlex="0 0 auto"
-        class="co-bookmark-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
         fxLayout="row"
         fxLayoutAlign="center center"
+        class="co-bookmark-button cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text cos-margin-1 cos-no-margin-left cos-no-margin-top cos-no-margin-bottom cos-gray-text"
         [matBadge]="
           bookmarksCount === undefined || bookmarksCount === 0
             ? undefined
@@ -155,85 +232,29 @@
       >
         <mat-icon>bookmark</mat-icon>
       </div>
-      <div
-        *ngIf="
-          show === undefined || (show !== undefined && show.showCanvas === true)
-        "
-        fxFlex="0 0 auto"
-        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        matTooltip="Canvas Tool"
-        (click)="openConnect()"
-      >
-        <mat-icon>layers</mat-icon>
-      </div>
-      <div
-        *ngIf="
-          show === undefined ||
-          (show !== undefined && show.showManagement === true)
-        "
-        fxFlex="0 0 auto"
-        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        matTooltip="Manage Domains"
-        (click)="openConnect()"
-      >
-        <mat-icon>magic_button</mat-icon>
-      </div>
+
       <div
         fxFlex="0 0 auto"
-        class="cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        [matMenuTriggerFor]="menu"
-      >
-        <img src="assets/logo.png" fxFlex="20px" />
-      </div>
-    </ng-container>
-    <ng-container
-      *ngIf="(userData | async) !== false && (userData | async) !== undefined"
-    >
-      <div
-        class="cos-chip-regular co-address-chip cos-padding-px-0 cos-disappear-on-mobile"
-        fxFlex="150px"
         fxLayout="row"
         fxLayoutAlign="start center"
+        class="cos-chip-regular cos-pointer cos-chip-primary co-address-chip cos-padding-px-0 cos-disappear-on-mobile"
+        (click)="openConnect()"
       >
         <div
           fxFlex
           fxLayoutAlign="start center"
           fxLayout="row"
-          class="cos-padding-px-0 cos-no-padding-bottom cos-no-padding-right cos-no-padding-top"
+          class="cos-padding-px-0 cos-no-padding-bottom cos-no-padding-top"
         >
-          <div
-            class="cos-body-3 cos-wallet-address-text-cut"
-            style="width: 95px"
-          >
-            {{
-              customUserName !== undefined ? customUserName : (userData | async)
-            }}
+          <div class="cos-body-3">
+            {{ "BUTTON.CONNECT_TO_PROCEED" | translate }}
           </div>
         </div>
-        <div
-          class="co-blocky-container"
-          fxFlex="0 0 auto"
-          fxLayoutAlign="center center"
-          fxLayout="row"
-        >
-          <app-blocky
-            fxFlex
-            [walletAddress]="
-              cuatomUserNameAddress !== undefined
-                ? cuatomUserNameAddress
-                : (userData | async)
-            "
-            [roundedCorners]="true"
-            class="cos-fluid-width cos-fluid-height"
-          ></app-blocky>
-        </div>
       </div>
+    </ng-container>
+    <ng-container
+      *ngIf="(userData | async) !== false && (userData | async) !== undefined"
+    >
       <div
         *ngIf="
           show === undefined || (show !== undefined && show.showBasket === true)
@@ -248,7 +269,7 @@
         "
         matBadgeColor="primary"
         matTooltip="Domains to register"
-        class="co-registration-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        class="co-registration-button cos-pointer co-cart-icon cos-padding-px-0"
         (click)="
           hasPendingRegistrations === true ? goToCheckout() : showRegistration()
         "
@@ -272,7 +293,7 @@
           (show !== undefined && show.showBookmark === true)
         "
         fxFlex="0 0 auto"
-        class="co-bookmark-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        class="co-bookmark-button cos-pointer co-cart-icon cos-padding-px-0 cos-margin-1 cos-no-margin-left cos-no-margin-top cos-no-margin-bottom cos-gray-text"
         fxLayout="row"
         fxLayoutAlign="center center"
         [matBadge]="
@@ -286,42 +307,56 @@
       >
         <mat-icon>bookmark</mat-icon>
       </div>
+
       <div
-        *ngIf="
-          show === undefined || (show !== undefined && show.showCanvas === true)
-        "
-        fxFlex="0 0 auto"
-        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
+        class="cos-pointer cos-padding-px-0 cos-no-padding-right cos-disappear-on-mobile"
+        fxFlex="180px"
         fxLayout="row"
-        fxLayoutAlign="center center"
-        matTooltip="Canvas Tool"
-        (click)="goToCanvas()"
-      >
-        <mat-icon>layers</mat-icon>
-      </div>
-      <div
-        *ngIf="
-          show === undefined ||
-          (show !== undefined && show.showManagement === true)
-        "
-        fxFlex="0 0 auto"
-        class="co-canvas-button cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        matTooltip="Manage Domains"
-        (click)="goToManage()"
-      >
-        <mat-icon>magic_button</mat-icon>
-      </div>
-      <div
-        fxFlex="0 0 auto"
-        class="cos-chip-regular cos-pointer co-cart-icon cos-padding-px-0 cos-gray-text"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        matTooltip="Menu"
+        fxLayoutAlign="start center"
         [matMenuTriggerFor]="menu"
       >
-        <img src="assets/logo.png" fxFlex="20px" />
+        <div
+          fxFlex
+          fxLayoutAlign="end center"
+          fxLayout="row"
+          class="cos-padding-px-0 cos-no-padding-bottom cos-no-padding-right cos-no-padding-top"
+        >
+          <div
+            class="cos-body-1 cos-wallet-address-text-cut"
+            style="max-width: 90px"
+          >
+            {{
+              customUserName !== undefined ? customUserName : (userData | async)
+            }}
+          </div>
+        </div>
+        <div
+          fxFlex="0 0 auto"
+          fxLayoutAlign="center center"
+          class="cos-padding-1 cos-no-padding-top cos-no-padding-bottom"
+        >
+          <img
+            class="mat-menu-submenu-icon-custom active"
+            src="./assets/menu-arrow-icon.svg"
+          />
+        </div>
+        <div
+          class="co-blocky-container"
+          fxFlex="0 0 auto"
+          fxLayoutAlign="center center"
+          fxLayout="row"
+        >
+          <app-blocky
+            fxFlex
+            [walletAddress]="
+              cuatomUserNameAddress !== undefined
+                ? cuatomUserNameAddress
+                : (userData | async)
+            "
+            [roundedCorners]="true"
+            class="cos-fluid-width cos-fluid-height"
+          ></app-blocky>
+        </div>
       </div>
     </ng-container>
   </div>
@@ -359,6 +394,10 @@
 </mat-menu>
 
 <mat-menu #menu="matMenu" class="cos-menu" xPosition="after">
+  <button mat-menu-item (click)="goToHome()">
+    <mat-icon>home</mat-icon>
+    {{ "HEADER.HOME" | translate }}
+  </button>
   <button
     *ngIf="(userData | async) !== false && (userData | async) !== undefined"
     mat-menu-item
@@ -366,6 +405,22 @@
   >
     <mat-icon>account_circle</mat-icon>
     {{ "HEADER.PROFILE" | translate }}
+  </button>
+  <button mat-menu-item (click)="openDocs()">
+    <mat-icon>help</mat-icon>
+    {{ "HEADER.DOCS" | translate }}
+  </button>
+  <button
+    *ngIf="(userData | async) !== false || (userData | async) !== undefined"
+    mat-menu-item
+    (click)="openSettings()"
+  >
+    <mat-icon>settings</mat-icon>
+    {{ "BUTTON.SETTINGS" | translate }}
+  </button>
+  <button mat-menu-item (click)="goToDiscord()">
+    <mat-icon>help</mat-icon>
+    {{ "HEADER.HELP" | translate }}
   </button>
   <button
     mat-menu-item
@@ -396,26 +451,6 @@
       >bookmark</mat-icon
     >
     {{ "HEADER.BOOKMARKS" | translate }}
-  </button>
-  <button mat-menu-item (click)="goToManage()" class="cos-show-on-mobile">
-    <mat-icon>magic_button</mat-icon>
-    {{ "HEADER.MANAGE_DOMAINS" | translate }}
-  </button>
-  <button mat-menu-item (click)="openDocs()">
-    <mat-icon>help</mat-icon>
-    {{ "HEADER.DOCS" | translate }}
-  </button>
-  <button
-    *ngIf="(userData | async) !== false || (userData | async) !== undefined"
-    mat-menu-item
-    (click)="openSettings()"
-  >
-    <mat-icon>settings</mat-icon>
-    {{ "BUTTON.SETTINGS" | translate }}
-  </button>
-  <button mat-menu-item (click)="goToDiscord()">
-    <mat-icon>help</mat-icon>
-    {{ "HEADER.HELP" | translate }}
   </button>
   <button
     *ngIf="(userData | async) === false || (userData | async) === undefined"

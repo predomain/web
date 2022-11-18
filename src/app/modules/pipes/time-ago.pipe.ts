@@ -1,8 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
 import { FormatTimePipe } from './format-time.pipe';
-TimeAgo.addDefaultLocale(en);
 
 @Pipe({
   name: 'timeAgo',
