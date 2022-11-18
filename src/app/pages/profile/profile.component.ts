@@ -1,8 +1,9 @@
 import { of, timer } from 'rxjs';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import {
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -10,6 +11,8 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  catchError,
+  delay,
   delayWhen,
   map,
   retryWhen,
@@ -17,9 +20,16 @@ import {
   take,
   withLatestFrom,
 } from 'rxjs/operators';
-import { DomainMetadataModel } from 'src/app/models/domains';
+import {
+  DomainMetadataModel,
+  DomainTypeEnum,
+  FeaturedDomainsModel,
+} from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
-import { PagesEnum } from 'src/app/models/states/pages-interfaces';
+import {
+  PageModesEnum,
+  PagesEnum,
+} from 'src/app/models/states/pages-interfaces';
 import { MiscUtilsService, UserService } from 'src/app/services';
 import { BookmarksServiceService } from 'src/app/services/bookmarks';
 import { EnsService } from 'src/app/services/ens';
@@ -28,11 +38,13 @@ import {
   RegistrationServiceService,
 } from 'src/app/services/registration';
 import {
+  CategoryFacadeService,
   ENSBookmarkFacadeService,
   PagesFacadeService,
+  PaymentFacadeService,
 } from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
-import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
+import { CanvasServicesService } from '../../services/canvas-services/canvas-services.service';
 import {
   BlockExplorersEnum,
   generalConfigurations,
@@ -42,13 +54,31 @@ import { DownloadService } from 'src/app/services/download/download.service';
 import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
 import { select, Store } from '@ngrx/store';
 import { getENSBookmarks } from 'src/app/store/selectors';
+import { CategoriesRootModel, CategoryModel } from 'src/app/models/category';
+import { CategoriesDataService } from 'src/app/services/categories-data';
+import { MatDialog } from '@angular/material/dialog';
+import { SaleManagementComponent } from 'src/app/widgets/sale-management/sale-management.component';
+import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
+import { RenewManagementComponent } from 'src/app/widgets/renew-management';
+import { OnboardManagementComponent } from 'src/app/widgets/onboard-management';
+import { PaymentTypesEnum } from 'src/app/models/states/payment-interfaces';
+import { MainHeaderComponent } from 'src/app/widgets/main-header';
+import { FeaturedManagementComponent } from 'src/app/widgets/featured-management';
+import { SetupManagementComponent } from 'src/app/widgets/setup-management';
 
 const globalAny: any = global;
+const featureKey = 'predomain_featured';
 
 export enum DisplayModes {
   CHUNK,
   AVATAR,
   LINEAR,
+}
+
+export enum ManageModes {
+  DEFAULT,
+  RENEW,
+  TRANSFER,
 }
 
 export interface ProfileTexts {
@@ -61,6 +91,7 @@ export interface ProfileTexts {
   url?: string;
   reddit?: string;
   predomainBanner?: string;
+  predomainFeatured?: FeaturedDomainsModel;
 }
 
 @Component({
@@ -69,32 +100,68 @@ export interface ProfileTexts {
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  @ViewChild('fadeTop') fadeTop: any;
+  @ViewChild('scrollableContentContainer')
+  scrollableContentContainer: ElementRef;
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
+  @ViewChild('mainHeader') mainHeader: MainHeaderComponent;
+  windowTopScroll = 0;
   placeholders = new Array(50).fill(0);
+  manageMode: ManageModes = ManageModes.DEFAULT;
+  domainsSelected: DomainMetadataModel[] = [];
+  pageModes: typeof PageModesEnum = PageModesEnum;
+  manageModes: typeof ManageModes = ManageModes;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
+  domainTypeSelected: DomainTypeEnum = DomainTypeEnum.ENS;
+  pageMode: PageModesEnum = PageModesEnum.DEFAULT;
   hasDomainsListLoaded = false;
   avatarResolved = false;
+  savingChangesInitiated = false;
   displayModes: typeof DisplayModes = DisplayModes;
   displayMode = DisplayModes.AVATAR;
   profileTexts: ProfileTexts = {};
+  domainsOptimisedList = {};
+  domainsFeatured: FeaturedDomainsModel = { order: [], featured: {} };
+  domainsRecentlyTransferred: string[] = [];
+  domainsListPerPage = this.suitableItemPageWidthForWindow * 10;
+  domainsListPage = 0;
+  domainsListResolving = false;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;
   typesFilter = {
     alphabet: false,
     numbers: false,
     emoji: false,
+    palindrome: false,
+    prepunk: false,
+    repeating: false,
   };
+  showEmojiPicker = false;
+  hasPendingPayments = false;
+  optimisedCategoryData: any = {};
+  categoriesDataRaw: CategoryModel[] = [];
   filterForm: FormGroup;
   bookmarks: DomainMetadataModel[];
+  categoriesData: CategoriesRootModel;
+  pendingTx;
+
+  lastDomainSearchResult;
+  emojiPanel;
   userDomains;
+  userDomainsList;
   userAddress;
   ethNameData;
   getUserDomainsSubscripton;
+  getPageModeSubscription;
   profileTextSubscription;
   activatedRouteSubscription;
+  managementDialogSubscription;
   bookmarkStateSubscription;
+  categoriesDataSubscription;
+  saveChangesSubscripton;
+  domainListResolutionSubscription;
 
   constructor(
     public bookmarksService: BookmarksServiceService,
@@ -102,7 +169,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
     protected userService: UserService,
     protected ensService: EnsService,
     protected pagesFacade: PagesFacadeService,
+    protected ensMarketplaceService: EnsMarketplaceService,
+    protected categoriesDataService: CategoriesDataService,
+    protected categoriesFacade: CategoryFacadeService,
     protected registrationDataService: RegistrationDataService,
+    protected paymentFacadeService: PaymentFacadeService,
     protected bookmarkFacadeService: ENSBookmarkFacadeService,
     protected bookmarkStore: Store<ENSBookmarkStateModel>,
     protected downloadService: DownloadService,
@@ -110,6 +181,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     protected miscUtils: MiscUtilsService,
     protected snackBar: MatSnackBar,
     protected router: Router,
+    protected dialog: MatDialog,
     protected changeDetectorRef: ChangeDetectorRef,
     public canvasService: CanvasServicesService
   ) {
@@ -124,18 +196,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
       expiration: new FormControl(''),
       registration: new FormControl(''),
       creation: new FormControl(''),
+      category: new FormControl(''),
     });
   }
 
   ngOnInit(): void {
     this.loadBookmarks();
+    this.getCategoriesData();
     if (this.userName === false) {
       return;
     }
+    this.getPageModeSubscription = this.pagesFacade.pageMode$
+      .pipe(
+        map((s) => {
+          this.pageMode = s;
+        })
+      )
+      .subscribe();
     this.activatedRouteSubscription = this.activatedRoute.params
       .pipe(
         map((p) => {
           this.pageReset();
+          this.getProfileTexts();
           this.getUserDomains();
         })
       )
@@ -143,6 +225,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.getPageModeSubscription) {
+      this.getPageModeSubscription.unsubscribe();
+    }
     if (this.activatedRouteSubscription) {
       this.activatedRouteSubscription.unsubscribe();
     }
@@ -152,14 +237,41 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.getUserDomainsSubscripton) {
       this.getUserDomainsSubscripton.unsubscribe();
     }
+    if (this.categoriesDataSubscription) {
+      this.categoriesDataSubscription.unsubscribe();
+    }
   }
 
   pageReset() {
     this.hasDomainsListLoaded = false;
     this.profileTexts = {};
-    this.userDomains = undefined;
+    this.userDomainsList = undefined;
     this.userAddress = undefined;
     this.ethNameData = undefined;
+  }
+
+  getCategoriesData() {
+    this.categoriesDataSubscription = this.categoriesFacade.getCategoryState$
+      .pipe(
+        switchMap((s) => {
+          this.categoriesData = s.categoriesMetadata;
+          return this.categoriesDataService.getCategoriesComperssedArchive(
+            this.categoriesData.categories
+          );
+        }),
+        map((s) => {
+          for (const c of Object.keys(s)) {
+            this.categoriesDataRaw.push(s[c]);
+            const dataWithValues =
+              Array.isArray(s[c].valid_names) === true
+                ? s[c].valid_names
+                : this.ensService.getDataOfObject(s[c].valid_names);
+            this.optimisedCategoryData[c] =
+              this.ensService.optimiseCategoryNamesList(dataWithValues);
+          }
+        })
+      )
+      .subscribe();
   }
 
   getUserDomains() {
@@ -190,54 +302,87 @@ export class ProfileComponent implements OnInit, OnDestroy {
             throw false;
           }
           this.userAddress = r;
-          return this.userService.getUserDomains((r as string).toLowerCase());
+          let domains = [];
+          let domainsPage = 0;
+          let keepCollecting = true;
+          return of(true).pipe(
+            switchMap((i) =>
+              this.userService.getUserDomains(
+                (r as string).toLowerCase(),
+                domainsPage
+              )
+            ),
+            switchMap((d: any) => {
+              if (d === false || d === null || d === undefined) {
+                return of(false);
+              }
+              domains = domains.concat(
+                (d as any).registrations
+                  .filter((n) => n.labelName !== null)
+                  .map((n) => {
+                    const name = this.ensService.qlResultToDomainModel(
+                      n,
+                      this.domainTypeSelected
+                    );
+                    if (
+                      isEthName === true &&
+                      n.domain.labelName.toLowerCase() ===
+                        this.userName.replace('.eth', '').toLowerCase()
+                    ) {
+                      this.ethNameData = name;
+                    }
+                    return name;
+                  })
+              );
+              if ((d as any).registrations.length >= 1000) {
+                domainsPage++;
+                throw false;
+              }
+              keepCollecting = false;
+              return of(domains);
+            }),
+            retryWhen((error) =>
+              error.pipe(
+                delayWhen((e) => {
+                  if (keepCollecting === false) {
+                    return;
+                  }
+                  return timer(100);
+                })
+              )
+            )
+          );
         }),
         map((r) => {
-          this.userDomains = (r as any).registrations
-            .filter((d) => {
-              return d.domain.labelName !== null;
-            })
-            .map((d) => {
-              try {
-                const gPeriod = this.ensService.calculateGracePeriodPercentage(
-                  parseInt(d.expiryDate, 10)
-                );
-                if (
-                  isEthName === true &&
-                  d.domain.labelName.toLowerCase() ===
-                    this.userName.replace('.eth', '').toLowerCase()
-                ) {
-                  this.ethNameData = d.domain;
-                  this.getProfileTexts();
-                }
-                const fData = {
-                  id: d.domain.id.toLowerCase(),
-                  labelName: d.domain.labelName.toLowerCase(),
-                  labelHash: d.domain.labelhash.toLowerCase(),
-                  isNotAvailable: false,
-                  expiry: (parseInt(d.expiryDate) * 1000).toString(),
-                  gracePeriodPercent:
-                    gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
-                  registrationDate: (
-                    parseInt(d.registrationDate) * 1000
-                  ).toString(),
-                  createdAt: (parseInt(d.domain.createdAt) * 1000).toString(),
-                } as DomainMetadataModel;
-                this.hasDomainsListLoaded = true;
-                return fData;
-              } catch (e) {
-                throw e;
-              }
-            })
-            .sort((a, b) => b.registrationDate - a.registrationDate);
+          if (r === false) {
+            throw false;
+          }
+          this.userDomains = r;
+          this.domainsOptimisedList = this.ensService.optimiseCategoryNamesList(
+            this.userDomains.map((r) => r.labelName)
+          );
+          if (
+            this.profileTexts.predomainFeatured !== undefined &&
+            Object.keys(this.profileTexts.predomainFeatured).length > 0
+          ) {
+            this.domainsFeatured = this.processFeatuerdNames(
+              this.profileTexts.predomainFeatured
+            );
+          }
+          this.loadMoreDomains();
+          return;
         }),
         retryWhen((error) =>
           error.pipe(
             take(generalConfigurations.maxRPCCallRetries),
             delayWhen((e) => {
+              if (this.userDomains !== undefined) {
+                return;
+              }
               this.pageReset();
               if (retries >= generalConfigurations.maxRPCCallRetries - 1) {
                 this.pagesFacade.setPageCriticalError(true);
+                return;
               }
               retries++;
               return timer(generalConfigurations.timeToUpdateCheckoutPipe);
@@ -258,65 +403,76 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const ethName = this.userName;
     const provider = globalAny.canvasProvider;
     this.profileTextSubscription = this.userService
-      .getUserText(provider, ethName, 'email')
+      .getUserText(provider, ethName, 'predomain_featured')
       .pipe(
         switchMap((r) => {
           if (r !== null) {
-            this.profileTexts.email = r as string;
+            this.profileTexts.predomainBanner = r as string;
           }
-          return this.userService.getUserText(provider, ethName, 'description');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.description = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'keywords');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.keywords = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'com.discord');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.discord = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'com.twitter');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.twitter = r as string;
-          }
-          return this.userService.getUserText(
-            provider,
-            ethName,
-            'org.telegram'
-          );
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.telegram = r as string;
-          }
-          return this.userService.getUserText(provider, ethName, 'url');
-        }),
-        switchMap((r) => {
-          if (r !== null) {
-            this.profileTexts.url = r as string;
-          }
-          return this.userService.getUserText(
-            provider,
-            ethName,
-            'predomain_banner'
-          );
+          return this.userService.getUserText(provider, ethName, featureKey);
         }),
         map((r) => {
           if (r !== null) {
-            this.profileTexts.predomainBanner = r as string;
+            this.profileTexts.predomainFeatured = JSON.parse(r as string);
           }
+        }),
+        catchError((e) => {
+          return of(false);
         })
       )
       .subscribe();
+  }
+
+  processFeatuerdNames(featuredData: FeaturedDomainsModel) {
+    if (
+      'items' in featuredData === false ||
+      'tags' in featuredData === false ||
+      'order' in featuredData === false ||
+      featuredData === undefined ||
+      featuredData === null
+    ) {
+      return {};
+    }
+    const tagged = {};
+    featuredData.tags.reduce((c, p, i) => {
+      const domainsInTag = Object.keys(featuredData.items).filter((dk) => {
+        const dkItems = featuredData.items[dk].map(
+          (dki) => dki.split(/_(.*)/s)[0]
+        );
+        return dkItems.includes(i.toString());
+      });
+      const domainsInTagPositions = Object.keys(featuredData.items)
+        .map((dk) => {
+          const dkItems = featuredData.items[dk].map(
+            (dki) => dki.split(/_(.*)/s)[0]
+          );
+          const dkPos = featuredData.items[dk].map(
+            (dki) => dki.split(/_(.*)/s)[1]
+          );
+          if (dkItems.includes(i.toString())) {
+            return parseInt(dkPos[0]);
+          } else {
+            return undefined;
+          }
+        })
+        .filter((dk) => dk !== undefined);
+      const newArr = new Array(domainsInTag.length).fill('');
+      let arPos = 0;
+      domainsInTag.map((r) => {
+        const pos = domainsInTagPositions[arPos];
+        newArr[pos] = r;
+        arPos++;
+      });
+      tagged[p] = newArr
+        .map((d) => {
+          return this.userDomains.filter((n) => n.labelName === d)[0];
+        })
+        .filter((r) => r !== undefined);
+      return c;
+    }, []);
+    return {
+      featured: tagged,
+    } as FeaturedDomainsModel;
   }
 
   loadBookmarks() {
@@ -333,16 +489,27 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   filterSearchDomains(value: any = '') {
+    if (this.userDomainsList === undefined) {
+      return [];
+    }
     if (value === undefined || value === '' || value === null) {
-      return this.userDomains.filter((d) => {
-        return this.extraFilters(d);
+      return this.userDomainsList.filter((d) => {
+        return this.ensService.extraFilters(
+          d,
+          this.typesFilter,
+          this.filterForm.controls
+        );
       });
     }
     const filterValue = (value as any).toLowerCase();
-    return this.userDomains.filter((d) => {
+    return this.userDomainsList.filter((d) => {
       if (
         d.labelName.indexOf(filterValue) > -1 &&
-        this.extraFilters(d) === true
+        this.ensService.extraFilters(
+          d,
+          this.typesFilter,
+          this.filterForm.controls
+        ) === true
       ) {
         return true;
       }
@@ -363,62 +530,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.bookmarkFacadeService.upsertBookmark(domain);
   }
 
-  extraFilters(d: DomainMetadataModel) {
-    const minL = this.filterForm.controls.minLength.value;
-    const maxL = this.filterForm.controls.maxLength.value;
-    const minD = this.getDateToStamp(this.filterForm.controls.creation.value);
-    const regD = this.getDateToStamp(
-      this.filterForm.controls.registration.value
+  hasViewBottomed(topHeight: number) {
+    return (
+      topHeight + document.body.clientHeight >
+      this.scrollableContentContainer.nativeElement.scrollHeight - 5
     );
-    const maxD = this.getDateToStamp(this.filterForm.controls.expiration.value);
-    const containEmoji = this.typesFilter.emoji;
-    const containAlphabet = this.typesFilter.alphabet;
-    const containNumber = this.typesFilter.numbers;
-    let satisfied;
-    if (minD > 0 && minD !== null && parseInt(d.createdAt, 10) < minD) {
-      return false;
-    }
-    if (regD > 0 && regD !== null && parseInt(d.registrationDate, 10) < regD) {
-      return false;
-    }
-    if (maxD > 0 && maxD !== null && parseInt(d.expiry, 10) > maxD) {
-      return false;
-    }
-    if ((d.labelName.length >= minL && d.labelName.length <= maxL) === false) {
-      return false;
-    }
-    if (containEmoji === true) {
-      if (this.isEmojiInLabel(d.labelName) === true) {
-        satisfied = true;
-      } else {
-        return false;
-      }
-    }
-    if (containAlphabet === false && containNumber === false) {
-      satisfied = true;
-    } else if (containAlphabet === true && containNumber === false) {
-      if (this.isAlphabetInLabel(d.labelName) === true) {
-        satisfied = true;
-      } else {
-        return false;
-      }
-    } else if (containNumber === true && containAlphabet === true) {
-      if (this.isAlphaNumericLabel(d.labelName) === true) {
-        satisfied = true;
-      } else {
-        return false;
-      }
-    } else if (containNumber === true) {
-      if (this.isNumberInLabel(d.labelName) === true) {
-        satisfied = true;
-      } else {
-        return false;
-      }
-    }
-    if (satisfied === undefined) {
-      return true;
-    }
-    return satisfied;
   }
 
   openExpiredPicker() {
@@ -463,6 +579,34 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.downloadService.download('text/csv;charset=utf-8', csv);
   }
 
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  hideEmojiPickerOnBlur() {
+    window.addEventListener('click', (e) => {
+      if ((e as any).target) {
+        this.showEmojiPicker = false;
+      }
+    });
+  }
+
+  addEmojiToFilter(e: any) {
+    const currentKeyWordFilter = this.filterForm.controls.contains.value;
+    this.filterForm.controls.contains.setValue(
+      currentKeyWordFilter +
+        this.ensService.performNormalisation(e.emoji.native)
+    );
+    this.resetLastDomainSearchResult();
+  }
+
+  openPurchasePanel(domain: DomainMetadataModel) {
+    const dialogRef = this.dialog.open(SaleManagementComponent, {
+      panelClass: 'cos-settings-dialog',
+    });
+    dialogRef.componentInstance.domain = domain;
+  }
+
   copyShareLink() {
     const href = this.router.url;
     navigator.clipboard.writeText(environment.baseUrl + '/#' + href);
@@ -485,6 +629,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
       generalConfigurations.nftyChatLink + this.userAddress,
       '_blank'
     );
+  }
+
+  goToStore() {
+    window.open('https://' + this.userName + '.limo', '_blank');
   }
 
   goToEtherscan() {
@@ -553,6 +701,335 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return d.getTime();
   }
 
+  backScrollContentToTop() {
+    this.scrollableContentContainer.nativeElement.scrollTop = 0;
+  }
+
+  loadMoreDomains() {
+    if (
+      this.domainsListResolving === true ||
+      this.domainListResolutionSubscription !== undefined ||
+      this.domainsInPage.length <= 0
+    ) {
+      return;
+    }
+    this.domainsListResolving = true;
+    if (this.domainListResolutionSubscription) {
+      this.domainListResolutionSubscription.unsubscribe();
+      this.domainListResolutionSubscription = undefined;
+    }
+    this.domainListResolutionSubscription = of(1)
+      .pipe(
+        delay(1000),
+        map((r) => {
+          this.hasDomainsListLoaded = true;
+          if (this.domainListResolutionSubscription) {
+            this.domainListResolutionSubscription.unsubscribe();
+            this.domainListResolutionSubscription = undefined;
+          }
+          if (this.userDomainsList === undefined) {
+            this.userDomainsList = this.domainsInPage;
+            this.domainsListResolving = false;
+            this.domainsListPage++;
+            return;
+          }
+          this.userDomainsList = this.userDomainsList.concat(
+            this.domainsInPage
+          );
+          this.domainsListResolving = false;
+          this.domainsListPage++;
+        })
+      )
+      .subscribe();
+  }
+
+  resetLastDomainSearchResult() {
+    this.lastDomainSearchResult = undefined;
+    this.userDomainsList = undefined;
+    this.domainsListPage = 0;
+    this.loadMoreDomains();
+  }
+
+  proceedManagement() {
+    const provider = globalAny.canvasProvider;
+    const qualifiedTokenId = this.userDomains.filter((d) => {
+      return d.gracePeriodPercent <= 0;
+    })[0];
+    const tokenId = BigNumber.from(qualifiedTokenId.labelHash).toString();
+    if (this.saveChangesSubscripton) {
+      this.saveChangesSubscripton.unsubscribe();
+    }
+    this.savingChangesInitiated = true;
+    const domainsToTransfer = this.domainsSelected;
+    if (
+      domainsToTransfer.length <= 0 &&
+      this.manageMode === this.manageModes.TRANSFER
+    ) {
+      this.snackBar.open('Select a domain to transfer or renew.', 'close', {
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        duration: 5000,
+      });
+      this.savingChangesInitiated = false;
+      return;
+    }
+    this.saveChangesSubscripton = this.ensMarketplaceService
+      .checkApproval(tokenId, provider)
+      .pipe(
+        map((r) => {
+          this.savingChangesInitiated = false;
+          this.openManagementDialog(r);
+        })
+      )
+      .subscribe();
+  }
+
+  openFeaturedItemsManager() {
+    const dialogRef = this.dialog.open(FeaturedManagementComponent, {
+      panelClass: 'cos-settings-dialog',
+    });
+    dialogRef.componentInstance.userName = this.ethNameData;
+    if (Object.keys(this.domainsFeatured).length <= 0) {
+      dialogRef.componentInstance.features = { order: [], featured: {} };
+    } else {
+      dialogRef.componentInstance.features = {
+        ...this.domainsFeatured,
+        ...this.profileTexts.predomainFeatured,
+      };
+    }
+    dialogRef.componentInstance.userDomains = this.userDomains;
+    dialogRef.componentInstance.userNames = this.domainsOptimisedList;
+  }
+
+  openSetupStoreItemsManager() {
+    const dialogRef = this.dialog.open(SetupManagementComponent, {
+      panelClass: 'cos-settings-dialog',
+    });
+    dialogRef.componentInstance.userName = this.ethNameData;
+    dialogRef.componentInstance.userNamesData = this.userDomains;
+    dialogRef.componentInstance.userNames = this.domainsOptimisedList;
+  }
+
+  openManagementDialog(approvalStatus: boolean) {
+    if (this.managementDialogSubscription) {
+      this.managementDialogSubscription.unsubscribe();
+    }
+    if (
+      this.domainsSelected === undefined ||
+      this.domainsSelected.length <= 0
+    ) {
+      this.snackBar.open('Select a domain to transfer or renew.', 'close', {
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        duration: 5000,
+      });
+      return;
+    }
+    if (this.manageMode === ManageModes.RENEW) {
+      const domainsToRenew = this.domainsSelected;
+      const dialogRef = this.dialog.open(RenewManagementComponent, {
+        panelClass: 'cos-settings-dialog',
+      });
+      dialogRef.componentInstance.domainsToRenew = domainsToRenew;
+      this.managementDialogSubscription = dialogRef
+        .beforeClosed()
+        .subscribe((r) => {
+          this.cancelManagement();
+        });
+    } else if (this.manageMode === ManageModes.TRANSFER) {
+      const domainsToTransfer = this.domainsSelected;
+      const dialogRef = this.dialog.open(OnboardManagementComponent, {
+        panelClass: 'cos-settings-dialog',
+      });
+      dialogRef.componentInstance.setStep(approvalStatus === true ? 2 : 0);
+      dialogRef.componentInstance.domainsSelectedTransfer = domainsToTransfer;
+      this.managementDialogSubscription = dialogRef
+        .beforeClosed()
+        .subscribe((r) => {
+          this.domainsRecentlyTransferred =
+            this.domainsRecentlyTransferred.concat(
+              domainsToTransfer.map((n) => n.labelHash)
+            );
+          this.cancelManagement();
+        });
+    }
+  }
+
+  getFeaturedDomainsByTag(tag: string) {
+    if (Object.keys(this.domainsFeatured).length <= 0) {
+      return [];
+    }
+    return this.domainsFeatured.featured[tag];
+  }
+
+  isDomainSelected(domain: DomainMetadataModel) {
+    return (
+      this.domainsSelected
+        .map((d) => d.labelHash)
+        .filter((d) => d === domain.labelHash).length > 0
+    );
+  }
+
+  addOrRemoveDomainToSelectedList(domain: DomainMetadataModel) {
+    if (this.isDomainSelected(domain) === true) {
+      this.domainsSelected = this.domainsSelected.filter(
+        (d) => d.labelHash !== domain.labelHash
+      );
+      return;
+    }
+    if (
+      (this.manageMode === ManageModes.RENEW &&
+        this.domainsSelected.length >=
+          generalConfigurations.maxDomainsToRenew) ||
+      (this.manageMode === ManageModes.TRANSFER &&
+        this.domainsSelected.length >=
+          generalConfigurations.maxDomainsToTransfer)
+    ) {
+      this.snackBar.open('Maximum limit reached.', 'close', {
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        duration: 5000,
+      });
+      return;
+    }
+    this.domainsSelected.push(domain);
+  }
+
+  goToPendingTx() {
+    window.open(
+      BlockExplorersEnum[environment.defaultChain] + '/tx/' + this.pendingTx,
+      '_blank'
+    );
+  }
+
+  cancelManagement() {
+    this.manageMode = this.manageModes.DEFAULT;
+    this.domainsSelected = [];
+  }
+
+  get fadeTopExist() {
+    return this.fadeTop !== undefined;
+  }
+
+  get isProfileOwnerByWallet() {
+    if (
+      this.userAddress === undefined ||
+      this.mainHeader?.currentUserData?.walletAddress === undefined
+    ) {
+      return false;
+    }
+    return (
+      this.userAddress.toLowerCase() ===
+      this.mainHeader.currentUserData.walletAddress.toLowerCase()
+    );
+  }
+
+  get featuredItemsExists() {
+    const ds = this.domainsFeatured;
+    if (ds === undefined || Object.keys(ds).length <= 0) {
+      return false;
+    }
+    return (
+      Object.keys(ds.featured).length > 0 &&
+      Object.keys(ds.featured).reduce(
+        (a, b, i) => a + ds.featured[b].length,
+        0
+      ) > 0
+    );
+  }
+
+  get maxNumberOfSelectedDomainsDisplayed() {
+    const w =
+      document.getElementById('co-bottom-action-container').clientWidth -
+      (this.isDeviceMobile === true ? 260 : 560);
+    return parseInt((w / 60).toString());
+  }
+
+  get selectedDomainsToDisplay() {
+    return this.domainsSelected.slice(
+      0,
+      this.maxNumberOfSelectedDomainsDisplayed
+    );
+  }
+
+  get selectedDomainsCount() {
+    return this.domainsSelected.length;
+  }
+
+  get featuredTags() {
+    if (
+      this.domainsFeatured === undefined ||
+      Object.keys(this.domainsFeatured).length <= 0
+    ) {
+      return [];
+    }
+    return Object.keys(this.domainsFeatured.featured);
+  }
+
+  get actualValidNames() {
+    if (this.userDomains === undefined) {
+      return [];
+    }
+    let names = this.userDomains;
+    return names.filter((n) => {
+      const category = this.ensService.getNameCategory(
+        n.labelName,
+        n.labelHash.toString(),
+        this.categoriesDataRaw,
+        this.optimisedCategoryData
+      );
+      return (
+        (this.filterForm.controls.category.value === '' ||
+          (category !== undefined &&
+            category === this.filterForm.controls.category.value)) &&
+        this.ensService.extraFiltersPure(
+          n.labelName,
+          this.typesFilter,
+          this.filterForm.controls,
+          0,
+          0
+        ) &&
+        this.ensService.extraFilters(
+          n,
+          this.typesFilter,
+          this.filterForm.controls
+        )
+      );
+    });
+  }
+
+  displayDomain(domainHash: string) {
+    if (this.domainsRecentlyTransferred.includes(domainHash) === true) {
+      return false;
+    }
+    return true;
+  }
+
+  calculateProfileWidgetOpacity() {
+    const yPos = this.windowTopScroll;
+    return (1 / 1 - (300 - yPos) / 300).toString();
+  }
+
+  calculateProfileWidgetHeight() {
+    const yPos = this.windowTopScroll;
+    const c = 100 * (1 / 1 - (300 - yPos) / 300);
+    if (c < 0) {
+      return '0px';
+    }
+    if (c > 100) {
+      return '100px';
+    }
+    return c + 'px';
+  }
+
+  get domainsInPage() {
+    const toFeedLazyLoad = this.actualValidNames.slice(
+      this.domainsListPage * this.domainsListPerPage,
+      this.domainsListPage * this.domainsListPerPage + this.domainsListPerPage
+    );
+    return this.ensService.shuffleListOfNames(toFeedLazyLoad);
+  }
+
   get searchKeyword() {
     return this.filterForm.controls.contains.value;
   }
@@ -574,17 +1051,79 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return document.body.clientWidth <= 600;
   }
 
-  get guideAvatarSize() {
+  get suitableItemPageWidthForWindow() {
     const windowW = document.body.clientWidth;
+    if (this.pageMode === PageModesEnum.PROFILE) {
+      let t = 5;
+      if (windowW <= 600) {
+        t = 2;
+      }
+      if (windowW > 600 && windowW <= 1200) {
+        t = 4;
+      }
+      t = 5;
+      this.domainsListPerPage = t;
+      return t;
+    }
+    let t = 8;
     if (windowW <= 600) {
-      return windowW / 2 - 5;
+      t = 2;
     }
     if (windowW > 600 && windowW <= 1200) {
-      return windowW / 4 - 8;
+      t = 4;
     }
-    if (windowW > 1200 && windowW <= 1999) {
-      return windowW / 5 - 8;
+    if (windowW > 1200 && windowW <= 1900) {
+      t = 5;
     }
-    return (windowW / 100) * 12.5 - 9;
+    this.domainsListPerPage = t;
+    return t;
+  }
+
+  get guideAvatarSize() {
+    const windowW = document.body.clientWidth;
+    if (this.pageMode === PageModesEnum.PROFILE) {
+      if (windowW <= 600) {
+        return (windowW - 60) / 2 - 5;
+      }
+      if (windowW > 600 && windowW <= 1200) {
+        return (windowW - 60) / 4 - 8;
+      }
+      return (1300 - 350) / 5 - 8;
+    }
+    if (windowW <= 600) {
+      return (windowW - 60) / 2 - 5;
+    }
+    if (windowW > 600 && windowW <= 1200) {
+      return (windowW - 60) / 4 - 8;
+    }
+    if (windowW > 1200 && windowW <= 1900) {
+      return (windowW - 570) / 5 - 8;
+    }
+    return ((1900 - 430) / 100) * 12.5 - 9;
+  }
+
+  get pendingPayments() {
+    return this.paymentFacadeService.paymentState$.pipe(
+      switchMap((state) => {
+        const payments = Object.keys(state.entities).filter(
+          (p) =>
+            (state.entities[p].paymentType === PaymentTypesEnum.TX_APPROVAL ||
+              state.entities[p].paymentType === PaymentTypesEnum.TX_TRANSFER ||
+              state.entities[p].paymentType === PaymentTypesEnum.TX_RENEW) &&
+            state.entities[p].paymentStatus === false &&
+            ('archived' in state.entities[p] === false ||
+              ('archived' in state.entities[p] === true &&
+                state.entities[p].archived === false))
+        );
+        if (payments.length > 0) {
+          this.pendingTx =
+            state.entities[payments[payments.length - 1]].paymentHash;
+          this.hasPendingPayments = true;
+          return of(true);
+        }
+        this.hasPendingPayments = false;
+        return of(false);
+      })
+    );
   }
 }

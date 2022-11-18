@@ -63,6 +63,7 @@ export class UserEffects {
         ofType<UserEffectsInit>(InitEffectsUserState),
         filter((r) => {
           if (
+            globalAny.canvasEffectsInitialised === undefined ||
             globalAny.canvasEffectsInitialised[InitEffectsUserState] === true
           ) {
             return false;

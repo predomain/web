@@ -4,20 +4,32 @@ import { Observable } from 'rxjs';
 import { ens_normalize, ens_beautify } from '@adraffy/ens-normalize';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { DomainMetadataModel } from 'src/app/models/domains';
+import {
+  DomainFiltersModel,
+  DomainMetadataModel,
+  DomainTypeEnum,
+} from 'src/app/models/domains';
 import { invalidChars } from 'src/app/configurations';
+import { MiscUtilsService } from '../misc-utils';
+import { CategoryModel } from 'src/app/models/category';
+import { ethers } from 'ethers';
 
 const REGISTER_GAS = 175000;
 const REGISTER_CONFIG_GAS = 300000;
 const COMMIT_GAS = 25000;
 const COMMIT_SINGLE_GAS = 55000;
 const RENEW_GAS = 150000;
+const PREPUNK_TIME = 1498176000;
+const PREPUNK_BLOCK = 15010210;
 
 @Injectable({
   providedIn: 'root',
 })
 export class EnsService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    protected miscUtils: MiscUtilsService
+  ) {}
 
   getDomainMetadata(domainHash: string) {
     const url = environment.networks[environment.defaultChain].ensMetadataAPI;
@@ -48,12 +60,63 @@ export class EnsService {
     });
   }
 
-  findDomains(domains: string[]) {
+  getDomainContentHashPure(provider: Provider, ethName: string) {
+    return new Observable((observer) => {
+      (provider as any)
+        .getResolver(ethName)
+        .then((resolver) => {
+          return resolver.getContentHash();
+        })
+        .then((r) => {
+          let web2Link;
+          if (r.indexOf('ipfs:') > -1) {
+            web2Link = r.replace('ipfs://', '');
+          } else if (r.indexOf('ipns:') > -1) {
+            web2Link = r.replace('ipns://', '');
+          }
+          observer.next(web2Link);
+          observer.complete();
+        })
+        .catch((e) => {
+          observer.next(false);
+          observer.complete();
+        });
+    });
+  }
+
+  findDomains(
+    domains: string[],
+    prepunk = false,
+    expirationDate = '4102444800',
+    registrationDate = '1262300400'
+  ) {
+    if ((expirationDate as any) === 'NaN') {
+      expirationDate = '4102444800';
+    }
+    if ((registrationDate as any) === 'NaN') {
+      registrationDate = '1262300400';
+    }
     const url = environment.networks[environment.defaultChain].ensGraphQLAPI;
     return new Observable((observer) => {
       const query = gql`
-        query ($domainNames: [String!]) {
-          registrations(first: 1000, where: { labelName_in: $domainNames }) {
+        query (
+          $domainNames: [String!]
+          $expirationDate: BigInt,
+          $registrationDate: BigInt,
+          $prePunkBlock: Int
+        ) {
+          registrations(
+            first: 1000
+            where: {
+              labelName_in: $domainNames,
+              registrationDate_gte: $registrationDate,
+              expiryDate_lte: $expirationDate ${
+                prepunk === true
+                  ? ', events_: { blockNumber_lte: $prePunkBlock }'
+                  : ''
+              }
+            }
+          ) {
             id
             labelName
             expiryDate
@@ -72,7 +135,12 @@ export class EnsService {
           }
         }
       `;
-      request(url, query, { domainNames: domains }).then((data) => {
+      request(url, query, {
+        domainNames: domains,
+        prePunkBlock: PREPUNK_BLOCK,
+        registrationDate,
+        expirationDate,
+      }).then((data) => {
         observer.next(data);
         observer.complete();
       });
@@ -109,6 +177,24 @@ export class EnsService {
         observer.complete();
       });
     });
+  }
+
+  qlResultToDomainModel(n: any, domainType: DomainTypeEnum) {
+    const gPeriod = this.calculateGracePeriodPercentage(
+      parseInt(n.expiryDate, 10)
+    );
+    const fData = {
+      id: n.domain.id.toLowerCase(),
+      labelName: n.domain.labelName.toLowerCase(),
+      labelHash: n.domain.labelhash.toLowerCase(),
+      isNotAvailable: false,
+      domainType: domainType,
+      expiry: (parseInt(n.expiryDate) * 1000).toString(),
+      gracePeriodPercent: gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
+      registrationDate: (parseInt(n.registrationDate) * 1000).toString(),
+      createdAt: (parseInt(n.domain.createdAt) * 1000).toString(),
+    } as DomainMetadataModel;
+    return fData;
   }
 
   downloadDomainsListNamesOnly(domains: DomainMetadataModel[]) {
@@ -233,6 +319,237 @@ export class EnsService {
   getNameLength(name: string) {
     const count = [...ens_normalize(name)].length;
     return count;
+  }
+
+  extraFilters(
+    d: DomainMetadataModel,
+    filters: DomainFiltersModel,
+    baseFilter: any
+  ) {
+    const minL = baseFilter.minLength.value;
+    const maxL = baseFilter.maxLength.value;
+    const minD = this.miscUtils.getDateToStamp(baseFilter.creation.value);
+    const regD = this.miscUtils.getDateToStamp(baseFilter.registration.value);
+    const maxD = this.miscUtils.getDateToStamp(baseFilter.expiration.value);
+    let satisfied;
+    if (minD > 0 && minD !== null && parseInt(d.createdAt, 10) < minD) {
+      return false;
+    }
+    if (regD > 0 && regD !== null && parseInt(d.registrationDate, 10) < regD) {
+      return false;
+    }
+    if (maxD > 0 && maxD !== null && parseInt(d.expiry, 10) > maxD) {
+      return false;
+    }
+    if ((d.labelName.length >= minL && d.labelName.length <= maxL) === false) {
+      return false;
+    }
+    if (
+      filters.prepunk === true &&
+      parseInt(d.createdAt) / 1000 > PREPUNK_TIME
+    ) {
+      return false;
+    }
+    if (satisfied === undefined) {
+      return true;
+    }
+    return satisfied;
+  }
+
+  extraFiltersPure(
+    d: string,
+    filters: DomainFiltersModel,
+    baseFilter: any,
+    prefixOffset: number,
+    suffixOffset: number
+  ) {
+    if (d === null || this.isDomainNameNotValid(d) === false) {
+      return false;
+    }
+    const minL = baseFilter === null ? 0 : baseFilter.minLength.value;
+    const maxL = baseFilter === null ? 100 : baseFilter.maxLength.value;
+    const contains = baseFilter === null ? '' : baseFilter.contains.value;
+    const containEmoji = filters.emoji;
+    const containAlphabet = filters.alphabet;
+    const containNumber = filters.numbers;
+    const palindrome = filters.palindrome;
+    const repeating = filters.repeating;
+    const nameLen = this.getNameLength(d);
+    let satisfied;
+    if ((nameLen >= minL && nameLen <= maxL) === false) {
+      return false;
+    }
+    let nameToCheckForOffsets = [...d]
+      .filter((r) => r.codePointAt(0) !== 8419)
+      .join('');
+    const prefixOffsetRemoved = nameToCheckForOffsets.substring(prefixOffset);
+    const suffixOffsetRemoved = prefixOffsetRemoved.substring(
+      0,
+      prefixOffsetRemoved.length - suffixOffset
+    );
+    nameToCheckForOffsets = suffixOffsetRemoved;
+    if (contains !== '') {
+      if (nameToCheckForOffsets.indexOf(contains) > -1) {
+        satisfied = true;
+      } else {
+        return false;
+      }
+    }
+    if (repeating === true) {
+      if (this.miscUtils.testRepeating(nameToCheckForOffsets) === true) {
+        satisfied = true;
+      } else {
+        return false;
+      }
+    }
+    if (palindrome === true) {
+      if (this.miscUtils.testPalindrome(nameToCheckForOffsets) === true) {
+        satisfied = true;
+      } else {
+        return false;
+      }
+    }
+    if (containEmoji === true) {
+      if (this.isEmojiInLabel(d) === true) {
+        satisfied = true;
+      } else {
+        return false;
+      }
+    }
+    if (containAlphabet === false && containNumber === false) {
+      satisfied = true;
+    } else if (containAlphabet === true && containNumber === false) {
+      if (this.isAlphabetInLabel(d) === true) {
+        satisfied = true;
+      } else {
+        return false;
+      }
+    } else if (containNumber === true && containAlphabet === true) {
+      if (this.isAlphaNumericLabel(d) === true) {
+        satisfied = true;
+      } else {
+        return false;
+      }
+    } else if (containNumber === true) {
+      if (this.isNumberInLabel(d) === true) {
+        satisfied = true;
+      } else {
+        return false;
+      }
+    }
+    if (satisfied === undefined) {
+      return true;
+    }
+    return satisfied;
+  }
+
+  getNameCategory(
+    name: string,
+    nameHash: string,
+    dataSourceSets: CategoryModel[],
+    optimisedCategoryData: any
+  ) {
+    let categoryFound;
+    for (const c of dataSourceSets) {
+      if (categoryFound !== undefined) {
+        continue;
+      }
+      const isAlpha = this.miscUtils.testAlpha().test(name);
+      const isNumeric = this.miscUtils.testIntNumeric().test(name);
+      const isEmoji = this.miscUtils.testEmoji().test(name);
+      let nameLength;
+      try {
+        nameLength = this.getNameLength(name);
+      } catch (e) {
+        nameLength = name.length;
+      }
+      const nameFirstChar = name[0];
+      const nameSecondChar = name[1];
+      const nameCodeHash = ethers.BigNumber.from(nameHash).toString();
+      const idFirstChar = nameCodeHash[0];
+      const idSecondChar = nameCodeHash[1];
+      const pattern = new RegExp(c.pattern);
+      if (isEmoji === false && c.max_length < nameLength) {
+        continue;
+      }
+      if (
+        isEmoji === true &&
+        c.patterned === false &&
+        idFirstChar in optimisedCategoryData === true &&
+        idSecondChar in optimisedCategoryData === true &&
+        optimisedCategoryData[idFirstChar][idSecondChar].includes(
+          nameCodeHash
+        ) === true
+      ) {
+        categoryFound = c.category;
+        continue;
+      }
+      if (
+        c.patterned === false &&
+        nameFirstChar in optimisedCategoryData === true &&
+        nameSecondChar in optimisedCategoryData === true &&
+        optimisedCategoryData[nameFirstChar][nameSecondChar].includes(name) ===
+          true
+      ) {
+        categoryFound = c.category;
+        continue;
+      }
+      if (c.patterned === true && pattern.test(name) === true) {
+        categoryFound = c.category;
+        continue;
+      }
+    }
+    return categoryFound;
+  }
+
+  optimiseCategoryNamesList(data: string[]) {
+    let optimised = {};
+    for (const s of data) {
+      const firstChar = s.charAt(0);
+      const secondChar = s.charAt(1);
+      if (firstChar in optimised === false) {
+        optimised[firstChar] = {};
+      }
+      if (secondChar in optimised[firstChar] === false) {
+        optimised[firstChar][secondChar] = [];
+      }
+      optimised[firstChar][secondChar].push(s);
+    }
+    return optimised;
+  }
+
+  getDataOfObject(data: any) {
+    return Object.keys(data).map((d) => data[d]);
+  }
+
+  isEmojiInLabel(label: string) {
+    return this.miscUtils.testEmoji().test(label);
+  }
+
+  isNumberInLabel(label: string) {
+    return this.miscUtils.testIntNumeric().test(label);
+  }
+
+  isAlphabetInLabel(label: string) {
+    return this.miscUtils.testAlpha().test(label);
+  }
+
+  isAlphaNumericLabel(label: string) {
+    return this.miscUtils.testAlphaNumeric().test(label);
+  }
+
+  shuffleListOfNames(arr: string[]) {
+    let currentIndex = arr.length,
+      randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [arr[currentIndex], arr[randomIndex]] = [
+        arr[randomIndex],
+        arr[currentIndex],
+      ];
+    }
+    return arr;
   }
 
   get commitSingleGasCost() {

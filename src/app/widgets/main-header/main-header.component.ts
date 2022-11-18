@@ -22,7 +22,7 @@ import {
 } from 'src/app/models/states/pages-interfaces';
 import { UserModel } from 'src/app/models/states/user-interfaces';
 import { WalletTypesEnum } from 'src/app/models/states/wallet-interfaces';
-import { CanvasServicesService } from 'src/app/pages/canvas/canvas-services/canvas-services.service';
+import { CanvasServicesService } from 'src/app/services/canvas-services/canvas-services.service';
 import {
   MiscUtilsService,
   TranslationService,
@@ -225,6 +225,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     window.open(generalConfigurations.docsLink, '_blank');
   }
 
+  goToHome() {
+    this.pagesFacadeService.gotoPageRoute('home', PagesEnum.HOME);
+  }
+
   goToDiscord() {
     window.open('https://discord.gg/ECMz2VNn97', '_blank');
   }
@@ -241,10 +245,6 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
       data: 'ERRORS.UNKNOWN',
       panelClass: 'cos-settings-dialog',
     });
-  }
-
-  goToCanvas() {
-    this.pagesFacadeService.gotoPageRoute('canvas', PagesEnum.CANVAS);
   }
 
   goToCheckout() {
@@ -357,6 +357,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
       }
     }
     return presult;
+  }
+
+  get isDeviceMobile() {
+    return document.body.clientWidth <= 1000;
   }
 
   get searchKeysToChunk() {

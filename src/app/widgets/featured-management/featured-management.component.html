@@ -1,0 +1,357 @@
+<div mat-dialog-content>
+  <div
+    class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
+    fxLayoutAlign="start start"
+    fxLayout="column"
+    fxLayoutGap="10px"
+  >
+    <div
+      fxFlex
+      fxLayoutAlign="center center"
+      class="cos-fluid-width cos-padding-1 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
+    >
+      <div fxFlex class="cos-body-0">
+        <b> {{ "LABELS.FEATURED_ITEMS" | translate }} </b>
+      </div>
+      <div fxFlex="0 0 auto" fxLayoutGap="20px" class="cos-right-text">
+        <a (click)="closeDialog()" class="cos-body-4">
+          {{ "BUTTON.CLOSE" | translate }}
+        </a>
+      </div>
+    </div>
+    <div class="cos-fluid-width">
+      <mat-accordion
+        class="cos-fluid-width"
+        #stepper
+        [ngClass]="updatingFeatured === true ? 'cos-disabled' : ''"
+      >
+        <mat-expansion-panel
+          [expanded]="step === i"
+          (opened)="setStep(i)"
+          hideToggle="true"
+          *ngFor="let f of orderFeatureList; let i = index"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row" fxLayoutGap="10px">
+                <div fxFlex>
+                  <form
+                    *ngIf="getTitleEditState(f) === true"
+                    fxLayout="column"
+                    fxLayoutAlign="start stretch"
+                    [formGroup]="setupDomainForm"
+                    class="cos-fluid-width cos-body-4 cos-gray-text"
+                  >
+                    <mat-form-field
+                      class="co-main-search cos-fluid-width cos-body-0 cos-input-field-no-label cos-input-field-small cos-input-field-no-radius"
+                      (keyup)="$event.stopPropagation()"
+                      (keydown)="$event.stopPropagation()"
+                      (click)="$event.stopPropagation()"
+                    >
+                      <input
+                        fxFlex
+                        class="cos-fluid-width cos-bg-darker-gray"
+                        matInput
+                        type="text"
+                        autocomplete="off"
+                        placeholder="Enter title..."
+                        maxlength="50"
+                        formControlName="title"
+                      />
+                    </mat-form-field>
+                  </form>
+                  <ng-container *ngIf="getTitleEditState(f) === false">
+                    {{ f }}
+                  </ng-container>
+                </div>
+                <div fxFlex="0 0 auto" fxLayoutAlign="center center">
+                  <mat-icon
+                    *ngIf="
+                      getTitleEditState(f) === true &&
+                      isFeatureNameInConflict(f, i) === true
+                    "
+                    color="accent"
+                    class="cos-small-icon cos-pointer"
+                    matTooltip="Feature Exist"
+                    >warning</mat-icon
+                  >
+                </div>
+                <div
+                  fxFlex
+                  fxLayoutAlign="end center"
+                  fxLayoutGap="20px"
+                  class="cos-right-text cos-body-4"
+                  (click)="$event.stopPropagation()"
+                >
+                  <a (click)="toggleTitleEditState(f)">
+                    {{
+                      (getTitleEditState(f) === true
+                        ? "BUTTON.APPLY"
+                        : "BUTTON.CHANGE"
+                      ) | translate
+                    }}
+                  </a>
+                  <a (click)="removeFeature(f)">{{
+                    "BUTTON.REMOVE" | translate
+                  }}</a>
+                  <div fxLayoutAlign="center center">
+                    <mat-icon
+                      class="cos-small-icon cos-icon-can-activate"
+                      [ngClass]="i > 0 ? '' : 'cos-disabled'"
+                      (click)="moveFeatureUp(f)"
+                    >
+                      arrow_upward
+                    </mat-icon>
+                  </div>
+                  <div fxLayoutAlign="center center">
+                    <mat-icon
+                      class="cos-small-icon cos-icon-can-activate"
+                      [ngClass]="
+                        i === featureNamesCount - 1 ? 'cos-disabled' : ''
+                      "
+                      (click)="moveFeatureDown(f)"
+                    >
+                      arrow_downward
+                    </mat-icon>
+                  </div>
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div
+            fxLayout="column"
+            class="co-list-container cos-bg-gray cos-border-radius-2 cos-padding-0 cos-no-padding-bottom cos-overflow-y"
+          >
+            <div
+              cdkDropList
+              fxFlex
+              fxLayout="column"
+              class="co-list"
+              (cdkDropListDropped)="rearrangeNames($event, f)"
+            >
+              <div
+                *ngFor="let fi of getFeatureItems(f); let ii = index"
+                class="co-row cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-bg-faded-darker-gray cos-box-shadow cos-border-radius-1"
+                cdkDrag
+              >
+                <div
+                  class="co-custom-placeholder cos-border-radius-1 cos-bg-faded-darker-gray"
+                  *cdkDragPlaceholder
+                >
+                  <div
+                    fxLayout="row"
+                    fxLayoutGap="10px"
+                    fxLayoutAlign="center center"
+                    class="cos-fluid-width cos-fluid-height"
+                  >
+                    <div
+                      fxFlex
+                      fxLayout="row"
+                      fxLayoutGap="10px"
+                      fxLayoutAlign="center center"
+                      class="cos-fluid-width cos-padding-0"
+                    >
+                      <img fxFlex="20px" src="assets/ens.svg" />
+                      <div fxFlex="0 0 auto">
+                        {{ pretty(fi.labelName) }}.eth
+                      </div>
+                      <div fxFlex class="cos-right-text" fxLayoutGap="20px">
+                        <a>{{ "BUTTON.APPLY" | translate }} </a>
+                        <a>{{ "BUTTON.REMOVE" | translate }}</a>
+                      </div>
+                      <div
+                        fxFlex="0 0 auto"
+                        class="cos-right-text"
+                        fxLayoutAlign="center center"
+                      >
+                        <mat-icon class="cos-gray-text"
+                          >drag_indicator</mat-icon
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="co-row-content cos-fluid-width" fxLayout="column">
+                  <div
+                    fxLayout="row"
+                    fxLayoutGap="10px"
+                    fxLayoutAlign="center center"
+                    class="cos-fluid-width cos-fluid-height"
+                  >
+                    <div
+                      fxFlex
+                      fxLayout="row"
+                      fxLayoutGap="10px"
+                      fxLayoutAlign="center center"
+                      class="cos-fluid-width cos-padding-0"
+                    >
+                      <img fxFlex="20px" src="assets/ens.svg" />
+                      <div fxFlex="0 0 auto">
+                        <form
+                          *ngIf="getEditState(f, fi.labelName) === true"
+                          fxLayout="column"
+                          fxLayoutAlign="start stretch"
+                          [formGroup]="setupDomainForm"
+                          class="cos-fluid-width cos-body-4 cos-gray-text"
+                        >
+                          <mat-form-field
+                            class="co-main-search cos-fluid-width cos-body-0 cos-input-field-no-label cos-input-field-small cos-input-field-no-radius"
+                          >
+                            <input
+                              fxFlex
+                              class="cos-fluid-width cos-bg-darker-gray"
+                              matInput
+                              type="text"
+                              autocomplete="off"
+                              placeholder="Search name..."
+                              maxlength="50"
+                              formControlName="domain"
+                              [matAutocomplete]="auto"
+                              (input)="setFeatureItemData($event)"
+                            />
+                          </mat-form-field>
+                        </form>
+                        <ng-container
+                          *ngIf="getEditState(f, fi.labelName) === false"
+                        >
+                          {{ pretty(fi.labelName) }}.eth
+                        </ng-container>
+                      </div>
+                      <div fxFlex="0 0 auto" fxLayoutAlign="center center">
+                        <mat-icon
+                          *ngIf="
+                            nameNotFound === true &&
+                            getEditState(f, fi.labelName) === true
+                          "
+                          color="accent"
+                          class="cos-small-icon cos-pointer"
+                          matTooltip="Domain Not Found"
+                          >warning</mat-icon
+                        >
+                      </div>
+                      <div fxFlex class="cos-right-text" fxLayoutGap="20px">
+                        <a (click)="toggleEditState(f, ii, fi.labelName)">
+                          {{
+                            getEditState(f, fi.labelName) === true
+                              ? "Apply"
+                              : "Change"
+                          }}
+                        </a>
+                        <a (click)="removeName(f, ii, fi.labelName)">{{
+                          "BUTTON.REMOVE" | translate
+                        }}</a>
+                      </div>
+                      <div
+                        fxFlex="0 0 auto"
+                        class="cos-right-text"
+                        fxLayoutAlign="center center"
+                      >
+                        <mat-icon class="cos-gray-text"
+                          >drag_indicator</mat-icon
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="co-row cos-button-add cos-padding-0 cos-pointer cos-no-padding-top cos-no-padding-bottom cos-bg-faded-darker-gray cos-box-shadow cos-border-radius-1"
+              >
+                <div
+                  fxFlex
+                  class="co-row-content cos-fluid-width"
+                  fxLayout="column"
+                >
+                  <div
+                    fxLayout="row"
+                    fxLayoutGap="10px"
+                    fxLayoutAlign="center center"
+                    class="cos-fluid-width cos-fluid-height"
+                  >
+                    <div
+                      fxFlex
+                      fxLayout="row"
+                      fxLayoutGap="10px"
+                      fxLayoutAlign="center center"
+                      (click)="addName(f)"
+                      class="cos-fluid-width cos-padding-0"
+                    >
+                      <mat-icon class="cos-gray-text">add</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <div
+        class="cos-border cos-no-border-left cos-no-border-right cos-no-border-bottom"
+      ></div>
+      <p
+        class="cos-fluid-width"
+        [ngClass]="updatingFeatured === true ? 'cos-disabled' : ''"
+      >
+        <button
+          fxFlex
+          mat-button
+          class="cos-button-paging"
+          (click)="addFeature()"
+        >
+          <div fxLayoutAlign="center center"><mat-icon>add</mat-icon></div>
+        </button>
+      </p>
+      <div
+        class="cos-border cos-no-border-left cos-no-border-right cos-no-border-bottom"
+      ></div>
+      <p class="cos-fluid-width">
+        <button
+          fxFlex
+          mat-button
+          (click)="performSave()"
+          [disabled]="updatingFeatured === true"
+        >
+          <div fxLayoutAlign="center center">
+            <div fxFlex="0 0 auto" *ngIf="updatingFeatured === true">
+              <app-spinner
+                [padded]="false"
+                [lightColour]="true"
+                [spinnerSize]="10"
+                [showText]="false"
+              ></app-spinner>
+            </div>
+            <span *ngIf="updatingFeatured === false" fxFlex>
+              {{ "BUTTON.SAVE_CHANGES" | translate }}
+            </span>
+          </div>
+        </button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<mat-autocomplete #auto="matAutocomplete" class="autocomplete-for-small-input">
+  <ng-container *ngFor="let d of quickSearchKeysToChunk">
+    <mat-option
+      class="cos-box-shadow"
+      [value]="d + '.eth'"
+      (click)="setFeatureItemData(d)"
+    >
+      <div fxLayout="row" class="cos-fluid-width cos-padding-1">
+        <div
+          fxFlex
+          fxLayoutAlign="start center"
+          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+        >
+          {{ pretty(d) }}.eth
+        </div>
+        <div fxflex fxLayout="column" fxLayoutAlign="center end"></div></div
+    ></mat-option>
+  </ng-container>
+</mat-autocomplete>

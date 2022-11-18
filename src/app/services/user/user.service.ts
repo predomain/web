@@ -15,12 +15,16 @@ export class UserService {
     public walletService: WalletService
   ) {}
 
-  getUserDomains(walletAddress: string) {
+  getUserDomains(walletAddress: string, page = 0) {
     const url = environment.networks[environment.defaultChain].ensGraphQLAPI;
     return new Observable((observer) => {
       const query = gql`
         { 
-          registrations(first: 1000, where: { registrant: "${walletAddress}" }) {
+          registrations(first: 1000, skip: ${
+            page * 1000
+          }, where: { registrant: "${walletAddress}" }) {
+            id
+            labelName
             expiryDate
             registrationDate
             domain{

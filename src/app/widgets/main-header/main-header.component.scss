@@ -4,6 +4,24 @@
   height: 40px;
   width: 100%;
 }
+.co-blocky-container {
+  text-align: left;
+}
+.co-header-container {
+  width: 90% !important;
+  min-width: 1300px;
+  max-width: 1900px;
+  margin: auto;
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+.co-logo {
+  text-shadow: 0 0 3px #000;
+  font-size: 24px;
+}
 
 .co-pending-registration {
   color: var(--co-main-color);
@@ -45,6 +63,14 @@
 .co-bookmark-button {
   @media only screen and (max-width: 1000px) {
     display: none !important;
+  }
+}
+
+.co-cart-icon {
+  mat-icon {
+    font-size: 28px !important;
+    height: 28px !important;
+    width: 28px !important;
   }
 }
 

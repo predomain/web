@@ -21,6 +21,7 @@ export class PreviewImageComponent implements OnChanges {
   @Input() loaded = false;
   @Input() dontLoad = false;
   @Input() enableBorderRadius = true;
+  @Input() spinnerSize = 30;
   @Output() imageLoaded = new EventEmitter<boolean>();
 
   constructor(public changeDetectorRef: ChangeDetectorRef) {}

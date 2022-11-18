@@ -28,7 +28,12 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/assets", "src/assets/categories"],
+            "assets": [
+              "src/worker-init.js",
+              "src/worker.js",
+              "src/assets",
+              "src/assets/categories"
+            ],
             "styles": [
               "src/app-plugin-styles.scss",
               "src/app-material-setup.scss",
@@ -68,7 +73,7 @@
               "vendorChunk": true,
               "extractLicenses": true,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": false
             },
             "production-test": {
               "fileReplacements": [
@@ -96,7 +101,7 @@
               "vendorChunk": true,
               "extractLicenses": true,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": false
             },
             "test-remote": {
               "fileReplacements": [
@@ -112,7 +117,7 @@
               "vendorChunk": true,
               "extractLicenses": true,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": false
             },
             "test": {
               "fileReplacements": [
@@ -185,7 +190,12 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/assets"],
+            "assets": [
+              "src/worker-init.js",
+              "src/worker.js",
+              "src/assets",
+              "src/assets/categories"
+            ],
             "styles": [
               "src/app-plugin-styles.scss",
               "src/app-material-setup.scss",

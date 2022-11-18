@@ -1,25 +1,13 @@
-<div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
-  <div
-    fxFlex="90"
-    fxLayout="row"
-    fxLayoutAlign="start center"
-    fxLayoutGap="30px"
-    class="co-profile-header cos-fluid-width"
-  >
-    <span fxLayoutAlign="center center" fxLayoutGap="10px" (click)="goToHome()">
-      <mat-icon class="cos-icon-can-activate" color="primary"
-        >arrow_back_ios</mat-icon
-      >
-      <a class="co-back-button">
-        {{ "HEADER.BACK_TO_HOME" | translate }}
-      </a>
-    </span>
-  </div>
+<div
+  class="co-header-container cos-pos-fixed cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right"
+>
   <app-main-header
+    #mainHeader
     [show]="{
       showBasket: true,
       showBookmark: true,
       showCanvas: true,
+      showSearch: true,
       showTranslation: true,
       showManagement: true
     }"
@@ -41,27 +29,72 @@
       ? (filters.style.position = 'sticky')
       : (filters.style.position = 'static');
     $event[1] > 300
-      ? (filters.style.top = '130px')
+      ? (filters.style.top = '90px')
       : (filters.style.top = 'none')
   "
+  fxLayout="column"
+  fxLayoutAlign="start start"
   class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
 >
   <div
     fxLayout="row"
-    fxLayoutAlign="center start"
-    class="co-profile-content-container cos-pos-absolute cos-fluid-width cos-fluid-height"
+    fxLayoutAlign="start start"
+    class="co-profile-content-container cos-fluid-width"
   >
     <div
-      fxFlex
+      fxFlex="100"
       fxLayout="column"
-      fxLayoutGap="20px"
-      class="co-profile-content cos-padding-2"
+      class="co-profile-content"
+      [ngClass]="isDeviceMobile === true ? 'cos-padding-2' : ''"
     >
       <div
+        fxFlex="50px"
         fxLayout="row"
+        fxFlexAlign="top"
+        fxLayoutAlign="start center"
+        class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
+      >
+        <a href="/#/home">{{ "HEADER.HOME" | translate }}</a>
+        <span
+          fxFlex="0 0 auto"
+          fxLayoutAlign="center center"
+          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+        >
+          <mat-icon class="cos-small-icon" color="primary"
+            >arrow_forward</mat-icon
+          >
+        </span>
+        <a
+          href="/#/profile/{{
+            userDomainOwner === undefined
+              ? 'null'
+              : getDomainHistoryRecordActor(userDomainOwner).name
+          }}"
+          class="co-owner-address cos-wallet-address-text-cut"
+          >{{
+            userDomainOwner === undefined
+              ? "..."
+              : getDomainHistoryRecordActor(userDomainOwner).name
+          }}</a
+        >
+        <span
+          fxFlex="0 0 auto"
+          fxLayoutAlign="center center"
+          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+        >
+          <mat-icon class="cos-small-icon" color="primary"
+            >arrow_forward</mat-icon
+          >
+        </span>
+        <span class="cos-gray-text">
+          {{ pretty(domain) }}
+        </span>
+      </div>
+      <div
         fxFlex="90"
+        fxLayout="row"
         fxLayoutGap="30px"
-        class="cos-fluid-width cos-overflow-hidden"
+        class="co-profile-header cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right cos-overflow-hidden"
       >
         <div fxLayout="column" fxFlex="20" class="co-avatar-container">
           <div
@@ -119,48 +152,6 @@
           fxLayoutGap="20px"
           fxLayoutAlign="start start"
         >
-          <div
-            fxFlex="50px"
-            fxLayout="row"
-            fxFlexAlign="top"
-            fxLayoutAlign="start center"
-            class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
-          >
-            <a href="/#/home">{{ "HEADER.HOME" | translate }}</a>
-            <span
-              fxFlex="0 0 auto"
-              fxLayoutAlign="center center"
-              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
-            >
-              <mat-icon class="cos-small-icon" color="primary"
-                >arrow_forward</mat-icon
-              >
-            </span>
-            <a
-              href="/#/profile/{{
-                userDomainOwner === undefined
-                  ? 'null'
-                  : getDomainHistoryRecordActor(userDomainOwner).name
-              }}"
-              >{{
-                userDomainOwner === undefined
-                  ? "..."
-                  : getDomainHistoryRecordActor(userDomainOwner).name
-              }}</a
-            >
-            <span
-              fxFlex="0 0 auto"
-              fxLayoutAlign="center center"
-              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
-            >
-              <mat-icon class="cos-small-icon" color="primary"
-                >arrow_forward</mat-icon
-              >
-            </span>
-            <span class="cos-gray-text">
-              {{ pretty(domain) }}
-            </span>
-          </div>
           <div
             fxFlex="70px"
             fxLayout="column"
@@ -231,10 +222,21 @@
             fxFlex
             fxLayout="column"
             fxLayoutAlign="end start"
+            fxLayoutGap="30px"
             class="co-info-container cos-padding-2 cos-no-padding-bottom cos-no-padding-left cos-fluid-width"
           >
+            <div>
+              <button
+                mat-button
+                class="cos-body-0"
+                (click)="openPurchasePanel(userDomains[0])"
+              >
+                {{ "BUTTON.BUY_NOW" | translate }}
+              </button>
+            </div>
             <div class="cos-body-2">
-              <b>Owned by</b>:&nbsp;
+              <b>{{ "LABELS.OWNED_BY" | translate }}</b
+              >:&nbsp;
               <a
                 fxFlex="100px"
                 class="cos-wallet-address-text-cut"
@@ -260,18 +262,14 @@
               fxLayout="row"
               fxLayoutAlign="start center"
               fxLayoutGap="10px"
-              class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
+              class="cos-padding-2 cos-no-padding-left cos-no-padding-right"
             >
               <mat-icon>info</mat-icon>
-              <span>
+              <span class="cos-body-0">
                 <b> {{ "LABELS.DETAILS" | translate }} </b>
               </span>
             </div>
-            <div
-              fxLayoutGap="10px"
-              fxLayout="row wrap"
-              class="cos-padding-1 cos-no-padding-left cos-no-padding-right"
-            >
+            <div fxLayoutGap="10px" fxLayout="row wrap">
               <form
                 fxFlex
                 fxLayout="column"
@@ -335,9 +333,9 @@
         >
           <div
             fxFlex="0 0 auto"
-            class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
+            class="cos-padding-2 cos-no-padding-left cos-no-padding-right"
           >
-            <div fxFlex>
+            <div fxFlex class="cos-body-0">
               <b> {{ "LABELS.DOMAIN_HISTORY" | translate }} </b>
             </div>
             <div fxFlex fxLayoutGap="10px" fxLayoutAlign="end center"></div>
@@ -479,4 +477,5 @@
       </div>
     </div>
   </div>
+  <app-footer></app-footer>
 </div>

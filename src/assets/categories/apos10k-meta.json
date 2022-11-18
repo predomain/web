@@ -10,6 +10,8 @@
   "special_characters": false,
   "max_length": 6,
   "version": 2,
+  "prefix_offset": 0,
+  "suffix_offset": 2,
   "valid_names": [
     "0000’s",
     "0001’s",

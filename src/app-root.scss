@@ -1,3 +1,4 @@
+@import "~@ctrl/ngx-emoji-mart/picker";
 :root {
   --co-default-text-color: #ffffff;
   --co-bg-neutral-color: #121619;
@@ -5,15 +6,16 @@
   --co-placeholder-text-color: #87868b;
   --co-placeholder-text-lighter-color: #d6d6d8;
   --co-tag-text-color: #87868b;
-  --co-anchor-color: #52a6f2;
+  --co-anchor-color: #fff;
   --co-gray-color: #f6f6f6;
   --co-border-color: #4c505c;
   --co-darker-border-color: #21262a;
   --co-gray-elements-color: #eeeef0;
-  --co-button-disabled-color: #21262a;
+  --co-button-disabled-color: #272c30;
   --co-button-disabled-text-color: #9e9e9e;
   --co-danger-color: #ff5148;
-  --co-gray-bg: #21262a;
+  --co-light-gray-bg: #353840;
+  --co-gray-bg: #272c30;
   --co-darker-gray-bg: #202225;
   --co-faded-dark-gray-bg: #1a1e22;
   --co-icons-color: #ffffff;
@@ -37,7 +39,8 @@
     --co-button-disabled-color: #a6cdf3;
     --co-button-disabled-text-color: #9e9e9e;
     --co-danger-color: #ff5148;
-    --co-gray-bg: #e5e8eb80;
+    --co-light-gray-bg: #e5e8eb;
+    --co-gray-bg: #e5e8eb;
     --co-darker-gray-bg: #ffffff;
     --co-faded-dark-gray-bg: #1a1e22;
     --co-icons-color: #707a83;
@@ -75,4 +78,7 @@
   --cos-border-radius-2: 10px;
   --cos-border-radius-3: 15px;
   --cos-border-radius-4: 50px;
+
+  --co-box-shadow: 0 2px 4px -1px rgb(0 0 0 / 10%), 0 4px 5px 0 rgb(0 0 0 / 5%),
+    0 1px 10px 0 rgb(0 0 0 / 5%);
 }

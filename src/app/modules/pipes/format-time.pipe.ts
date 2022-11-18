@@ -8,7 +8,7 @@ export class FormatTimePipe extends DatePipe implements PipeTransform {
   transform(value: string): any {
     if (value) {
       const inputDate = new Date(parseInt(value));
-      return super.transform(inputDate, 'MMM d y HH:MM');
+      return super.transform(inputDate, 'MMM d y');
     }
   }
 

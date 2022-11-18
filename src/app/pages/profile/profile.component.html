@@ -1,25 +1,14 @@
-<div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
-  <div
-    fxFlex="90"
-    fxLayout="row"
-    fxLayoutAlign="start center"
-    fxLayoutGap="30px"
-    class="co-profile-header cos-fluid-width"
-  >
-    <span fxLayoutAlign="center center" fxLayoutGap="10px" (click)="goToHome()">
-      <mat-icon class="cos-icon-can-activate" color="primary"
-        >arrow_back_ios</mat-icon
-      >
-      <a class="co-back-button">
-        {{ "HEADER.BACK_TO_HOME" | translate }}
-      </a>
-    </span>
-  </div>
+<div
+  *ngIf="pageMode === pageModes.DEFAULT"
+  class="co-header-container cos-pos-fixed cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right"
+>
   <app-main-header
+    #mainHeader
     [show]="{
       showBasket: true,
       showBookmark: true,
       showCanvas: true,
+      showSearch: true,
       showTranslation: true,
       showManagement: true
     }"
@@ -27,50 +16,220 @@
 </div>
 <div
   #fadeTop
-  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
   fxLayout="row"
   fxLayoutAlign="center end"
+  class="co-top-fade cos-pos-fixed cos-pos-top-reset cos-fluid-width"
+  [ngClass]="pageMode === pageModes.PROFILE ? 'co-top-fade-hidden' : ''"
 ></div>
 <div
-  class="cos-pos-fixed cos-pos-bottom-reset cos-pos-right-reset cos-padding-3"
+  #fadeBottom
+  *ngIf="manageMode !== manageModes.DEFAULT"
+  class="co-bottom-fade cos-bg-faded-darker-gray cos-pos-fixed cos-pos-bottom-reset cos-fluid-width"
+  fxLayout="row"
+  fxLayoutAlign="center center"
 >
-  <div class="cos-bg-darker-gray">
-    <mat-icon> </mat-icon>
+  <div
+    id="co-bottom-action-container"
+    class="co-bottom-action-container"
+    fxLayoutAlign="end center"
+    fxLayoutGap="10px"
+  >
+    <div
+      fxFlex="250px"
+      class="cos-body-0 cos-padding-2 cos-no-padding-top cos-no-padding-bottom cos-disappear-on-mobile"
+    >
+      {{
+        manageMode === manageModes.RENEW
+          ? ("LABELS.RENEW_DOMAINS" | translate)
+          : ("LABELS.TRANSFER_DOMAINS" | translate)
+      }}
+    </div>
+    <div
+      *ngIf="selectedDomainsCount > 0"
+      fxFlex
+      fxLayout="row"
+      fxLayoutGap="10px"
+      fxLayoutAlign="start start"
+      class="cos-padding-2 cos-no-padding-right cos-no-padding-top cos-no-padding-bottom"
+    >
+      <app-preview-image
+        *ngFor="let d of selectedDomainsToDisplay"
+        [preview]="'assets/img-blank.png'"
+        [error]="'assets/profile-blank.svg'"
+        [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
+        [style.height]="'50px'"
+        [style.width]="'50px'"
+        [enableBorderRadius]="false"
+        [spinnerSize]="10"
+        class="co-avatar cos-pointer"
+        (click)="goToDomain(d.labelName)"
+        class="cos-border-radius-1 cos-overflow-hidden cos-box-shadow"
+      ></app-preview-image>
+      <div
+        *ngIf="selectedDomainsCount > maxNumberOfSelectedDomainsDisplayed"
+        style="width: 50px; height: 50px"
+        class="cos-body-3 cos-bg-gray cos-border-radius-1 cos-box-shadow"
+        fxLayoutAlign="center center"
+      >
+        +{{ selectedDomainsCount - maxNumberOfSelectedDomainsDisplayed }}
+      </div>
+    </div>
+
+    <div
+      *ngIf="selectedDomainsCount === 0"
+      fxFlex
+      fxLayout="row"
+      fxLayoutGap="10px"
+      class="cos-padding-2 cos-no-padding-right cos-no-padding-top cos-no-padding-bottom"
+    >
+      {{ "LABELS.SELECT_DOMAINS" | translate }}...
+    </div>
+    <div
+      fxFlex="0 0 auto"
+      fxLayoutGap="10px"
+      fxLayoutAlign="end center"
+      class="cos-padding-2 cos-no-padding-left cos-no-padding-top cos-no-padding-bottom"
+    >
+      <button
+        mat-button
+        class="cos-button-paging cos-box-shadow"
+        (click)="cancelManagement()"
+      >
+        <span *ngIf="isDeviceMobile === false">
+          <b>
+            {{ "BUTTON.CANCEL" | translate }}
+          </b>
+        </span>
+        <mat-icon *ngIf="isDeviceMobile === true"> close </mat-icon>
+      </button>
+      <button
+        mat-button
+        class="cos-button-paging cos-box-shadow"
+        (click)="proceedManagement()"
+      >
+        <div fxLayoutAlign="center center">
+          <div
+            fxFlex="0 0 auto"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            fxLayoutGap="10px"
+            *ngIf="
+              savingChangesInitiated === true ||
+              (pendingPayments | async) === true
+            "
+          >
+            <app-spinner
+              [padded]="false"
+              [lightColour]="true"
+              [spinnerSize]="10"
+              [showText]="false"
+              *ngIf="savingChangesInitiated === true"
+            ></app-spinner>
+            <a
+              (click)="goToPendingTx()"
+              class="cos-body-3"
+              *ngIf="(pendingPayments | async) === true"
+              >1 {{ "BUTTON.PENDING" | translate }}
+              {{ "LABELS.TRANSACTION" | translate }}</a
+            >
+          </div>
+          <span
+            *ngIf="
+              savingChangesInitiated === false &&
+              (pendingPayments | async) === false
+            "
+            fxFlex
+          >
+            <span *ngIf="isDeviceMobile === false">
+              <b>
+                {{ "BUTTON.PROCEED" | translate }}
+              </b>
+            </span>
+            <mat-icon *ngIf="isDeviceMobile === true"> chevron_right </mat-icon>
+          </span>
+        </div>
+      </button>
+    </div>
   </div>
 </div>
 <div
+  #backToTop
+  class="co-back-to-top cos-pos-fixed cos-pos-bottom-reset cos-pos-right-reset cos-padding-3 cos-soft-visibility-hidden"
+>
+  <div
+    (click)="backScrollContentToTop()"
+    class="cos-bg-main cos-padding-0 cos-no-padding-bottom cos-border-radius-1 cos-box-shadow cos-pointer"
+  >
+    <mat-icon> arrow_upward</mat-icon>
+  </div>
+</div>
+<div
+  #scrollableContentContainer
   appGetScrollableXy
   (scrollPosition)="
-    $event[1] > 50
-      ? (fadeTop.style.display = 'flex')
-      : (fadeTop.style.display = 'none');
+    windowTopScroll = $event[1];
+    !($event[1] > 300)
+      ? (backToTop.style.visibility = 'hidden')
+      : (backToTop.style.visibility = 'visible');
+    $event[1] > 50 && fadeTopExist === true
+      ? (fadeTop?.style.display = 'flex')
+      : (fadeTop?.style.display = 'none');
     $event[1] > 300
       ? (filters.style.position = 'sticky')
       : (filters.style.position = 'static');
     $event[1] > 300
-      ? (filters.style.top = '90px')
-      : (filters.style.top = 'none')
+      ? (filters.style.top = pageMode === pageModes.DEFAULT ? '90px' : '30px')
+      : (filters.style.top = 'none');
+    hasViewBottomed($event[1]) === true ? loadMoreDomains() : null
   "
+  fxLayout="column"
+  fxLayoutAlign="start start"
   class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
 >
   <div
     fxLayout="row"
     fxLayoutAlign="center start"
-    class="co-profile-content-container cos-pos-absolute cos-fluid-width cos-fluid-height cos-bg-neutral"
+    class="co-profile-content-container cos-fluid-width"
+    [ngClass]="pageMode === pageModes.PROFILE ? 'co-mode-profile' : ''"
   >
     <div
       fxFlex="100"
       fxLayout="column"
-      fxLayoutGap="20px"
-      class="co-profile-content cos-padding-2"
+      class="co-profile-content"
+      [ngClass]="isDeviceMobile === true ? 'cos-padding-2' : ''"
     >
       <div
-        fxFlex="90"
+        *ngIf="pageMode === pageModes.DEFAULT"
+        fxFlex="50px"
+        fxLayout="row"
+        fxFlexAlign="top"
+        fxLayoutAlign="start center"
+        class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
+      >
+        <a href="/#/home">{{ "HEADER.HOME" | translate }}</a>
+        <span
+          fxFlex="0 0 auto"
+          fxLayoutAlign="center center"
+          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+        >
+          <mat-icon class="cos-small-icon" color="primary"
+            >arrow_forward</mat-icon
+          >
+        </span>
+        <span class="cos-gray-text">
+          {{ userName }}
+        </span>
+      </div>
+      <div
         fxLayout="row"
         fxLayoutGap="30px"
-        class="co-profile-header cos-fluid-width cos-overflow-hidden"
+        class="co-profile-header cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right cos-overflow-hidden"
       >
-        <div fxLayout="column" class="co-avatar-container">
+        <div
+          fxLayout="column"
+          class="co-avatar-container"
+          [ngClass]="pageMode === pageModes.PROFILE ? 'co-mode-profile' : ''"
+        >
           <div
             id="canvas_size_guide"
             class="cos-fluid-width cos-no-margin-bottom"
@@ -101,7 +260,7 @@
               [error]="'assets/profile-blank.svg'"
               [src]="
                 ensMetadataAPI +
-                hashToBigIntString(ethNameData.labelhash) +
+                hashToBigIntString(ethNameData.labelHash) +
                 '/image'
               "
               [style.height]="
@@ -109,15 +268,6 @@
               "
               class="cos-border-radius-2"
             ></app-preview-image>
-            <div
-              *ngIf="ethNameData === undefined && avatarResolved === true"
-              fxFlex
-              class="co-no-name cos-wallet-address-text-cut cos-pos-absolute cos-right-text"
-            >
-              <b>
-                {{ userName }}
-              </b>
-            </div>
           </div>
         </div>
         <div
@@ -126,27 +276,6 @@
           fxLayoutGap="20px"
           fxLayoutAlign="start start"
         >
-          <div
-            fxFlex="50px"
-            fxLayout="row"
-            fxFlexAlign="top"
-            fxLayoutAlign="start center"
-            class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
-          >
-            <a href="/#/home">Home</a>
-            <span
-              fxFlex="0 0 auto"
-              fxLayoutAlign="center center"
-              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
-            >
-              <mat-icon class="cos-small-icon" color="primary"
-                >arrow_forward</mat-icon
-              >
-            </span>
-            <span class="cos-gray-text">
-              {{ userName }}
-            </span>
-          </div>
           <div fxFlex fxLayout="column" class="co-info-container">
             <div fxFlex fxLayout="row" class="co-title-text">
               <div
@@ -234,7 +363,7 @@
             class="co-info-container cos-body-2 cos-padding-2 cos-no-padding-left cos-no-padding-bottom"
           >
             <div>
-              <div class="cos-body-0">
+              <div class="cos-body-30 cos-center text">
                 {{ userDomains === undefined ? "..." : userDomains?.length }}
               </div>
               <div class="cos-gray-text">
@@ -243,25 +372,151 @@
             </div>
           </div>
         </div>
+
+        <div
+          fxFlex="0 0 auto"
+          fxLayout="row"
+          fxLayoutGap="10px"
+          fxLayoutAlign="center start"
+          *ngIf="pageMode === pageModes.DEFAULT"
+          [ngClass]="userDomains === undefined ? 'cos-disabled' : ''"
+        >
+          <button
+            mat-button
+            *ngIf="isProfileOwnerByWallet === true"
+            [disabled]="manageMode !== manageModes.DEFAULT"
+            [style.opacity]="manageMode !== manageModes.DEFAULT ? '0.25' : '1'"
+            [matMenuTriggerFor]="actionMenu"
+            class="cos-button-paging cos-body-2"
+          >
+            <span *ngIf="isDeviceMobile === false">
+              <b> {{ "LABELS.MANAGE_DOMAINS" | translate }} </b>
+            </span>
+            <mat-icon *ngIf="isDeviceMobile === true"> settings </mat-icon>
+          </button>
+          <button
+            mat-button
+            *ngIf="isProfileOwnerByWallet === false"
+            [disabled]="manageMode !== manageModes.DEFAULT"
+            [style.opacity]="manageMode !== manageModes.DEFAULT ? '0.25' : '1'"
+            [matMenuTriggerFor]="otherActionMenu"
+            class="cos-button-paging cos-body-2"
+          >
+            <b> {{ "LABELS.ACTIONS" | translate }} </b>
+          </button>
+        </div>
       </div>
       <div fxLayout="row" fxFlex fxLayoutGap="30px" class="cos-fluid-width">
-        <div class="co-filters">
+        <div
+          class="co-filters"
+          [ngClass]="pageMode === pageModes.PROFILE ? 'co-mode-profile' : ''"
+        >
           <div #filters fxLayout="column" class="co-filters-content">
+            <div
+              *ngIf="pageMode === pageModes.PROFILE"
+              #profileWidget
+              fxFlex="0 0 auto"
+              fxLayout="row"
+              fxLayoutGap="10px"
+              [style.opacity]="calculateProfileWidgetOpacity()"
+            >
+              <div
+                #profileWidgetContent
+                fxFlex="100px"
+                [style.height]="calculateProfileWidgetHeight()"
+                class="cos-overflow-hidden"
+              >
+                <app-preview-image
+                  #profileWidgetContentImage
+                  (imageLoaded)="avatarResolved = true"
+                  [preview]="'assets/img-blank.png'"
+                  [error]="'assets/profile-blank.svg'"
+                  [src]="
+                    ensMetadataAPI +
+                    hashToBigIntString(ethNameData.labelHash) +
+                    '/image'
+                  "
+                  [style.height]="'100px'"
+                  class="cos-border-radius-2"
+                ></app-preview-image>
+              </div>
+              <div
+                fxLayout="column"
+                fxLayoutGap="10px"
+                [style.height]="calculateProfileWidgetHeight()"
+              >
+                <div fxFlex="0 0 auto" class="cos-body-1">
+                  <b>
+                    {{ userName }}
+                  </b>
+                </div>
+                <div fxFlex>
+                  <div fxLayout="row" fxLayoutGap="10px" class="cos-body-3">
+                    <div
+                      class="co-external-link co-small"
+                      (click)="copyShareLink()"
+                      matTooltip="Share Link"
+                    >
+                      <mat-icon class="cos-small-icon">share</mat-icon>
+                    </div>
+                    <div
+                      class="co-external-link co-small"
+                      matTooltip="Contact user by chat"
+                      [matMenuTriggerFor]="chatMenu"
+                    >
+                      <mat-icon class="cos-small-icon">chat</mat-icon>
+                    </div>
+                    <div
+                      class="co-external-link co-small"
+                      (click)="goToEtherscan()"
+                      matTooltip="View user's Etherscan page"
+                    >
+                      <img src="assets/etherscan-logo-light-circle.png" />
+                    </div>
+                    <div
+                      *ngIf="profileTexts?.telegram !== undefined"
+                      [matTooltip]="profileTexts?.telegram"
+                      class="co-external-link co-small"
+                    >
+                      <img src="assets/social/telegram.png" />
+                    </div>
+                    <div
+                      *ngIf="profileTexts?.discord !== undefined"
+                      [matTooltip]="profileTexts?.discord"
+                      class="co-external-link co-small"
+                    >
+                      <img src="assets/social/discord.png" />
+                    </div>
+                    <div
+                      *ngIf="profileTexts?.reddit !== undefined"
+                      [matTooltip]="profileTexts?.reddit"
+                      class="co-external-link co-small"
+                    >
+                      <img src="assets/social/reddit.png" />
+                    </div>
+                    <div
+                      *ngIf="profileTexts?.twitter !== undefined"
+                      [matTooltip]="profileTexts?.twitter"
+                      class="co-external-link co-small"
+                    >
+                      <img src="assets/social/twitter.png" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               fxLayout="row"
               fxLayoutAlign="start center"
               fxLayoutGap="10px"
-              class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
+              class="cos-padding-2 cos-no-padding-left cos-no-padding-right"
             >
               <mat-icon>filter_alt</mat-icon>
-              <span>
+              <span class="cos-body-0">
                 <b> {{ "LABELS.FILTERS" | translate }} </b>
               </span>
             </div>
-            <div
-              fxLayoutGap="10px"
-              class="cos-padding-1 cos-no-padding-left cos-no-padding-right cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right"
-            >
+            <div fxLayoutGap="10px">
               <form
                 fxFlex
                 fxLayout="column"
@@ -269,6 +524,30 @@
                 [formGroup]="filterForm"
                 class="cos-fluid-width cos-body-4 cos-gray-text"
               >
+                <div class="co-form-label">
+                  {{ "LABELS.SORT_BY_CATEGORY" | translate }}
+                </div>
+                <mat-form-field class="co-main-search cos-body-0">
+                  <mat-select
+                    formControlName="category"
+                    fxFlex
+                    class="cos-bg-gray cos-border-radius-2"
+                    (selectionChange)="resetLastDomainSearchResult()"
+                  >
+                    <mat-option [value]="''">
+                      {{ "BUTTON.NONE" | translate }}
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let c of categoriesData?.categories"
+                      [value]="c"
+                      class="cos-capitalized-text"
+                    >
+                      <span class="cos-capitalized-text">
+                        {{ categoriesData?.categoriesTitle[c] }}
+                      </span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
                 <div class="co-form-label">
                   {{ "LABELS.CONTAINING_KEYWORDS" | translate }}
                 </div>
@@ -280,10 +559,24 @@
                     autocomplete="off"
                     maxlength="50"
                     formControlName="contains"
-                    (input)="doUpdateInterface()"
+                    (input)="doUpdateInterface(); resetLastDomainSearchResult()"
                   />
+                  <mat-icon
+                    class="cos-small-icon cos-icon-can-activate"
+                    (click)="toggleEmojiPicker(); $event.stopPropagation()"
+                    matSuffix
+                  >
+                    sentiment_satisfied
+                  </mat-icon>
+                  <emoji-mart
+                    id="emoji-mart"
+                    *ngIf="showEmojiPicker"
+                    (emojiSelect)="addEmojiToFilter($event)"
+                    (click)="$event.stopPropagation()"
+                    title="Select emoji..."
+                    class="emoji-mart"
+                  ></emoji-mart>
                 </mat-form-field>
-
                 <div class="co-form-label">
                   {{ "LABELS.REGISTRATION_DATE" | translate }}
                 </div>
@@ -296,6 +589,7 @@
                     maxlength="15"
                     formControlName="registration"
                     [matDatepicker]="registrationPicker"
+                    (change)="resetLastDomainSearchResult()"
                   />
                   <mat-icon
                     matSuffix
@@ -317,6 +611,7 @@
                     maxlength="15"
                     formControlName="expiration"
                     [matDatepicker]="expiredPicker"
+                    (change)="resetLastDomainSearchResult()"
                   />
                   <mat-icon
                     matSuffix
@@ -340,7 +635,8 @@
                   aria-label="units"
                   [value]="filterForm.controls.minLength.value"
                   (change)="
-                    filterForm.controls.minLength.setValue($event.value)
+                    filterForm.controls.minLength.setValue($event.value);
+                    resetLastDomainSearchResult()
                   "
                 ></mat-slider>
 
@@ -353,11 +649,12 @@
                   tickInterval="1"
                   step="1"
                   min="3"
-                  max="20"
+                  [max]="100"
                   aria-label="units"
                   [value]="filterForm.controls.maxLength.value"
                   (change)="
-                    filterForm.controls.maxLength.setValue($event.value)
+                    filterForm.controls.maxLength.setValue($event.value);
+                    resetLastDomainSearchResult()
                   "
                 ></mat-slider>
 
@@ -367,7 +664,8 @@
                       [checked]="typesFilter.alphabet"
                       (change)="
                         typesFilter.alphabet = $event.checked;
-                        typesFilter.emoji = false
+                        typesFilter.emoji = false;
+                        resetLastDomainSearchResult()
                       "
                     >
                       {{ "LABELS.CONTAIN_ALPHABET" | translate }}
@@ -378,7 +676,8 @@
                       [checked]="typesFilter.numbers"
                       (change)="
                         typesFilter.numbers = $event.checked;
-                        typesFilter.emoji = false
+                        typesFilter.emoji = false;
+                        resetLastDomainSearchResult()
                       "
                     >
                       {{ "LABELS.CONTAIN_NUMBERS" | translate }}
@@ -390,10 +689,44 @@
                       (change)="
                         typesFilter.emoji = $event.checked;
                         typesFilter.numbers = false;
-                        typesFilter.alphabet = false
+                        typesFilter.alphabet = false;
+                        resetLastDomainSearchResult()
                       "
                     >
                       {{ "LABELS.CONTAIN_EMOJI" | translate }}
+                    </mat-slide-toggle>
+                  </div>
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.palindrome"
+                      (change)="
+                        typesFilter.palindrome = $event.checked;
+                        resetLastDomainSearchResult()
+                      "
+                    >
+                      Palindromes
+                    </mat-slide-toggle>
+                  </div>
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.prepunk"
+                      (change)="
+                        typesFilter.prepunk = $event.checked;
+                        resetLastDomainSearchResult()
+                      "
+                    >
+                      Pre-punk
+                    </mat-slide-toggle>
+                  </div>
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.repeating"
+                      (change)="
+                        typesFilter.repeating = $event.checked;
+                        resetLastDomainSearchResult()
+                      "
+                    >
+                      Repeating
                     </mat-slide-toggle>
                   </div>
                 </div>
@@ -406,21 +739,46 @@
           fxLayout="column"
           fxLayoutAlign="stretch stretch"
           fxLayoutGap="10px"
+          class="cos-padding-4 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
         >
-          <div
-            class="cos-fluid-width cos-show-on-mobile cos-no-margin-bottom"
-            [style.height]="'0px'"
-          >
+          <ng-container *ngIf="featuredItemsExists === true">
             <div
-              id="co-avatar-item-size-guide-mobile"
-              [style.width]="guideAvatarSize + 'px'"
-            ></div>
-          </div>
+              fxFlex="0 0 auto"
+              class="cos-padding-2 cos-no-padding-left cos-no-padding-right"
+            >
+              <div fxFlex class="cos-body-0">
+                <b> {{ "LABELS.FEATURED_ITEMS" | translate }}</b>
+              </div>
+            </div>
+            <div *ngFor="let f of featuredTags">
+              <div
+                class="cos-body-1 cos-padding-2 cos-no-padding-left cos-no-padding-top"
+              >
+                {{ f }}
+              </div>
+              <div fxLayout="row wrap" class="cos-fluid-width">
+                <ng-container
+                  *ngIf="
+                    hasDomainsListLoaded === true &&
+                    displayMode === displayModes.AVATAR
+                  "
+                >
+                  <ng-container
+                    *ngTemplateOutlet="
+                      avatarDomainTemplate;
+                      context: { domains: getFeaturedDomainsByTag(f) }
+                    "
+                  >
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
           <div
             fxFlex="0 0 auto"
-            class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
+            class="cos-padding-2 cos-no-padding-left cos-no-padding-right"
           >
-            <div fxFlex>
+            <div fxFlex class="cos-body-0">
               <b> {{ "LABELS.DOMAINS" | translate }} </b>
             </div>
             <div fxFlex fxLayoutGap="10px" fxLayoutAlign="end center">
@@ -454,36 +812,12 @@
               </mat-icon>
             </div>
           </div>
-          <div
-            id="co-avatar-item-size-guide"
-            class="cos-disappear-on-mobile"
-            [style.width]="guideAvatarSize + 'px'"
-          ></div>
-          <div
-            *ngIf="
-              hasDomainsListLoaded === true &&
-              !(filterSearchDomains(searchKeyword).length > 0)
-            "
-            fxFlex
-            fxLayout="column"
-            fxLayoutAlign="center center"
-            class="cos-fluid-width cos-fluid-height"
-          >
-            <div fxFlex="0 0 auto">
-              <app-custom-spinner
-                [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
-                [spinnerSize]="150"
-                [mode]="spinnerModes.LOADING"
-                [customIcon]="'llayers'"
-              >
-              </app-custom-spinner>
-            </div>
-          </div>
           <div fxFlex fxLayout="row wrap" fxLayoutAlign="start start">
             <ng-container
               *ngIf="
                 hasDomainsListLoaded === false &&
-                displayMode === displayModes.CHUNK
+                displayMode === displayModes.CHUNK &&
+                lastDomainSearchResult === undefined
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderTemplate">
@@ -492,13 +826,43 @@
             <ng-container
               *ngIf="
                 hasDomainsListLoaded === false &&
-                displayMode === displayModes.AVATAR
+                displayMode === displayModes.LINEAR &&
+                lastDomainSearchResult === undefined
+              "
+            >
+              <ng-container *ngTemplateOutlet="placeHolderFullTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === false &&
+                displayMode === displayModes.AVATAR &&
+                lastDomainSearchResult === undefined
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderAvatarTemplate">
               </ng-container>
             </ng-container>
-
+            <div
+              *ngIf="
+                hasDomainsListLoaded === true &&
+                !(filterSearchDomains().length > 0)
+              "
+              fxFlex
+              fxLayout="column"
+              fxLayoutAlign="center center"
+              class="cos-fluid-width cos-fluid-height cos-bg-faded-darker-gray cos-border-radius-2"
+            >
+              <div fxFlex="0 0 auto">
+                <app-custom-spinner
+                  [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
+                  [spinnerSize]="150"
+                  [mode]="spinnerModes.LOADING"
+                  [customIcon]="'llayers'"
+                >
+                </app-custom-spinner>
+              </div>
+            </div>
             <ng-container
               *ngIf="
                 hasDomainsListLoaded === true &&
@@ -514,7 +878,12 @@
                 displayMode === displayModes.AVATAR
               "
             >
-              <ng-container *ngTemplateOutlet="avatarDomainTemplate">
+              <ng-container
+                *ngTemplateOutlet="
+                  avatarDomainTemplate;
+                  context: { domains: userDomainsList }
+                "
+              >
               </ng-container>
             </ng-container>
             <ng-container
@@ -526,54 +895,140 @@
               <ng-container *ngTemplateOutlet="chunkDomainTemplate">
               </ng-container>
             </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === true &&
+                userDomainsList !== undefined &&
+                domainsListResolving === true &&
+                displayMode === displayModes.CHUNK &&
+                ((lastDomainSearchResult !== undefined &&
+                  lastDomainSearchResult.length > 0) ||
+                  lastDomainSearchResult === undefined)
+              "
+            >
+              <ng-container *ngTemplateOutlet="placeHolderTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === true &&
+                userDomainsList !== undefined &&
+                domainsListResolving === true &&
+                displayMode === displayModes.AVATAR &&
+                ((lastDomainSearchResult !== undefined &&
+                  lastDomainSearchResult.length > 0) ||
+                  lastDomainSearchResult === undefined)
+              "
+            >
+              <ng-container *ngTemplateOutlet="placeHolderAvatarTemplate">
+              </ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                hasDomainsListLoaded === true &&
+                userDomainsList !== undefined &&
+                domainsListResolving === true &&
+                displayMode === displayModes.LINEAR &&
+                ((lastDomainSearchResult !== undefined &&
+                  lastDomainSearchResult.length > 0) ||
+                  lastDomainSearchResult === undefined)
+              "
+            >
+              <ng-container *ngTemplateOutlet="placeHolderFullTemplate">
+              </ng-container>
+            </ng-container>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <app-footer *ngIf="pageMode === pageModes.DEFAULT"></app-footer>
 </div>
 
-<ng-template #avatarDomainTemplate>
-  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
+<ng-template #avatarDomainTemplate let-domains="domains">
+  <ng-container *ngFor="let d of domains">
     <div
       fxLayout="column"
-      class="co-item-with-avatar cos-pointer cos-border cos-bg-gray cos-border-radius-2 cos-overflow-hidden"
+      class="co-item-with-avatar cos-pointer cos-bg-light-gray cos-border-radius-2 cos-overflow-hidden"
+      *ngIf="displayDomain(d.labelHash) === true"
+      [ngClass]="pageMode === pageModes.PROFILE ? 'co-mode-profile' : ''"
     >
-      <app-preview-image
-        [preview]="'assets/img-blank.png'"
-        [error]="'assets/profile-blank.svg'"
-        [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
-        [style.height]="'auto'"
-        class="cos-fluid-width cos-pointer"
-        (click)="goToDomain(d.labelName)"
-        [enableBorderRadius]="false"
-      ></app-preview-image>
+      <div
+        class="cos-pos-absolute co-bookmark cos-padding-1"
+        [style.width]="guideAvatarSize + 5 + 'px'"
+        fxLayoutAlign="end end"
+        *ngIf="pageMode === pageModes.DEFAULT"
+      >
+        <mat-icon
+          *ngIf="manageMode === manageModes.DEFAULT"
+          (click)="toggleBookmark(d)"
+          [ngClass]="
+            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
+              ? 'checked'
+              : ''
+          "
+          >{{
+            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
+              ? "bookmark_added"
+              : "bookmark_add"
+          }}</mat-icon
+        >
+        <mat-icon
+          *ngIf="
+            manageMode === manageModes.RENEW ||
+            manageMode === manageModes.TRANSFER
+          "
+          (click)="addOrRemoveDomainToSelectedList(d)"
+          [ngClass]="isDomainSelected(d) === true ? 'checked' : ''"
+          >{{
+            isDomainSelected(d) === true
+              ? "check_circle"
+              : "radio_button_unchecked"
+          }}</mat-icon
+        >
+      </div>
+      <div
+        fxLayout="column"
+        class="co-avatar-frame cos-fluid-width cos-overflow-hidden"
+        [style.height]="guideAvatarSize + 'px'"
+      >
+        <app-preview-image
+          [preview]="'assets/img-blank.png'"
+          [error]="'assets/profile-blank.svg'"
+          [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
+          [style.height]="'auto'"
+          class="co-avatar cos-fluid-width cos-pointer"
+          (click)="goToDomain(d.labelName)"
+          [enableBorderRadius]="false"
+        ></app-preview-image>
+      </div>
       <mat-progress-bar
         *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
         class="co-bulk-search-item-expiration-bar co-bar-for-avatar cos-hazard-progress-bar cos-no-border-radius"
         mode="determinate"
         [value]="d.gracePeriodPercent"
       ></mat-progress-bar>
-      <div class="cos-padding-0" fxLayoutAlign="start center">
+      <div
+        class="co-avatar-item-details cos-padding-1"
+        fxLayoutAlign="start center"
+      >
         <div
           fxFlex
           fxLayout="column"
-          fxLayoutGap="5px"
+          fxLayoutGap="10px"
           fxLayoutAlign="center start"
-          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right"
         >
           <div
             fxFlex="0 0 auto"
-            class="cos-body-3"
+            class="cos-body-0"
             (click)="goToDomain(d.labelName)"
           >
-            <a (click)="goToDomain(d.labelName)">
-              <b> {{ pretty(d.labelName) }}.eth </b>
-            </a>
+            <b> {{ pretty(d.labelName) }}.eth </b>
           </div>
-          <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
-            <div class="cos-body-5 cos-gray-text">Exp:</div>
-            <div class="cos-body-5">{{ d.expiry | timeAgo }}</div>
+          <div fxFlex fxLayout="row" class="cos-body-3 cos-gray-text">
+            <div fxFlex="0 0 auto">Exp.</div>
+            &nbsp;
+            <div>{{ d.expiry | timeAgo }}</div>
           </div>
           <div fxFlex></div>
         </div>
@@ -583,27 +1038,33 @@
           class="cos-small-icon cos-pointer"
           >warning</mat-icon
         >
-        <mat-icon
-          fxFlex="24px"
-          (click)="toggleBookmark(d)"
-          class="cos-icon-can-activate"
-          [ngClass]="
-            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
-              ? 'mat-primary'
-              : ''
-          "
-          >bookmark_add</mat-icon
-        >
+      </div>
+      <div
+        *ngIf="isProfileOwnerByWallet === true"
+        class="co-buy-now cos-padding-0 cos-bg-main"
+        fxLayoutAlign="center center"
+        (click)="goToDomain(d.labelName)"
+      >
+        <b> {{ "BUTTON.VIEW_DETAILS" | translate }} </b>
+      </div>
+      <div
+        *ngIf="isProfileOwnerByWallet !== true"
+        class="co-buy-now cos-padding-0 cos-bg-main"
+        fxLayoutAlign="center center"
+        (click)="openPurchasePanel(d)"
+      >
+        <b> {{ "BUTTON.BUY_NOW" | translate }} </b>
       </div>
     </div>
   </ng-container>
 </ng-template>
 
 <ng-template #linearDomainTemplate>
-  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
+  <ng-container *ngFor="let d of userDomainsList">
     <div
       class="co-bulk-search-item-container co-linear-item cos-fluid-width cos-no-margin-right cos-pointer"
       (click)="goToDomain(pretty(d.labelName))"
+      *ngIf="displayDomain(d.labelHash) === true"
     >
       <mat-progress-bar
         *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
@@ -670,8 +1131,11 @@
 </ng-template>
 
 <ng-template #chunkDomainTemplate>
-  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
-    <div class="co-bulk-search-item-container">
+  <ng-container *ngFor="let d of userDomainsList">
+    <div
+      class="co-bulk-search-item-container"
+      *ngIf="displayDomain(d.labelHash) === true"
+    >
       <mat-progress-bar
         *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
         class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
@@ -700,7 +1164,7 @@
             </a>
           </div>
           <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
-            <div class="cos-body-5 cos-gray-text">Reg:</div>
+            <div class="cos-body-5 cos-gray-text">Reg.</div>
             <div class="cos-body-5">{{ d.registrationDate | timeAgo }}</div>
           </div>
           <div fxFlex></div>
@@ -739,16 +1203,26 @@
   </ng-container>
 </ng-template>
 
+<ng-template #placeHolderFullTemplate>
+  <ng-container *ngFor="let d of placeholders">
+    <div
+      class="co-bulk-search-item-container co-linear-item cos-placeholder cos-fluid-width"
+    >
+      <div
+        fxLayoutGap="15px"
+        fxLayoutAlign="center center"
+        class="co-bulk-search-item cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+      ></div>
+    </div>
+  </ng-container>
+</ng-template>
+
 <ng-template #placeHolderAvatarTemplate>
   <ng-container *ngFor="let d of placeholders">
     <div
       class="co-bulk-search-item-container cos-placeholder cos-bulk-sarch-item-for-avatar"
-      [style.height]="
-        isDeviceMobile === true
-          ? canvasService.getWidthOfDiv('co-avatar-item-size-guide-mobile') +
-            'px'
-          : canvasService.getWidthOfDiv('co-avatar-item-size-guide') - 30 + 'px'
-      "
+      [style.height]="guideAvatarSize + 125 + 'px'"
+      [ngClass]="pageMode === pageModes.PROFILE ? 'co-mode-profile' : ''"
     >
       <div
         fxLayoutGap="15px"
@@ -768,4 +1242,86 @@
     <mat-icon>chat</mat-icon>
     Blockscan
   </button>
+</mat-menu>
+
+<mat-menu #otherActionMenu="matMenu" class="cos-menu" xPosition="before">
+  <div
+    class="cos-padding-1"
+    fxLayout="column"
+    fxLayoutGap="10px"
+    style="width: 280px"
+  >
+    <div fxFlex class="cos-body-1">
+      <div fxFlex>
+        <b> {{ "LABELS.OPTIONS" | translate }} </b>
+      </div>
+      <div fxFlex class="cos-body-3 cos-right-text">
+        <a>{{ "BUTTON.CLOSE" | translate }}</a>
+      </div>
+    </div>
+
+    <button
+      mat-menu-item
+      class="cos-menu-item-contained"
+      (click)="manageMode = manageModes.RENEW"
+    >
+      <mat-icon>restart_alt</mat-icon>
+      {{ "LABELS.RENEW_DOMAINS" | translate }}
+    </button>
+    <button mat-menu-item class="cos-menu-item-contained" (click)="goToStore()">
+      <mat-icon>store</mat-icon>
+      {{ "LABELS.VISIT_STOREFRONT" | translate }}
+    </button>
+  </div>
+</mat-menu>
+
+<mat-menu #actionMenu="matMenu" class="cos-menu" xPosition="before">
+  <div
+    class="cos-padding-1"
+    fxLayout="column"
+    fxLayoutGap="10px"
+    style="width: 280px"
+  >
+    <div fxFlex class="cos-body-1">
+      <div fxFlex>
+        <b> {{ "LABELS.OPTIONS" | translate }} </b>
+      </div>
+      <div fxFlex class="cos-body-3 cos-right-text">
+        <a>{{ "BUTTON.CLOSE" | translate }}</a>
+      </div>
+    </div>
+
+    <button
+      mat-menu-item
+      class="cos-menu-item-contained"
+      (click)="manageMode = manageModes.RENEW"
+    >
+      <mat-icon>restart_alt</mat-icon>
+      {{ "LABELS.RENEW_DOMAINS" | translate }}
+    </button>
+    <button
+      mat-menu-item
+      class="cos-menu-item-contained"
+      (click)="manageMode = manageModes.TRANSFER"
+    >
+      <mat-icon>move_up</mat-icon>
+      {{ "LABELS.TRANSFER_DOMAINS" | translate }}
+    </button>
+    <button
+      mat-menu-item
+      class="cos-menu-item-contained"
+      (click)="openFeaturedItemsManager()"
+    >
+      <mat-icon>auto_awesome</mat-icon>
+      {{ "LABELS.MANAGE_FEATURED_ITEMS" | translate }}
+    </button>
+    <button
+      mat-menu-item
+      class="cos-menu-item-contained"
+      (click)="openSetupStoreItemsManager()"
+    >
+      <mat-icon>build_circle</mat-icon>
+      {{ "LABELS.SETUP_STOREFRONT" | translate }}
+    </button>
+  </div>
 </mat-menu>

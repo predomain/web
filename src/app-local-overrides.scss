@@ -11,7 +11,7 @@
         &:first-of-type {
           flex: 0 1 20% !important;
           @media only screen and (max-width: 1000px) {
-            flex: 1 1 20% !important;
+            flex: 1 1 10% !important;
           }
         }
         &:nth-of-type(2) {
@@ -23,6 +23,12 @@
           justify-content: flex-end !important;
         }
         &:nth-of-type(4) {
+          justify-content: flex-end !important;
+        }
+        &:nth-of-type(5) {
+          justify-content: flex-end !important;
+        }
+        &:nth-of-type(6) {
           justify-content: flex-end !important;
         }
         &:last-of-type {
@@ -52,7 +58,7 @@
         &:first-of-type {
           flex: 0 1 20% !important;
           @media only screen and (max-width: 1000px) {
-            flex: 1 1 20% !important;
+            flex: 1 1 10% !important;
           }
         }
         &:nth-of-type(2) {
@@ -64,6 +70,12 @@
           justify-content: flex-end !important;
         }
         &:nth-of-type(4) {
+          justify-content: flex-end !important;
+        }
+        &:nth-of-type(5) {
+          justify-content: flex-end !important;
+        }
+        &:nth-of-type(6) {
           justify-content: flex-end !important;
         }
         &:last-of-type {
@@ -82,13 +94,16 @@
     }
   }
   tbody {
-    width: calc(80% - 62.5px) !important;
-    height: calc(100% - 295px) !important;
-    border-left: solid 4px var(--co-gray-bg) !important;
+    width: 95% !important;
+    min-width: 1300px;
+    max-width: 1900px;
+    margin: auto;
+    box-sizing: border-box;
+    height: calc(100% - 335px) !important;
     @media only screen and (max-width: 1000px) {
       border-left: 0 !important;
       width: 100% !important;
-      height: calc(100% - 288px) !important;
+      height: calc(100% - 305px) !important;
     }
     tr {
       height: 50px !important;
@@ -101,7 +116,7 @@
           flex: 0 1 20% !important;
           align-items: flex-start !important;
           @media only screen and (max-width: 1000px) {
-            flex: 1 1 20% !important;
+            flex: 1 1 10% !important;
           }
         }
         &:nth-of-type(2) {
@@ -115,7 +130,10 @@
         &:nth-of-type(4) {
           align-items: flex-end !important;
         }
-        &:last-of-type {
+        &:nth-of-type(5) {
+          align-items: flex-end !important;
+        }
+        &:nth-of-type(6) {
           align-items: flex-end !important;
         }
       }

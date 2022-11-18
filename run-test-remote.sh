@@ -11,6 +11,3 @@ echo $deployedConfiguration >> $DIR_PATH/src/environments/environment.test.ts;
 
 cd $DIR_PATH
 ng serve --configuration=test-remote --host=0.0.0.0 --port=4200
-
-
-

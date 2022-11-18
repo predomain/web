@@ -4,7 +4,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { serviceProviders } from '../models';
-import { MainHeaderModule, OnboardDialogModule } from './miscs';
+import { FooterModule, MainHeaderModule, OnboardDialogModule } from './miscs';
 import { Intercept } from '../services';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SharedModule } from './shared.module';
@@ -17,6 +17,7 @@ import { NotFoundComponent } from '../pages/not-found';
     NotFoundRoutingModule,
     OnboardDialogModule,
     MainHeaderModule,
+    FooterModule,
   ],
   providers: [
     ...serviceProviders,
@@ -27,7 +28,13 @@ import { NotFoundComponent } from '../pages/not-found';
     },
   ],
   declarations: [NotFoundComponent],
-  exports: [SharedModule, OnboardDialogModule, MainHeaderModule],
+  exports: [
+    SharedModule,
+    FooterModule,
+    OnboardDialogModule,
+    MainHeaderModule,
+    FooterModule,
+  ],
   bootstrap: [],
   entryComponents: [],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
