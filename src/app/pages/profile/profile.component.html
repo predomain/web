@@ -196,7 +196,11 @@
       fxFlex="100"
       fxLayout="column"
       class="co-profile-content"
-      [ngClass]="isDeviceMobile === true ? 'cos-padding-2' : ''"
+      [ngClass]="
+        isDeviceMobile === true
+          ? { 'cos-padding-2': true, 'cos-no-padding-top': true }
+          : ''
+      "
     >
       <div
         *ngIf="pageMode === pageModes.DEFAULT"
@@ -205,6 +209,7 @@
         fxFlexAlign="top"
         fxLayoutAlign="start center"
         class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
+        [ngClass]="isDeviceMobile === true ? 'cos-no-padding-top' : ''"
       >
         <a href="/#/home">{{ "HEADER.HOME" | translate }}</a>
         <span
@@ -216,7 +221,9 @@
             >arrow_forward</mat-icon
           >
         </span>
-        <span class="cos-gray-text">
+        <span
+          class="cos-gray-text co-owner-address cos-wallet-address-text-cut"
+        >
           {{ userName }}
         </span>
       </div>
@@ -268,6 +275,19 @@
               "
               class="cos-border-radius-2"
             ></app-preview-image>
+            <div
+              *ngIf="
+                ethNameData === undefined &&
+                avatarResolved === true &&
+                domainsCount === 0
+              "
+              fxFlex
+              class="co-no-name cos-wallet-address-text-cut cos-pos-absolute cos-right-text"
+            >
+              <b>
+                {{ userName }}
+              </b>
+            </div>
           </div>
         </div>
         <div
@@ -276,10 +296,10 @@
           fxLayoutGap="20px"
           fxLayoutAlign="start start"
         >
-          <div fxFlex fxLayout="column" class="co-info-container">
-            <div fxFlex fxLayout="row" class="co-title-text">
+          <div fxFlex="0 0 auto" fxLayout="column" class="co-info-container">
+            <div fxFlex="0 0 auto" fxLayout="row" class="co-title-text">
               <div
-                fxFlex="0 1 200px"
+                fxFlex="0 0 auto"
                 class="cos-wallet-address-text-cut cos-overflow-hidden"
               >
                 <b>
@@ -378,7 +398,11 @@
           fxLayout="row"
           fxLayoutGap="10px"
           fxLayoutAlign="center start"
-          *ngIf="pageMode === pageModes.DEFAULT"
+          *ngIf="
+            pageMode === pageModes.DEFAULT &&
+            userDomains !== undefined &&
+            domainsCount > 0
+          "
           [ngClass]="userDomains === undefined ? 'cos-disabled' : ''"
         >
           <button
@@ -516,7 +540,10 @@
                 <b> {{ "LABELS.FILTERS" | translate }} </b>
               </span>
             </div>
-            <div fxLayoutGap="10px">
+            <div
+              fxLayoutGap="10px"
+              [ngClass]="domainsCount === 0 ? 'cos-disabled' : ''"
+            >
               <form
                 fxFlex
                 fxLayout="column"
@@ -846,7 +873,7 @@
             <div
               *ngIf="
                 hasDomainsListLoaded === true &&
-                !(filterSearchDomains().length > 0)
+                (domainsCount === 0 || !(filterSearchDomains().length > 0))
               "
               fxFlex
               fxLayout="column"

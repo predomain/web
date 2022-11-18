@@ -63,7 +63,11 @@
       fxFlex="100"
       fxLayout="column"
       class="co-profile-content"
-      [ngClass]="isDeviceMobile === true ? 'cos-padding-2' : ''"
+      [ngClass]="
+        isDeviceMobile === true
+          ? { 'cos-padding-2': true, 'cos-no-padding-top': true }
+          : ''
+      "
     >
       <div
         fxFlex="50px"
@@ -71,6 +75,7 @@
         fxFlexAlign="top"
         fxLayoutAlign="start center"
         class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
+        [ngClass]="isDeviceMobile === true ? 'cos-no-padding-top' : ''"
       >
         <a href="/#/home">{{ "HEADER.HOME" | translate }}</a>
         <span
