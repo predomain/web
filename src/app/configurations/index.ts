@@ -7,3 +7,4 @@ export * from './contracts';
 export * from './private-pages.conf';
 export * from './invalid-chars.conf';
 export * from './data-node-endpoints.conf';
+export * from './third-party-marketplaces.conf';

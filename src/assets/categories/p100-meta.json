@@ -2,7 +2,7 @@
   "category": "p100",
   "ticker": "p100",
   "data_providers": ["https://api.predomain.xyz", "http://localhost:42069"],
-  "patterned": true,
+  "patterned": false,
   "pattern": "^[a-z]{2,15}$",
   "alphabetical": true,
   "numeric": false,
@@ -10,6 +10,8 @@
   "special_characters": false,
   "max_length": 15,
   "version": 2,
+  "prefix_offset": 0,
+  "suffix_offset": 0,
   "valid_names": [
     "rilxxlir",
     "voicciov",

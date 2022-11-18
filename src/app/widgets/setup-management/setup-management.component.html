@@ -1,0 +1,525 @@
+<div mat-dialog-content>
+  <div
+    class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
+    fxLayoutAlign="start start"
+    fxLayout="column"
+    fxLayoutGap="10px"
+  >
+    <div
+      fxFlex
+      fxLayoutAlign="center center"
+      class="cos-fluid-width cos-padding-1 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
+    >
+      <div fxFlex class="cos-body-0">
+        <b> {{ "LABELS.SETUP_STOREFRONT" | translate }} </b>
+      </div>
+      <div fxFlex="0 0 auto" class="cos-right-text">
+        <a (click)="closeDialog()" class="cos-body-4">
+          {{ "BUTTON.CLOSE" | translate }}
+        </a>
+      </div>
+    </div>
+    <div class="cos-fluid-width">
+      <mat-accordion class="cos-fluid-width" #stepper>
+        <mat-expansion-panel
+          [expanded]="step === 0"
+          (opened)="setStep(0)"
+          hideToggle="true"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row">
+                <div fxFlex>Introduction</div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="cos-fluid-width">
+            {{ "LABELS.CREATE_YOUR_STOREFRONT" | translate }}
+            <a href="https://docs.predomain.xyz/getting-started/your-storefront"
+              >Predomain Docs</a
+            >
+          </p>
+          <div class="cos-fluid-width">
+            <div
+              class="cos-bg-gray cos-border-radius-2 cos-overflow-hidden cos-fluid-width cos-padding-0"
+              style="height: 180px"
+            >
+              <div fxLayout="row" fxLayoutGap="5px">
+                <div
+                  fxFlex="0 0 auto"
+                  fxLayoutAlign="center center"
+                  class="cos-padding-0 cos-bg-faded-darker-gray cos-border-radius-1"
+                >
+                  <mat-icon
+                    class="cos-small-icon cos-margin-0 cos-no-margin-top cos-no-margin-right cos-no-margin-bottom"
+                  >
+                    arrow_back_ios
+                  </mat-icon>
+                  <mat-icon class="cos-small-icon">
+                    arrow_forward_ios
+                  </mat-icon>
+                </div>
+                <div
+                  fxFlex
+                  class="cos-bg-faded-darker-gray cos-fluid-width cos-padding-0 cos-border-radius-1 cos-gray-text cos-body-4"
+                >
+                  https://wolfram.eth.limo
+                </div>
+              </div>
+              <div
+                fxLayout="row"
+                fxLayoutAlign="center center"
+                fxLayoutGap="5px"
+              >
+                <div fxFlex="80" fxLayout="row" class="cos-padding-1">
+                  <div fxFlex="100px" fxLayout="column" fxLayoutGap="10px">
+                    <div
+                      class="cos-bg-main cos-border-radius-1"
+                      style="width: 80px; height: 80px"
+                    ></div>
+                    <div
+                      class="cos-bg-light-gray cos-border-radius-1"
+                      style="width: 80px; height: 80px"
+                    ></div>
+                  </div>
+                  <div fxFlex>
+                    <div
+                      style="width: 100%; height: 80px"
+                      fxLayout="column"
+                      class="cos-gray-text"
+                    >
+                      <span> Wolfram </span>
+                      <span class="cos-body-7">
+                        {{ "LABELS.MY_PROFILE" | translate }}
+                      </span>
+                    </div>
+                    <div style="width: 100%; height: auto" fxLayout="row wrap">
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                      <div
+                        fxFlex="30px"
+                        class="cos-bg-main cos-border-radius-1"
+                        style="
+                          height: 30px;
+                          margin-bottom: 5px;
+                          margin-right: 5px;
+                        "
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p [innerHTML]="'LABELS.CLICK_NEXT_TO_PROCEED' | translate"></p>
+          <p class="cos-fluid-width">
+            <button
+              fxFlex
+              mat-button
+              (click)="checkIfNameIsSet()"
+              class="cos-button-paging"
+            >
+              <div fxLayoutAlign="center center">
+                <span fxFlex>
+                  {{ "BUTTON.NEXT" | translate }}
+                </span>
+              </div>
+            </button>
+          </p>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel
+          [expanded]="step === 1"
+          (opened)="setStep(1)"
+          hideToggle="true"
+          [disabled]="userName !== undefined"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row">
+                <div fxFlex>
+                  {{ "LABELS.SETUP_PRIMARY_DOMAIN" | translate }}
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="cos-fluid-width">
+            {{ "LABELS.CHOOSE_A_PRIMARY_DOMAIN" | translate }}
+          </p>
+          <p class="header-item cos-body-3 cos-gray-text">
+            {{ "LABELS.SELECT_DOMAIN" | translate }}
+          </p>
+          <form
+            fxLayout="column"
+            fxLayoutAlign="start stretch"
+            [formGroup]="setupDomainForm"
+            class="cos-fluid-width cos-body-4 cos-gray-text"
+          >
+            <mat-form-field
+              class="co-main-search cos-body-0 cos-input-field-no-label"
+            >
+              <input
+                class="cos-fluid-width cos-bg-darker-gray"
+                matInput
+                type="text"
+                autocomplete="off"
+                maxlength="50"
+                placeholder="{{ 'LABELS.SEARCH' | translate }}..."
+                formControlName="domain"
+                [matAutocomplete]="auto"
+              />
+            </mat-form-field>
+          </form>
+          <mat-autocomplete
+            #auto="matAutocomplete"
+            class="autocomplete-for-small-input"
+          >
+            <ng-container *ngFor="let d of quickSearchKeysToChunk">
+              <mat-option class="cos-box-shadow" [value]="d + '.eth'">
+                <div fxLayout="row" class="cos-fluid-width cos-padding-1">
+                  <div
+                    fxFlex
+                    fxLayoutAlign="start center"
+                    class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+                  >
+                    {{ pretty(d) }}.eth
+                  </div>
+                  <div
+                    fxflex
+                    fxLayout="column"
+                    fxLayoutAlign="center end"
+                  ></div></div
+              ></mat-option>
+            </ng-container>
+          </mat-autocomplete>
+          <p [innerHTML]="'LABELS.CLICK_NEXT_TO_PROCEED' | translate"></p>
+          <p class="cos-fluid-width">
+            <button
+              fxFlex
+              mat-button
+              (click)="performNameSetup()"
+              [disabled]="setupName === true"
+              class="cos-button-paging"
+            >
+              <div fxLayoutAlign="center center">
+                <div fxFlex="0 0 auto" *ngIf="setupName === true">
+                  <app-spinner
+                    [padded]="false"
+                    [lightColour]="true"
+                    [spinnerSize]="10"
+                    [showText]="false"
+                  ></app-spinner>
+                </div>
+                <span *ngIf="setupName === false" fxFlex>
+                  {{ "BUTTON.PROCEED" | translate }}
+                </span>
+              </div>
+            </button>
+          </p>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel
+          [expanded]="step === 2"
+          (opened)="setStep(2)"
+          hideToggle="true"
+        >
+          <mat-expansion-panel-header
+            [collapsedHeight]="'60px'"
+            [expandedHeight]="'60px'"
+          >
+            <mat-panel-title>
+              <div fxFlex fxLayout="row">
+                <div fxFlex>{{ "LABELS.CREATE_STOREFRONT" | translate }}</div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <ng-container *ngIf="setupShopComplete === true">
+            <p class="cos-padding-3 cos-no-padding-bottom">
+              <app-icon [iconSize]="150">
+                <ng-container> check </ng-container>
+              </app-icon>
+            </p>
+            <p class="cos-body-0 cos-center-text">
+              {{ "LABELS.SETUP_COMPLETE" | translate }}!
+            </p>
+            <p
+              class="cos-fluid-width cos-center-text cos-padding-px-30 cos-no-padding-left cos-no-padding-right cos-no-padding-bottom"
+            >
+              {{ "LABELS.ACCESS_STOREFRONT" | translate }}
+            </p>
+            <div
+              fxLayout="row"
+              fxLayoutAlign="center center"
+              class="cos-fluid-width cos-bg-gray cos-border-radius-2 cos-padding-1 cos-gray-text"
+            >
+              <span
+                fxFlex
+                class="cos-center-text"
+                *ngIf="userName !== undefined"
+              >
+                <a href="https://{{ userName.labelName }}.eth.limo">
+                  https://{{ userName.labelName }}.eth.limo
+                </a>
+              </span>
+              <span
+                fxFlex="0 0 auto"
+                class="cos-right-text"
+                fxLayoutAlign="end center"
+              >
+                <mat-icon class="cos-small-icon cos-gray-text">
+                  open_in_new
+                </mat-icon>
+              </span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="setupShopComplete === false">
+            <p class="cos-fluid-width">
+              {{ "LABELS.STOREFRONT_READY_TO_DEPLOY" | translate }}
+            </p>
+            <div
+              fxLayout="row"
+              class="cos-fluid-width cos-bg-gray cos-border-radius-2 cos-padding-1 cos-gray-text"
+            >
+              <span fxFlex *ngIf="userName !== undefined">
+                <a href="https://{{ userName.labelName }}.eth.limo">
+                  https://{{ userName.labelName }}.eth.limo
+                </a>
+              </span>
+              <span fxFlex class="cos-right-text" fxLayoutAlign="end center">
+                <mat-icon class="cos-small-icon cos-gray-text">
+                  open_in_new
+                </mat-icon>
+              </span>
+            </div>
+            <p [innerHTML]="'LABELS.CLICK_NEXT_TO_PROCEED' | translate"></p>
+            <p class="cos-fluid-width">
+              <button
+                fxFlex
+                mat-button
+                (click)="performStoreSetup()"
+                [disabled]="setupShop === true"
+              >
+                <div fxLayoutAlign="center center">
+                  <div fxFlex="0 0 auto" *ngIf="setupShop === true">
+                    <app-spinner
+                      [padded]="false"
+                      [lightColour]="true"
+                      [spinnerSize]="10"
+                      [showText]="false"
+                    ></app-spinner>
+                  </div>
+                  <span *ngIf="setupShop === false" fxFlex>
+                    {{ "BUTTON.PROCEED" | translate }}
+                  </span>
+                </div>
+              </button>
+            </p>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>

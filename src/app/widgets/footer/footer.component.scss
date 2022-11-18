@@ -1,0 +1,18 @@
+:host {
+  height: 500px;
+  width: 100%;
+}
+
+.co-footer-content {
+  width: 90% !important;
+  min-width: 1300px;
+  max-width: 1900px;
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+.co-learn {
+  margin-bottom: var(--co-margin-1);
+}

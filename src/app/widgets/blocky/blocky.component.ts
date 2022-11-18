@@ -4,17 +4,18 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
-} from "@angular/core";
-import * as blockies from "blockies-ts";
+} from '@angular/core';
+import * as blockies from 'blockies-ts';
 
 @Component({
-  selector: "app-blocky",
-  templateUrl: "./blocky.component.html",
-  styleUrls: ["./blocky.component.scss"],
+  selector: 'app-blocky',
+  templateUrl: './blocky.component.html',
+  styleUrls: ['./blocky.component.scss'],
 })
 export class BlockyComponent implements OnInit, OnChanges {
-  @Input() walletAddress = "";
+  @Input() walletAddress = '';
   @Input() roundedCorners = false;
+  @Input() size = 30;
   currentAddress;
   blockyData;
 

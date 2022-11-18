@@ -20,7 +20,11 @@ import {
   takeUntil,
   withLatestFrom,
 } from 'rxjs/operators';
-import { DomainMetadataModel } from 'src/app/models/domains';
+import {
+  DomainFiltersModel,
+  DomainMetadataModel,
+  DomainTypeEnum,
+} from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { MiscUtilsService, UserService } from 'src/app/services';
@@ -37,7 +41,7 @@ import {
   UserFacadeService,
 } from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
-import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
+import { CanvasServicesService } from '../../services/canvas-services/canvas-services.service';
 import {
   BlockExplorersEnum,
   generalConfigurations,
@@ -60,6 +64,8 @@ import { PoapService } from 'src/app/services/poap';
 import { ENSBookmarkStateModel } from 'src/app/models/states/ens-bookmark-interfaces';
 import { select, Store } from '@ngrx/store';
 import { getENSBookmarks } from 'src/app/store/selectors';
+import { SaleManagementComponent } from 'src/app/widgets/sale-management/sale-management.component';
+import { MatDialog } from '@angular/material/dialog';
 
 const globalAny: any = global;
 
@@ -80,10 +86,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
   @ViewChild('chart') chart: DotComponent;
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
-  @ViewChild('creationPicker') creationPicker: any;
-  placeholders = new Array(this.suitableItemPageWidthForWindow * 4).fill(0);
+  placeholders = new Array(this.suitableItemPageWidthForWindow * 10).fill(0);
   pageCategory = this.category + '.' + generalConfigurations.categoriesDomain;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
+  domainTypeSelected: DomainTypeEnum = DomainTypeEnum.ENS;
+  spinnerStatus = SpinnerModesEnum.LOADING;
   hasDomainsListLoaded = false;
   avatarResolved = false;
   displayModes: typeof DisplayModes = DisplayModes;
@@ -94,27 +101,36 @@ export class CategoryComponent implements OnInit, OnDestroy {
     alphabet: false,
     numbers: false,
     emoji: false,
-  };
+    palindrome: false,
+    prepunk: false,
+    repeating: false,
+  } as DomainFiltersModel;
 
+  subCategoryKeys: string[] = [];
   chartData: ChartDataModel[];
-  domainsListPerPage = this.suitableItemPageWidthForWindow * 4;
+  domainsListPerPage = this.suitableItemPageWidthForWindow * 10;
   domainsListPage = 0;
   domainsListResolving = false;
+  lastDomainSearchResult;
 
   salesList: SaleDiscoveredModel[];
   salesListPerPage = 28;
   salesListPage = 0;
   salesListResolving = false;
 
+  showEmojiPicker = false;
   showSalesActivity = false;
   bookmarks: DomainMetadataModel[];
   rootCategoryData: CategoriesRootModel;
   categoryNormalisedMetadata: CategoryMetaStatsModel;
   categoryIpfsData: CategoryModel;
   categoryApiData: CategoryModel;
+
   profileTexts: any;
   filterForm: FormGroup;
+  emojiPanel;
   categoryDomains;
+  categorySearchedDomains;
   ethNameData;
   profileTextSubscription;
   activatedRouteSubscription;
@@ -125,7 +141,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   bookmarkStateSubscription;
 
   constructor(
-    public bookmarkService: BookmarksServiceService,
+    public bookmarksService: BookmarksServiceService,
     protected registrationService: RegistrationServiceService,
     protected userService: UserService,
     protected ensService: EnsService,
@@ -143,6 +159,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     protected snackBar: MatSnackBar,
     protected router: Router,
     protected httpClient: HttpClient,
+    protected dialog: MatDialog,
     protected changeDetectorRef: ChangeDetectorRef,
     public canvasService: CanvasServicesService
   ) {
@@ -183,6 +200,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
       )
       .subscribe();
     this.filterForm = new FormGroup({
+      subcategory: new FormControl(''),
       minLength: new FormControl(3),
       maxLength: new FormControl(20),
       contains: new FormControl(''),
@@ -194,6 +212,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadBookmarks();
+    this.hideEmojiPickerOnBlur();
     this.activatedRouteSubscription = this.activatedRoute.params
       .pipe(
         map((p) => {
@@ -258,6 +277,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
             throw false;
           }
           this.categoryIpfsData = r as any;
+          this.categoryIpfsData.valid_names = this.miscUtils.shuffleArray(
+            this.categoryIpfsData.valid_names
+          );
           return this.categoriesDataService
             .getCategoriesData(
               environment.development === true
@@ -311,13 +333,13 @@ export class CategoryComponent implements OnInit, OnDestroy {
                   ),
           };
           this.loadMoreSales();
+          this.getSubCategories();
           this.getChartData(this.categoryNormalisedMetadata.sales);
           this.getProfileTexts();
           return this.getCategoryDomains(this.domainsInPage);
         }),
         switchMap((r) => {
           this.chart.initChart();
-          this.categoryDomains = r;
           this.changeDetectorRef.markForCheck();
           return this.userService.getEthName(
             provider,
@@ -351,45 +373,51 @@ export class CategoryComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  pageReset() {
-    this.chartData = undefined;
+  pageReset(chartReset = true) {
+    if (chartReset === true) {
+      this.chartData = undefined;
+    }
     this.hasDomainsListLoaded = false;
     this.categoryDomains = undefined;
     this.salesList = undefined;
-    this.ethNameData = undefined;
+    this.domainsListPage = 0;
   }
 
   getCategoryDomains(domains: string[]) {
     let retries = 0;
+    let regTime = new Date(
+      this.filterForm.controls.registration.value as any
+    )?.getTime();
+    let expTime = new Date(
+      this.filterForm.controls.expiration.value as any
+    )?.getTime();
+    const now = parseInt((new Date().getTime() / 1000).toString());
     return this.ensService
-      .findDomains(domains.map((r) => r.toLowerCase()))
+      .findDomains(
+        domains.map((r) => r.toLowerCase()),
+        this.typesFilter.prepunk === true,
+        expTime !== NaN ? (expTime / 1000).toString() : expTime.toString(),
+        regTime !== NaN ? (regTime / 1000).toString() : regTime.toString()
+      )
       .pipe(
         switchMap((r) => {
           const domainsResolved = (r as any).registrations
             .filter((d) => {
-              return d.domain.labelName !== null;
+              const isDomainPastGracePeriod =
+                now > parseInt(d.expiryDate) + 7889400;
+              return (
+                isDomainPastGracePeriod === true || d.domain.labelName !== null
+              );
             })
             .map((d) => {
-              const gPeriod = this.ensService.calculateGracePeriodPercentage(
-                parseInt(d.expiryDate, 10)
+              return this.ensService.qlResultToDomainModel(
+                d,
+                this.domainTypeSelected
               );
-              const fData = {
-                id: d.domain.id.toLowerCase(),
-                labelName: d.domain.labelName.toLowerCase(),
-                labelHash: d.domain.labelhash.toLowerCase(),
-                isNotAvailable: false,
-                expiry: (parseInt(d.expiryDate) * 1000).toString(),
-                gracePeriodPercent:
-                  gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
-                registrationDate: (
-                  parseInt(d.registrationDate) * 1000
-                ).toString(),
-                createdAt: (parseInt(d.domain.createdAt) * 1000).toString(),
-              } as DomainMetadataModel;
-              this.hasDomainsListLoaded = true;
-              return fData;
             })
             .sort((a, b) => b.registrationDate - a.registrationDate);
+          this.hasDomainsListLoaded = true;
+          this.lastDomainSearchResult = domainsResolved;
           if (this.domainListResolutionSubscription) {
             this.domainListResolutionSubscription.unsubscribe();
             this.domainListResolutionSubscription = undefined;
@@ -409,8 +437,12 @@ export class CategoryComponent implements OnInit, OnDestroy {
             delayWhen((e) => {
               this.pageReset();
               if (retries >= generalConfigurations.maxRPCCallRetries - 1) {
+                if (this.domainListResolutionSubscription) {
+                  this.domainListResolutionSubscription.unsubscribe();
+                  this.domainListResolutionSubscription = undefined;
+                }
                 this.domainsListResolving = false;
-                this.pagesFacade.setPageCriticalError(true);
+                return of(false);
               }
               retries++;
               return timer(generalConfigurations.timeToUpdateCheckoutPipe);
@@ -450,6 +482,13 @@ export class CategoryComponent implements OnInit, OnDestroy {
       });
   }
 
+  getSubCategories() {
+    if ('filters' in this.categoryIpfsData === false) {
+      return;
+    }
+    this.subCategoryKeys = Object.keys(this.categoryIpfsData.filters);
+  }
+
   priceToFixedString(price: string, decimals: number = 3) {
     return parseFloat(price).toFixed(decimals);
   }
@@ -473,80 +512,51 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.profileTexts = {};
   }
 
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  addEmojiToFilter(e: any) {
+    const currentKeyWordFilter = this.filterForm.controls.contains.value;
+    this.filterForm.controls.contains.setValue(
+      currentKeyWordFilter +
+        this.ensService.performNormalisation(e.emoji.native)
+    );
+    this.resetLastDomainSearchResult();
+  }
+
+  hideEmojiPickerOnBlur() {
+    window.addEventListener('click', (e) => {
+      if ((e as any).target) {
+        this.showEmojiPicker = false;
+      }
+    });
+  }
+
   filterSearchDomains(value: any = '') {
     if (value === undefined || value === '' || value === null) {
       return this.categoryDomains.filter((d) => {
-        return this.extraFilters(d);
+        return this.ensService.extraFilters(
+          d,
+          this.typesFilter,
+          this.filterForm.controls
+        );
       });
     }
     const filterValue = (value as any).toLowerCase();
     return this.categoryDomains.filter((d) => {
       if (
         d.labelName.indexOf(filterValue) > -1 &&
-        this.extraFilters(d) === true
+        this.ensService.extraFilters(
+          d,
+          this.typesFilter,
+          this.filterForm.controls
+        ) === true
       ) {
         return true;
       }
       return false;
     });
-  }
-
-  extraFilters(d: DomainMetadataModel) {
-    const minL = this.filterForm.controls.minLength.value;
-    const maxL = this.filterForm.controls.maxLength.value;
-    const minD = this.getDateToStamp(this.filterForm.controls.creation.value);
-    const regD = this.getDateToStamp(
-      this.filterForm.controls.registration.value
-    );
-    const maxD = this.getDateToStamp(this.filterForm.controls.expiration.value);
-    const containEmoji = this.typesFilter.emoji;
-    const containAlphabet = this.typesFilter.alphabet;
-    const containNumber = this.typesFilter.numbers;
-    let satisfied;
-    if (minD > 0 && minD !== null && parseInt(d.createdAt, 10) < minD) {
-      return false;
-    }
-    if (regD > 0 && regD !== null && parseInt(d.registrationDate, 10) < regD) {
-      return false;
-    }
-    if (maxD > 0 && maxD !== null && parseInt(d.expiry, 10) > maxD) {
-      return false;
-    }
-    if ((d.labelName.length >= minL && d.labelName.length <= maxL) === false) {
-      return false;
-    }
-    if (containEmoji === true) {
-      if (this.isEmojiInLabel(d.labelName) === true) {
-        satisfied = true;
-      } else {
-        return false;
-      }
-    }
-    if (containAlphabet === false && containNumber === false) {
-      satisfied = true;
-    } else if (containAlphabet === true && containNumber === false) {
-      if (this.isAlphabetInLabel(d.labelName) === true) {
-        satisfied = true;
-      } else {
-        return false;
-      }
-    } else if (containNumber === true && containAlphabet === true) {
-      if (this.isAlphaNumericLabel(d.labelName) === true) {
-        satisfied = true;
-      } else {
-        return false;
-      }
-    } else if (containNumber === true) {
-      if (this.isNumberInLabel(d.labelName) === true) {
-        satisfied = true;
-      } else {
-        return false;
-      }
-    }
-    if (satisfied === undefined) {
-      return true;
-    }
-    return satisfied;
   }
 
   loadMoreDomains() {
@@ -628,7 +638,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   toggleBookmark(domain: DomainMetadataModel) {
     if (
-      this.bookmarkService.isDomainBookmarked(
+      this.bookmarksService.isDomainBookmarked(
         this.bookmarks,
         domain.labelName
       ) === true
@@ -647,12 +657,15 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.registrationPicker.open();
   }
 
-  openCreationPicker() {
-    this.creationPicker.open();
+  openPurchasePanel(domain: DomainMetadataModel) {
+    const dialogRef = this.dialog.open(SaleManagementComponent, {
+      panelClass: 'cos-settings-dialog',
+    });
+    dialogRef.componentInstance.domain = domain;
   }
 
   countBookmarks() {
-    return this.bookmarkService.countBookmarks();
+    return this.bookmarksService.countBookmarks();
   }
 
   countRegistrations() {
@@ -734,36 +747,12 @@ export class CategoryComponent implements OnInit, OnDestroy {
     return this.ensService.isDomainNameNotValid(name);
   }
 
-  isEmojiInLabel(label: string) {
-    return this.miscUtils.testEmoji().test(label);
-  }
-
-  isNumberInLabel(label: string) {
-    return this.miscUtils.testIntNumeric().test(label);
-  }
-
-  isAlphabetInLabel(label: string) {
-    return this.miscUtils.testAlpha().test(label);
-  }
-
-  isAlphaNumericLabel(label: string) {
-    return this.miscUtils.testAlphaNumeric().test(label);
-  }
-
   hashToBigIntString(hash: string) {
     return ethers.BigNumber.from(hash).toString();
   }
 
   getDomainLink(domain: string) {
     return environment.baseUrl + '/#/domain/' + domain.replace(/#⃣/g, '%23');
-  }
-
-  getDateToStamp(date: string) {
-    if (date === '') {
-      return null;
-    }
-    const d = new Date(date);
-    return d.getTime();
   }
 
   hasViewBottomed(topHeight: number) {
@@ -781,14 +770,43 @@ export class CategoryComponent implements OnInit, OnDestroy {
     return time.toString();
   }
 
+  resetLastDomainSearchResult() {
+    this.lastDomainSearchResult = undefined;
+    this.pageReset(false);
+    this.loadMoreDomains();
+  }
+
   get actualValidNames() {
+    if (this.categoryIpfsData === undefined) {
+      return [];
+    }
+    let names = this.categoryIpfsData.valid_names;
     if (
       this.categoryIpfsData.patterned === false &&
       this.categoryIpfsData.emojis === true
     ) {
-      return Object.keys(this.categoryIpfsData.valid_names);
+      names = Object.keys(names);
     }
-    return this.categoryIpfsData.valid_names;
+    if (
+      this.categoryIpfsData.patterned === false &&
+      this.categoryIpfsData.emojis === true &&
+      this.filterForm.controls.subcategory.value !== ''
+    ) {
+      names = Object.keys(
+        this.categoryIpfsData.filters[
+          this.filterForm.controls.subcategory.value
+        ]
+      );
+    }
+    return names.filter((n) =>
+      this.ensService.extraFiltersPure(
+        n,
+        this.typesFilter,
+        this.filterForm.controls,
+        this.categoryIpfsData.prefix_offset,
+        this.categoryIpfsData.suffix_offset
+      )
+    );
   }
 
   get containTextFilterIsOn() {
@@ -808,7 +826,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
       this.domainsListPage * this.domainsListPerPage,
       this.domainsListPage * this.domainsListPerPage + this.domainsListPerPage
     );
-    return toFeedLazyLoad;
+    return this.ensService.shuffleListOfNames(toFeedLazyLoad);
   }
 
   get dailySalesVolume() {
@@ -958,8 +976,17 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   get chartWidth() {
-    let toDeduct = 350;
-    return window.innerWidth - toDeduct - 110;
+    const windowW = document.body.clientWidth;
+    if (windowW <= 600) {
+      return (windowW - 60) / 2 - 5;
+    }
+    if (windowW > 600 && windowW <= 1200) {
+      return (windowW - 60) / 4 - 8;
+    }
+    if (windowW > 1200 && windowW <= 1900) {
+      return (windowW / 100) * 90 - 430;
+    }
+    return 1900 - 430;
   }
 
   get searchKeyword() {
@@ -1000,14 +1027,14 @@ export class CategoryComponent implements OnInit, OnDestroy {
   get guideAvatarSize() {
     const windowW = document.body.clientWidth;
     if (windowW <= 600) {
-      return windowW / 2 - 5;
+      return (windowW - 60) / 2 - 5;
     }
     if (windowW > 600 && windowW <= 1200) {
-      return windowW / 4 - 8;
+      return (windowW - 60) / 4 - 8;
     }
-    if (windowW > 1200 && windowW <= 1999) {
-      return windowW / 5 - 8;
+    if (windowW > 1200 && windowW <= 1900) {
+      return (windowW - 570) / 5 - 8;
     }
-    return (windowW / 100) * 12.5 - 9;
+    return ((1900 - 430) / 100) * 12.5 - 9;
   }
 }

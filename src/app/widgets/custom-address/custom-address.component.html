@@ -40,12 +40,12 @@
   <a
     (click)="closeDialog()"
     class="cos-body-4 cos-padding-2 cos-no-padding-top cos-no-padding-bottom"
-    >Cancel</a
+    >{{ "BUTTON.CANCEL" | translate }}</a
   >
   <a
     [ngClass]="formLock === true ? 'cos-anchor-disabled' : ''"
     (click)="formLock === false ? apply() : ''"
     class="cos-body-4 cos-padding-2 cos-no-padding-top cos-no-padding-left cos-no-padding-bottom"
-    >Apply</a
+    >{{ "BUTTON.APPLY" | translate }}</a
   >
 </div>

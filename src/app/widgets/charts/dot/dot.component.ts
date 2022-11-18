@@ -54,7 +54,7 @@ export class DotComponent {
       scales: {
         x: {
           grid: {
-            color: '#1a1e22',
+            color: '#272c30',
             borderWidth: 0,
           },
           ticks: {

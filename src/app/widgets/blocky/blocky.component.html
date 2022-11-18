@@ -5,6 +5,8 @@
   <img
     src="{{ blockyData }}"
     class="co-blocky"
+    [style.width]="size + 'px'"
+    [style.height]="size + 'px'"
     [ngClass]="roundedCorners ? 'co-blocky-rounded' : ''"
   />
 </ng-container>

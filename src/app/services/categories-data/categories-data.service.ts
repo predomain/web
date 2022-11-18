@@ -1,18 +1,59 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { forkJoin, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { forkJoin, from, Observable, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import {
   dataNodeEndpoints,
   generalConfigurations,
 } from 'src/app/configurations';
 import { environment } from 'src/environments/environment';
+import { Archive } from 'libarchive.js/main.js';
+
+Archive.init({
+  workerUrl: 'assets/js/libarchive/worker-bundle.js',
+});
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoriesDataService {
   constructor(protected httpClient: HttpClient) {}
+
+  getCategoriesComperssedArchive(categoriesToRead: string[]) {
+    const file = 'assets/categories/categories.7z';
+    return this.httpClient
+      .get(file, {
+        responseType: 'blob',
+      })
+      .pipe(
+        switchMap((r) => {
+          return from(Archive.open(r));
+        }),
+        switchMap((r) => {
+          return new Observable((observer) => {
+            let categoriesData = {};
+            (r as any).extractFiles((entry) => {
+              if (entry.path === 'root.json') {
+                return;
+              }
+              let reader = new FileReader();
+              reader.readAsText(entry.file);
+              reader.onload = () => {
+                const categoryData = JSON.parse(reader.result as string);
+                categoriesData[(categoryData as any).category] = categoryData;
+                if (
+                  Object.keys(categoriesData).length >=
+                  categoriesToRead.length - 1
+                ) {
+                  observer.next(categoriesData);
+                  observer.complete();
+                }
+              };
+            });
+          });
+        })
+      );
+  }
 
   pingCategoriesDataProviders(endPoints: string[]) {
     let useEnpoints = endPoints;

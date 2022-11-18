@@ -13,13 +13,22 @@
 
 .co-top-fade {
   background-color: var(--co-bg-neutral-color) !important;
-  height: 90px;
+  height: 95px;
   box-shadow: 0 2px 4px -1px rgb(0 0 0 / 10%), 0 4px 5px 0 rgb(0 0 0 / 5%),
     0 1px 10px 0 rgb(0 0 0 / 5%) !important;
 }
 
 .co-profile-content-container {
-  padding-top: 70px;
+  padding-top: 90px;
+  width: 90% !important;
+  min-width: 1300px;
+  max-width: 1900px;
+  margin: auto;
+  @media only screen and (max-width: 1000px) {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
 }
 .co-profile-content,
 .co-content-container,
@@ -30,7 +39,8 @@
   z-index: 1003;
 }
 .co-back-to-top,
-.co-header-container {
+.co-header-container,
+.co-bookmark {
   z-index: 1004;
 }
 
@@ -43,7 +53,7 @@
 
 .co-bulk-search-item-container {
   width: 100%;
-  height: 80px;
+  height: 70px;
   margin-bottom: 10px;
   margin-right: 10px;
 
@@ -76,7 +86,6 @@
   &.cos-bulk-sarch-item-for-avatar {
     border-radius: var(--cos-border-radius-2);
   }
-
   &.co-bulk-search-item-not-available {
     .co-bulk-search-item-expiration-bar {
       opacity: 0.3;
@@ -107,8 +116,7 @@
   position: relative;
   margin-bottom: -4px;
   &.co-bar-for-avatar {
-    margin-top: -7px;
-    margin-bottom: 0 !important;
+    margin-bottom: -5px;
   }
 }
 .co-bulk-search-item {
@@ -118,7 +126,7 @@
   cursor: pointer;
   padding-left: var(--co-padding-2);
   padding-right: var(--co-padding-1);
-  height: 80px;
+  height: 70px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -136,7 +144,7 @@
 .co-external-link {
   width: 40px;
   height: 40px;
-  border-radius: var(--cos-border-radius-4);
+  border-radius: var(--cos-border-radius-2);
   background-color: var(--co-gray-bg);
   display: flex;
   align-items: center;
@@ -159,6 +167,7 @@
   flex: 0 0 350px;
   flex-direction: column;
   width: 350px;
+  margin-bottom: 300px;
   @media only screen and (max-width: 1000px) {
     display: none;
   }
@@ -167,6 +176,7 @@
 .co-item-with-avatar {
   margin-right: 10px;
   margin-bottom: 10px;
+  padding-bottom: 40px;
   @media only screen and (max-width: 600px) {
     width: calc(50% - 5px);
     &:nth-of-type(2n) {
@@ -182,7 +192,7 @@
   @media only screen and (min-width: 1201px) and (max-width: 1999px) {
     width: calc(20% - 8px);
     &:nth-of-type(5n) {
-      margin-right: 0px !important;
+      margin-right: 0px;
     }
   }
   @media only screen and (min-width: 2000px) {
@@ -191,8 +201,49 @@
       margin-right: 0px !important;
     }
   }
+  .co-buy-now {
+    display: none !important;
+  }
   &:hover {
-    box-shadow: 0px 0px 2px 2px var(--co-main-color);
+    .co-avatar-item-details {
+      filter: brightness(1.25);
+      background-color: var(--co-light-gray-bg) !important;
+    }
+    .co-buy-now {
+      display: flex !important;
+      animation-name: lift-up-buy-now;
+      animation-duration: 0.1s;
+      margin-bottom: -40px;
+      animation-timing-function: ease;
+      animation-fill-mode: forwards;
+    }
+    .co-avatar-frame {
+      .co-avatar {
+        filter: brightness(1.1);
+        animation-name: zoom-in-avatar;
+        animation-duration: 0.2s;
+        animation-timing-function: ease;
+        animation-fill-mode: forwards;
+        @keyframes zoom-in-avatar {
+          from {
+            transform: scale(1);
+          }
+
+          to {
+            transform: scale(1.12);
+          }
+        }
+      }
+    }
+  }
+  @keyframes lift-up-buy-now {
+    from {
+      transform: translateY(40px);
+    }
+
+    to {
+      transform: translateY(0px);
+    }
   }
 }
 
@@ -215,6 +266,27 @@
   margin-top: 3%;
   margin-left: 2.25%;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.225);
+}
+
+.co-bookmark {
+  mat-icon {
+    background-color: rgba(0, 0, 0, 0.1);
+    &.checked,
+    &:hover {
+      background-color: var(--co-main-color);
+      box-shadow: var(--co-box-shadow);
+    }
+    padding: 7px 6px 5px 6px;
+    border-radius: 50%;
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    @media only screen and (max-width: 1000px) {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
 }
 
 .co-bar-chart {

@@ -58,7 +58,7 @@
 .mat-button {
   background-color: var(--co-main-color);
   color: white !important;
-  border-radius: var(--cos-border-radius-1) !important;
+  border-radius: var(--cos-border-radius-2) !important;
   height: 45px;
   font-weight: 400 !important;
   font-family: "Roboto", sans-serif;
@@ -75,7 +75,7 @@
     &.cos-button-cancel {
       background: none !important;
     }
-    height: 22px !important;
+    height: 30px !important;
     padding: 0 !important;
     line-height: 0 !important;
 
@@ -94,18 +94,16 @@
     width: auto !important;
     min-width: 0 !important;
     line-height: 0px;
-    padding: 5px !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    height: 30px !important;
-    background-color: var(--co-darker-gray-bg) !important;
-    border-radius: 3px !important;
-    border: solid 1px var(--co-darker-border-color) !important;
+    background-color: var(--co-gray-bg) !important;
+    border-radius: var(--cos-border-radius-2) !important;
     color: var(--co-default-text-color) !important;
+    &:hover {
+      background-color: var(--co-main-color) !important;
+    }
   }
 
   &.cos-button-round {
-    border-radius: var(--cos-border-radius-4) !important;
+    border-radius: var(--cos-border-radius-2) !important;
   }
 
   &.cos-button-large {
@@ -195,6 +193,7 @@
 
 .mat-form-field {
   .mat-form-field-wrapper {
+    width: 100% !important;
     padding-bottom: 0px !important;
     font-family: "Roboto", sans-serif !important;
 
@@ -247,7 +246,7 @@
           width: calc(100% - 20px) !important;
           height: 43px !important;
           border: solid 1px var(--co-darker-border-color) !important;
-          border-radius: var(--cos-border-radius-4) !important;
+          border-radius: var(--cos-border-radius-2) !important;
         }
 
         textarea {
@@ -257,7 +256,7 @@
           width: calc(100% - 40px) !important;
           padding: 20px !important;
           border: solid 1px var(--co-darker-border-color) !important;
-          border-radius: var(--cos-border-radius-4) !important;
+          border-radius: var(--cos-border-radius-2) !important;
         }
 
         .mat-form-field-label-wrapper {
@@ -316,7 +315,7 @@
           input,
           textarea {
             margin-top: 0 !important;
-            border-radius: var(--cos-border-radius-4) !important;
+            border-radius: var(--cos-border-radius-2) !important;
           }
         }
         .mat-form-field-label-wrapper {
@@ -329,6 +328,12 @@
         }
       }
 
+      .mat-form-field-prefix {
+        left: 40px;
+        z-index: 1005;
+        top: -5px;
+        margin-left: -30px;
+      }
       .mat-form-field-suffix {
         display: flex;
         margin-left: -45px !important;
@@ -341,6 +346,20 @@
           padding-right: 5px !important;
           margin-top: 0 !important;
           float: left !important;
+        }
+      }
+    }
+    &.co-input-field-small-prefix {
+      .mat-form-field-wrapper {
+        .mat-form-field-prefix {
+          left: 35px !important;
+          z-index: 1005 !important;
+          top: -9px !important;
+          margin-left: -20px !important;
+          mat-icon {
+            opacity: 0.6;
+            font-size: 100%;
+          }
         }
       }
     }
@@ -359,6 +378,9 @@
     overflow: hidden;
     &.cos-input-field-no-label {
       height: 60px !important;
+      &.cos-field-width-shadow {
+        height: 70px !important;
+      }
     }
     .mat-form-field-wrapper {
       height: 60px !important;
@@ -372,7 +394,7 @@
             padding: 20px !important;
             font-size: 17px !important;
             padding-top: 20px !important;
-            border-radius: var(--cos-border-radius-4) !important;
+            border-radius: var(--cos-border-radius-2) !important;
           }
           .mat-form-field-label {
             margin-left: 20px !important;
@@ -391,7 +413,7 @@
             display: flex;
             background-color: var(--co-button-disabled-color);
             position: absolute !important;
-            border-radius: var(--cos-border-radius-4) !important;
+            border-radius: var(--cos-border-radius-2) !important;
           }
         }
       }
@@ -401,6 +423,60 @@
           .mat-form-field-label {
             font-size: 17px !important;
             margin-top: -6px !important;
+          }
+        }
+      }
+    }
+  }
+
+  &.cos-input-field-small {
+    overflow: hidden;
+    .mat-form-field-wrapper {
+      .mat-form-field-flex {
+        .mat-form-field-infix {
+          border-top: 0 !important;
+          input {
+            margin-top: 8px !important;
+            padding-left: 7px !important;
+            height: 30px !important;
+            width: 100% !important;
+          }
+          .mat-form-field-label-wrapper {
+            .mat-form-field-label {
+              margin-top: -6px !important;
+              margin-left: 7px !important;
+              font-size: var(--co-font-size-5) !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.cos-input-field-no-radius {
+    .mat-form-field-wrapper {
+      .mat-form-field-flex {
+        .mat-form-field-infix {
+          input {
+            border-radius: var(--cos-border-radius-1) !important;
+          }
+        }
+      }
+    }
+  }
+
+  &.cos-input-prefixed {
+    .mat-form-field-wrapper {
+      .mat-form-field-flex {
+        .mat-form-field-infix {
+          input {
+            padding-left: 49px !important;
+            width: calc(100% - 50px) !important;
+          }
+        }
+        .mat-form-field-label-wrapper {
+          .mat-form-field-label {
+            margin-left: 50px !important;
           }
         }
       }
@@ -443,7 +519,6 @@
   .cdk-overlay-connected-position-bounding-box {
     &:not(:first-of-type) {
       margin-top: 8px;
-      margin-left: -10px;
     }
   }
 }
@@ -555,14 +630,14 @@
   box-shadow: none !important;
   overflow: visible !important;
   &.autocomplete-for-small-input {
-    top: 4px !important;
+    top: 1px !important;
   }
   .mat-option {
     background-color: var(--co-gray-bg) !important;
-    border-radius: var(--cos-border-radius-4) !important;
+    border-radius: var(--cos-border-radius-1) !important;
     font-size: 13px !important;
     color: white !important;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
     padding: 0 !important;
     &.mat-selected,
     &:hover {
@@ -610,6 +685,11 @@
     font-size: 15px;
     height: 15px;
   }
+  &.cos-medium-icon {
+    width: 35px;
+    font-size: 35px;
+    height: 35px;
+  }
   &.cos-large-icon {
     width: 55px;
     font-size: 55px;
@@ -632,6 +712,9 @@
   }
   &.mat-accent {
     color: var(--co-hazard-color) !important;
+  }
+  &.mat-warn {
+    color: var(--co-danger-color) !important;
   }
 }
 
@@ -695,6 +778,15 @@
         .mat-content {
           .mat-expansion-panel-header-title {
             opacity: 0.15;
+          }
+        }
+      }
+    }
+    &:hover {
+      .mat-expansion-panel-header {
+        .mat-content {
+          .mat-expansion-panel-header-title {
+            opacity: 1 !important;
           }
         }
       }
@@ -828,24 +920,49 @@
     }
   }
 }
+.mat-select {
+  background-color: var(--co-gray-bg) !important;
+}
 .mat-select-panel-wrap {
   .mat-select-panel {
+    background-color: var(--co-faded-dark-gray-bg) !important;
     min-width: 100% !important;
-    margin-left: 25px !important;
+    margin-left: 15px !important;
     margin-top: 38px !important;
-
+    &.select-panel-floating {
+      margin-left: 15px !important;
+    }
     @media only screen and (max-width: 1000px) {
       margin-left: 15px !important;
     }
-    background-color: var(--co-gray-bg) !important;
     .mat-focus-indicator {
       &:hover {
-        background-color: var(--co-darker-gray-bg) !important;
+        background-color: var(--co-gray-bg) !important;
       }
       color: white !important;
       &.mat-selected {
         color: var(--co-main-color) !important;
       }
     }
+  }
+}
+.mat-tooltip {
+  font-size: var(--co-font-size-3);
+  font-family: "os";
+  padding: var(--co-padding-0) !important;
+  padding-left: var(--co-padding-2) !important;
+  padding-right: var(--co-padding-2) !important;
+  background-color: var(--co-gray-bg) !important;
+}
+.mat-badge-content {
+  right: 5px !important;
+  top: 0px !important;
+  @media only screen and (max-width: 1000px) {
+    right: -8px !important;
+    top: -5px !important;
+    width: 18px !important;
+    height: 18px !important;
+    line-height: 18px !important;
+    font-size: var(--co-font-size-5) !important;
   }
 }

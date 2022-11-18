@@ -139,12 +139,18 @@ export class RegistrationFacilityService {
             return;
           }
           gasLimit = r as BigNumber;
+          let range = 0;
+          const priceRanges = commitmentResult[1].map((p) => {
+            const rangeP = ethers.BigNumber.from(p)
+              .mul(generalConfigurations.maxTotalCostBuffer[range])
+              .div(100);
+            range++;
+            return rangeP;
+          });
           observer.next([
             {
               commitments: commitmentResult[0],
-              priceRanges: commitmentResult[1].map((pr) =>
-                pr.mul(generalConfigurations.maxTotalCostBuffer).div(100)
-              ),
+              priceRanges: priceRanges,
             } as ENSRegistrationCommmitmentRequestResultModel,
             gasLimit,
           ]);

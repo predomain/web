@@ -36,6 +36,7 @@ export class ENSBookmarkEffects {
         ofType<ENSBookmarkEffectsInit>(InitEffectsENSBookmark),
         filter((r) => {
           if (
+            globalAny.canvasEffectsInitialised === undefined ||
             globalAny.canvasEffectsInitialised[InitEffectsENSBookmark] === true
           ) {
             return false;
