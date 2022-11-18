@@ -20,7 +20,7 @@
     <span class="co-logo cos-disappear-on-mobile"> Predomain </span>
   </div>
   <div
-    fxFlex="50"
+    [fxFlex]="isDeviceMobile === true ? '100' : '50'"
     fxLayout="row"
     fxLayoutGap="10px"
     fxLayoutAlign="start start"

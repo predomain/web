@@ -316,6 +316,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
               if (d === false || d === null || d === undefined) {
                 return of(false);
               }
+              console.log(d);
+              if (d.registrations.length <= 0) {
+                return of([]);
+              }
               domains = domains.concat(
                 (d as any).registrations
                   .filter((n) => n.labelName !== null)
@@ -356,6 +360,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         map((r) => {
           if (r === false) {
             throw false;
+          }
+          if ((r as any).length === 0) {
+            this.hasDomainsListLoaded = true;
           }
           this.userDomains = r;
           this.domainsOptimisedList = this.ensService.optimiseCategoryNamesList(
@@ -1022,6 +1029,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return c + 'px';
   }
 
+  get domainsCount() {
+    if (this.userDomains === undefined) {
+      return undefined;
+    }
+    return this.userDomains.length;
+  }
   get domainsInPage() {
     const toFeedLazyLoad = this.actualValidNames.slice(
       this.domainsListPage * this.domainsListPerPage,
