@@ -1,5 +1,7 @@
 export default {
   BUTTON: {
+    APPLY: 'Apply',
+    NONE: 'None',
     SAVE_CHANGES: 'Save Changes',
     PROCEED: 'Proceed',
     DISMISS: 'Dismiss',
@@ -54,6 +56,7 @@ export default {
     APPROVE: 'Approve',
     NEXT: 'Next',
     PENDING: 'Pending',
+    REMOVE: 'Remove',
     REMOVE_ALL_ITEMS: 'Remove All Items',
     ADD_ALL_TO_CART: 'Add All To Cart',
     BOOKMARK_ALL: 'Bookmark All',
@@ -63,6 +66,7 @@ export default {
     CHANGE: 'Change',
   },
   HEADER: {
+    ABOUT: 'About',
     FAQ: 'FAQs',
     BACK_TO_HOME: 'Back to Home',
     HOME: 'Home',
@@ -118,6 +122,35 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    STOREFRONT_READY_TO_DEPLOY:
+      'Your store front is ready to be deployed. Your store will be located at:',
+    ACCESS_STOREFRONT: 'You can now access your store front at:',
+    BUY_ON: 'Buy on',
+    MY_PROFILE: 'My Profile',
+    CREATE_STOREFRONT: 'Create Storefront',
+    SETUP_PRIMARY_DOMAIN: 'Setup Primary Domain',
+    CHOOSE_A_PRIMARY_DOMAIN:
+      'Choose a primary domain and link it to your profile. This chosen domain will be your profile link.',
+    CREATE_YOUR_STOREFRONT:
+      'Create your store front using your .eth name with Predomain Stores. Learn more about your store front at:',
+    THIS_DOMAINS_IS_AVAILABLE_IN_MARKETPLACE:
+      'This domain is available on the following marketplaces',
+    PURCHASE_DOMAINS: 'Purchase Domains',
+    OWNED_BY: 'Owned By',
+    SETUP_STOREFRONT: 'Setup Storefront',
+    MANAGE_FEATURED_ITEMS: 'Manage Featured Items',
+    VISIT_STOREFRONT: 'Visit Storefront',
+    OPTIONS: 'Options',
+    FEATURED_ITEMS: 'Featured Items',
+    SORT_BY_CATEGORY: 'Sort By Category',
+    SELECT_DOMAIN: 'Select Domain',
+    SELECT_DOMAINS: 'Select Domains',
+    RENEW_DOMAINS: 'Renew Domains',
+    TRANSFER_DOMAINS: 'Transfer Domains',
+    BUYER: 'Buyer',
+    PRICE: 'Price',
+    SALE: 'Sale',
+    ACTIVITY: 'Activity',
     TOP_CATEGORIES: 'Top Categories',
     TOTAL_ASSETS: 'Total Assets',
     MONTHLY_SALES: 'Monthly Sales',
@@ -177,6 +210,7 @@ export default {
     CONNECT_TO_START: ' to get started or ',
     TIP: 'Tip',
     ACTION: 'Action',
+    ACTIONS: 'Actions',
     ADVANCED_SEARCH_TIP:
       'use new line or commas to seperate your domain entries.',
     ADVANCED_SEARCH: 'Advanced Search',
@@ -224,6 +258,7 @@ export default {
     PAYMENT_CANCELLED: 'Transaction cancelled. Please try again.',
   },
   SPINNER: {
+    SETUP_COMPLETE: 'Setup Complete',
     LEDGER_NO_DEVICE_SELECTED:
       'An error has occured while connecting to your wallet. Please try again.',
     NO_DATA_TO_DISPLAY: 'No items to display.',

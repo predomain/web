@@ -5,23 +5,13 @@ import { PathResolveService } from './services';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'bootstrap',
+    redirectTo: 'home',
     pathMatch: 'full',
-  },
-  {
-    path: 'bootstrap',
-    loadChildren: () =>
-      import('./modules/bootstrap.module').then((m) => m.BootstrapModule),
   },
   {
     path: 'home',
     loadChildren: () =>
       import('./modules/home.module').then((m) => m.HomeModule),
-  },
-  {
-    path: 'canvas',
-    loadChildren: () =>
-      import('./modules/canvas.module').then((m) => m.CanvasModule),
   },
   {
     path: 'domain/:domain',
@@ -32,11 +22,6 @@ const routes: Routes = [
     path: 'profile/:user',
     loadChildren: () =>
       import('./modules/profile.module').then((m) => m.ProfileModule),
-  },
-  {
-    path: 'manage',
-    loadChildren: () =>
-      import('./modules/manage.module').then((m) => m.ManageModule),
   },
   {
     path: 'checkout',

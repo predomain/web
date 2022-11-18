@@ -1,28 +1,15 @@
-import {
-  Component,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Store } from '@ngrx/store';
+import { from, of, Subject, timer } from 'rxjs';
+import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Store } from '@ngrx/store';
-import { BigNumber, ethers } from 'ethers';
-import { from, of, Subject, timer } from 'rxjs';
-import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import {
-  BlockExplorersEnum,
-  generalConfigurations,
-} from 'src/app/configurations';
-import { DomainMetadataModel } from 'src/app/models/domains';
-import {
-  RenewalDurationsEnum,
-  RenewalDurationsTimeMultiplierEnum,
-} from 'src/app/models/management';
+  DomainFiltersModel,
+  DomainMetadataModel,
+} from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
 import {
   PaymentModel,
@@ -31,42 +18,46 @@ import {
 } from 'src/app/models/states/payment-interfaces';
 import { UserStateModel } from 'src/app/models/states/user-interfaces';
 import { NonceTypesEnum } from 'src/app/models/states/wallet-interfaces';
-import { WalletService } from 'src/app/services';
+import { MiscUtilsService, WalletService } from 'src/app/services';
 import { EnsService } from 'src/app/services/ens';
 import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
-import { environment } from 'src/environments/environment';
-import { OnboardManagementComponent } from '../onboard-management';
+import * as contentHasher from 'content-hash';
 
 const globalAny: any = global;
-const YEARS_IN_SECONDS = 31556952;
+const storeFrontHash = 'storefront.predomain.eth';
 
 @Component({
-  selector: 'app-renew-management',
-  templateUrl: './renew-management.component.html',
-  styleUrls: ['./renew-management.component.scss'],
+  selector: 'app-setup-management',
+  templateUrl: './setup-management.component.html',
+  styleUrls: ['./setup-management.component.scss'],
 })
 export class SetupManagementComponent implements OnInit, OnDestroy {
   @ViewChild('stepper') stepper: MatAccordion;
+  spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
+  overlaysCountOnInit = 0;
   step = 0;
-  domainsToRenew;
-  renewalDuration: BigNumber;
-  renewalDurationTypes: typeof RenewalDurationsEnum = RenewalDurationsEnum;
+  maxSteps = 2;
+  closedByButton = false;
+  setupName = false;
+  setupShop = false;
+  setupNameComplete = false;
+  setupShopComplete = false;
+  approvalSerial: string;
   userState: UserStateModel;
   paymentState: PaymentStateModel;
-  spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
-  renewToCheck: PaymentModel;
-  renewForm: FormGroup;
-  renewing = false;
-  renewComplete = false;
-  closedByButton = false;
-  overlaysCountOnInit = 0;
-  maxSteps = 2;
-  approvalSerial;
-  userStateSubscription;
+  userName: DomainMetadataModel;
+  userNamesData: DomainMetadataModel[];
+  userNames: any;
+  setupDomainForm: FormGroup;
+  setupShopToCheck: PaymentModel;
+  setupNameToCheck: PaymentModel;
+  setupNameSubscription;
+  setupShopSubscription;
+  shopSetupStatusSubscription;
+  nameSetupStatusSubscription;
   paymentStateSubscription;
-  renewSubscription;
-  renewStatusCheckSubscription;
+  userStateSubscription;
 
   constructor(
     protected userFacade: UserFacadeService,
@@ -74,17 +65,15 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
     protected paymentFacade: PaymentFacadeService,
     protected ensMarketplaceService: EnsMarketplaceService,
     protected snackBar: MatSnackBar,
+    protected miscUtilsService: MiscUtilsService,
     protected ensService: EnsService,
     protected store: Store<PaymentStateModel>,
-    public genericDialogRef: MatDialogRef<OnboardManagementComponent>,
+    public genericDialogRef: MatDialogRef<SetupManagementComponent>,
     @Inject(MAT_DIALOG_DATA) public data: string
   ) {
-    this.renewForm = new FormGroup({
-      duration: new FormControl(RenewalDurationsEnum['6MONTHS']),
+    this.setupDomainForm = new FormGroup({
+      domain: new FormControl(''),
     });
-    this.setRenewalDuration(
-      this.renewForm.controls.duration.value as RenewalDurationsEnum
-    );
   }
 
   ngOnInit() {
@@ -142,83 +131,44 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
       .pipe(
         map((s) => {
           this.paymentState = s;
-          this.checkRenewStatus();
+          this.checkShopsSetup();
+          this.checkNameSetup();
         })
       )
       .subscribe();
   }
 
-  setRenewalDuration(duration: RenewalDurationsEnum) {
-    const durationMultiplier = ethers.BigNumber.from(
-      RenewalDurationsTimeMultiplierEnum[duration] * 10000
-    );
-    this.renewalDuration = ethers.BigNumber.from(YEARS_IN_SECONDS)
-      .mul(durationMultiplier)
-      .div(10000);
-  }
-
-  performRenewalCostCalculation() {
-    setTimeout(() => {
-      this.setRenewalDuration(this.renewForm.controls.duration.value);
-    }, 100);
-  }
-
-  renewDomains(domainsToRenew: DomainMetadataModel[], duration: BigNumber) {
-    if (this.renewSubscription) {
-      this.renewSubscription.unsubscribe();
+  setShop(name: string, nameId: string, shopHash: string) {
+    if (this.setupShopSubscription) {
+      this.setupShopSubscription.unsubscribe();
     }
-    this.renewing = true;
+    this.setupShop = true;
     const provider = globalAny.canvasProvider;
-    const contract =
-      this.ensMarketplaceService.getENSMarketplaceContract(provider);
     const userAddress = this.userState.user.walletAddress;
-    const domainNames = domainsToRenew.map((d) => d.labelName);
-    let finalTotal;
-    this.renewSubscription = from(contract.getENSPriceRanges(duration))
+    let resolver;
+    this.setupShopSubscription = from(provider.getResolver(name))
       .pipe(
         switchMap((r) => {
-          if (r === false || r === null) {
-            throw 1;
+          if (r === null || r === false) {
+            throw false;
           }
-          const priceRanges = (r as string[]).map((p) => {
-            return ethers.BigNumber.from(p)
-              .mul(generalConfigurations.maxTotalCostBuffer)
-              .div(100)
-              .toHexString();
-          });
-          finalTotal = domainNames
-            .map((d) => {
-              const len = this.ensService.getNameLength(d);
-              let price;
-              switch (len) {
-                case 3:
-                  {
-                    price = priceRanges[0];
-                  }
-                  break;
-                case 4:
-                  {
-                    price = priceRanges[1];
-                  }
-                  break;
-                default:
-                  {
-                    price = priceRanges[2];
-                  }
-                  break;
-              }
-              return ethers.BigNumber.from(price);
-            })
-            .reduce((a, b) => {
-              return a.add(b);
-            });
-          return this.ensMarketplaceService.renew(
-            domainNames,
-            priceRanges,
-            duration,
+          resolver = (r as any).address;
+          return this.ensService.getDomainContentHashPure(
+            provider,
+            storeFrontHash
+          );
+        }),
+        switchMap((r) => {
+          if (r === null || r === false) {
+            throw false;
+          }
+          const hash = r as string;
+          return this.ensMarketplaceService.setContentHash(
+            nameId,
+            '0x' + contentHasher.fromIpfs(hash),
+            resolver,
             userAddress,
-            finalTotal.toHexString(),
-            globalAny.canvasProvider
+            provider
           );
         }),
         switchMap((transferDataAndGas: any) => {
@@ -230,17 +180,16 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
           this.approvalSerial = serial;
           const p = {
             id: serial,
-            paymentMarketAddress:
-              this.ensMarketplaceService.marketplaceContractAddress,
+            paymentMarketAddress: resolver,
             paymentExchangeRate: this.paymentState.ethUsdPrice,
             paymentPayer: userAddress,
             paymentCurrency: 'ETH',
             paymentPayee: userAddress,
             paymentSerial: serial,
             paymentDate: new Date().getTime(),
-            paymentType: PaymentTypesEnum.TX_RENEW,
+            paymentType: PaymentTypesEnum.TX_SET_ENS_CONTENT_HASH,
             paymentAbstractBytesSlot: renewData,
-            paymentTotal: finalTotal.toHexString(),
+            paymentTotal: '0x0',
             paymentStatus: false,
             paymentError: -1,
             paymentFee: '0',
@@ -256,76 +205,233 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
       )
       .subscribe((r) => {
         if (r === false) {
-          this.renewing = false;
+          this.setupShop = false;
         }
       });
   }
 
-  checkRenewStatus() {
-    if (this.renewStatusCheckSubscription) {
+  setProfileName(name: string) {
+    if (this.setupNameSubscription) {
+      this.setupNameSubscription.unsubscribe();
+    }
+    this.setupName = true;
+    const provider = globalAny.canvasProvider;
+    const userAddress = this.userState.user.walletAddress;
+    this.setupNameSubscription = from(name)
+      .pipe(
+        switchMap((r) => {
+          return this.ensMarketplaceService.setProfileName(
+            name,
+            userAddress,
+            provider
+          );
+        }),
+        switchMap((transferDataAndGas: any) => {
+          if (transferDataAndGas === false) {
+            throw 1;
+          }
+          const [renewData, gasLimit] = transferDataAndGas;
+          const serial = this.walletService.produceNonce(NonceTypesEnum.SERIAL);
+          this.approvalSerial = serial;
+          const p = {
+            id: serial,
+            paymentMarketAddress:
+              this.ensMarketplaceService.ensReverseRegistryContractAddress,
+            paymentExchangeRate: this.paymentState.ethUsdPrice,
+            paymentPayer: userAddress,
+            paymentCurrency: 'ETH',
+            paymentPayee: userAddress,
+            paymentSerial: serial,
+            paymentDate: new Date().getTime(),
+            paymentType: PaymentTypesEnum.TX_SET_ENS_NAME,
+            paymentAbstractBytesSlot: renewData,
+            paymentTotal: '0x0',
+            paymentStatus: false,
+            paymentError: -1,
+            paymentFee: '0',
+            paymentGasLimit: gasLimit.toHexString(),
+          } as PaymentModel;
+          this.paymentFacade.createPayment(p);
+          return of(true);
+        }),
+        catchError((e) => {
+          this.showErrorOnContractThrown();
+          return of(false);
+        })
+      )
+      .subscribe((r) => {
+        if (r === false) {
+          this.setupName = false;
+        }
+      });
+  }
+
+  checkShopsSetup() {
+    if (this.shopSetupStatusSubscription) {
       return;
     }
-    const hasRenewalResolved = new Subject<boolean>();
-    this.renewStatusCheckSubscription = timer(0, 500)
+    const hasSetupResolved = new Subject<boolean>();
+    this.shopSetupStatusSubscription = timer(0, 500)
       .pipe(
-        takeUntil(hasRenewalResolved),
+        takeUntil(hasSetupResolved),
         switchMap((i) => {
           return this.paymentFacade.paymentState$;
         }),
         map((paymentState) => {
           const payments = paymentState.entities;
           const paymentIds = Object.keys(payments);
-          const pendingRenewalPayments = [];
+          const pendingPayments = [];
+          if (this.setupShopComplete === true) {
+            return;
+          }
           for (const p of paymentIds) {
             const payment = payments[p];
             if (
-              this.renewToCheck !== undefined &&
-              payment.paymentSerial === this.renewToCheck.paymentSerial
+              this.setupShopToCheck !== undefined &&
+              payment.paymentSerial === this.setupShopToCheck.paymentSerial
             ) {
-              pendingRenewalPayments.push(payment);
+              pendingPayments.push(payment);
               break;
             }
             if (
-              payment.paymentType === PaymentTypesEnum.TX_RENEW &&
+              payment.paymentType ===
+                PaymentTypesEnum.TX_SET_ENS_CONTENT_HASH &&
               payment.paymentStatus === false
             ) {
-              pendingRenewalPayments.push(payment);
+              pendingPayments.push(payment);
             }
           }
-          this.renewToCheck =
-            pendingRenewalPayments[pendingRenewalPayments.length - 1];
+          this.setupShopToCheck = pendingPayments[pendingPayments.length - 1];
           if (paymentState.paymentCancelled === true) {
-            this.renewing = false;
-            this.renewStatusCheckSubscription = undefined;
-            hasRenewalResolved.next(false);
+            this.setupShop = false;
+            this.shopSetupStatusSubscription = undefined;
+            hasSetupResolved.next(false);
             return;
           }
           if (
-            pendingRenewalPayments.length > 0 &&
-            pendingRenewalPayments[pendingRenewalPayments.length - 1]
-              .paymentStatus === true
+            pendingPayments.length > 0 &&
+            pendingPayments[pendingPayments.length - 1].paymentStatus === true
           ) {
-            this.renewComplete = true;
-            this.renewing = false;
-            this.renewStatusCheckSubscription = undefined;
-            hasRenewalResolved.next(false);
+            this.setupShopComplete = true;
+            this.setupShop = false;
+            this.shopSetupStatusSubscription = undefined;
+            hasSetupResolved.next(false);
             return;
           }
           if (
-            pendingRenewalPayments.length > 0 &&
-            this.renewToCheck === undefined
+            pendingPayments.length > 0 &&
+            this.setupShopToCheck === undefined
           ) {
-            this.renewing = true;
-            this.renewToCheck =
-              pendingRenewalPayments[pendingRenewalPayments.length - 1];
+            this.setupShop = true;
+            this.setupShopToCheck = pendingPayments[pendingPayments.length - 1];
           }
         })
       )
       .subscribe();
   }
 
-  performRenewal() {
-    this.renewDomains(this.domainsToRenew, this.renewalDuration);
+  checkNameSetup() {
+    if (this.nameSetupStatusSubscription) {
+      return;
+    }
+    const hasSetupResolved = new Subject<boolean>();
+    this.nameSetupStatusSubscription = timer(0, 500)
+      .pipe(
+        takeUntil(hasSetupResolved),
+        switchMap((i) => {
+          return this.paymentFacade.paymentState$;
+        }),
+        map((paymentState) => {
+          const payments = paymentState.entities;
+          const paymentIds = Object.keys(payments);
+          const pendingPayments = [];
+          if (this.step > 1) {
+            return;
+          }
+          for (const p of paymentIds) {
+            const payment = payments[p];
+            if (
+              this.setupNameToCheck !== undefined &&
+              payment.paymentSerial === this.setupNameToCheck.paymentSerial
+            ) {
+              pendingPayments.push(payment);
+              break;
+            }
+            if (
+              payment.paymentType === PaymentTypesEnum.TX_SET_ENS_NAME &&
+              payment.paymentStatus === false
+            ) {
+              pendingPayments.push(payment);
+            }
+          }
+          this.setupNameToCheck = pendingPayments[pendingPayments.length - 1];
+          if (paymentState.paymentCancelled === true) {
+            this.setupName = false;
+            this.step++;
+            this.userName = this.userNamesData.filter(
+              (d) =>
+                (d.labelName =
+                  this.setupDomainForm.controls.domain.value.split('.eth')[0])
+            )[0];
+            this.nameSetupStatusSubscription = undefined;
+            hasSetupResolved.next(false);
+            return;
+          }
+          if (
+            pendingPayments.length > 0 &&
+            pendingPayments[pendingPayments.length - 1].paymentStatus === true
+          ) {
+            this.step++;
+            this.userName = this.userNamesData.filter(
+              (d) =>
+                (d.labelName =
+                  this.setupDomainForm.controls.domain.value.split('.eth')[0])
+            )[0];
+            this.setupNameComplete = true;
+            this.setupName = false;
+            this.nameSetupStatusSubscription = undefined;
+            hasSetupResolved.next(false);
+            return;
+          }
+          if (
+            pendingPayments.length > 0 &&
+            this.setupNameToCheck === undefined
+          ) {
+            this.step++;
+            this.userName = this.userNamesData.filter(
+              (d) =>
+                (d.labelName =
+                  this.setupDomainForm.controls.domain.value.split('.eth')[0])
+            )[0];
+            this.setupName = true;
+            this.setupNameToCheck = pendingPayments[pendingPayments.length - 1];
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  performStoreSetup() {
+    this.setShop(this.userName.labelName + '.eth', this.userName.id, '');
+  }
+
+  performNameSetup() {
+    if (this.setupDomainForm.controls.domain.value === '') {
+      return;
+    }
+    this.setProfileName(this.setupDomainForm.controls.domain.value);
+  }
+
+  checkIfNameIsSet() {
+    if (this.userName !== undefined) {
+      this.step = 2;
+      return;
+    }
+    this.step++;
+  }
+
+  pretty(name: string) {
+    return this.ensService.prettify(name);
   }
 
   showErrorOnContractThrown() {
@@ -339,28 +445,6 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
       }
     );
     return;
-  }
-
-  getRenewalCost(domainNames: string[], duration: BigNumber) {
-    if (domainNames.length === 1) {
-      return this.ensService.calculateDomainsPrice(
-        domainNames[0],
-        this.paymentState.ethUsdPrice,
-        duration.toNumber() / YEARS_IN_SECONDS
-      );
-    }
-    const totalCost = domainNames
-      .map((d) => {
-        return this.ensService.calculateDomainsPrice(
-          d,
-          this.paymentState.ethUsdPrice,
-          duration.toNumber() / YEARS_IN_SECONDS
-        );
-      })
-      .reduce((a, b) => {
-        return a + b;
-      });
-    return totalCost;
   }
 
   nextStep() {
@@ -404,20 +488,42 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
     this.genericDialogRef.close();
   }
 
-  goToPendingTx() {
-    window.open(
-      BlockExplorersEnum[environment.defaultChain] +
-        '/tx/' +
-        this.renewToCheck.paymentHash,
-      '_blank'
-    );
-  }
-
-  get ensMarketplaceContract() {
-    return this.ensMarketplaceService.marketplaceContractAddress;
-  }
-
-  get namesOfDomainsToRenew() {
-    return this.domainsToRenew.map((d) => d.labelName);
+  get quickSearchKeysToChunk() {
+    if (
+      this.userNames === undefined ||
+      this.setupDomainForm.controls.domain.value === '' ||
+      this.setupDomainForm.controls.domain.value.length < 3
+    ) {
+      return [];
+    }
+    const name = this.setupDomainForm.controls.domain.value;
+    const nameFirstChar = name[0];
+    const nameSecondChar = name[1];
+    if (
+      nameFirstChar in this.userNames === true &&
+      nameSecondChar in this.userNames[nameFirstChar] === true
+    ) {
+      return this.userNames[nameFirstChar][nameSecondChar].filter((d) =>
+        this.ensService.extraFiltersPure(
+          d,
+          {
+            alphabet: false,
+            numbers: false,
+            emoji: false,
+            palindrome: false,
+            prepunk: false,
+            repeating: false,
+          } as DomainFiltersModel,
+          {
+            contains: { value: this.setupDomainForm.controls.domain.value },
+            minLength: { value: 0 },
+            maxLength: { value: 100 },
+          },
+          0,
+          0
+        )
+      );
+    }
+    return [];
   }
 }

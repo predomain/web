@@ -25,6 +25,7 @@ import { UserStateModel } from 'src/app/models/states/user-interfaces';
 import { NonceTypesEnum } from 'src/app/models/states/wallet-interfaces';
 import { CheckoutServicesService } from 'src/app/pages/checkout/checkout-services/checkout-services.service';
 import { UserService, WalletService } from 'src/app/services';
+import { EnsService } from 'src/app/services/ens';
 import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
@@ -69,6 +70,7 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
     protected walletService: WalletService,
     protected paymentFacade: PaymentFacadeService,
     protected userService: UserService,
+    protected ensService: EnsService,
     protected ensMarketplaceService: EnsMarketplaceService,
     protected snackBar: MatSnackBar,
     protected store: Store<PaymentStateModel>,
@@ -266,6 +268,15 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
+
+  pretty(name: string) {
+    try {
+      const prettified = this.ensService.prettify(name);
+      return prettified;
+    } catch (e) {
+      return name;
+    }
   }
 
   goToEtherscan(address: string) {

@@ -39,8 +39,9 @@ export class ENSRegistrationEffects {
         ofType<ENSRegistrationEffectsInit>(InitEffectsENSRegistration),
         filter((r) => {
           if (
+            globalAny.canvasEffectsInitialised === undefined ||
             globalAny.canvasEffectsInitialised[InitEffectsENSRegistration] ===
-            true
+              true
           ) {
             return false;
           }

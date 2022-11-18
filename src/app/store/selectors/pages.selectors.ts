@@ -14,6 +14,11 @@ export const getCurrentNetworkState = createSelector(
   (state: PagesStateModel) => state.networkStatus
 );
 
+export const getCurrentPageMode = createSelector(
+  getPagesState,
+  (state: PagesStateModel) => state.pageMode
+);
+
 export const getCurrentPageVisibility = createSelector(
   getPagesState,
   (state: PagesStateModel) => state.pageVisibility

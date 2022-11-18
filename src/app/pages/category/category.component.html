@@ -1,25 +1,13 @@
-<div class="co-header-container cos-fluid-width cos-pos-absolute cos-padding-2">
-  <div
-    fxFlex="90"
-    fxLayout="row"
-    fxLayoutAlign="start center"
-    fxLayoutGap="30px"
-    class="co-profile-header cos-fluid-width"
-  >
-    <span fxLayoutAlign="center center" fxLayoutGap="10px" (click)="goToHome()">
-      <mat-icon class="cos-icon-can-activate" color="primary"
-        >arrow_back_ios</mat-icon
-      >
-      <a class="co-back-button">
-        {{ "HEADER.BACK_TO_HOME" | translate }}
-      </a>
-    </span>
-  </div>
+<div
+  class="co-header-container cos-pos-fixed cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right"
+>
   <app-main-header
+    #mainHeader
     [show]="{
       showBasket: true,
       showBookmark: true,
       showCanvas: true,
+      showSearch: true,
       showTranslation: true,
       showManagement: true
     }"
@@ -32,7 +20,8 @@
   fxLayoutAlign="center end"
 ></div>
 <div
-  class="co-back-to-top cos-pos-fixed cos-pos-bottom-reset cos-pos-right-reset cos-padding-3"
+  #backToTop
+  class="co-back-to-top cos-pos-fixed cos-pos-bottom-reset cos-pos-right-reset cos-padding-3 cos-soft-visibility-hidden"
 >
   <div
     (click)="backScrollContentToTop()"
@@ -45,6 +34,9 @@
   #scrollableContentContainer
   appGetScrollableXy
   (scrollPosition)="
+    !($event[1] > 300)
+      ? (backToTop.style.visibility = 'hidden')
+      : (backToTop.style.visibility = 'visible');
     $event[1] > 50
       ? (fadeTop.style.display = 'flex')
       : (fadeTop.style.display = 'none');
@@ -58,17 +50,20 @@
       ? lazyLoad()
       : null
   "
+  fxLayout="column"
+  fxLayoutAlign="start start"
   class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
 >
   <div
     fxLayout="row"
     fxLayoutAlign="center start"
-    class="co-profile-content-container cos-pos-absolute cos-fluid-width cos-fluid-height cos-bg-neutral"
+    class="co-profile-content-container cos-fluid-width"
   >
     <div
       fxFlex="100"
       fxLayout="column"
-      class="co-profile-content cos-padding-2"
+      class="co-profile-content"
+      [ngClass]="isDeviceMobile === true ? 'cos-padding-2' : ''"
     >
       <div
         fxFlex="50px"
@@ -134,7 +129,11 @@
             fxLayoutGap="10px"
             class="co-avatar-container"
           >
-            <div fxFlex fxLayout="row" class="co-avatar cos-fluid-width">
+            <div
+              fxFlex
+              fxLayout="row"
+              class="co-avatar cos-fluid-width cos-box-shadow"
+            >
               <app-preview-image
                 *ngIf="ethNameData === undefined"
                 (imageLoaded)="avatarResolved = true"
@@ -224,7 +223,7 @@
               class="co-info-container cos-body-2 cos-fluid-width"
             >
               <div
-                class="co-statistics-box cos-border cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
                 <div
                   fxLayout="column"
@@ -263,7 +262,7 @@
               </div>
 
               <div
-                class="co-statistics-box cos-border cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
                 <div
                   fxLayout="column"
@@ -323,7 +322,7 @@
               </div>
 
               <div
-                class="co-statistics-box cos-border cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
                 <div
                   *ngIf="categoryNormalisedMetadata === undefined"
@@ -355,7 +354,7 @@
               </div>
 
               <div
-                class="co-statistics-box cos-border cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
                 <div
                   *ngIf="categoryNormalisedMetadata === undefined"
@@ -387,7 +386,7 @@
               </div>
 
               <div
-                class="co-statistics-box cos-border cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
                 <div
                   *ngIf="categoryNormalisedMetadata === undefined"
@@ -418,9 +417,8 @@
                   {{ "LABELS.TOP_SALE" | translate }}
                 </div>
               </div>
-
               <div
-                class="co-statistics-box cos-border cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-1"
+                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
               >
                 <div
                   *ngIf="categoryNormalisedMetadata === undefined"
@@ -470,18 +468,17 @@
             </div>
           </div>
         </div>
-
         <div
           fxFlex
           fxLayout="column"
-          class="co-chart-container cos-border cos-bg-faded-darker-gray cos-border-radius-2 cos-fluid-width cos-disappear-on-mobile"
+          class="co-chart-container cos-box-shadow cos-bg-gray cos-border-radius-2 cos-fluid-width cos-disappear-on-mobile"
         >
           <div
             fxFlex="0 0 auto"
             id="co-chart-control"
             fxLayoutGap="10px"
             fxLayout="column"
-            class="cos-bg-neutral cos-border-radius-2 cos-margin-1 cos-no-margin-bottom cos-padding-1"
+            class="cos-bg-faded-darker-gray cos-border-radius-2 cos-margin-1 cos-no-margin-bottom cos-padding-1"
           >
             <div fxFlex class="cos-body-4">
               {{ "LABELS.SALES_ACTIVITY" | translate }}
@@ -541,7 +538,7 @@
               class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
             >
               <mat-icon>filter_alt</mat-icon>
-              <span>
+              <span class="cos-body-0">
                 <b> {{ "LABELS.FILTERS" | translate }} </b>
               </span>
             </div>
@@ -556,6 +553,35 @@
                 [formGroup]="filterForm"
                 class="cos-fluid-width cos-body-4 cos-gray-text"
               >
+                <ng-container
+                  *ngIf="
+                    categoryApiData !== undefined &&
+                    categoryApiData.emojis === true
+                  "
+                >
+                  <div class="co-form-label">Sub-categories</div>
+                  <mat-form-field class="co-main-search cos-body-0">
+                    <mat-select
+                      formControlName="subcategory"
+                      fxFlex
+                      class="cos-bg-gray cos-border-radius-2"
+                      (selectionChange)="resetLastDomainSearchResult()"
+                    >
+                      <mat-option [value]="''">
+                        {{ "BUTTON.NONE" | translate }}
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let s of subCategoryKeys"
+                        [value]="s"
+                        class="cos-capitalized-text"
+                      >
+                        <span class="cos-capitalized-text">
+                          {{ s }}
+                        </span>
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </ng-container>
                 <div class="co-form-label">
                   {{ "LABELS.CONTAINING_KEYWORDS" | translate }}
                 </div>
@@ -567,10 +593,28 @@
                     autocomplete="off"
                     maxlength="50"
                     formControlName="contains"
-                    (input)="doUpdateInterface()"
+                    (input)="doUpdateInterface(); resetLastDomainSearchResult()"
                   />
+                  <mat-icon
+                    *ngIf="
+                      categoryApiData !== undefined &&
+                      categoryApiData.emojis === true
+                    "
+                    class="cos-small-icon cos-icon-can-activate"
+                    (click)="toggleEmojiPicker(); $event.stopPropagation()"
+                    matSuffix
+                  >
+                    sentiment_satisfied
+                  </mat-icon>
+                  <emoji-mart
+                    id="emoji-mart"
+                    *ngIf="showEmojiPicker"
+                    (emojiSelect)="addEmojiToFilter($event)"
+                    (click)="$event.stopPropagation()"
+                    title="Select emoji..."
+                    class="emoji-mart"
+                  ></emoji-mart>
                 </mat-form-field>
-
                 <div class="co-form-label">
                   {{ "LABELS.REGISTRATION_DATE" | translate }}
                 </div>
@@ -583,6 +627,7 @@
                     maxlength="15"
                     formControlName="registration"
                     [matDatepicker]="registrationPicker"
+                    (change)="resetLastDomainSearchResult()"
                   />
                   <mat-icon
                     matSuffix
@@ -604,6 +649,7 @@
                     maxlength="15"
                     formControlName="expiration"
                     [matDatepicker]="expiredPicker"
+                    (change)="resetLastDomainSearchResult()"
                   />
                   <mat-icon
                     matSuffix
@@ -627,7 +673,8 @@
                   aria-label="units"
                   [value]="filterForm.controls.minLength.value"
                   (change)="
-                    filterForm.controls.minLength.setValue($event.value)
+                    filterForm.controls.minLength.setValue($event.value);
+                    resetLastDomainSearchResult()
                   "
                 ></mat-slider>
 
@@ -640,47 +687,106 @@
                   tickInterval="1"
                   step="1"
                   min="3"
-                  max="20"
+                  [max]="
+                    categoryApiData === undefined
+                      ? 100
+                      : categoryApiData.max_length
+                  "
                   aria-label="units"
                   [value]="filterForm.controls.maxLength.value"
                   (change)="
-                    filterForm.controls.maxLength.setValue($event.value)
+                    filterForm.controls.maxLength.setValue($event.value);
+                    resetLastDomainSearchResult()
                   "
                 ></mat-slider>
 
                 <div fxLayout="column" fxLayoutGap="10px">
-                  <div fxFlex>
+                  <div
+                    fxFlex
+                    *ngIf="
+                      categoryApiData !== undefined &&
+                      categoryApiData.alphabetical === true
+                    "
+                  >
                     <mat-slide-toggle
                       [checked]="typesFilter.alphabet"
                       (change)="
                         typesFilter.alphabet = $event.checked;
-                        typesFilter.emoji = false
+                        typesFilter.emoji = false;
+                        resetLastDomainSearchResult()
                       "
                     >
                       {{ "LABELS.CONTAIN_ALPHABET" | translate }}
                     </mat-slide-toggle>
                   </div>
-                  <div fxFlex>
+                  <div
+                    fxFlex
+                    *ngIf="
+                      categoryApiData !== undefined &&
+                      categoryApiData.numeric === true
+                    "
+                  >
                     <mat-slide-toggle
                       [checked]="typesFilter.numbers"
                       (change)="
                         typesFilter.numbers = $event.checked;
-                        typesFilter.emoji = false
+                        typesFilter.emoji = false;
+                        resetLastDomainSearchResult()
                       "
                     >
                       {{ "LABELS.CONTAIN_NUMBERS" | translate }}
                     </mat-slide-toggle>
                   </div>
-                  <div fxFlex>
+                  <div
+                    fxFlex
+                    *ngIf="
+                      categoryApiData !== undefined &&
+                      categoryApiData.emojis === true
+                    "
+                  >
                     <mat-slide-toggle
                       [checked]="typesFilter.emoji"
                       (change)="
                         typesFilter.emoji = $event.checked;
                         typesFilter.numbers = false;
-                        typesFilter.alphabet = false
+                        typesFilter.alphabet = false;
+                        resetLastDomainSearchResult()
                       "
                     >
                       {{ "LABELS.CONTAIN_EMOJI" | translate }}
+                    </mat-slide-toggle>
+                  </div>
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.palindrome"
+                      (change)="
+                        typesFilter.palindrome = $event.checked;
+                        resetLastDomainSearchResult()
+                      "
+                    >
+                      Palindromes
+                    </mat-slide-toggle>
+                  </div>
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.prepunk"
+                      (change)="
+                        typesFilter.prepunk = $event.checked;
+                        resetLastDomainSearchResult()
+                      "
+                    >
+                      Pre-punk
+                    </mat-slide-toggle>
+                  </div>
+                  <div fxFlex>
+                    <mat-slide-toggle
+                      [checked]="typesFilter.repeating"
+                      (change)="
+                        typesFilter.repeating = $event.checked;
+                        resetLastDomainSearchResult()
+                      "
+                    >
+                      Repeating
                     </mat-slide-toggle>
                   </div>
                 </div>
@@ -714,7 +820,7 @@
               [ngClass]="hasDomainsListLoaded === false ? 'cos-disabled' : ''"
             >
               <div
-                class="co-list-picker cos-pointer cos-center-text"
+                class="co-list-picker cos-pointer cos-center-text cos-box-shadow"
                 [ngClass]="
                   showSalesActivity === true || hasDomainsListLoaded === false
                     ? { 'cos-bg-gray': true, 'cos-gray-text': true }
@@ -725,7 +831,7 @@
                 <b> {{ "LABELS.DOMAINS" | translate }} </b>
               </div>
               <div
-                class="co-list-picker cos-pointer cos-center-text"
+                class="co-list-picker cos-pointer cos-center-text cos-box-shadow"
                 [ngClass]="
                   showSalesActivity === false || hasDomainsListLoaded === false
                     ? { 'cos-bg-gray': true, 'cos-gray-text': true }
@@ -733,7 +839,7 @@
                 "
                 (click)="doShowSalesActivity(true)"
               >
-                Activity
+                {{ "LABELS.ACTIVITY" | translate }}
               </div>
             </div>
             <div
@@ -824,7 +930,8 @@
             <ng-container
               *ngIf="
                 hasDomainsListLoaded === false &&
-                displayMode === displayModes.CHUNK
+                displayMode === displayModes.CHUNK &&
+                lastDomainSearchResult === undefined
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderTemplate">
@@ -833,7 +940,8 @@
             <ng-container
               *ngIf="
                 hasDomainsListLoaded === false &&
-                displayMode === displayModes.LINEAR
+                displayMode === displayModes.LINEAR &&
+                lastDomainSearchResult === undefined
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderFullTemplate">
@@ -842,7 +950,8 @@
             <ng-container
               *ngIf="
                 hasDomainsListLoaded === false &&
-                displayMode === displayModes.AVATAR
+                displayMode === displayModes.AVATAR &&
+                lastDomainSearchResult === undefined
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderAvatarTemplate">
@@ -851,12 +960,12 @@
             <div
               *ngIf="
                 hasDomainsListLoaded === true &&
-                !(filterSearchDomains(searchKeyword).length > 0)
+                !(filterSearchDomains().length > 0)
               "
               fxFlex
               fxLayout="column"
               fxLayoutAlign="center center"
-              class="cos-fluid-width cos-fluid-height"
+              class="cos-fluid-width cos-fluid-height cos-bg-gray cos-border-radius-2"
             >
               <div fxFlex="0 0 auto">
                 <app-custom-spinner
@@ -900,7 +1009,10 @@
                 hasDomainsListLoaded === true &&
                 categoryDomains !== undefined &&
                 domainsListResolving === true &&
-                displayMode === displayModes.CHUNK
+                displayMode === displayModes.CHUNK &&
+                ((lastDomainSearchResult !== undefined &&
+                  lastDomainSearchResult.length > 0) ||
+                  lastDomainSearchResult === undefined)
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderTemplate">
@@ -911,7 +1023,10 @@
                 hasDomainsListLoaded === true &&
                 categoryDomains !== undefined &&
                 domainsListResolving === true &&
-                displayMode === displayModes.AVATAR
+                displayMode === displayModes.AVATAR &&
+                ((lastDomainSearchResult !== undefined &&
+                  lastDomainSearchResult.length > 0) ||
+                  lastDomainSearchResult === undefined)
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderAvatarTemplate">
@@ -922,7 +1037,10 @@
                 hasDomainsListLoaded === true &&
                 categoryDomains !== undefined &&
                 domainsListResolving === true &&
-                displayMode === displayModes.LINEAR
+                displayMode === displayModes.LINEAR &&
+                ((lastDomainSearchResult !== undefined &&
+                  lastDomainSearchResult.length > 0) ||
+                  lastDomainSearchResult === undefined)
               "
             >
               <ng-container *ngTemplateOutlet="placeHolderFullTemplate">
@@ -933,49 +1051,76 @@
       </div>
     </div>
   </div>
+  <app-footer></app-footer>
 </div>
 
 <ng-template #avatarDomainTemplate>
-  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
+  <ng-container *ngFor="let d of filterSearchDomains()">
     <div
       fxLayout="column"
-      class="co-item-with-avatar cos-pointer cos-border cos-bg-gray cos-border-radius-2 cos-overflow-hidden"
+      class="co-item-with-avatar cos-pointer cos-bg-light-gray cos-border-radius-2 cos-overflow-hidden"
     >
-      <app-preview-image
-        [preview]="'assets/img-blank.png'"
-        [error]="'assets/profile-blank.svg'"
-        [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
-        [style.height]="'auto'"
-        class="cos-fluid-width cos-pointer"
-        [enableBorderRadius]="false"
-        (click)="goToDomain(d.labelName)"
-      ></app-preview-image>
+      <div
+        class="cos-pos-absolute co-bookmark cos-padding-1"
+        [style.width]="guideAvatarSize + 5 + 'px'"
+        fxLayoutAlign="end end"
+      >
+        <mat-icon
+          (click)="toggleBookmark(d)"
+          [ngClass]="
+            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
+              ? 'checked'
+              : ''
+          "
+          >{{
+            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
+              ? "bookmark_added"
+              : "bookmark_add"
+          }}</mat-icon
+        >
+      </div>
+      <div
+        fxLayout="column"
+        class="co-avatar-frame cos-fluid-width cos-overflow-hidden"
+        [style.height]="guideAvatarSize + 'px'"
+      >
+        <app-preview-image
+          [preview]="'assets/img-blank.png'"
+          [error]="'assets/profile-blank.svg'"
+          [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
+          [style.height]="'auto'"
+          class="co-avatar cos-fluid-width cos-pointer"
+          (click)="goToDomain(d.labelName)"
+          [enableBorderRadius]="false"
+        ></app-preview-image>
+      </div>
       <mat-progress-bar
         *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
         class="co-bulk-search-item-expiration-bar co-bar-for-avatar cos-hazard-progress-bar cos-no-border-radius"
         mode="determinate"
         [value]="d.gracePeriodPercent"
       ></mat-progress-bar>
-      <div class="cos-padding-0" fxLayoutAlign="start center">
+      <div
+        class="co-avatar-item-details cos-padding-1"
+        fxLayoutAlign="start center"
+      >
         <div
           fxFlex
           fxLayout="column"
           fxLayoutGap="5px"
           fxLayoutAlign="center start"
-          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right"
         >
           <div
             fxFlex="0 0 auto"
-            class="cos-body-3"
+            class="cos-body-0"
             (click)="goToDomain(d.labelName)"
           >
-            <a (click)="goToDomain(d.labelName)">
-              <b> {{ pretty(d.labelName) }}.eth </b>
-            </a>
+            <b> {{ pretty(d.labelName) }}.eth </b>
           </div>
-          <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
-            <div class="cos-body-5 cos-gray-text">Exp:</div>
-            <div class="cos-body-5">{{ d.expiry | timeAgo }}</div>
+          <div fxFlex fxLayout="row" class="cos-body-3 cos-gray-text">
+            <div fxFlex="0 0 auto">Exp.</div>
+            &nbsp;
+            <div>{{ d.expiry | timeAgo }}</div>
           </div>
           <div fxFlex></div>
         </div>
@@ -985,24 +1130,20 @@
           class="cos-small-icon cos-pointer"
           >warning</mat-icon
         >
-        <mat-icon
-          fxFlex="24px"
-          (click)="toggleBookmark(d)"
-          class="cos-icon-can-activate"
-          [ngClass]="
-            bookmarkService.isDomainBookmarked(bookmarks, d.labelName)
-              ? 'mat-primary'
-              : ''
-          "
-          >bookmark_add</mat-icon
-        >
+      </div>
+      <div
+        class="co-buy-now cos-padding-0 cos-bg-main"
+        fxLayoutAlign="center center"
+        (click)="openPurchasePanel(d)"
+      >
+        <b> {{ "BUTTON.BUY_NOW" | translate }} </b>
       </div>
     </div>
   </ng-container>
 </ng-template>
 
 <ng-template #linearDomainTemplate>
-  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
+  <ng-container *ngFor="let d of filterSearchDomains()">
     <div
       class="co-bulk-search-item-container co-linear-item cos-no-margin-right cos-pointer"
       (click)="goToDomain(pretty(d.labelName))"
@@ -1072,7 +1213,7 @@
 </ng-template>
 
 <ng-template #chunkDomainTemplate>
-  <ng-container *ngFor="let d of filterSearchDomains(searchKeyword)">
+  <ng-container *ngFor="let d of filterSearchDomains()">
     <div class="co-bulk-search-item-container">
       <mat-progress-bar
         *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
@@ -1102,7 +1243,7 @@
             </a>
           </div>
           <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
-            <div class="cos-body-5 cos-gray-text">Reg:</div>
+            <div class="cos-body-5 cos-gray-text">Reg.</div>
             <div class="cos-body-5">{{ d.registrationDate | timeAgo }}</div>
           </div>
           <div fxFlex></div>
@@ -1118,7 +1259,7 @@
           (click)="toggleBookmark(d)"
           class="cos-icon-can-activate"
           [ngClass]="
-            bookmarkService.isDomainBookmarked(bookmarks, d.labelName)
+            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
               ? 'mat-primary'
               : ''
           "
@@ -1150,7 +1291,7 @@
             fxFlex="0 0 auto"
             class="cos-bg-main cos-border-radius-1 cos-padding-2 cos-no-padding-top cos-no-padding-bottom cos-body-4 cos-disappear-on-mobile"
           >
-            Sale
+            {{ "LABELS.SALE" | translate }}
           </div>
           <div fxFlex>
             <a (click)="goToDomain(s.domain)">
@@ -1170,7 +1311,9 @@
           fxLayoutAlign="start start"
           class="cos-disappear-on-mobile"
         >
-          <div class="cos-gray-text">Buyer:&nbsp;</div>
+          <div class="cos-gray-text">
+            {{ "LABELS.BUYER" | translate }}:&nbsp;
+          </div>
           <div class="cos-wallet-address-cut cos-fluid-width-half">
             <a
               (click)="goToEtherscanAddress(s.buyer)"
@@ -1182,7 +1325,9 @@
           </div>
         </div>
         <div fxFlex="0 0 auto" fxLayout="column" fxLayoutAlign="start start">
-          <div class="cos-gray-text cos-disappear-on-mobile">Price:&nbsp;</div>
+          <div class="cos-gray-text cos-disappear-on-mobile">
+            {{ "LABELS.PRICE" | translate }}:&nbsp;
+          </div>
           <div class="cos-disappear-on-mobile">
             <b> {{ priceToFixedString(s.price) }} ETH </b>
           </div>
@@ -1241,12 +1386,7 @@
   <ng-container *ngFor="let d of placeholders">
     <div
       class="co-bulk-search-item-container cos-placeholder cos-bulk-sarch-item-for-avatar"
-      [style.height]="
-        isDeviceMobile === true
-          ? canvasService.getWidthOfDiv('co-avatar-item-size-guide-mobile') +
-            'px'
-          : canvasService.getWidthOfDiv('co-avatar-item-size-guide') - 30 + 'px'
-      "
+      [style.height]="guideAvatarSize + 125 + 'px'"
     >
       <div
         fxLayoutGap="15px"

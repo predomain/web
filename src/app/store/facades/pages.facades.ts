@@ -8,6 +8,7 @@ import {
   getCriticalErrorState,
   getCurrentErrorCode,
   getCurrentPageLoadState,
+  getCurrentPageMode,
   getCurrentPagesState,
   getCurrentPageVisibility,
   getIpfsError,
@@ -27,9 +28,11 @@ import {
   PagesSetCriticalError,
   PagesSetRPCProvider,
   PagesEffectsInit,
+  PagesSetMode,
 } from '../actions';
 import {
   GotoPageRouteActionPayloadModel,
+  PageModesEnum,
   PagesEnum,
   PagesStateModel,
 } from '../../models/states/pages-interfaces';
@@ -44,6 +47,7 @@ import { GenericDialogComponent } from 'src/app/widgets/generic-dialog';
   providedIn: 'root',
 })
 export class PagesFacadeService {
+  pageMode$: Observable<PageModesEnum>;
   pagesState$: Observable<PagesStateModel>;
   pagesIpfsState$: Observable<IpfsStatesEnum>;
   pagesIpfsError$: Observable<IpfsErrorsEnum>;
@@ -60,6 +64,7 @@ export class PagesFacadeService {
     public dialog: MatDialog,
     public ngZone: NgZone
   ) {
+    this.pageMode$ = this.store.pipe(select(getCurrentPageMode));
     this.pagesState$ = this.store.pipe(select(getCurrentPagesState));
     this.pageErrorCode$ = this.store.pipe(select(getCurrentErrorCode));
     this.pagesIpfsState$ = this.store.pipe(select(getIpfsState));
@@ -86,6 +91,10 @@ export class PagesFacadeService {
       },
       panelClass: 'cos-generic-dialog',
     });
+  }
+
+  setPageMode(pageMode: PageModesEnum) {
+    this.store.dispatch(new PagesSetMode(pageMode));
   }
 
   setPageCriticalError(errorOccured: boolean, redirect = true) {

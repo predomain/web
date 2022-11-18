@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { UserModel } from 'src/app/models/states/user-interfaces';
 import { EnsService } from 'src/app/services/ens';
 import {
@@ -19,15 +19,13 @@ import {
 } from 'src/app/store/facades';
 import { MainHeaderComponent } from 'src/app/widgets/main-header';
 import { MiscUtilsService } from 'src/app/services';
-import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
+import { CanvasServicesService } from '../../services/canvas-services/canvas-services.service';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { generalConfigurations } from 'src/app/configurations';
 import { DomainTypeEnum } from 'src/app/models/domains';
-import { XMLParser } from 'fast-xml-parser';
 import { CategoriesDataService } from 'src/app/services/categories-data';
 import { CategoriesRootModel } from 'src/app/models/category';
-import { PagesEnum } from 'src/app/models/states/pages-interfaces';
 import { PoapService } from 'src/app/services/poap';
 
 const globalAny: any = global;
@@ -95,7 +93,6 @@ export class HomeComponent implements OnDestroy, OnInit {
       suffixSearch: new FormControl(''),
     });
     this.subscribeToCategoriesRootVolume();
-    this.getBlogsList();
   }
 
   ngOnInit(): void {
@@ -160,36 +157,6 @@ export class HomeComponent implements OnDestroy, OnInit {
 
   selectDomainSearchType(domainType: DomainTypeEnum) {
     this.mainHeader.bulksearch.domainTypeSelected = domainType;
-  }
-
-  getBlogsList() {
-    if (this.getBlogsListSubscription) {
-      this.getBlogsListSubscription.unsubscribe();
-      this.getBlogsListSubscription = undefined;
-    }
-    const headers = {
-      Accept: 'application/xhtml+xml,application/xml',
-    };
-    const requestOptions = {
-      responseType: 'text',
-      headers: new HttpHeaders(headers),
-    };
-    this.getBlogsListSubscription = this.httpClient
-      .get(generalConfigurations.frontpageBlogsFeed, requestOptions as any)
-      .pipe(
-        map((r) => {
-          const rssParsed = new XMLParser().parse(r as any);
-          this.blogs = rssParsed.rss.channel.item.slice(
-            0,
-            generalConfigurations.maxBlogsOnHome
-          );
-        }),
-        catchError((e) => {
-          this.blogs = false;
-          return of(false);
-        })
-      )
-      .subscribe();
   }
 
   priceToFixedString(price: string, decimals: number = 3) {

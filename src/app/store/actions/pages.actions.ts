@@ -4,6 +4,7 @@ import { IpfsStatesEnum } from 'src/app/models/ipfs';
 import { RPCProviderModel } from 'src/app/models/rpc/rpc-provider.model';
 import {
   GotoPageRouteActionPayloadModel,
+  PageModesEnum,
   PagesStateModel,
 } from '../../models/states/pages-interfaces';
 
@@ -12,6 +13,7 @@ export const ShowLoadingProgressBarOnLoad = '[PagesState] Spinner dialog set.';
 export const HideLoadingProgressBarOnLoadFinished =
   '[PagesState] Spinner dialog unset.';
 export const SetPagesCriticalError = '[PagesState] critical error set.';
+export const SetPagesMode = '[PagesState] page mode set.';
 export const SetPagesPageSlide = '[PagesState] New page slide set.';
 export const SetPagesState = '[PagesState] New state set.';
 export const SetPageIpfsErrors = '[PagesState] ipfs error state set.';
@@ -33,6 +35,11 @@ export class PagesEffectsInit implements Action {
 export class PagesSetRPCProvider implements Action {
   readonly type = SetRPCProvider;
   constructor(public payload: RPCProviderModel) {}
+}
+
+export class PagesSetMode implements Action {
+  readonly type = SetPagesMode;
+  constructor(public payload: PageModesEnum) {}
 }
 
 export class PagesSetVisibility implements Action {
@@ -107,6 +114,7 @@ export class PageGotoRoute implements Action {
 
 export type PagesActions =
   | PagesEffectsInit
+  | PagesSetMode
   | PagesSetRPCProvider
   | PagesSetChainCode
   | PagesSetIpfsError

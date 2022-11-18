@@ -1,0 +1,105 @@
+<div mat-dialog-content>
+  <div
+    class="cos-margin-1 cos-no-margin-top cos-no-margin-left cos-no-margin-right cos-fluid-width"
+    fxLayoutAlign="start start"
+    fxLayout="column"
+    fxLayoutGap="10px"
+  >
+    <div
+      fxFlex
+      fxLayoutAlign="center center"
+      class="cos-fluid-width cos-padding-1 cos-no-padding-left cos-no-padding-right cos-no-padding-top"
+    >
+      <div fxFlex class="cos-body-0">
+        <b> {{ "LABELS.PURCHASE_DOMAINS" | translate }} </b>
+      </div>
+      <div fxFlex="0 0 auto" class="cos-right-text">
+        <a (click)="closeDialog()" class="cos-body-4">
+          {{ "BUTTON.CLOSE" | translate }}
+        </a>
+      </div>
+    </div>
+    <div class="cos-fluid-width">
+      <mat-accordion class="cos-fluid-width" #stepper>
+        <mat-expansion-panel [expanded]="true" hideToggle="true">
+          <div fxLayout="column">
+            <div
+              fxFlex
+              fxLayout="row"
+              fxLayoutGap="20px"
+              class="cos-padding-3 cos-no-padding-left cos-no-padding-right cos-no-padding-bottom"
+            >
+              <app-preview-image
+                [preview]="'assets/img-blank.png'"
+                [error]="'assets/profile-blank.svg'"
+                [style.width]="'100px'"
+                [src]="ensMetadataAPI + domain.labelHash + '/image'"
+                class="co-avatar cos-pointer"
+              ></app-preview-image>
+              <div
+                fxFlex
+                fxLayout="column"
+                fxLayoutGap="10px"
+                class="cos-padding-0 cos-no-padding-left"
+              >
+                <div fxFlex="0 0 auto" class="cos-body-0">
+                  <a
+                    href="https://predomain.eth.limo/#/domain/{{
+                      domain.labelName
+                    }}"
+                    target="_blank"
+                  >
+                    {{ pretty(domain.labelName) }}.eth </a
+                  ><mat-icon class="cos-small-icon">open_in_new</mat-icon>
+                </div>
+                <div fxFlex class="cos-body-4">
+                  {{
+                    "LABELS.THIS_DOMAINS_IS_AVAILABLE_IN_MARKETPLACE"
+                      | translate
+                  }}
+                </div>
+              </div>
+            </div>
+            <mat-list class="cos-content-list cos-no-padding-top">
+              <mat-list-item>
+                <div
+                  fxLayout="column"
+                  fxLayoutGap="10px"
+                  class="cos-fluid-width"
+                >
+                  <button
+                    mat-button
+                    class="cos-button-paging cos-height-auto"
+                    *ngFor="let m of marketplacesList"
+                    (click)="goToMarketplace(m)"
+                  >
+                    <div
+                      fxFlex
+                      fxLayoutAlign="start center"
+                      fxLayoutGap="20px"
+                      class="cos-padding-1 cos-no-padding-left cos-no-padding-right"
+                    >
+                      <span fxFlex="0 0 auto" class="cos-left-text"
+                        ><img
+                          class="co-market-icon"
+                          src="assets/icons/marketplaces/{{ m.icon }}"
+                        />
+                      </span>
+                      <div
+                        fxFlex
+                        class="cos-left-text"
+                        fxLayoutAlign="start center"
+                      >
+                        {{ "LABELS.BUY_ON" | translate }} {{ m.name }}
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>

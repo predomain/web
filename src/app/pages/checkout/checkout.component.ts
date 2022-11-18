@@ -52,7 +52,7 @@ import { SpinnerModesEnum } from 'src/app/models/spinner/spinner-modes.enum';
 import { BookmarksServiceService } from 'src/app/services/bookmarks/bookmarks-service.service';
 import { RegistrationServiceService } from 'src/app/services/registration/registration-service.service';
 import { DomainMetadataModel } from 'src/app/models/domains';
-import { CanvasServicesService } from '../canvas/canvas-services/canvas-services.service';
+import { CanvasServicesService } from '../../services/canvas-services/canvas-services.service';
 import { EnsService } from 'src/app/services/ens';
 import { generalConfigurations } from 'src/app/configurations';
 import { select, Store } from '@ngrx/store';
@@ -639,6 +639,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.performBulkSearchSubscription = undefined;
     }
     let toFind = entries;
+    const now = parseInt((new Date().getTime() / 1000).toString());
     this.performBulkSearchSubscription = this.ensService
       .findDomains(toFind)
       .subscribe((r) => {
@@ -649,20 +650,30 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               found = d;
             }
           });
+          const isDomainPastGracePeriod =
+            found === undefined
+              ? false
+              : now > parseInt(found.expiryDate) + 7889400;
           const fData = {
             labelName: f.toLowerCase(),
-            isNotAvailable: found === undefined ? false : true,
+            isNotAvailable:
+              isDomainPastGracePeriod === true || found === undefined
+                ? false
+                : true,
           } as DomainMetadataModel;
           if (found === undefined) {
             this.bulkSearchAvailableCount++;
           }
           if (found !== undefined) {
-            fData.expiry = found.expiryDate;
+            fData.expiry =
+              isDomainPastGracePeriod === true ? null : found.expiryDate;
             const gPeriod = this.ensService.calculateGracePeriodPercentage(
               parseInt(fData.expiry, 10)
             );
             fData.gracePeriodPercent =
-              gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod);
+              gPeriod < -100 || isDomainPastGracePeriod === true
+                ? 0
+                : 100 - Math.abs(gPeriod);
           }
           this.bulkSearchResults.push(fData);
         }

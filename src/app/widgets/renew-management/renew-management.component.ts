@@ -180,12 +180,7 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
           if (r === false || r === null) {
             throw 1;
           }
-          const priceRanges = (r as string[]).map((p) => {
-            return ethers.BigNumber.from(p)
-              .mul(generalConfigurations.maxTotalCostBuffer)
-              .div(100)
-              .toHexString();
-          });
+          const priceRanges = r as string[];
           finalTotal = domainNames
             .map((d) => {
               const len = this.ensService.getNameLength(d);

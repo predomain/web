@@ -487,6 +487,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       this.performBulkSearchSubscription.unsubscribe();
       this.performBulkSearchSubscription = undefined;
     }
+    const now = parseInt((new Date().getTime() / 1000).toString());
     let toFind =
       entries !== null ? entries : this.getBulkSearchEntriesFromForm();
     this.performBulkSearchSubscription = (
@@ -511,21 +512,32 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
               }
             });
           }
+          const isDomainPastGracePeriod =
+            found === undefined
+              ? false
+              : now > parseInt(found.expiryDate) + 7889400;
           const fData = {
             id: this.skipNormalisation === true ? f : f.toLowerCase(),
             labelName: this.skipNormalisation === true ? f : f.toLowerCase(),
-            isNotAvailable: found === undefined ? false : true,
+            domainType: this.domainTypeSelected,
+            isNotAvailable:
+              isDomainPastGracePeriod === true || found === undefined
+                ? false
+                : true,
           } as DomainMetadataModel;
           if (found === undefined) {
             this.bulkSearchAvailableCount++;
           }
           if (found !== undefined) {
-            fData.expiry = found.expiryDate;
+            fData.expiry =
+              isDomainPastGracePeriod === true ? null : found.expiryDate;
             const gPeriod = this.ensService.calculateGracePeriodPercentage(
               parseInt(fData.expiry, 10)
             );
             fData.gracePeriodPercent =
-              gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod);
+              gPeriod < -100 || isDomainPastGracePeriod === true
+                ? 0
+                : 100 - Math.abs(gPeriod);
           }
           this.bulkSearchResults.push(fData);
         }
