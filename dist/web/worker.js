@@ -1,4 +1,4 @@
-const cacheVersion = "v1.1";
+const cacheVersion = "v1.2";
 
 const addResourcesToCache = async (resources) => {
   const cache = await caches.open(cacheVersion);
@@ -62,20 +62,20 @@ self.addEventListener("install", (event) => {
       "650.875c5af0d2b3883e.js.map",
       "834.139c4b5f1a511c55.js",
       "834.139c4b5f1a511c55.js.map",
-      "9.24d25521597ec212.js",
-      "9.24d25521597ec212.js.map",
-      "main.9e8dc5d004753e45.js",
-      "main.9e8dc5d004753e45.js.map",
+      "9.7968f9883bd85888.js",
+      "9.7968f9883bd85888.js.map",
+      "main.ebab8273bde66df7.js",
+      "main.ebab8273bde66df7.js.map",
       "os.7777133e901cd5ed.woff2",
       "osbold.916d3686010a8de2.woff2",
       "polyfills.b99237f0facb2d76.js",
       "polyfills.b99237f0facb2d76.js.map",
-      "runtime.acc8f980474ae6ab.js",
-      "runtime.acc8f980474ae6ab.js.map",
+      "runtime.3506b0e5483ae26b.js",
+      "runtime.3506b0e5483ae26b.js.map",
       "styles.b2cc34656e534133.css",
       "styles.b2cc34656e534133.css.map",
-      "vendor.6fab96cae04b4e7c.js",
-      "vendor.6fab96cae04b4e7c.js.map",
+      "vendor.89e138274ba0e9c9.js",
+      "vendor.89e138274ba0e9c9.js.map",
 
       /* CORE SCRIPTS */
       "main.js",
