@@ -79,6 +79,9 @@ export class UserSessionService {
   }
 
   createJSONFrontProvider(chain: number, url: string) {
+    if (url.indexOf('http') <= -1) {
+      return new providers.IpcProvider(url, chain);
+    }
     return new providers.JsonRpcProvider(url, chain);
   }
 }
