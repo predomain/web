@@ -36,13 +36,73 @@
         </mat-list-item>
         <mat-list-item *ngIf="customRPCSelectionEnabled === true">
           <div fxLayout="column" fxLayoutGap="20px" class="cos-fluid-width">
-            <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
-              <span fxFlex="0 0 auto">
+            <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
+              <div fxFlex="0 0 auto">
                 {{ "HEADER.CUSTOM_RPC" | translate }}
-              </span>
+              </div>
+
+              <div
+                fxFlex
+                fxLayoutAlign="end end"
+                class="cos-right-text cos-body-5"
+                [matMenuTriggerFor]="rpcTypeMenu"
+              >
+                <a
+                  *ngIf="
+                    settingsForm.controls.providerSelected.value ===
+                    validRpcProviders.DEFAULT
+                  "
+                  class="cos-main-text"
+                >
+                  {{ "BUTTON.DEFAULT" | translate }}
+                </a>
+                <a
+                  *ngIf="
+                    settingsForm.controls.providerSelected.value ===
+                    validRpcProviders.CUSTOM
+                  "
+                  class="cos-main-text"
+                >
+                  {{ "BUTTON.CUSTOM" | translate }}
+                </a>
+                <a
+                  *ngIf="
+                    settingsForm.controls.providerSelected.value ===
+                    validRpcProviders.INFURA
+                  "
+                  class="cos-main-text"
+                >
+                  Infura
+                </a>
+                <a
+                  *ngIf="
+                    settingsForm.controls.providerSelected.value ===
+                    validRpcProviders.ALCHEMY
+                  "
+                  class="cos-main-text"
+                >
+                  Alchemy
+                </a>
+              </div>
+              <div
+                fxFlex="0 0 auto"
+                fxLayoutAlign="center center"
+                class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
+              >
+                <img
+                  class="mat-menu-submenu-icon-custom active"
+                  src="./assets/menu-arrow-icon.svg"
+                />
+              </div>
             </div>
             <form fxFlex [formGroup]="settingsForm">
               <mat-form-field
+                [ngClass]="
+                  settingsForm.controls.providerSelected.value ===
+                  validRpcProviders.DEFAULT
+                    ? 'cos-disabled'
+                    : ''
+                "
                 class="cos-fluid-width cos-body-0 cos-input-field-no-label cos-gray-placeholder"
               >
                 <input
@@ -54,45 +114,7 @@
                   placeholder="Enter RPC url..."
                   formControlName="rpc"
                 />
-                <div matSuffix>
-                  <div
-                    class="co-rpc-select cos-right-text cos-body-5"
-                    [matMenuTriggerFor]="rpcTypeMenu"
-                  >
-                    <a
-                      *ngIf="
-                        settingsForm.controls.providerSelected.value ===
-                        validRpcProviders.DEFAULT
-                      "
-                    >
-                      {{ "BUTTON.DEFAULT" | translate }}
-                    </a>
-                    <a
-                      *ngIf="
-                        settingsForm.controls.providerSelected.value ===
-                        validRpcProviders.CUSTOM
-                      "
-                    >
-                      {{ "BUTTON.CUSTOM" | translate }}
-                    </a>
-                    <a
-                      *ngIf="
-                        settingsForm.controls.providerSelected.value ===
-                        validRpcProviders.INFURA
-                      "
-                    >
-                      Infura
-                    </a>
-                    <a
-                      *ngIf="
-                        settingsForm.controls.providerSelected.value ===
-                        validRpcProviders.ALCHEMY
-                      "
-                    >
-                      Alchemy
-                    </a>
-                  </div>
-                </div>
+                <div matSuffix></div>
               </mat-form-field>
               <div
                 *ngIf="
