@@ -1,4 +1,4 @@
-const cacheVersion = "v1.3";
+const cacheVersion = "v1.4";
 
 const addResourcesToCache = async (resources) => {
   const cache = await caches.open(cacheVersion);
@@ -76,13 +76,6 @@ self.addEventListener("install", (event) => {
       "styles.b2cc34656e534133.css.map",
       "vendor.89e138274ba0e9c9.js",
       "vendor.89e138274ba0e9c9.js.map",
-
-      /* CORE SCRIPTS */
-      "main.js",
-      "runtime.js",
-      "polyfills.js",
-      "styles.js",
-      "styles.css",
 
       /* JS */
       "assets/js/apng-canvas.min.js",
