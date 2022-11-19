@@ -316,7 +316,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
               if (d === false || d === null || d === undefined) {
                 return of(false);
               }
-              console.log(d);
               if (d.registrations.length <= 0) {
                 return of([]);
               }
