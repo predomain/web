@@ -1,4 +1,4 @@
-const cacheVersion = "v1.6";
+const cacheVersion = "v2.0";
 const cachableItems = [
   ".js",
   ".js.map",
@@ -19,9 +19,6 @@ const putInCache = async (request, response) => {
 
 const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
   const responseFromCache = await caches.match(request);
-  caches.open(cacheVersion).then((cache) => {
-    return cache.delete("/");
-  });
   if (responseFromCache) {
     return responseFromCache;
   }
