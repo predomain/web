@@ -79,7 +79,6 @@ export class PagesFacadeService {
   }
 
   showLoadingProgressBar() {
-    document.getElementById('app-splash-container').style.display = 'flex';
     this.store.dispatch(new PagesShowLoadingProgressBarOnLoad());
   }
 
@@ -114,7 +113,6 @@ export class PagesFacadeService {
   }
 
   hideLoadingProgressBar() {
-    document.getElementById('app-splash-container').style.display = 'none';
     this.store.dispatch(new PagesHideLoadingProgressBarOnLoadFinished());
   }
 
