@@ -1,4 +1,16 @@
-const cacheVersion = "v1.4";
+const cacheVersion = "v1.6";
+const cachableItems = [
+  ".js",
+  ".js.map",
+  ".png",
+  ".7z",
+  ".jpg",
+  ".json",
+  ".css",
+  ".woff2",
+  ".scss",
+  ".svg",
+];
 
 const addResourcesToCache = async (resources) => {
   const cache = await caches.open(cacheVersion);
@@ -13,15 +25,22 @@ const putInCache = async (request, response) => {
 const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
   const responseFromCache = await caches.match(request);
   if (responseFromCache) {
+    console.log("Found cache... ", request.url);
     return responseFromCache;
   }
   const preloadResponse = await preloadResponsePromise;
   if (preloadResponse) {
+    console.log("No cache found... ", request.url);
     putInCache(request, preloadResponse.clone());
     return preloadResponse;
   }
   try {
+    console.log("No preload, fetch raw data... ", request.url);
+    const regex = new RegExp(cachableItems.join("|"));
     const responseFromNetwork = await fetch(request);
+    if (request.url.match(regex) !== null) {
+      putInCache(request, responseFromNetwork.clone());
+    }
     return responseFromNetwork;
   } catch (error) {
     const fallbackResponse = await caches.match(fallbackUrl);
@@ -43,22 +62,6 @@ const enableNavigationPreload = async () => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(enableNavigationPreload());
-});
-
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    addResourcesToCache([
-      /* ADD ADDITIONAL COMPLILED SCRIPTS HERE ON BUILD */
-
-      /* JS */
-      "assets/js/apng-canvas.min.js",
-      "assets/js/trezor-connect.js",
-      "assets/js/libarchive/worker-bundle.js",
-      "assets/js/libarchive/wasm-gen/libarchive.js",
-      "assets/js/libarchive/wasm-gen/libarchive.wasm",
-      "assets/categories/categories.7z",
-    ])
-  );
 });
 
 self.addEventListener("fetch", (event) => {
