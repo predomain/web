@@ -22,7 +22,6 @@ import { MiscUtilsService, WalletService } from 'src/app/services';
 import { EnsService } from 'src/app/services/ens';
 import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
-import * as contentHasher from 'content-hash';
 
 const globalAny: any = global;
 const storeFrontHash = 'storefront.predomain.eth';
@@ -165,7 +164,7 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
           const hash = r as string;
           return this.ensMarketplaceService.setContentHash(
             nameId,
-            '0x' + contentHasher.fromIpfs(hash),
+            hash,
             resolver,
             userAddress,
             provider
