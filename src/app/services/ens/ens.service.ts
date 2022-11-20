@@ -13,6 +13,7 @@ import { invalidChars } from 'src/app/configurations';
 import { MiscUtilsService } from '../misc-utils';
 import { CategoryModel } from 'src/app/models/category';
 import { ethers } from 'ethers';
+import contentHash from '@ensdomains/content-hash';
 
 const REGISTER_GAS = 175000;
 const REGISTER_CONFIG_GAS = 300000;
@@ -73,15 +74,85 @@ export class EnsService {
             web2Link = r.replace('ipfs://', '');
           } else if (r.indexOf('ipns:') > -1) {
             web2Link = r.replace('ipns://', '');
+          } else if (r.indexOf('arweave:') > -1) {
+            web2Link = r;
           }
           observer.next(web2Link);
           observer.complete();
         })
         .catch((e) => {
+          if (
+            JSON.stringify(e).indexOf(
+              'invalid or unsupported content hash data'
+            ) > -1
+          ) {
+            observer.next(e.data);
+            observer.complete();
+            return;
+          }
           observer.next(false);
           observer.complete();
         });
     });
+  }
+
+  matchProtocol(text) {
+    return (
+      text.match(/^(ipfs|sia|ipns|bzz|onion|onion3|arweave):\/\/(.*)/) ||
+      text.match(/\/(ipfs)\/(.*)/) ||
+      text.match(/\/(ipns)\/(.*)/)
+    );
+  }
+
+  encodeContenthash(text) {
+    let content, contentType;
+    let encoded: any = false;
+    let error;
+    if (!!text) {
+      let matched = this.matchProtocol(text);
+      if (matched) {
+        contentType = matched[1];
+        content = matched[2];
+      }
+      try {
+        if (contentType === 'ipfs') {
+          if (content.length >= 4) {
+            encoded = '0x' + contentHash.encode('ipfs-ns', content);
+          }
+        } else if (contentType === 'ipns') {
+          encoded = '0x' + contentHash.encode('ipns-ns', content);
+        } else if (contentType === 'bzz') {
+          if (content.length >= 4) {
+            encoded = '0x' + contentHash.fromSwarm(content);
+          }
+        } else if (contentType === 'onion') {
+          if (content.length == 16) {
+            encoded = '0x' + contentHash.encode('onion', content);
+          }
+        } else if (contentType === 'onion3') {
+          if (content.length == 56) {
+            encoded = '0x' + contentHash.encode('onion3', content);
+          }
+        } else if (contentType === 'sia') {
+          if (content.length == 46) {
+            encoded = '0x' + contentHash.encode('skynet-ns', content);
+          }
+        } else if (contentType === 'arweave') {
+          if (content.length == 43) {
+            encoded = '0x' + contentHash.encode('arweave-ns', content);
+          }
+        } else {
+          console.warn('Unsupported protocol or invalid value', {
+            contentType,
+            text,
+          });
+        }
+      } catch (err) {
+        const errorMessage = 'Error encoding content hash';
+        error = errorMessage;
+      }
+    }
+    return { encoded, error };
   }
 
   findDomains(

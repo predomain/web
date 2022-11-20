@@ -80,6 +80,10 @@ export class AppComponent implements OnInit, DoCheck, AfterViewInit {
       return;
     }
     this.pagesFacade.setPageMode(PageModesEnum.DEFAULT);
+    if (routeArr.length <= 0 || routeArr === null || routeArr === undefined) {
+      this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
+      return;
+    }
     this.pagesFacade.gotoPageRoute(
       routeArr.join('/'),
       routeArr[0].toUpperCase() as any
