@@ -12,11 +12,6 @@ const cachableItems = [
   ".svg",
 ];
 
-const addResourcesToCache = async (resources) => {
-  const cache = await caches.open(cacheVersion);
-  await cache.addAll(resources);
-};
-
 const putInCache = async (request, response) => {
   const cache = await caches.open(cacheVersion);
   await cache.put(request, response);
@@ -24,18 +19,18 @@ const putInCache = async (request, response) => {
 
 const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
   const responseFromCache = await caches.match(request);
+  caches.open(cacheVersion).then((cache) => {
+    return cache.delete("/");
+  });
   if (responseFromCache) {
-    console.log("Found cache... ", request.url);
     return responseFromCache;
   }
   const preloadResponse = await preloadResponsePromise;
   if (preloadResponse) {
-    console.log("No cache found... ", request.url);
     putInCache(request, preloadResponse.clone());
     return preloadResponse;
   }
   try {
-    console.log("No preload, fetch raw data... ", request.url);
     const regex = new RegExp(cachableItems.join("|"));
     const responseFromNetwork = await fetch(request);
     if (request.url.match(regex) !== null) {

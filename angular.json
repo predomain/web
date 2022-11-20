@@ -66,12 +66,12 @@
                   "maximumError": "100mb"
                 }
               ],
-              "outputHashing": "none",
-              "commonChunk": true,
+              "outputHashing": "all",
+              "commonChunk": false,
               "buildOptimizer": true,
               "optimization": true,
               "aot": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -95,12 +95,12 @@
                   "maximumError": "100mb"
                 }
               ],
-              "outputHashing": "none",
-              "commonChunk": true,
+              "outputHashing": "all",
+              "commonChunk": false,
               "buildOptimizer": true,
               "optimization": true,
               "aot": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
