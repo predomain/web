@@ -66,14 +66,15 @@
                   "maximumError": "100mb"
                 }
               ],
-              "outputHashing": "all",
+              "outputHashing": "none",
+              "commonChunk": true,
               "buildOptimizer": true,
               "optimization": true,
               "aot": true,
-              "vendorChunk": true,
-              "extractLicenses": true,
+              "vendorChunk": false,
+              "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": false
+              "namedChunks": true
             },
             "production-test": {
               "fileReplacements": [
@@ -94,14 +95,15 @@
                   "maximumError": "100mb"
                 }
               ],
-              "outputHashing": "all",
+              "outputHashing": "none",
+              "commonChunk": true,
               "buildOptimizer": true,
               "optimization": true,
               "aot": true,
-              "vendorChunk": true,
-              "extractLicenses": true,
+              "vendorChunk": false,
+              "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": false
+              "namedChunks": true
             },
             "test-remote": {
               "fileReplacements": [
