@@ -45,6 +45,7 @@ import { SetupManagementDialogModule } from './miscs/setup-management-dialog.mod
     OnboardDialogModule,
     SaleManagementDialogModule,
     MainHeaderModule,
+    ProfileComponent,
   ],
   bootstrap: [],
   entryComponents: [],

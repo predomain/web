@@ -259,22 +259,23 @@
               "
               class="cos-border-radius-2"
             ></app-preview-image>
-            <app-preview-image
-              *ngIf="ethNameData !== undefined"
-              fxFlex
-              (imageLoaded)="avatarResolved = true"
-              [preview]="'assets/img-blank.png'"
-              [error]="'assets/profile-blank.svg'"
-              [src]="
-                ensMetadataAPI +
-                hashToBigIntString(ethNameData.labelHash) +
-                '/image'
-              "
-              [style.height]="
-                canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
-              "
-              class="cos-border-radius-2"
-            ></app-preview-image>
+            <ng-container *ngIf="ethNameData !== undefined">
+              <app-preview-image
+                fxFlex
+                (imageLoaded)="avatarResolved = true"
+                [preview]="'assets/img-blank.png'"
+                [error]="'assets/profile-blank.svg'"
+                [src]="
+                  ensMetadataAPI +
+                  hashToBigIntString(ethNameData?.labelHash) +
+                  '/image'
+                "
+                [style.height]="
+                  canvasService.getWidthOfDiv('canvas_size_guide') + 2 + 'px'
+                "
+                class="cos-border-radius-2"
+              ></app-preview-image>
+            </ng-container>
             <div
               *ngIf="
                 ethNameData === undefined &&
@@ -296,8 +297,29 @@
           fxLayoutGap="20px"
           fxLayoutAlign="start start"
         >
-          <div fxFlex="0 0 auto" fxLayout="column" class="co-info-container">
-            <div fxFlex="0 0 auto" fxLayout="row" class="co-title-text">
+          <div
+            fxLayout="column"
+            fxFlex="0 0 auto"
+            [fxLayoutAlign]="
+              isDeviceMobile === true && pageMode === pageModes.PROFILE
+                ? 'center center'
+                : 'start start'
+            "
+            [ngClass]="
+              isDeviceMobile === true && pageMode === pageModes.PROFILE
+                ? 'cos-fluid-width'
+                : ''
+            "
+            class="co-info-container"
+          >
+            <div
+              fxFlex="0 0 auto"
+              fxLayout="row"
+              class="co-title-text"
+              [ngClass]="
+                pageMode === pageModes.PROFILE ? 'co-mode-profile' : ''
+              "
+            >
               <div
                 fxFlex="0 0 auto"
                 class="cos-wallet-address-text-cut cos-overflow-hidden"
@@ -321,9 +343,18 @@
             fxFlex
             fxLayout="row"
             fxLayoutGap="20px"
-            class="co-info-container cos-body-2"
+            class="co-info-container cos-fluid-width cos-body-2"
           >
-            <div fxLayout="row" fxLayoutGap="10px" class="cos-body-3">
+            <div
+              fxLayout="row"
+              fxLayoutGap="10px"
+              class="cos-body-3 cos-fluid-width"
+              [fxLayoutAlign]="
+                isDeviceMobile === true && pageMode === pageModes.PROFILE
+                  ? 'center center'
+                  : 'start start'
+              "
+            >
               <div
                 class="co-external-link"
                 (click)="copyShareLink()"
@@ -376,13 +407,14 @@
             </div>
           </div>
           <div
+            *ngIf="pageMode !== pageModes.PROFILE"
             fxFlex
             fxLayout="row"
             fxLayoutGap="20px"
             fxLayoutAlign="end start"
             class="co-info-container cos-body-2 cos-padding-2 cos-no-padding-left cos-no-padding-bottom"
           >
-            <div>
+            <div fxFlex="0 0 auto">
               <div class="cos-body-30 cos-center text">
                 {{ userDomains === undefined ? "..." : userDomains?.length }}
               </div>
@@ -456,9 +488,11 @@
                   [preview]="'assets/img-blank.png'"
                   [error]="'assets/profile-blank.svg'"
                   [src]="
-                    ensMetadataAPI +
-                    hashToBigIntString(ethNameData.labelHash) +
-                    '/image'
+                    ethNameData !== undefined
+                      ? ensMetadataAPI +
+                        hashToBigIntString(ethNameData.labelHash) +
+                        '/image'
+                      : 'assets/profile-blank.svg'
                   "
                   [style.height]="'100px'"
                   class="cos-border-radius-2"

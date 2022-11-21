@@ -26,8 +26,15 @@ import {
   DomainTypeEnum,
 } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
-import { PagesEnum } from 'src/app/models/states/pages-interfaces';
-import { MiscUtilsService, UserService } from 'src/app/services';
+import {
+  PageModesEnum,
+  PagesEnum,
+} from 'src/app/models/states/pages-interfaces';
+import {
+  MiscUtilsService,
+  UserService,
+  UserSessionService,
+} from 'src/app/services';
 import { BookmarksServiceService } from 'src/app/services/bookmarks';
 import { EnsService } from 'src/app/services/ens';
 import {
@@ -139,6 +146,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   salesListResolutionSubscription;
   userStateSubscription;
   bookmarkStateSubscription;
+  pagesStateSubscription;
 
   constructor(
     public bookmarksService: BookmarksServiceService,
@@ -153,6 +161,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     protected bookmarkFacadeService: ENSBookmarkFacadeService,
     protected categoryFacade: CategoryFacadeService,
     protected categoriesDataService: CategoriesDataService,
+    protected userSessionService: UserSessionService,
     protected bookmarkStore: Store<ENSBookmarkStateModel>,
     protected poapService: PoapService,
     protected miscUtils: MiscUtilsService,
@@ -221,9 +230,26 @@ export class CategoryComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+    this.pagesStateSubscription = this.pagesFacade.pageMode$
+      .pipe(
+        map((s) => {
+          if (s === PageModesEnum.PROFILE) {
+            this.pagesFacade.gotoPageRoute(
+              'profile/' +
+                this.userSessionService.getUserIdFromDomain() +
+                '.eth',
+              PagesEnum.PROFILE
+            );
+          }
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
+    if (this.pagesStateSubscription) {
+      this.pagesStateSubscription.unsubscribe();
+    }
     if (this.activatedRouteSubscription) {
       this.activatedRouteSubscription.unsubscribe();
     }
@@ -1007,7 +1033,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   get isDeviceMobile() {
-    return document.body.clientWidth <= 600;
+    return document.body.clientWidth <= 1000;
   }
 
   get suitableItemPageWidthForWindow() {

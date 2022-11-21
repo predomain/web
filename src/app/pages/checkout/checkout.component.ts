@@ -17,6 +17,7 @@ import {
 } from 'rxjs/operators';
 import { HeaderBackgroundColorsEnum } from '../../models/states/header-interfaces';
 import {
+  PageModesEnum,
   PagesEnum,
   PagesStateModel,
 } from '../../models/states/pages-interfaces';
@@ -33,6 +34,7 @@ import {
   TranslationService,
   WalletService,
   MiscUtilsService,
+  UserSessionService,
 } from '../../services';
 import { MetamaskService } from '../../services/metamask/metamask.service';
 import {
@@ -129,6 +131,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   constructor(
     protected activatedRoute: ActivatedRoute,
     protected pagesFacade: PagesFacadeService,
+    protected userSessionService: UserSessionService,
     protected userService: UserService,
     protected userFacadeService: UserFacadeService,
     protected paymentFacadeService: PaymentFacadeService,
@@ -180,6 +183,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.pagesStateSubscription = this.pagesFacade.pagesState$
       .pipe(
         map((s) => {
+          if (s.pageMode === PageModesEnum.PROFILE) {
+            this.pagesFacade.gotoPageRoute(
+              'profile/' +
+                this.userSessionService.getUserIdFromDomain() +
+                '.eth',
+              PagesEnum.PROFILE
+            );
+          }
           this.pagesState = s;
         })
       )

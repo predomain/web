@@ -11,6 +11,6 @@ export class FooterComponent implements OnInit {
   ngOnInit(): void {}
 
   get isDeviceMobile() {
-    return document.body.clientWidth <= 600;
+    return document.body.clientWidth <= 1000;
   }
 }

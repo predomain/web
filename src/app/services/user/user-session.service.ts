@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { providers } from 'ethers';
+import { generalConfigurations } from 'src/app/configurations';
 import { RPCProviderModel } from 'src/app/models/rpc/rpc-provider.model';
 import { ValidRPCProvidersEnum } from 'src/app/models/rpc/valid-rpc-providers.enum';
 import { environment } from '../../../environments/environment';
@@ -83,5 +84,24 @@ export class UserSessionService {
       return new providers.IpcProvider(url, chain);
     }
     return new providers.JsonRpcProvider(url, chain);
+  }
+
+  getUserIdFromDomain() {
+    let routeArr = document.location.href.split('/');
+    routeArr = routeArr.slice(4, routeArr.length);
+    let primaryDomain;
+    if (document.location.href.indexOf('//localhost') <= -1) {
+      primaryDomain = document.location.href.split('https://')[1].split('.')[0];
+    }
+    if (
+      primaryDomain !== undefined &&
+      primaryDomain !== generalConfigurations.appName &&
+      document.location.href.indexOf(
+        'https://' + generalConfigurations.appStagingName + '.eth'
+      ) <= -1
+    ) {
+      return primaryDomain;
+    }
+    return null;
   }
 }

@@ -18,7 +18,7 @@ import {
   UserFacadeService,
 } from 'src/app/store/facades';
 import { MainHeaderComponent } from 'src/app/widgets/main-header';
-import { MiscUtilsService } from 'src/app/services';
+import { MiscUtilsService, UserSessionService } from 'src/app/services';
 import { CanvasServicesService } from '../../services/canvas-services/canvas-services.service';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -27,6 +27,10 @@ import { DomainTypeEnum } from 'src/app/models/domains';
 import { CategoriesDataService } from 'src/app/services/categories-data';
 import { CategoriesRootModel } from 'src/app/models/category';
 import { PoapService } from 'src/app/services/poap';
+import {
+  PageModesEnum,
+  PagesEnum,
+} from 'src/app/models/states/pages-interfaces';
 
 const globalAny: any = global;
 @Component({
@@ -71,10 +75,12 @@ export class HomeComponent implements OnDestroy, OnInit {
   getBlogsListSubscription;
   getRootVolumeSubscription;
   userStateSubscription;
+  pagesStateSubscription;
 
   constructor(
     public ensService: EnsService,
     public miscUtilsService: MiscUtilsService,
+    protected userSessionService: UserSessionService,
     protected httpClient: HttpClient,
     protected userFacadeService: UserFacadeService,
     protected categoryFacade: CategoryFacadeService,
@@ -110,9 +116,26 @@ export class HomeComponent implements OnDestroy, OnInit {
         })
       )
       .subscribe();
+    this.pagesStateSubscription = this.pagesFacade.pageMode$
+      .pipe(
+        map((s) => {
+          if (s === PageModesEnum.PROFILE) {
+            this.pagesFacade.gotoPageRoute(
+              'profile/' +
+                this.userSessionService.getUserIdFromDomain() +
+                '.eth',
+              PagesEnum.PROFILE
+            );
+          }
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
+    if (this.pagesStateSubscription) {
+      this.pagesStateSubscription.unsubscribe();
+    }
     if (this.getBlogsListSubscription) {
       this.getBlogsListSubscription.unsubscribe();
       this.getBlogsListSubscription = undefined;

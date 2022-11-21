@@ -15,8 +15,11 @@ import {
 } from 'rxjs/operators';
 import { DomainMetadataModel, DomainTypeEnum } from 'src/app/models/domains';
 import { SpinnerModesEnum } from 'src/app/models/spinner';
-import { PagesEnum } from 'src/app/models/states/pages-interfaces';
-import { UserService } from 'src/app/services';
+import {
+  PageModesEnum,
+  PagesEnum,
+} from 'src/app/models/states/pages-interfaces';
+import { UserService, UserSessionService } from 'src/app/services';
 import { BookmarksServiceService } from 'src/app/services/bookmarks';
 import { EnsService } from 'src/app/services/ens';
 import {
@@ -87,10 +90,12 @@ export class DomainComponent implements OnInit, OnDestroy {
   resolveEventActorsSubscription;
   bookmarkStateSubscription;
   activatedRouteSubscription;
+  pagesStateSubscription;
 
   constructor(
     protected bookmarkFacadeService: ENSBookmarkFacadeService,
     protected registrationService: RegistrationServiceService,
+    protected userSessionService: UserSessionService,
     protected bookmarkStore: Store<ENSBookmarkStateModel>,
     protected userService: UserService,
     protected ensService: EnsService,
@@ -129,9 +134,26 @@ export class DomainComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+    this.pagesStateSubscription = this.pagesFacade.pageMode$
+      .pipe(
+        map((s) => {
+          if (s === PageModesEnum.PROFILE) {
+            this.pagesFacade.gotoPageRoute(
+              'profile/' +
+                this.userSessionService.getUserIdFromDomain() +
+                '.eth',
+              PagesEnum.PROFILE
+            );
+          }
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
+    if (this.pagesStateSubscription) {
+      this.pagesStateSubscription.unsubscribe();
+    }
     if (this.activatedRouteSubscription) {
       this.activatedRouteSubscription.unsubscribe();
     }
@@ -534,7 +556,7 @@ export class DomainComponent implements OnInit, OnDestroy {
   }
 
   get isDeviceMobile() {
-    return document.body.clientWidth <= 600;
+    return document.body.clientWidth <= 1000;
   }
 
   get domainBookable() {
