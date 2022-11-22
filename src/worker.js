@@ -45,7 +45,9 @@ const cacheFirst = async ({ request, preloadResponsePromise }) => {
           const versionCheck = await versionCheckRaw.json();
           if (
             versionCheck[versionCheckControlKey] !==
-            currentVersion[versionCheckControlKey]
+              currentVersion[versionCheckControlKey] &&
+            versionCheck[versionCheckControlKey] >
+              currentVersion[versionCheckControlKey]
           ) {
             console.log("New version detected. Flushing cache now.");
             const lcaches = await caches.keys();
