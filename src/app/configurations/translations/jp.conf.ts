@@ -63,7 +63,8 @@ export default {
     DOWNLOAD_LIST: "ダウンロードリスト",
     SHARE_LIST: "リストを共有",
     MORE: "その他",
-    CHANGE: "変更"
+    CHANGE: "変更",
+    TRY_AGAIN: "再試行"
   },
   HEADER: {
     ABOUT: "について",
@@ -86,7 +87,8 @@ export default {
     SETUP_REQUIRED: "セットアップが必要です",
     MANAGE_DOMAINS: "ページドメイン",
     APPROVE: "承認",
-    FEATURE_DISABLED: "機能の無効化"
+    FEATURE_DISABLED: "機能の無効化",
+    ERROR: "エラー"
   },
   IPFS: {
     INITIALISING: "p2pを開始",
@@ -120,6 +122,8 @@ export default {
     FIVE_YEARS: "5 年"
   },
   LABELS: {
+    ANALYTICS: "分析",
+    AN_ERROR_HAS_OCCURED: "リクエストの処理中にエラーが発生しました。",
     STOREFRONT_READY_TO_DEPLOY: "店舗が配備される準備が整いました。店舗は以下の場所にあります：",
     ACCESS_STOREFRONT: "店舗のフロントにアクセスできるようになりました：",
     BUY_ON: "購入先：",

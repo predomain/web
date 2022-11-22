@@ -63,7 +63,8 @@ export default {
     DOWNLOAD_LIST: "Lista de descargas",
     SHARE_LIST: "Compartir lista",
     MORE: "Más",
-    CHANGE: "Cambiar"
+    CHANGE: "Cambiar",
+    TRY_AGAIN: "Inténtalo de nuevo"
   },
   HEADER: {
     ABOUT: "Acerca de",
@@ -86,7 +87,8 @@ export default {
     SETUP_REQUIRED: "Se requiere configuración",
     MANAGE_DOMAINS: "Administrar dominios",
     APPROVE: "Aprobar",
-    FEATURE_DISABLED: "Función deshabilitada"
+    FEATURE_DISABLED: "Función deshabilitada",
+    ERROR: 'Error'
   },
   IPFS: {
     INITIALISING: "Iniciando p2p",
@@ -120,6 +122,8 @@ export default {
     FIVE_YEARS: "5 años"
   },
   LABELS: {
+    ANALYTICS: "Análisis",
+    AN_ERROR_HAS_OCCURED: "Se ha producido un error al procesar su solicitud.",
     STOREFRONT_READY_TO_DEPLOY: "El frente de su tienda está listo para ser desplegado. Su tienda se ubicará en:",
     ACCESS_STOREFRONT: "Ahora puede acceder a su tienda en:",
     BUY_ON: "Comprar en",
