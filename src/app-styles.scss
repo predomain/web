@@ -252,12 +252,12 @@ textarea {
   Border/-radius Styles
 ---------------------------------------------*/
 .cos-border {
-  border: solid 1px var(--co-gray-bg) !important;
+  border: solid 2px var(--co-border-color) !important;
   border-color: var(--co-gray-bg) !important;
 }
 
 .cos-border-darker {
-  border: solid 1px var(--co-darker-border-color) !important;
+  border: solid 2px var(--co-darker-border-color) !important;
 }
 
 .cos-no-border {
@@ -563,6 +563,13 @@ textarea {
 
 .cos-overflow-x {
   overflow-x: auto !important;
+}
+
+.cos-overflow-no-bars {
+  &::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+  }
 }
 
 /*-------------------------------------------

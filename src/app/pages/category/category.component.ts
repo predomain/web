@@ -76,6 +76,11 @@ import { MatDialog } from '@angular/material/dialog';
 
 const globalAny: any = global;
 
+export enum TabDisplays {
+  DOMAINS,
+  ACTIVITY,
+  ANALYTICS,
+}
 export enum DisplayModes {
   CHUNK,
   AVATAR,
@@ -90,6 +95,8 @@ export enum DisplayModes {
 export class CategoryComponent implements OnInit, OnDestroy {
   @ViewChild('scrollableContentContainer')
   scrollableContentContainer: ElementRef;
+  @ViewChild('profileContentContainer')
+  profileContentContainer: ElementRef;
   @ViewChild('chart') chart: DotComponent;
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
@@ -100,6 +107,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
   spinnerStatus = SpinnerModesEnum.LOADING;
   hasDomainsListLoaded = false;
   avatarResolved = false;
+  tabDisplay = TabDisplays.DOMAINS;
+  tabDisplayModes: typeof TabDisplays = TabDisplays;
   displayModes: typeof DisplayModes = DisplayModes;
   displayMode = DisplayModes.AVATAR;
   ensMetadataAPI =
@@ -126,7 +135,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
   salesListResolving = false;
 
   showEmojiPicker = false;
-  showSalesActivity = false;
   bookmarks: DomainMetadataModel[];
   rootCategoryData: CategoriesRootModel;
   categoryNormalisedMetadata: CategoryMetaStatsModel;
@@ -365,7 +373,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
           return this.getCategoryDomains(this.domainsInPage);
         }),
         switchMap((r) => {
-          this.chart.initChart();
           this.changeDetectorRef.markForCheck();
           return this.userService.getEthName(
             provider,
@@ -655,7 +662,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   lazyLoad() {
-    if (this.showSalesActivity === true) {
+    if (this.tabDisplay === TabDisplays.ACTIVITY) {
       this.loadMoreSales();
       return;
     }
@@ -673,6 +680,18 @@ export class CategoryComponent implements OnInit, OnDestroy {
       return;
     }
     this.bookmarkFacadeService.upsertBookmark(domain);
+  }
+
+  showAnalyticsChart() {
+    let isChecking = false;
+    const showChartCheck = setInterval(() => {
+      if (isChecking === true) {
+        return false;
+      }
+      isChecking = true;
+      this.chart.initChart();
+      clearInterval(showChartCheck);
+    }, 250);
   }
 
   openExpiredPicker() {
@@ -742,10 +761,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
       BlockExplorersEnum[environment.defaultChain] + '/address/' + address,
       '_blank'
     );
-  }
-
-  doShowSalesActivity(show: boolean) {
-    this.showSalesActivity = show;
   }
 
   setDisplayMode(mode: DisplayModes) {
@@ -1003,16 +1018,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   get chartWidth() {
     const windowW = document.body.clientWidth;
-    if (windowW <= 600) {
-      return (windowW - 60) / 2 - 5;
+    if (windowW <= 1000) {
+      return windowW - 60;
     }
-    if (windowW > 600 && windowW <= 1200) {
-      return (windowW - 60) / 4 - 8;
-    }
-    if (windowW > 1200 && windowW <= 1900) {
-      return (windowW / 100) * 90 - 430;
-    }
-    return 1900 - 430;
+    return this.profileContentContainer.nativeElement.clientWidth - 380;
   }
 
   get searchKeyword() {
@@ -1038,16 +1047,17 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   get suitableItemPageWidthForWindow() {
     const windowW = document.body.clientWidth;
+    let t = 8;
     if (windowW <= 600) {
-      return 2;
+      t = 2;
     }
     if (windowW > 600 && windowW <= 1200) {
-      return 4;
+      t = 4;
     }
-    if (windowW > 1200 && windowW <= 1999) {
-      return 5;
+    if (windowW > 1200 && windowW <= 1900) {
+      t = 5;
     }
-    return 8;
+    return t;
   }
 
   get guideAvatarSize() {

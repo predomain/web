@@ -104,6 +104,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @ViewChild('fadeTop') fadeTop: any;
   @ViewChild('scrollableContentContainer')
   scrollableContentContainer: ElementRef;
+  @ViewChild('profileContentContainer')
+  profileContentContainer: ElementRef;
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
@@ -578,7 +580,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   goToDomain(domain: string) {
     this.pagesFacade.gotoPageRoute(
-      'domain/' +
+      (this.pageMode === PageModesEnum.PROFILE
+        ? 'https://predomaine.eth.limo/#/'
+        : '') +
+        'domain/' +
         this.ensService.performNormalisation(domain).replace(/#⃣/g, '%23') +
         '.eth',
       PagesEnum.DOMAIN
@@ -1079,7 +1084,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       if (windowW <= 600) {
         t = 2;
       }
-      if (windowW > 600 && windowW <= 1200) {
+      if (windowW > 600 && windowW <= 1300) {
         t = 4;
       }
       return t;
@@ -1088,10 +1093,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (windowW <= 600) {
       t = 2;
     }
-    if (windowW > 600 && windowW <= 1200) {
+    if (windowW > 600 && windowW <= 1300) {
       t = 4;
     }
-    if (windowW > 1200 && windowW <= 1900) {
+    if (windowW > 1300 && windowW <= 1900) {
       t = 5;
     }
     return t;
@@ -1101,23 +1106,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const windowW = document.body.clientWidth;
     if (this.pageMode === PageModesEnum.PROFILE) {
       if (windowW <= 600) {
-        return (windowW - 60) / 2 - 5;
+        return (windowW - 60) / 2 - 10;
       }
-      if (windowW > 600 && windowW <= 1200) {
-        return (windowW - 60) / 4 - 8;
+      if (windowW > 600 && windowW <= 1300) {
+        return (1300 - 60) / 4 - 16;
       }
-      return (1300 - 350) / 5 - 8;
+      if (windowW > 1300 && windowW <= 1900) {
+        return (1300 - 350) / 5 - 16;
+      }
+      return (1300 - 60) / 5 - 16;
     }
     if (windowW <= 600) {
-      return (windowW - 60) / 2 - 5;
+      return (windowW - 60) / 2 - 10;
     }
-    if (windowW > 600 && windowW <= 1200) {
-      return (windowW - 60) / 4 - 8;
+    if (windowW > 600 && windowW <= 1300) {
+      return (windowW - 60) / 4 - 16;
     }
-    if (windowW > 1200 && windowW <= 1900) {
-      return (windowW - 570) / 5 - 8;
+    if (windowW > 1300 && windowW <= 1900) {
+      return (windowW - 570) / 5 - 16;
     }
-    return ((1900 - 430) / 100) * 12.5 - 9;
+    return ((1900 - 380) / 100) * 12.5 - 18;
   }
 
   get pendingPayments() {

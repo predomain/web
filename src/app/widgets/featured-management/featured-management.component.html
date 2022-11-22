@@ -337,6 +337,11 @@
 </div>
 
 <mat-autocomplete #auto="matAutocomplete" class="autocomplete-for-small-input">
+  <div
+    class="cos-bg-gray cos-body-3 cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right cos-padding-1 cos-gray-text"
+  >
+    {{ "LABELS.SEARCH_RESULTS" | translate }}
+  </div>
   <ng-container *ngFor="let d of quickSearchKeysToChunk">
     <mat-option
       class="cos-box-shadow"
@@ -347,7 +352,7 @@
         <div
           fxFlex
           fxLayoutAlign="start center"
-          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+          class="cos-wallet-address-text-cut"
         >
           {{ pretty(d) }}.eth
         </div>

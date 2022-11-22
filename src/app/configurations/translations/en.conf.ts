@@ -124,6 +124,7 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    ANALYTICS: 'Analytics',
     AN_ERROR_HAS_OCCURED: 'An error has occured while processing your request.',
     STOREFRONT_READY_TO_DEPLOY:
       'Your store front is ready to be deployed. Your store will be located at:',

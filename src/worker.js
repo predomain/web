@@ -87,10 +87,10 @@ const cacheFirst = async ({ request, preloadResponsePromise }) => {
     }
     const regex = new RegExp(cachableItems.join("|"));
     const responseFromNetwork = await fetch(request);
-    if (
-      request.url.match(regex) !== null ||
-      cachedItemsFromSources.includes(request.url)
-    ) {
+    const toIncludeForCaching = cachedItemsFromSources.filter(
+      (ci) => request.url.indexOf(ci) > -1
+    );
+    if (request.url.match(regex) !== null || toIncludeForCaching.length > 0) {
       putInCache(request, responseFromNetwork.clone());
     }
     return responseFromNetwork;

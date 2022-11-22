@@ -20,11 +20,10 @@
     <span class="co-logo cos-disappear-on-mobile"> Predomain </span>
   </div>
   <div
-    [fxFlex]="isDeviceMobile === true ? '100' : '50'"
     fxLayout="row"
     fxLayoutGap="10px"
     fxLayoutAlign="start start"
-    class="cos-padding-2 cos-no-padding-top cos-no-padding-right cos-no-padding-right cos-no-padding-bottom"
+    class="co-form cos-padding-2 cos-no-padding-top cos-no-padding-right cos-no-padding-right cos-no-padding-bottom"
   >
     <form
       *ngIf="show?.showSearch === true || show?.showSearch === undefined"
@@ -36,7 +35,7 @@
       <mat-form-field
         fxLayoutAlign="center center"
         fxFlexAlign="center"
-        class="co-main-search cos-fluid-width cos-body-0 cos-input-field-no-label cos-field-width-shadow cos-input-prefixed co-input-field-small-prefix"
+        class="co-main-search cos-fluid-width cos-body-0 cos-input-field-no-label cos-field-width-shadow cos-input-prefixed co-input-field-small-prefix cos-gray-placeholder"
       >
         <input
           class="cos-fluid-width cos-bg-darker-gray cos-box-shadow"
@@ -61,6 +60,11 @@
       #auto="matAutocomplete"
       class="autocomplete-for-small-input"
     >
+      <div
+        class="cos-bg-gray cos-body-3 cos-margin-1 cos-no-margin-left cos-no-margin-right cos-no-margin-bottom cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right cos-padding-1 cos-gray-text"
+      >
+        {{ "LABELS.SEARCH_RESULTS" | translate }}
+      </div>
       <ng-container *ngFor="let d of quickSearchKeysToChunk">
         <mat-option
           *ngIf="miscUtilsService?.checksumEtheruemAddress(d) === false"
@@ -71,7 +75,7 @@
             <div
               fxFlex
               fxLayoutAlign="start center"
-              class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+              class="cos-wallet-address-text-cut"
             >
               {{ pretty(d) }}
             </div>
@@ -91,7 +95,7 @@
           <div
             fxFlex
             fxLayoutAlign="start center"
-            class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom cos-no-padding-right cos-wallet-address-text-cut"
+            class="cos-wallet-address-text-cut"
           >
             {{ pretty(d) }}
           </div>
@@ -99,7 +103,7 @@
             <div
               fxFlex="30px"
               fxLayoutAlign="center center"
-              class="cos-body-5 cos-chip-regular cos-chip-dark cos-chip-padded cos-gray-text"
+              class="cos-body-5 cos-chip-regular cos-chip-padded cos-gray-text"
             >
               {{ "LABELS.USER_PROFILE" | translate }}
             </div>
@@ -191,6 +195,7 @@
       >{{ "HEADER.ABOUT" | translate }}</a
     >
   </div>
+  <div fxFlex></div>
   <div
     fxFlex="0 0 auto"
     fxLayout="row"
