@@ -75,7 +75,7 @@ export class AppComponent implements OnInit, DoCheck, AfterViewInit {
       );
       return;
     }
-    this.pagesFacade.setPageMode(PageModesEnum.PROFILE);
+    this.pagesFacade.setPageMode(PageModesEnum.DEFAULT);
     if (routeArr.length <= 0 || routeArr === null || routeArr === undefined) {
       this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
       return;
