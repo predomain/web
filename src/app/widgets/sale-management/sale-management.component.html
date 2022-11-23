@@ -32,7 +32,7 @@
               <app-preview-image
                 [preview]="'assets/img-blank.png'"
                 [error]="'assets/profile-blank.svg'"
-                [style.width]="'100px'"
+                [style.width]="'120px'"
                 [src]="ensMetadataAPI + domain.labelHash + '/image'"
                 class="co-avatar cos-pointer"
               ></app-preview-image>
@@ -47,6 +47,7 @@
                     href="https://predomain.eth.limo/#/domain/{{
                       domain.labelName
                     }}"
+                    class="cos-main-text"
                     target="_blank"
                   >
                     {{ pretty(domain.labelName) }}.eth </a
@@ -57,6 +58,17 @@
                     "LABELS.THIS_DOMAINS_IS_AVAILABLE_IN_MARKETPLACE"
                       | translate
                   }}
+                </div>
+                <div fxFlex="0 0 auto" class="cos-body-4">
+                  <a
+                    href="https://predomain.eth.limo/#/domain/{{
+                      domain.labelName
+                    }}"
+                    class="cos-main-text"
+                    target="_blank"
+                  >
+                    View More Info
+                  </a>
                 </div>
               </div>
             </div>

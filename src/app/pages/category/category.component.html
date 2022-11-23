@@ -55,6 +55,7 @@
   class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
 >
   <div
+    #profileContentContainer
     fxLayout="row"
     fxLayoutAlign="center start"
     class="co-profile-content-container cos-fluid-width"
@@ -109,421 +110,6 @@
           }}
         </span>
       </div>
-      <div
-        fxFlex="90"
-        fxLayout="row"
-        class="co-profile-header cos-fluid-width cos-padding-2 cos-no-padding-left cos-no-padding-right cos-overflow-hidden cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
-      >
-        <div
-          id="co-stats-container"
-          fxLayout="column"
-          fxLayoutGap="20px"
-          fxLayoutAlign="start start"
-          class="co-meta-stats-container"
-        >
-          <div
-            id="canvas_size_guide"
-            class="cos-fluid-width cos-no-margin-bottom"
-            [style.visibility]="'hidden'"
-            [style.width]="'50%'"
-            [style.height]="'0px'"
-          ></div>
-          <div
-            fxFlex
-            fxLayout="row"
-            fxLayoutGap="10px"
-            class="co-avatar-container"
-          >
-            <div
-              fxFlex
-              fxLayout="row"
-              class="co-avatar cos-fluid-width cos-box-shadow"
-            >
-              <app-preview-image
-                *ngIf="ethNameData === undefined"
-                (imageLoaded)="avatarResolved = true"
-                [preview]="'assets/img-blank.png'"
-                [error]="'assets/category-profile-blank.svg'"
-                [style.width]="'100%'"
-              ></app-preview-image>
-              <app-preview-image
-                *ngIf="ethNameData !== undefined"
-                (imageLoaded)="avatarResolved = true"
-                [preview]="'assets/img-blank.png'"
-                [error]="'assets/category-profile-blank.svg'"
-                [src]="
-                  ensMetadataAPI +
-                  hashToBigIntString(ethNameData.labelhash) +
-                  '/image'
-                "
-                [style.width]="'100%'"
-              ></app-preview-image>
-              <mat-icon
-                *ngIf="categoryApiData !== undefined"
-                class="co-category-thumbnail"
-              >
-                {{
-                  rootCategoryData.categoriesThumbnails[
-                    categoryApiData?.category
-                  ]
-                }}
-              </mat-icon>
-            </div>
-
-            <div
-              fxFlex
-              fxLayout="column"
-              [fxLayoutGap]="categoryApiData === undefined ? '10px' : '5px'"
-              class="co-info-container"
-            >
-              <div fxFlex="0 0 auto" fxLayout="row" class="co-title-text">
-                <div
-                  *ngIf="categoryApiData === undefined"
-                  fxFlex
-                  class="cos-wallet-address-text-cut cos-overflow-hidden"
-                >
-                  <div
-                    style="height: 36px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                </div>
-                <div
-                  *ngIf="categoryApiData !== undefined"
-                  fxFlex
-                  class="cos-wallet-address-text-cut cos-overflow-hidden"
-                >
-                  <b>
-                    {{
-                      rootCategoryData?.categoriesTitle[
-                        categoryApiData?.category
-                      ]
-                    }}
-                  </b>
-                </div>
-              </div>
-              <div fxFlex fxLayoutAlign="start start" fxLayoutGap="5px">
-                <div fxFlex *ngIf="categoryApiData === undefined">
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                </div>
-                <div *ngIf="categoryApiData !== undefined">
-                  {{
-                    profileTexts?.description === undefined
-                      ? rootCategoryData?.categoriesDescription[
-                          categoryApiData?.category
-                        ]
-                      : profileTexts?.description
-                  }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div fxLayout="column" fxLayoutGap="10px" class="cos-fluid-width">
-            <div
-              fxFlex
-              fxLayout="row wrap"
-              fxLayoutAlign="start start"
-              class="co-info-container cos-body-2 cos-fluid-width"
-            >
-              <div
-                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
-              >
-                <div
-                  fxLayout="column"
-                  fxLayoutGap="10px"
-                  *ngIf="categoryNormalisedMetadata === undefined"
-                  class="cos-body-2"
-                >
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                </div>
-                <div
-                  *ngIf="categoryNormalisedMetadata !== undefined"
-                  fxLayout="column"
-                  fxLayoutAlign="center center"
-                  fxLayoutGap="10px"
-                  class="cos-body-0 cos-fluid-width"
-                >
-                  <div fxFlex="0 0 auto">
-                    <b>
-                      {{ categoryNormalisedMetadata?.domainsCount }}
-                    </b>
-                  </div>
-                  <div fxFlex="0 0 auto" class="cos-body-4">-</div>
-                </div>
-                <div
-                  class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
-                >
-                  {{ "LABELS.TOTAL_ASSETS" | translate }}
-                </div>
-              </div>
-
-              <div
-                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
-              >
-                <div
-                  fxLayout="column"
-                  fxLayoutGap="10px"
-                  *ngIf="categoryNormalisedMetadata === undefined"
-                  class="cos-body-2"
-                >
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                </div>
-                <div
-                  *ngIf="categoryNormalisedMetadata !== undefined"
-                  fxLayout="column"
-                  fxLayoutAlign="center center"
-                  fxLayoutGap="10px"
-                  class="cos-body-0 cos-fluid-width"
-                >
-                  <div fxFlex="0 0 auto">
-                    <b>
-                      {{ priceToFixed(dailySalesVolume, 2) }}
-                      ETH
-                    </b>
-                  </div>
-                  <div
-                    *ngIf="dailyVolumeTrend > 0"
-                    fxFlex="0 0 auto"
-                    class="cos-uptrend-text cos-body-4"
-                  >
-                    +{{ dailyVolumeTrend }}%
-                  </div>
-                  <div
-                    *ngIf="!(dailyVolumeTrend > 0) && dailyVolumeTrend !== 0"
-                    fxFlex="0 0 auto"
-                    class="cos-downtrend-text cos-body-4"
-                  >
-                    {{ dailyVolumeTrend }}%
-                  </div>
-                  <div
-                    *ngIf="dailyVolumeTrend === 0"
-                    fxFlex="0 0 auto"
-                    class="cos-body-4"
-                  >
-                    -
-                  </div>
-                </div>
-                <div
-                  class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
-                >
-                  {{ "LABELS.DAILY_VOLUME" | translate }}
-                </div>
-              </div>
-
-              <div
-                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
-              >
-                <div
-                  *ngIf="categoryNormalisedMetadata === undefined"
-                  class="cos-body-2"
-                >
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                </div>
-                <div
-                  *ngIf="categoryNormalisedMetadata !== undefined"
-                  fxLayout="row"
-                  fxLayoutAlign="center center"
-                  fxLayoutGap="10px"
-                  class="cos-body-0 cos-fluid-width"
-                >
-                  <div fxFlex="0 0 auto">
-                    <b>
-                      {{ salesCountThisMonth }}
-                    </b>
-                  </div>
-                </div>
-                <div
-                  class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
-                >
-                  {{ "LABELS.MONTHLY_SALES" | translate }}
-                </div>
-              </div>
-
-              <div
-                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
-              >
-                <div
-                  *ngIf="categoryNormalisedMetadata === undefined"
-                  class="cos-body-2"
-                >
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                </div>
-                <div
-                  *ngIf="categoryNormalisedMetadata !== undefined"
-                  fxLayout="row"
-                  fxLayoutAlign="center center"
-                  fxLayoutGap="10px"
-                  class="cos-body-0 cos-fluid-width"
-                >
-                  <div fxFlex="0 0 auto">
-                    <b>
-                      {{ salesCountToday }}
-                    </b>
-                  </div>
-                </div>
-                <div
-                  class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
-                >
-                  {{ "LABELS.DAILY_SALES" | translate }}
-                </div>
-              </div>
-
-              <div
-                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
-              >
-                <div
-                  *ngIf="categoryNormalisedMetadata === undefined"
-                  class="cos-body-2"
-                >
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                </div>
-                <div
-                  *ngIf="categoryNormalisedMetadata !== undefined"
-                  fxLayout="row"
-                  fxLayoutAlign="center center"
-                  fxLayoutGap="10px"
-                  class="cos-body-0 cos-fluid-width"
-                >
-                  <div fxFlex="0 0 auto">
-                    <b>
-                      {{ priceToFixed(categoryNormalisedMetadata?.topSale, 2) }}
-                      ETH
-                    </b>
-                  </div>
-                </div>
-                <div
-                  class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
-                >
-                  {{ "LABELS.TOP_SALE" | translate }}
-                </div>
-              </div>
-              <div
-                class="co-statistics-box cos-box-shadow cos-bg-gray cos-padding-0 cos-border-radius-1"
-              >
-                <div
-                  *ngIf="categoryNormalisedMetadata === undefined"
-                  class="cos-body-2"
-                >
-                  <div
-                    style="height: 28px"
-                    class="cos-fluid-width cos-placeholder cos-border-radius-1"
-                  ></div>
-                </div>
-                <div
-                  *ngIf="categoryNormalisedMetadata !== undefined"
-                  fxLayout="row"
-                  fxLayoutAlign="center center"
-                  fxLayoutGap="10px"
-                  class="cos-body-0 cos-fluid-width"
-                >
-                  <div
-                    fxFlex="0 0 auto"
-                    class="cos-wallet-address-text-cut cos-center-text cos-fluid-width"
-                  >
-                    <a
-                      (click)="
-                        goToEtherscanAddress(
-                          categoryNormalisedMetadata?.topBuyer
-                        )
-                      "
-                      class="cos-center-text cos-body-3"
-                    >
-                      <b>
-                        {{
-                          this.categoryNormalisedMetadata.topBuyerEthName ===
-                          undefined
-                            ? categoryNormalisedMetadata?.topBuyer
-                            : this.categoryNormalisedMetadata.topBuyerEthName
-                        }}
-                      </b>
-                    </a>
-                  </div>
-                </div>
-                <div
-                  class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
-                >
-                  {{ "LABELS.TOP_BUYER" | translate }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          fxFlex
-          fxLayout="column"
-          class="co-chart-container cos-box-shadow cos-bg-gray cos-border-radius-2 cos-fluid-width cos-disappear-on-mobile"
-        >
-          <div
-            fxFlex="0 0 auto"
-            id="co-chart-control"
-            fxLayoutGap="10px"
-            fxLayout="column"
-            class="cos-bg-faded-darker-gray cos-border-radius-2 cos-margin-1 cos-no-margin-bottom cos-padding-1"
-          >
-            <div fxFlex class="cos-body-4">
-              {{ "LABELS.SALES_ACTIVITY" | translate }}
-            </div>
-          </div>
-          <div
-            fxFlex
-            class="cos-padding-2 cos-no-padding-right cos-fluid-height"
-          >
-            <app-dot
-              #chart
-              *ngIf="chartData !== undefined"
-              fxFlex
-              [data]="chartData"
-              [chartMetadata]="{
-                width: chartWidth,
-                height: 360
-              }"
-            >
-            </app-dot>
-            <div
-              *ngIf="chartData === undefined"
-              fxFlex
-              fxLayout="column"
-              fxLayoutAlign="center center"
-              class="cos-fluid-width cos-fluid-height"
-            >
-              <div fxFlex="0 0 auto">
-                <app-custom-spinner
-                  [spinnerText]="'SPINNER.LOADING_DATA'"
-                  [spinnerSize]="150"
-                  [mode]="spinnerModes.LOADING"
-                  [customIcon]="'spin'"
-                >
-                </app-custom-spinner>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div fxFlex fxLayout="row" fxLayoutGap="30px" class="cos-fluid-width">
         <div class="co-filters">
           <div
@@ -531,7 +117,8 @@
             fxLayout="column"
             class="co-filters-content"
             [ngClass]="
-              showSalesActivity === true || hasDomainsListLoaded === false
+              tabDisplay !== tabDisplayModes.DOMAINS ||
+              hasDomainsListLoaded === false
                 ? 'cos-disabled'
                 : ''
             "
@@ -540,9 +127,8 @@
               fxLayout="row"
               fxLayoutAlign="start center"
               fxLayoutGap="10px"
-              class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-2 cos-no-padding-left cos-no-padding-right"
+              class="cos-padding-2 cos-no-padding-left cos-no-padding-bottom cos-no-padding-right"
             >
-              <mat-icon>filter_alt</mat-icon>
               <span class="cos-body-0">
                 <b> {{ "LABELS.FILTERS" | translate }} </b>
               </span>
@@ -804,6 +390,11 @@
           fxLayout="column"
           fxLayoutAlign="stretch stretch"
           fxLayoutGap="10px"
+          [ngClass]="
+            isDeviceMobile === true
+              ? { 'cos-overflow-y': true, 'cos-fluid-width': true }
+              : ''
+          "
         >
           <div
             class="cos-fluid-width cos-show-on-mobile cos-no-margin-bottom"
@@ -816,35 +407,71 @@
           </div>
           <div
             fxFlex="0 0 auto"
-            class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-padding-1 cos-no-padding-left cos-no-padding-right"
+            [ngClass]="hasDomainsListLoaded === false ? 'cos-disabled' : ''"
+            class="cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-margin-2 cos-no-margin-top cos-no-margin-left cos-no-margin-right"
           >
             <div
               fxFlex
               fxLayout="row"
               fxLayoutGap="10px"
-              [ngClass]="hasDomainsListLoaded === false ? 'cos-disabled' : ''"
+              class="cos-body-0"
+              [ngClass]="
+                isDeviceMobile === true
+                  ? {
+                      'co-content-header-tabs-mobile': true,
+                      'cos-overflow-y': true,
+                      'cos-overflow-no-bars': true,
+                      'cos-fluid-width': true
+                    }
+                  : ''
+              "
             >
               <div
-                class="co-list-picker cos-pointer cos-center-text cos-box-shadow"
+                class="co-list-picker cos-button-tab cos-pointer cos-center-text"
                 [ngClass]="
-                  showSalesActivity === true || hasDomainsListLoaded === false
-                    ? { 'cos-bg-gray': true, 'cos-gray-text': true }
-                    : 'cos-bg-main'
+                  tabDisplay !== tabDisplayModes.DOMAINS ||
+                  hasDomainsListLoaded === false
+                    ? {
+                        'cos-gray-text': true,
+                        'cos-button-tab-disabled': true
+                      }
+                    : ''
                 "
-                (click)="doShowSalesActivity(false)"
+                (click)="tabDisplay = tabDisplayModes.DOMAINS"
               >
                 <b> {{ "LABELS.DOMAINS" | translate }} </b>
               </div>
               <div
-                class="co-list-picker cos-pointer cos-center-text cos-box-shadow"
+                class="co-list-picker cos-button-tab cos-pointer cos-center-text"
                 [ngClass]="
-                  showSalesActivity === false || hasDomainsListLoaded === false
-                    ? { 'cos-bg-gray': true, 'cos-gray-text': true }
-                    : 'cos-bg-main'
+                  tabDisplay !== tabDisplayModes.ACTIVITY ||
+                  hasDomainsListLoaded === false
+                    ? {
+                        'cos-gray-text': true,
+                        'cos-button-tab-disabled': true
+                      }
+                    : ''
                 "
-                (click)="doShowSalesActivity(true)"
+                (click)="tabDisplay = tabDisplayModes.ACTIVITY"
               >
                 {{ "LABELS.ACTIVITY" | translate }}
+              </div>
+              <div
+                class="co-list-picker cos-button-tab cos-pointer cos-center-text"
+                [ngClass]="
+                  tabDisplay !== tabDisplayModes.ANALYTICS ||
+                  hasDomainsListLoaded === false
+                    ? {
+                        'cos-gray-text': true,
+                        'cos-button-tab-disabled': true
+                      }
+                    : ''
+                "
+                (click)="
+                  tabDisplay = tabDisplayModes.ANALYTICS; showAnalyticsChart()
+                "
+              >
+                {{ "LABELS.ANALYTICS" | translate }}
               </div>
             </div>
             <div
@@ -857,11 +484,12 @@
               fxLayoutGap="10px"
               fxLayoutAlign="end center"
               [ngClass]="
-                showSalesActivity === true || hasDomainsListLoaded === false
+                tabDisplay === tabDisplayModes.ACTIVITY ||
+                hasDomainsListLoaded === false
                   ? 'cos-disabled'
                   : ''
               "
-              class="cos-disappear-on-mobile"
+              class="cos-disappear-on-mobile cos-padding-2 cos-no-padding-left cos-no-padding-right"
             >
               <mat-icon
                 class="cos-icon-can-activate"
@@ -870,13 +498,6 @@
                 download
               </mat-icon>
               <span class="cos-gray-text"> | </span>
-              <mat-icon
-                class="cos-icon-can-activate cos-disappear-on-mobile"
-                [color]="displayMode === displayModes.CHUNK ? 'primary' : ''"
-                (click)="setDisplayMode(displayModes.CHUNK)"
-              >
-                view_agenda
-              </mat-icon>
               <mat-icon
                 class="cos-icon-can-activate"
                 [color]="displayMode === displayModes.AVATAR ? 'primary' : ''"
@@ -894,11 +515,13 @@
             </div>
           </div>
           <div
-            *ngIf="showSalesActivity === true"
+            *ngIf="tabDisplay === tabDisplayModes.ACTIVITY"
             fxFlex
             fxLayout="column"
             fxLayoutAlign="start start"
           >
+            <ng-container *ngTemplateOutlet="linearSalesTemplateHeader">
+            </ng-container>
             <div
               *ngIf="
                 salesListResolving === false &&
@@ -925,21 +548,340 @@
               <ng-container *ngTemplateOutlet="placeHolderFullTemplate">
               </ng-container>
             </ng-container>
+            <ng-container *ngTemplateOutlet="linearDomainTemplateFooter">
+            </ng-container>
           </div>
+
           <div
-            *ngIf="showSalesActivity === false"
+            *ngIf="tabDisplay === tabDisplayModes.ANALYTICS"
+            fxFlex
+            fxLayout="column"
+            fxLayoutGap="30px"
+          >
+            <div
+              fxFlex
+              fxLayout="column"
+              class="co-chart-container cos-fluid-width"
+            >
+              <div
+                fxFlex="0 0 auto"
+                id="co-chart-control"
+                fxLayoutGap="10px"
+                fxLayout="column"
+                class="cos-bg-faded-darker-gray cos-padding-1 cos-border-radius-2 cos-margin-2 cos-no-margin-left cos-no-margin-right cos-no-margin-top"
+              >
+                <div fxFlex class="cos-body-4">
+                  {{ "LABELS.SALES_ACTIVITY" | translate }}
+                </div>
+              </div>
+              <div fxFlex class="cos-fluid-height">
+                <app-dot
+                  #chart
+                  *ngIf="chartData !== undefined"
+                  fxFlex
+                  [data]="chartData"
+                  [chartMetadata]="{
+                    width: chartWidth,
+                    height: 400,
+                    maxTicks: isDeviceMobile === true ? 5 : 15
+                  }"
+                >
+                </app-dot>
+                <div
+                  *ngIf="chartData === undefined"
+                  fxFlex
+                  fxLayout="column"
+                  fxLayoutAlign="center center"
+                  class="cos-fluid-width cos-fluid-height"
+                >
+                  <div fxFlex="0 0 auto">
+                    <app-custom-spinner
+                      [spinnerText]="'SPINNER.LOADING_DATA'"
+                      [spinnerSize]="150"
+                      [mode]="spinnerModes.LOADING"
+                      [customIcon]="'spin'"
+                    >
+                    </app-custom-spinner>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="co-stats-container"
+              fxLayout="column"
+              fxLayoutGap="20px"
+              fxLayoutAlign="start start"
+              class="co-meta-stats-container"
+            >
+              <div fxLayout="column" fxLayoutGap="10px" class="cos-fluid-width">
+                <div
+                  fxFlex
+                  fxLayout="row wrap"
+                  fxLayoutAlign="start start"
+                  class="co-info-container cos-body-2 cos-fluid-width"
+                >
+                  <div
+                    class="co-statistics-box cos-box-shadow cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+                  >
+                    <div
+                      fxLayout="column"
+                      fxLayoutGap="10px"
+                      *ngIf="categoryNormalisedMetadata === undefined"
+                      class="cos-body-2"
+                    >
+                      <div
+                        style="height: 28px"
+                        class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                      ></div>
+                      <div
+                        style="height: 28px"
+                        class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                      ></div>
+                    </div>
+                    <div
+                      *ngIf="categoryNormalisedMetadata !== undefined"
+                      fxLayout="column"
+                      fxLayoutAlign="center center"
+                      fxLayoutGap="10px"
+                      class="cos-body-0 cos-fluid-width"
+                    >
+                      <div fxFlex="0 0 auto">
+                        <b>
+                          {{ categoryNormalisedMetadata?.domainsCount }}
+                        </b>
+                      </div>
+                      <div fxFlex="0 0 auto" class="cos-body-4">-</div>
+                    </div>
+                    <div
+                      class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
+                    >
+                      {{ "LABELS.TOTAL_ASSETS" | translate }}
+                    </div>
+                  </div>
+
+                  <div
+                    class="co-statistics-box cos-box-shadow cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+                  >
+                    <div
+                      fxLayout="column"
+                      fxLayoutGap="10px"
+                      *ngIf="categoryNormalisedMetadata === undefined"
+                      class="cos-body-2"
+                    >
+                      <div
+                        style="height: 28px"
+                        class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                      ></div>
+                      <div
+                        style="height: 28px"
+                        class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                      ></div>
+                    </div>
+                    <div
+                      *ngIf="categoryNormalisedMetadata !== undefined"
+                      fxLayout="column"
+                      fxLayoutAlign="center center"
+                      fxLayoutGap="10px"
+                      class="cos-body-0 cos-fluid-width"
+                    >
+                      <div fxFlex="0 0 auto">
+                        <b>
+                          {{ priceToFixed(dailySalesVolume, 2) }}
+                          ETH
+                        </b>
+                      </div>
+                      <div
+                        *ngIf="dailyVolumeTrend > 0"
+                        fxFlex="0 0 auto"
+                        class="cos-uptrend-text cos-body-4"
+                      >
+                        +{{ dailyVolumeTrend }}%
+                      </div>
+                      <div
+                        *ngIf="
+                          !(dailyVolumeTrend > 0) && dailyVolumeTrend !== 0
+                        "
+                        fxFlex="0 0 auto"
+                        class="cos-downtrend-text cos-body-4"
+                      >
+                        {{ dailyVolumeTrend }}%
+                      </div>
+                      <div
+                        *ngIf="dailyVolumeTrend === 0"
+                        fxFlex="0 0 auto"
+                        class="cos-body-4"
+                      >
+                        -
+                      </div>
+                    </div>
+                    <div
+                      class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
+                    >
+                      {{ "LABELS.DAILY_VOLUME" | translate }}
+                    </div>
+                  </div>
+
+                  <div
+                    class="co-statistics-box cos-box-shadow cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+                  >
+                    <div
+                      *ngIf="categoryNormalisedMetadata === undefined"
+                      class="cos-body-2"
+                    >
+                      <div
+                        style="height: 28px"
+                        class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                      ></div>
+                    </div>
+                    <div
+                      *ngIf="categoryNormalisedMetadata !== undefined"
+                      fxLayout="row"
+                      fxLayoutAlign="center center"
+                      fxLayoutGap="10px"
+                      class="cos-body-0 cos-fluid-width"
+                    >
+                      <div fxFlex="0 0 auto">
+                        <b>
+                          {{ salesCountThisMonth }}
+                        </b>
+                      </div>
+                    </div>
+                    <div
+                      class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
+                    >
+                      {{ "LABELS.MONTHLY_SALES" | translate }}
+                    </div>
+                  </div>
+
+                  <div
+                    class="co-statistics-box cos-box-shadow cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+                  >
+                    <div
+                      *ngIf="categoryNormalisedMetadata === undefined"
+                      class="cos-body-2"
+                    >
+                      <div
+                        style="height: 28px"
+                        class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                      ></div>
+                    </div>
+                    <div
+                      *ngIf="categoryNormalisedMetadata !== undefined"
+                      fxLayout="row"
+                      fxLayoutAlign="center center"
+                      fxLayoutGap="10px"
+                      class="cos-body-0 cos-fluid-width"
+                    >
+                      <div fxFlex="0 0 auto">
+                        <b>
+                          {{ salesCountToday }}
+                        </b>
+                      </div>
+                    </div>
+                    <div
+                      class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
+                    >
+                      {{ "LABELS.DAILY_SALES" | translate }}
+                    </div>
+                  </div>
+
+                  <div
+                    class="co-statistics-box cos-box-shadow cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+                  >
+                    <div
+                      *ngIf="categoryNormalisedMetadata === undefined"
+                      class="cos-body-2"
+                    >
+                      <div
+                        style="height: 28px"
+                        class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                      ></div>
+                    </div>
+                    <div
+                      *ngIf="categoryNormalisedMetadata !== undefined"
+                      fxLayout="row"
+                      fxLayoutAlign="center center"
+                      fxLayoutGap="10px"
+                      class="cos-body-0 cos-fluid-width"
+                    >
+                      <div fxFlex="0 0 auto">
+                        <b>
+                          {{
+                            priceToFixed(categoryNormalisedMetadata?.topSale, 2)
+                          }}
+                          ETH
+                        </b>
+                      </div>
+                    </div>
+                    <div
+                      class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
+                    >
+                      {{ "LABELS.TOP_SALE" | translate }}
+                    </div>
+                  </div>
+                  <div
+                    class="co-statistics-box cos-box-shadow cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+                  >
+                    <div
+                      *ngIf="categoryNormalisedMetadata === undefined"
+                      class="cos-body-2"
+                    >
+                      <div
+                        style="height: 28px"
+                        class="cos-fluid-width cos-placeholder cos-border-radius-1"
+                      ></div>
+                    </div>
+                    <div
+                      *ngIf="categoryNormalisedMetadata !== undefined"
+                      fxLayout="row"
+                      fxLayoutAlign="center center"
+                      fxLayoutGap="10px"
+                      class="cos-body-0 cos-fluid-width"
+                    >
+                      <div
+                        fxFlex="0 0 auto"
+                        class="cos-wallet-address-text-cut cos-center-text cos-fluid-width"
+                      >
+                        <a
+                          (click)="
+                            goToEtherscanAddress(
+                              categoryNormalisedMetadata?.topBuyer
+                            )
+                          "
+                          class="cos-center-text cos-body-3"
+                        >
+                          <b>
+                            {{
+                              this.categoryNormalisedMetadata
+                                .topBuyerEthName === undefined
+                                ? categoryNormalisedMetadata?.topBuyer
+                                : this.categoryNormalisedMetadata
+                                    .topBuyerEthName
+                            }}
+                          </b>
+                        </a>
+                      </div>
+                    </div>
+                    <div
+                      class="cos-gray-text cos-margin-0 cos-no-margin-bottom cos-center-text cos-body-4"
+                    >
+                      {{ "LABELS.TOP_BUYER" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            *ngIf="tabDisplay === tabDisplayModes.DOMAINS"
             fxFlex
             fxLayout="row wrap"
             fxLayoutAlign="start start"
           >
-            <ng-container
-              *ngIf="
-                hasDomainsListLoaded === false &&
-                displayMode === displayModes.CHUNK &&
-                lastDomainSearchResult === undefined
-              "
-            >
-              <ng-container *ngTemplateOutlet="placeHolderTemplate">
+            <ng-container *ngIf="displayMode === displayModes.LINEAR">
+              <ng-container *ngTemplateOutlet="linearDomainTemplateHeader">
               </ng-container>
             </ng-container>
             <ng-container
@@ -1003,29 +945,6 @@
             <ng-container
               *ngIf="
                 hasDomainsListLoaded === true &&
-                displayMode === displayModes.CHUNK
-              "
-            >
-              <ng-container *ngTemplateOutlet="chunkDomainTemplate">
-              </ng-container>
-            </ng-container>
-            <ng-container
-              *ngIf="
-                hasDomainsListLoaded === true &&
-                categoryDomains !== undefined &&
-                domainsListResolving === true &&
-                displayMode === displayModes.CHUNK &&
-                ((lastDomainSearchResult !== undefined &&
-                  lastDomainSearchResult.length > 0) ||
-                  lastDomainSearchResult === undefined)
-              "
-            >
-              <ng-container *ngTemplateOutlet="placeHolderTemplate">
-              </ng-container>
-            </ng-container>
-            <ng-container
-              *ngIf="
-                hasDomainsListLoaded === true &&
                 categoryDomains !== undefined &&
                 domainsListResolving === true &&
                 displayMode === displayModes.AVATAR &&
@@ -1051,6 +970,10 @@
               <ng-container *ngTemplateOutlet="placeHolderFullTemplate">
               </ng-container>
             </ng-container>
+            <ng-container *ngIf="displayMode === displayModes.LINEAR">
+              <ng-container *ngTemplateOutlet="linearDomainTemplateFooter">
+              </ng-container>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -1067,7 +990,6 @@
     >
       <div
         class="cos-pos-absolute co-bookmark cos-padding-1"
-        [style.width]="guideAvatarSize + 5 + 'px'"
         fxLayoutAlign="end end"
       >
         <mat-icon
@@ -1147,6 +1069,55 @@
   </ng-container>
 </ng-template>
 
+<ng-template #linearSalesTemplateHeader>
+  <div
+    class="cos-bg-gray cos-padding-2 cos-fluid-width cos-border-darker cos-no-border-top cos-no-border-left cos-no-border-right cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right cos-pointer"
+  >
+    <div fxLayoutGap="15px" fxLayoutAlign="start center">
+      <div
+        fxFlex="25"
+        fxLayoutAlign="start center"
+        fxLayoutGap="10px"
+        class="cos-gray-text"
+      >
+        {{ "LABELS.SALES_ACTIVITY" | translate }}
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #linearDomainTemplateHeader>
+  <div
+    class="cos-bg-gray cos-padding-2 cos-fluid-width cos-border-darker cos-no-border-top cos-no-border-left cos-no-border-right cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right cos-pointer"
+  >
+    <div fxLayoutGap="15px" fxLayoutAlign="center center">
+      <div
+        fxFlex="25"
+        fxLayoutAlign="start center"
+        fxLayoutGap="10px"
+        class="cos-gray-text"
+      >
+        {{ "LABELS.DOMAIN" | translate }}
+      </div>
+      <div fxFlex fxLayoutAlign="center center" class="cos-disappear-on-mobile">
+        <span class="cos-gray-text">
+          {{ "LABELS.REGISTRATION_DATE" | translate }}
+        </span>
+      </div>
+      <div fxFlex fxLayoutAlign="center center" class="cos-disappear-on-mobile">
+        <span class="cos-gray-text">
+          {{ "LABELS.EXPIRATION_DATE" | translate }}
+        </span>
+      </div>
+      <div fxFlex></div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #linearDomainTemplateFooter>
+  <div
+    class="cos-bg-gray cos-padding-2 cos-fluid-width cos-no-border-right cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right cos-pointer"
+  ></div>
+</ng-template>
+
 <ng-template #linearDomainTemplate>
   <ng-container *ngFor="let d of filterSearchDomains()">
     <div
@@ -1160,7 +1131,7 @@
         [value]="d.gracePeriodPercent"
       ></mat-progress-bar>
       <div
-        class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+        class="co-bulk-search-item cos-padding-1 cos-overflow-hidden cos-bg-gray"
         [ngClass]="
           d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
             ? ''
@@ -1187,89 +1158,27 @@
         </div>
         <div
           fxFlex
-          fxLayoutAlign="start center"
+          fxLayoutAlign="center center"
           class="cos-disappear-on-mobile"
         >
-          <span class="cos-gray-text">
-            {{ "LABELS.REGISTRATION_DATE" | translate }}:&nbsp;
-          </span>
           {{ d.registrationDate | timeAgo }}
         </div>
         <div
           fxFlex
-          fxLayoutAlign="start center"
+          fxLayoutAlign="center center"
           class="cos-disappear-on-mobile"
         >
-          <span class="cos-gray-text">
-            {{ "LABELS.EXPIRATION_DATE" | translate }}:&nbsp;
-          </span>
           {{ d.expiry | timeAgo }}
         </div>
         <a
+          fxFlex
+          fxLayoutAlign="end center"
           href="{{ getDomainLink(d.labelName + '.eth') }}"
           target="_blank"
           class="cos-body-3"
         >
           {{ "BUTTON.VIEW_DETAILS" | translate }}
         </a>
-      </div>
-    </div>
-  </ng-container>
-</ng-template>
-
-<ng-template #chunkDomainTemplate>
-  <ng-container *ngFor="let d of filterSearchDomains()">
-    <div class="co-bulk-search-item-container">
-      <mat-progress-bar
-        *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
-        class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
-        mode="determinate"
-        [value]="d.gracePeriodPercent"
-      ></mat-progress-bar>
-      <div
-        [ngClass]="
-          d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
-            ? ''
-            : 'co-bulk-search-item-fill-progress-bar-gap'
-        "
-        fxLayoutGap="15px"
-        fxLayoutAlign="center center"
-        class="co-bulk-search-item cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
-      >
-        <div
-          fxFlex
-          fxLayout="column"
-          fxLayoutGap="5px"
-          fxLayoutAlign="center start"
-        >
-          <div fxFlex="0 0 auto" class="cos-body-2">
-            <a (click)="goToDomain(d.labelName)">
-              <b> {{ pretty(d.labelName) }}.eth </b>
-            </a>
-          </div>
-          <div fxFlex="0 0 auto" fxLayout="row" fxLayoutGap="5px">
-            <div class="cos-body-5 cos-gray-text">Reg.</div>
-            <div class="cos-body-5">{{ d.registrationDate | timeAgo }}</div>
-          </div>
-          <div fxFlex></div>
-        </div>
-        <mat-icon
-          *ngIf="domainValid(d.labelName) === false"
-          color="accent"
-          class="cos-small-icon cos-pointer"
-          >warning</mat-icon
-        >
-        <mat-icon
-          fxFlex="24px"
-          (click)="toggleBookmark(d)"
-          class="cos-icon-can-activate"
-          [ngClass]="
-            bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
-              ? 'mat-primary'
-              : ''
-          "
-          >bookmark_add</mat-icon
-        >
       </div>
     </div>
   </ng-container>
@@ -1361,18 +1270,6 @@
   </ng-container>
 </ng-template>
 
-<ng-template #placeHolderTemplate>
-  <ng-container *ngFor="let d of placeholders">
-    <div class="co-bulk-search-item-container cos-placeholder">
-      <div
-        fxLayoutGap="15px"
-        fxLayoutAlign="center center"
-        class="co-bulk-search-item cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
-      ></div>
-    </div>
-  </ng-container>
-</ng-template>
-
 <ng-template #placeHolderFullTemplate>
   <ng-container *ngFor="let d of placeholders">
     <div
@@ -1396,7 +1293,7 @@
       <div
         fxLayoutGap="15px"
         fxLayoutAlign="center center"
-        class="co-bulk-search-item cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+        class="co-bulk-search-item cos-no-border cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
       ></div>
     </div>
   </ng-container>

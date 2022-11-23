@@ -63,7 +63,8 @@ export default {
     DOWNLOAD_LIST: "Файлы для скачивания",
     SHARE_LIST: "Поделиться списком",
     MORE: "Еще",
-    CHANGE: "Редактировать"
+    CHANGE: "Редактировать",
+    TRY_AGAIN: "Попробовать снова"
   },
   HEADER: {
     ABOUT: "О нас",
@@ -86,7 +87,8 @@ export default {
     SETUP_REQUIRED: "Требуется настройка",
     MANAGE_DOMAINS: "Управление доменами",
     APPROVE: "Утверждено",
-    FEATURE_DISABLED: "Функция отключена"
+    FEATURE_DISABLED: "Функция отключена",
+    ERROR: "Ошибка"
   },
   IPFS: {
     INITIALISING: "Запуск p2p",
@@ -120,6 +122,8 @@ export default {
     FIVE_YEARS: "5 года"
   },
   LABELS: {
+    ANALYTICS: "Аналитика",
+    AN_ERROR_HAS_OCCURED: "Произошла ошибка при обработке вашего запроса.",
     STOREFRONT_READY_TO_DEPLOY: "Витрина магазина готова к развертыванию. Магазин будет находиться в:",
     ACCESS_STOREFRONT: "Теперь вы можете получить доступ к магазину здесь:",
     BUY_ON: "Купить на",

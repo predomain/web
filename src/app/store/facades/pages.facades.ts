@@ -96,8 +96,14 @@ export class PagesFacadeService {
     this.store.dispatch(new PagesSetMode(pageMode));
   }
 
-  setPageCriticalError(errorOccured: boolean, redirect = true) {
-    this.store.dispatch(new PagesSetCriticalError(errorOccured, redirect));
+  setPageCriticalError(
+    errorOccured: boolean,
+    redirect = true,
+    openDialog = false
+  ) {
+    this.store.dispatch(
+      new PagesSetCriticalError(errorOccured, redirect, openDialog)
+    );
   }
 
   setRpcProvider(providerData: RPCProviderModel) {

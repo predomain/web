@@ -49,7 +49,11 @@ export class PagesSetVisibility implements Action {
 
 export class PagesSetCriticalError implements Action {
   readonly type = SetPagesCriticalError;
-  constructor(public payload: boolean, public redirect = true) {}
+  constructor(
+    public payload: boolean,
+    public redirect = true,
+    public openDialog = false
+  ) {}
 }
 
 export class PagesSetIpfsError implements Action {

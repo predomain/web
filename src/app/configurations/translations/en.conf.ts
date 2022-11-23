@@ -64,6 +64,7 @@ export default {
     SHARE_LIST: 'Share List',
     MORE: 'More',
     CHANGE: 'Change',
+    TRY_AGAIN: 'Try Again',
   },
   HEADER: {
     ABOUT: 'About',
@@ -87,6 +88,7 @@ export default {
     MANAGE_DOMAINS: 'Manage Domains',
     APPROVE: 'Approve',
     FEATURE_DISABLED: 'Feature Disabled',
+    ERROR: 'Error',
   },
   IPFS: {
     INITIALISING: 'Starting p2p',
@@ -122,6 +124,8 @@ export default {
     FIVE_YEARS: '5 Years',
   },
   LABELS: {
+    ANALYTICS: 'Analytics',
+    AN_ERROR_HAS_OCCURED: 'An error has occured while processing your request.',
     STOREFRONT_READY_TO_DEPLOY:
       'Your store front is ready to be deployed. Your store will be located at:',
     ACCESS_STOREFRONT: 'You can now access your store front at:',
