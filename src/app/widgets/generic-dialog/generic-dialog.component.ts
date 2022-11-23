@@ -33,6 +33,7 @@ export class GenericDialogComponent implements OnInit {
       textAlign?: string;
       buttonTitle?: string;
       buttonLink?: string;
+      buttonExec?: any;
       buttonLinkPageRef?: PagesEnum;
       goToOnExit?: string;
       goToOnExitPage?: PagesEnum;
@@ -103,6 +104,9 @@ export class GenericDialogComponent implements OnInit {
 
   goToLink() {
     this.closedByButton = true;
+    if (this.data.buttonExec !== undefined) {
+      this.data.buttonExec();
+    }
     if (this.data.buttonLink !== undefined) {
       this.pagesFacadeService.gotoPageRoute(
         this.data.buttonLink,

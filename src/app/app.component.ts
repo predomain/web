@@ -8,11 +8,7 @@ import {
   DoCheck,
 } from '@angular/core';
 import { MatTab } from '@angular/material/tabs';
-import {
-  ActivatedRoute,
-  ActivatedRouteSnapshot,
-  Router,
-} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PagesFacadeService } from './store/facades/pages.facades';
 import { NetworkStatusEnum } from './models/states/pages-interfaces/network-status.enum';
 import { IconRegistryService, UserSessionService } from './services';

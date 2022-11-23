@@ -66,6 +66,7 @@ const globalAny: any = global;
 
 @Injectable()
 export class PagesEffects {
+  errorDialogSubscription;
   constructor(
     protected actions$: Actions,
     protected route: Router,
@@ -233,8 +234,37 @@ export class PagesEffects {
     () =>
       this.actions$.pipe(
         ofType<PagesSetCriticalError>(SetPagesCriticalError),
-        filter((action) => action.redirect === true),
         map((action) => {
+          if (action.openDialog === true) {
+            if (this.errorDialogSubscription) {
+              this.errorDialogSubscription.unsubscribe();
+            }
+            const dialogRef = this.dialog.open(GenericDialogComponent, {
+              data: {
+                titleText: 'HEADER.ERROR',
+                subText: 'LABELS.AN_ERROR_HAS_OCCURED',
+                lightColour: false,
+                textAlign: 'center',
+                buttonTitle: 'BUTTON.TRY_AGAIN',
+                buttonExec: () => {
+                  window.location.reload();
+                },
+              },
+              panelClass: 'cos-generic-dialog',
+            });
+            this.errorDialogSubscription =
+              dialogRef.componentInstance.yesNoButton.subscribe((r) => {
+                if (r === false) {
+                  dialogRef.close();
+                  return;
+                }
+                window.location.reload();
+                dialogRef.close();
+              });
+          }
+          if (action.redirect === false) {
+            return;
+          }
           this.route.navigateByUrl('not-found');
           return;
         }),

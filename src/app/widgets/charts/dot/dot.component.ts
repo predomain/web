@@ -54,11 +54,15 @@ export class DotComponent {
       scales: {
         x: {
           grid: {
-            color: '#272c30',
+            color: '#121619',
             borderWidth: 0,
           },
           ticks: {
-            maxTicksLimit: 15,
+            color: '#ffffff',
+            maxTicksLimit:
+              this.chartMetadata.maxTicks === undefined
+                ? 15
+                : this.chartMetadata.maxTicks,
             maxRotation: 0,
             minRotation: 0,
             font: {
@@ -77,10 +81,11 @@ export class DotComponent {
         y: {
           beginAtZero: true,
           grid: {
-            color: '#4a4a4a',
+            color: '#4c505c',
             borderWidth: 0,
           },
           ticks: {
+            color: '#ffffff',
             callback: function (value, index, ticks) {
               return (value as number).toFixed(3) + ' ETH';
             },
@@ -105,8 +110,9 @@ export class DotComponent {
               minute: '2-digit',
             })
           ),
+
         pointRadius: this.data.map((d) => d.radius),
-        backgroundColor: '#48b6f0',
+        backgroundColor: 'transparent',
         borderColor: '#48b6f0',
         hoverBackgroundColor: 'lawngreen',
         hoverBorderColor: 'lawngreen',

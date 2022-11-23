@@ -20,8 +20,9 @@
 }
 .co-category {
   box-shadow: var(--co-box-shadow) !important;
-  margin-bottom: var(--co-margin-1);
-  width: calc(33% - 9px);
+  margin-bottom: var(--co-margin-2);
+  width: calc(33% - 16px);
+  margin-right: 30px !important;
   &:hover {
     box-shadow: 0px 0px 2px 2px var(--co-main-color) !important;
   }
@@ -38,9 +39,9 @@
     margin-bottom: 10px !important;
   }
   @media only screen and (min-width: 801px) and (max-width: 1000px) {
-    width: calc(50% - 10px) !important;
+    width: calc(50% - 16px) !important;
     &:nth-of-type(3n) {
-      margin-right: 20px !important;
+      margin-right: 30px !important;
     }
     &:nth-of-type(2n) {
       margin-right: 0px !important;
@@ -247,7 +248,6 @@
   margin-top: -60px;
   margin-right: 45px;
   padding: 20px;
-  background: var(--co-button-disabled-color);
   z-index: 1;
   @media only screen and (max-width: 1000px) {
     display: none;

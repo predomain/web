@@ -63,7 +63,8 @@ export default {
     DOWNLOAD_LIST: "下载列表",
     SHARE_LIST: "分享列表",
     MORE: "更多",
-    CHANGE: "找零"
+    CHANGE: "找零",
+    TRY_AGAIN: "再试一次"
   },
   HEADER: {
     ABOUT: "关于",
@@ -86,7 +87,8 @@ export default {
     SETUP_REQUIRED: "需要设置",
     MANAGE_DOMAINS: "管理域",
     APPROVE: "批准",
-    FEATURE_DISABLED: "禁用功能"
+    FEATURE_DISABLED: "禁用功能",
+    ERROR: "错误"
   },
   IPFS: {
     INITIALISING: "正在启动 p2p",
@@ -120,6 +122,8 @@ export default {
     FIVE_YEARS: "5 年"
   },
   LABELS: {
+    ANALYTICS: "分析",
+    AN_ERROR_HAS_OCCURED: "处理您的请求时出错。",
     STOREFRONT_READY_TO_DEPLOY: "您的商店前面已准备好部署。您的商店将位于：",
     ACCESS_STOREFRONT: "您现在可以访问您的店面：",
     BUY_ON: "购买于",

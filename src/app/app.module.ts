@@ -45,6 +45,7 @@ import { environment } from '../environments/environment';
 import { ENSRegistrationEffects } from './store/effects';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ProfileModule } from './modules/profile.module';
 
 @NgModule({
   declarations: [AppComponent, NetworkStatusDialogComponent],

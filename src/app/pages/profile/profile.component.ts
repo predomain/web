@@ -65,6 +65,7 @@ import { PaymentTypesEnum } from 'src/app/models/states/payment-interfaces';
 import { MainHeaderComponent } from 'src/app/widgets/main-header';
 import { FeaturedManagementComponent } from 'src/app/widgets/featured-management';
 import { SetupManagementComponent } from 'src/app/widgets/setup-management';
+import { GenericDialogComponent } from 'src/app/widgets/generic-dialog';
 
 const globalAny: any = global;
 const featureKey = 'predomain_featured';
@@ -103,6 +104,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @ViewChild('fadeTop') fadeTop: any;
   @ViewChild('scrollableContentContainer')
   scrollableContentContainer: ElementRef;
+  @ViewChild('profileContentContainer')
+  profileContentContainer: ElementRef;
   @ViewChild('expiredPicker') expiredPicker: any;
   @ViewChild('registrationPicker') registrationPicker: any;
   @ViewChild('creationPicker') creationPicker: any;
@@ -162,6 +165,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   categoriesDataSubscription;
   saveChangesSubscripton;
   domainListResolutionSubscription;
+  errorDialogSubscription;
 
   constructor(
     public bookmarksService: BookmarksServiceService,
@@ -210,6 +214,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .pipe(
         map((s) => {
           this.pageMode = s;
+          this.domainsListPerPage = this.suitableItemPageWidthForWindow * 10;
         })
       )
       .subscribe();
@@ -225,6 +230,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.errorDialogSubscription) {
+      this.errorDialogSubscription.unsubscribe();
+    }
     if (this.getPageModeSubscription) {
       this.getPageModeSubscription.unsubscribe();
     }
@@ -298,7 +306,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((r) => {
           if (r === false || r === null) {
-            this.pagesFacade.gotoPageRoute('not-found', PagesEnum.NOTFOUND);
             throw false;
           }
           this.userAddress = r;
@@ -387,7 +394,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
               }
               this.pageReset();
               if (retries >= generalConfigurations.maxRPCCallRetries - 1) {
-                this.pagesFacade.setPageCriticalError(true);
+                this.pagesFacade.setPageCriticalError(
+                  true,
+                  false,
+                  this.pageMode === PageModesEnum.DEFAULT
+                );
                 return;
               }
               retries++;
@@ -569,7 +580,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   goToDomain(domain: string) {
     this.pagesFacade.gotoPageRoute(
-      'domain/' +
+      (this.pageMode === PageModesEnum.PROFILE
+        ? 'https://predomaine.eth.limo/#/'
+        : '') +
+        'domain/' +
         this.ensService.performNormalisation(domain).replace(/#⃣/g, '%23') +
         '.eth',
       PagesEnum.DOMAIN
@@ -913,6 +927,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.domainsSelected = [];
   }
 
+  displayDomain(domainHash: string) {
+    if (this.domainsRecentlyTransferred.includes(domainHash) === true) {
+      return false;
+    }
+    return true;
+  }
+
+  calculateProfileWidgetOpacity() {
+    const yPos = this.windowTopScroll;
+    return (1 / 1 - (300 - yPos) / 300).toString();
+  }
+
+  calculateProfileWidgetHeight() {
+    const yPos = this.windowTopScroll;
+    const c = 100 * (1 / 1 - (300 - yPos) / 300);
+    if (c < 0) {
+      return '0px';
+    }
+    if (c > 100) {
+      return '100px';
+    }
+    return c + 'px';
+  }
+
   get fadeTopExist() {
     return this.fadeTop !== undefined;
   }
@@ -1004,30 +1042,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  displayDomain(domainHash: string) {
-    if (this.domainsRecentlyTransferred.includes(domainHash) === true) {
-      return false;
-    }
-    return true;
-  }
-
-  calculateProfileWidgetOpacity() {
-    const yPos = this.windowTopScroll;
-    return (1 / 1 - (300 - yPos) / 300).toString();
-  }
-
-  calculateProfileWidgetHeight() {
-    const yPos = this.windowTopScroll;
-    const c = 100 * (1 / 1 - (300 - yPos) / 300);
-    if (c < 0) {
-      return '0px';
-    }
-    if (c > 100) {
-      return '100px';
-    }
-    return c + 'px';
-  }
-
   get domainsCount() {
     if (this.userDomains === undefined) {
       return undefined;
@@ -1060,7 +1074,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   get isDeviceMobile() {
-    return document.body.clientWidth <= 600;
+    return document.body.clientWidth <= 1000;
   }
 
   get suitableItemPageWidthForWindow() {
@@ -1070,24 +1084,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
       if (windowW <= 600) {
         t = 2;
       }
-      if (windowW > 600 && windowW <= 1200) {
+      if (windowW > 600 && windowW <= 1300) {
         t = 4;
       }
-      t = 5;
-      this.domainsListPerPage = t;
       return t;
     }
     let t = 8;
     if (windowW <= 600) {
       t = 2;
     }
-    if (windowW > 600 && windowW <= 1200) {
+    if (windowW > 600 && windowW <= 1300) {
       t = 4;
     }
-    if (windowW > 1200 && windowW <= 1900) {
+    if (windowW > 1300 && windowW <= 1900) {
       t = 5;
     }
-    this.domainsListPerPage = t;
     return t;
   }
 
@@ -1095,23 +1106,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const windowW = document.body.clientWidth;
     if (this.pageMode === PageModesEnum.PROFILE) {
       if (windowW <= 600) {
-        return (windowW - 60) / 2 - 5;
+        return (windowW - 60) / 2 - 10;
       }
-      if (windowW > 600 && windowW <= 1200) {
-        return (windowW - 60) / 4 - 8;
+      if (windowW > 600 && windowW <= 1300) {
+        return (1300 - 60) / 4 - 16;
       }
-      return (1300 - 350) / 5 - 8;
+      if (windowW > 1300 && windowW <= 1900) {
+        return (1300 - 350) / 5 - 16;
+      }
+      return (1300 - 60) / 5 - 16;
     }
     if (windowW <= 600) {
-      return (windowW - 60) / 2 - 5;
+      return (windowW - 60) / 2 - 10;
     }
-    if (windowW > 600 && windowW <= 1200) {
-      return (windowW - 60) / 4 - 8;
+    if (windowW > 600 && windowW <= 1300) {
+      return (windowW - 60) / 4 - 16;
     }
-    if (windowW > 1200 && windowW <= 1900) {
-      return (windowW - 570) / 5 - 8;
+    if (windowW > 1300 && windowW <= 1900) {
+      return (windowW - 570) / 5 - 16;
     }
-    return ((1900 - 430) / 100) * 12.5 - 9;
+    return ((1900 - 380) / 100) * 12.5 - 18;
   }
 
   get pendingPayments() {
