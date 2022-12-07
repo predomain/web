@@ -122,6 +122,10 @@ export default {
     FIVE_YEARS: "5 года"
   },
   LABELS: {
+    SORT_BY_EXPIRATIONS: "Сортировать по окончанию",
+    SORT_BY_LATEST_REGISTRATIONS: "Сортировать по последним регистрациям",
+    SORT_BY_LONGEST_DURATION: "Сортировать по длинной длительности",
+    PREMIUM: "Премиум",
     ANALYTICS: "Аналитика",
     AN_ERROR_HAS_OCCURED: "Произошла ошибка при обработке вашего запроса.",
     STOREFRONT_READY_TO_DEPLOY: "Витрина магазина готова к развертыванию. Магазин будет находиться в:",
