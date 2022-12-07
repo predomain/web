@@ -122,6 +122,10 @@ export default {
     FIVE_YEARS: "5 年"
   },
   LABELS: {
+    SORT_BY_EXPIRATIONS: "有効期限でソート",
+    SORT_BY_LATEST_REGISTRATIONS: "最新の登録でソート",
+    SORT_BY_LONGEST_DURATION: "期間の長さでソート",
+    PREMIUM: "プレミアム",
     ANALYTICS: "分析",
     AN_ERROR_HAS_OCCURED: "リクエストの処理中にエラーが発生しました。",
     STOREFRONT_READY_TO_DEPLOY: "店舗が配備される準備が整いました。店舗は以下の場所にあります：",

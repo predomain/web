@@ -122,6 +122,10 @@ export default {
     FIVE_YEARS: "5 Ans"
   },
   LABELS: {
+    SORT_BY_EXPIRATIONS: "Trier par expiration",
+    SORT_BY_LATEST_REGISTRATIONS: "Trier par les dernières inscriptions",
+    SORT_BY_LONGEST_DURATION: "Trier par référence la plus longue durée",
+    PREMIUM: 'Premium',
     ANALYTICS: "Analytiques",
     AN_ERROR_HAS_OCCURED: "Une erreur est survenue lors du traitement de votre demande.",
     STOREFRONT_READY_TO_DEPLOY: "La devanture de votre boutique est prête à être déployée. Votre boutique sera située à:",
