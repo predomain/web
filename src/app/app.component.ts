@@ -58,7 +58,10 @@ export class AppComponent implements OnInit, DoCheck, AfterViewInit {
     let routeArr = document.location.href.split('/');
     routeArr = routeArr.slice(4, routeArr.length);
     let primaryDomain;
-    if (document.location.href.indexOf('//localhost') <= -1) {
+    if (
+      document.location.href.indexOf('//localhost') <= -1 &&
+      document.location.href.indexOf(':') <= -1
+    ) {
       primaryDomain = document.location.href.split('https://')[1].split('.')[0];
     }
     if (

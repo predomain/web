@@ -244,7 +244,7 @@
               >:&nbsp;
               <a
                 fxFlex="100px"
-                class="cos-wallet-address-text-cut"
+                class="cos-wallet-address-text-cut cos-main-text"
                 href="/#/profile/{{
                   userDomainOwner === undefined
                     ? 'null'
@@ -339,7 +339,7 @@
             fxFlex="0 0 auto"
             class="cos-padding-2 cos-no-padding-left cos-no-padding-right"
           >
-            <div fxFlex class="cos-body-0">
+            <div fxFlex fxLayoutAlign="start center" class="cos-body-0">
               <b> {{ "LABELS.DOMAIN_HISTORY" | translate }} </b>
             </div>
             <div fxFlex fxLayoutGap="10px" fxLayoutAlign="end center"></div>
@@ -384,6 +384,8 @@
             fxLayout="row wrap"
             fxLayoutAlign="start start"
           >
+            <ng-container *ngTemplateOutlet="linearDomainTemplateHeader">
+            </ng-container>
             <ng-container *ngFor="let e of resolvedEvents">
               <div
                 class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right"
@@ -391,7 +393,7 @@
                 <div
                   fxLayoutGap="15px"
                   fxLayoutAlign="center center"
-                  class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+                  class="co-bulk-search-item cos-padding-1 cos-overflow-hidden cos-bg-gray"
                 >
                   <div
                     fxFlex
@@ -421,7 +423,7 @@
                     [ngClass]="
                       getDomainHistoryRecordActor(e.from).accessible === false
                         ? 'cos-gray-text'
-                        : 'cos-anchor-text'
+                        : 'cos-main-text'
                     "
                     (click)="
                       goToEventActorProfile(
@@ -449,7 +451,7 @@
                     [ngClass]="
                       getDomainHistoryRecordActor(e.to).accessible === false
                         ? 'cos-gray-text'
-                        : 'cos-anchor-text'
+                        : 'cos-main-text'
                     "
                     (click)="
                       goToEventActorProfile(
@@ -476,6 +478,8 @@
                 </div>
               </div>
             </ng-container>
+            <ng-container *ngTemplateOutlet="linearDomainTemplateFooter">
+            </ng-container>
           </div>
         </div>
       </div>
@@ -483,3 +487,32 @@
   </div>
   <app-footer></app-footer>
 </div>
+
+<ng-template #linearDomainTemplateHeader>
+  <div
+    class="cos-bg-gray cos-padding-2 cos-fluid-width cos-border-darker cos-no-border-top cos-no-border-left cos-no-border-right cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right cos-pointer"
+  >
+    <div fxLayoutGap="15px" fxLayoutAlign="center center">
+      <div
+        fxFlex="20px"
+        fxLayoutAlign="start center"
+        fxLayoutGap="10px"
+        class="cos-gray-text"
+      ></div>
+      <div
+        fxFlex
+        fxLayoutAlign="start center"
+        fxLayoutGap="10px"
+        class="cos-gray-text"
+      >
+        {{ "LABELS.DOMAIN" | translate }}
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #linearDomainTemplateFooter>
+  <div
+    class="cos-bg-gray cos-padding-2 cos-fluid-width cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right cos-pointer"
+  ></div>
+</ng-template>

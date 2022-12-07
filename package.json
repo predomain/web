@@ -41,7 +41,7 @@
     "@types/geopattern": "1.2.3",
     "@types/w3c-web-usb": "1.0.5",
     "@walletconnect/client": "1.8.0",
-    "@walletconnect/qrcode-modal": "git+https://github.com/predomain/qrcode-modal.git",
+    "@walletconnect/qrcode-modal": "^1.8.0",
     "aes-js": "3.1.2",
     "angularx-qrcode": "13.0.15",
     "bip39": "3.0.2",

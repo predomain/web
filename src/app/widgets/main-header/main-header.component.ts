@@ -10,8 +10,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import WalletConnect from '@walletconnect/client';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { of, Subject, timer } from 'rxjs';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { generalConfigurations, privatePages } from 'src/app/configurations';

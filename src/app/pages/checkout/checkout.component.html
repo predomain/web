@@ -55,7 +55,9 @@
         "
         class="co-bulk-search-item-container"
         [ngClass]="
-          d.isNotAvailable === true ? 'co-bulk-search-item-not-available' : ''
+          d.isNotAvailable === true && !(d.gracePeriodPercent > 99.99)
+            ? 'co-bulk-search-item-not-available'
+            : ''
         "
       >
         <div
@@ -80,8 +82,18 @@
             target="_blank"
             href="https://predomain.eth.limo/#/domain/{{ d.labelName }}.eth"
             class="cos-body-3"
+            [ngClass]="
+              d.gracePeriodPercent > 99.99
+                ? 'cos-uptrend-text'
+                : 'cos-gray-text'
+            "
           >
-            {{ "BUTTON.VIEW_DETAILS" | translate }}
+            <ng-container *ngIf="!(d.gracePeriodPercent > 99.99)">
+              {{ "LABELS.NOT_AVAILABLE" | translate }}
+            </ng-container>
+            <ng-container *ngIf="d.gracePeriodPercent > 99.99">
+              {{ "LABELS.PREMIUM" | translate }}
+            </ng-container>
           </a>
           <mat-icon
             (click)="removeRegistrations(d.labelName)"
