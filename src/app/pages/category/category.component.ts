@@ -437,7 +437,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
           const domainsResolved = (r as any).registrations
             .filter((d) => {
               const isDomainPastGracePeriod =
-                now > parseInt(d.expiryDate) + 7889400;
+                now >
+                parseInt(d.expiryDate) +
+                  this.ensService.gracePeriodInSeconds +
+                  this.ensService.premiumPeriodInSeconds;
               return (
                 isDomainPastGracePeriod === true || d.domain.labelName !== null
               );
@@ -1021,7 +1024,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     if (windowW <= 1000) {
       return windowW - 60;
     }
-    return this.profileContentContainer.nativeElement.clientWidth - 380;
+    return this.profileContentContainer.nativeElement.clientWidth - 390;
   }
 
   get searchKeyword() {
@@ -1063,14 +1066,14 @@ export class CategoryComponent implements OnInit, OnDestroy {
   get guideAvatarSize() {
     const windowW = document.body.clientWidth;
     if (windowW <= 600) {
-      return (windowW - 60) / 2 - 5;
+      return (windowW - 60) / 2 - 10;
     }
-    if (windowW > 600 && windowW <= 1200) {
-      return (windowW - 60) / 4 - 8;
+    if (windowW > 600 && windowW <= 1300) {
+      return (windowW - 60) / 4 - 16;
     }
-    if (windowW > 1200 && windowW <= 1900) {
-      return (windowW - 570) / 5 - 8;
+    if (windowW > 1300 && windowW <= 1900) {
+      return (windowW - 570) / 5 - 16;
     }
-    return ((1900 - 430) / 100) * 12.5 - 9;
+    return ((1900 - 380) / 100) * 12.5 - 18;
   }
 }

@@ -48,16 +48,6 @@
     min-width: 100% !important;
     max-width: 100% !important;
   }
-  &.co-mode-profile {
-    width: 65% !important;
-    min-width: 1300px !important;
-    max-width: 1500px !important;
-    @media only screen and (max-width: 1000px) {
-      width: 100% !important;
-      min-width: 100% !important;
-      max-width: 100% !important;
-    }
-  }
 }
 .co-bottom-action-container {
   width: 95% !important;
@@ -117,27 +107,6 @@
       width: calc(12.5% - 18px) !important;
       &:nth-of-type(8n) {
         margin-right: 0px !important;
-      }
-    }
-    &.co-mode-profile {
-      width: calc(20% - 18px) !important;
-      @media only screen and (max-width: 600px) {
-        width: calc(50% - 10px) !important;
-        &:nth-of-type(2n) {
-          margin-right: 0px !important;
-        }
-      }
-      @media only screen and (min-width: 601px) and (max-width: 1300px) {
-        width: calc(25% - 16px) !important;
-        &:nth-of-type(4n) {
-          margin-right: 0px !important;
-        }
-      }
-      @media only screen and (min-width: 1301px) {
-        width: calc(20% - 16px) !important;
-        &:nth-of-type(5n) {
-          margin-right: 0px !important;
-        }
       }
     }
   }
@@ -333,28 +302,6 @@
     width: calc(12.5% - 18px) !important;
     &:nth-of-type(8n) {
       margin-right: 0px !important;
-    }
-  }
-
-  &.co-mode-profile {
-    width: calc(20% - 16px) !important;
-    @media only screen and (max-width: 600px) {
-      width: calc(50% - 10px) !important;
-      &:nth-of-type(2n) {
-        margin-right: 0px !important;
-      }
-    }
-    @media only screen and (min-width: 601px) and (max-width: 1300px) {
-      width: calc(25% - 16px) !important;
-      &:nth-of-type(4n) {
-        margin-right: 0px !important;
-      }
-    }
-    @media only screen and (min-width: 1301px) {
-      width: calc(20% - 16px) !important;
-      &:nth-of-type(5n) {
-        margin-right: 0px !important;
-      }
     }
   }
 }

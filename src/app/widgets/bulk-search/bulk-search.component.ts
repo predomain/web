@@ -214,7 +214,9 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      this.bulkSearchResults.filter((d) => d.isNotAvailable === true).length > 0
+      this.bulkSearchResults.filter(
+        (d) => d.isNotAvailable === true && d.gracePeriodPercent < 99.99
+      ).length > 0
     ) {
       this.snackBar.open(
         'Cannot proceed with an already registered domain, pleaes try again.',
@@ -515,7 +517,10 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
           const isDomainPastGracePeriod =
             found === undefined
               ? false
-              : now > parseInt(found.expiryDate) + 7889400;
+              : now >
+                parseInt(found.expiryDate) +
+                  this.ensService.gracePeriodInSeconds +
+                  this.ensService.premiumPeriodInSeconds;
           const fData = {
             id: this.skipNormalisation === true ? f : f.toLowerCase(),
             labelName: this.skipNormalisation === true ? f : f.toLowerCase(),
@@ -555,6 +560,15 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       !generalConfigurations.domainNormalisationRequired.includes(
         this.domainTypeSelected
       );
+  }
+
+  openPremiumPage(domain: string) {
+    const link =
+      environment.networks[environment.defaultChain].ensApp +
+      '/name/' +
+      domain +
+      '.eth/register';
+    window.open(link, '_blank');
   }
 
   getDomainLink(domain: string) {

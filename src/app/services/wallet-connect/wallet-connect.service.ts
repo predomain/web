@@ -23,6 +23,7 @@ export class WalletConnectService {
     public userFacade: UserFacadeService,
     protected ngZone: NgZone
   ) {
+    process['versions'] = { node: undefined } as any;
     const dateNow = new Date().getTime();
     if (globalAny.walletConnect === undefined) {
       const connector = new WalletConnect({

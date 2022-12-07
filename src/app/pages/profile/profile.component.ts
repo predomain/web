@@ -82,6 +82,12 @@ export enum ManageModes {
   TRANSFER,
 }
 
+export enum SortTypes {
+  EXPIRATION,
+  REGISTRATION,
+  DURATION,
+}
+
 export interface ProfileTexts {
   email?: string;
   description?: string;
@@ -117,6 +123,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   pageModes: typeof PageModesEnum = PageModesEnum;
   manageModes: typeof ManageModes = ManageModes;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
+  sortTypes: typeof SortTypes = SortTypes;
   domainTypeSelected: DomainTypeEnum = DomainTypeEnum.ENS;
   pageMode: PageModesEnum = PageModesEnum.DEFAULT;
   hasDomainsListLoaded = false;
@@ -194,8 +201,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.pagesFacade.gotoPageRoute('home', PagesEnum.HOME);
     }
     this.filterForm = new FormGroup({
+      sortBy: new FormControl(SortTypes.DURATION),
       minLength: new FormControl(3),
-      maxLength: new FormControl(20),
+      maxLength: new FormControl(100),
       contains: new FormControl(''),
       expiration: new FormControl(''),
       registration: new FormControl(''),
@@ -370,7 +378,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           if ((r as any).length === 0) {
             this.hasDomainsListLoaded = true;
           }
-          this.userDomains = r;
+          this.userDomains = this.sortDomains(r as any);
           this.domainsOptimisedList = this.ensService.optimiseCategoryNamesList(
             this.userDomains.map((r) => r.labelName)
           );
@@ -510,13 +518,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
       return [];
     }
     if (value === undefined || value === '' || value === null) {
-      return this.userDomainsList.filter((d) => {
+      const toReturn = this.userDomainsList.filter((d) => {
         return this.ensService.extraFilters(
           d,
           this.typesFilter,
           this.filterForm.controls
         );
       });
+      return toReturn;
     }
     const filterValue = (value as any).toLowerCase();
     return this.userDomainsList.filter((d) => {
@@ -532,6 +541,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
       return false;
     });
+  }
+
+  sortDomains(domains: DomainMetadataModel[]) {
+    const now = new Date().getTime();
+    const sorted = domains.sort((a, b) => {
+      if (this.filterForm.controls.sortBy.value === SortTypes.EXPIRATION) {
+        const aExpiry = parseInt(a.expiry);
+        const aExpiryCompare =
+          aExpiry > now ? aExpiry : aExpiry - (now - aExpiry);
+        const bExpiry = parseInt(b.expiry);
+        const bExpiryCompare =
+          bExpiry > now ? bExpiry : bExpiry - (now - bExpiry);
+        return aExpiryCompare - bExpiryCompare;
+      } else if (
+        this.filterForm.controls.sortBy.value === SortTypes.REGISTRATION
+      ) {
+        return parseInt(b.registrationDate) - parseInt(a.registrationDate);
+      } else {
+        const aDuration =
+          parseInt(a.expiry) * 1000 - parseInt(a.registrationDate);
+        const bDuration =
+          parseInt(b.expiry) * 1000 - parseInt(b.registrationDate);
+        return bDuration - aDuration;
+      }
+    });
+    return sorted;
   }
 
   toggleBookmark(domain: DomainMetadataModel) {
@@ -764,10 +799,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   resetLastDomainSearchResult() {
-    this.lastDomainSearchResult = undefined;
-    this.userDomainsList = undefined;
-    this.domainsListPage = 0;
-    this.loadMoreDomains();
+    setTimeout(() => {
+      this.lastDomainSearchResult = undefined;
+      this.userDomainsList = undefined;
+      this.userDomains = this.sortDomains(this.userDomains);
+      this.domainsListPage = 0;
+      this.loadMoreDomains();
+    }, 250);
   }
 
   proceedManagement() {
@@ -951,6 +989,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return c + 'px';
   }
 
+  sortedDomains(domains: DomainMetadataModel[]) {
+    return this.sortDomains(domains);
+  }
+
   get fadeTopExist() {
     return this.fadeTop !== undefined;
   }
@@ -1053,7 +1095,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.domainsListPage * this.domainsListPerPage,
       this.domainsListPage * this.domainsListPerPage + this.domainsListPerPage
     );
-    return this.ensService.shuffleListOfNames(toFeedLazyLoad);
+    return toFeedLazyLoad;
   }
 
   get searchKeyword() {
@@ -1079,16 +1121,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   get suitableItemPageWidthForWindow() {
     const windowW = document.body.clientWidth;
-    if (this.pageMode === PageModesEnum.PROFILE) {
-      let t = 5;
-      if (windowW <= 600) {
-        t = 2;
-      }
-      if (windowW > 600 && windowW <= 1300) {
-        t = 4;
-      }
-      return t;
-    }
     let t = 8;
     if (windowW <= 600) {
       t = 2;
@@ -1104,18 +1136,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   get guideAvatarSize() {
     const windowW = document.body.clientWidth;
-    if (this.pageMode === PageModesEnum.PROFILE) {
-      if (windowW <= 600) {
-        return (windowW - 60) / 2 - 10;
-      }
-      if (windowW > 600 && windowW <= 1300) {
-        return (1300 - 60) / 4 - 16;
-      }
-      if (windowW > 1300 && windowW <= 1900) {
-        return (1300 - 350) / 5 - 16;
-      }
-      return (1300 - 60) / 5 - 16;
-    }
     if (windowW <= 600) {
       return (windowW - 60) / 2 - 10;
     }

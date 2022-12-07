@@ -861,10 +861,42 @@
             fxFlex="0 0 auto"
             class="cos-padding-2 cos-no-padding-left cos-no-padding-right"
           >
-            <div fxFlex class="cos-body-0">
+            <div fxFlex fxLayoutAlign="start center" class="cos-body-0">
               <b> {{ "LABELS.DOMAINS" | translate }} </b>
             </div>
-            <div fxFlex fxLayoutGap="10px" fxLayoutAlign="end center">
+            <div
+              [fxFlex]="isDeviceMobile === true ? 70 : 30"
+              fxLayoutGap="10px"
+              fxLayoutAlign="end center"
+            >
+              <form
+                fxFlex
+                fxLayout="column"
+                fxLayoutAlign="start stretch"
+                [formGroup]="filterForm"
+                class="cos-fluid-width cos-body-4 cos-gray-text"
+              >
+                <mat-form-field
+                  class="co-main-search cos-body-0 cos-input-field-no-label"
+                >
+                  <mat-select
+                    formControlName="sortBy"
+                    fxFlex
+                    class="cos-border-radius-2 mat-select-small"
+                    (selectionChange)="resetLastDomainSearchResult()"
+                  >
+                    <mat-option [value]="sortTypes.EXPIRATION">
+                      {{ "LABELS.SORT_BY_EXPIRATIONS" | translate }}
+                    </mat-option>
+                    <mat-option [value]="sortTypes.REGISTRATION">
+                      {{ "LABELS.SORT_BY_LATEST_REGISTRATIONS" | translate }}
+                    </mat-option>
+                    <mat-option [value]="sortTypes.DURATION">
+                      {{ "LABELS.SORT_BY_LONGEST_DURATION" | translate }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </form>
               <mat-icon
                 class="cos-icon-can-activate"
                 (click)="downloadDomainList()"
@@ -1013,6 +1045,9 @@
         class="cos-pos-absolute co-bookmark cos-padding-1"
         fxLayoutAlign="end end"
         *ngIf="pageMode === pageModes.DEFAULT"
+        [style.margin-left]="
+          guideAvatarSize - (guideAvatarSize / 8 + 42) + 'px'
+        "
       >
         <mat-icon
           *ngIf="manageMode === manageModes.DEFAULT"
@@ -1053,7 +1088,11 @@
           [src]="ensMetadataAPI + hashToBigIntString(d.labelHash) + '/image'"
           [style.width]="'auto'"
           class="co-avatar cos-fluid-height cos-pointer"
-          (click)="goToDomain(d.labelName)"
+          (click)="
+            manageMode !== manageModes.DEFAULT
+              ? addOrRemoveDomainToSelectedList(d)
+              : goToDomain(d.labelName)
+          "
           [enableBorderRadius]="false"
         ></app-preview-image>
       </div>

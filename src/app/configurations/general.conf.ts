@@ -69,6 +69,7 @@ export const generalConfigurations = {
     profile: { required: false, poapId: null, allowedIds: null },
     domain: { required: false, poapId: null, allowedIds: null },
   },
+  walletConnectProjectId: 'e6ea9a05ff995ddee018eb78380cd747',
   wallectConnectSupportedWallets: [
     'rainbow',
     'metamask',

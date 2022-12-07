@@ -22,6 +22,10 @@ const COMMIT_SINGLE_GAS = 55000;
 const RENEW_GAS = 150000;
 const PREPUNK_TIME = 1498176000;
 const PREPUNK_BLOCK = 15010210;
+const THREE_MONTHS_IN_SECONDS_GRACE = 7776000;
+const TWENTY_ONE_DAYS_IN_SECONDS_PREMIUM = 1814400;
+const THREE_MONTHS_IN_MILISECONDS_GRACE = 7776000000;
+const TWENTY_ONE_DAYS_IN_MILISECONDS_PREMIUM = 1814400000;
 
 @Injectable({
   providedIn: 'root',
@@ -261,7 +265,7 @@ export class EnsService {
       isNotAvailable: false,
       domainType: domainType,
       expiry: (parseInt(n.expiryDate) * 1000).toString(),
-      gracePeriodPercent: gPeriod < -100 ? undefined : 100 - Math.abs(gPeriod),
+      gracePeriodPercent: gPeriod > 100 ? undefined : 100 - Math.abs(gPeriod),
       registrationDate: (parseInt(n.registrationDate) * 1000).toString(),
       createdAt: (parseInt(n.domain.createdAt) * 1000).toString(),
     } as DomainMetadataModel;
@@ -311,9 +315,12 @@ export class EnsService {
 
   calculateGracePeriodPercentage(expiryDate: number) {
     const now = new Date().getTime();
-    const gracePeriod = 7889400000;
-    const timeUtilGraceEnds = expiryDate * 1000 + gracePeriod;
-    const gracePeriodExact = timeUtilGraceEnds - now;
+    const gracePeriod = THREE_MONTHS_IN_MILISECONDS_GRACE;
+    const timeUntilGraceEnds = expiryDate * 1000 + gracePeriod;
+    if (timeUntilGraceEnds < now) {
+      return 0;
+    }
+    const gracePeriodExact = timeUntilGraceEnds - now;
     const gInPercent = gracePeriod / 100;
     return gracePeriodExact / gInPercent;
   }
@@ -403,16 +410,19 @@ export class EnsService {
     const regD = this.miscUtils.getDateToStamp(baseFilter.registration.value);
     const maxD = this.miscUtils.getDateToStamp(baseFilter.expiration.value);
     let satisfied;
-    if (minD > 0 && minD !== null && parseInt(d.createdAt, 10) < minD) {
+    if (minD !== null && minD > 0 && parseInt(d.createdAt, 10) < minD) {
       return false;
     }
-    if (regD > 0 && regD !== null && parseInt(d.registrationDate, 10) < regD) {
+    if (regD !== null && regD > 0 && parseInt(d.registrationDate, 10) < regD) {
       return false;
     }
-    if (maxD > 0 && maxD !== null && parseInt(d.expiry, 10) > maxD) {
+    if (maxD !== null && maxD > 0 && parseInt(d.expiry, 10) > maxD) {
       return false;
     }
-    if ((d.labelName.length >= minL && d.labelName.length <= maxL) === false) {
+    if (
+      (this.getNameLength(d.labelName) >= minL &&
+        this.getNameLength(d.labelName) <= maxL) === false
+    ) {
       return false;
     }
     if (
@@ -621,6 +631,20 @@ export class EnsService {
       ];
     }
     return arr;
+  }
+
+  get gracePeriodInMiliSeconds() {
+    return THREE_MONTHS_IN_MILISECONDS_GRACE;
+  }
+  get premiumPeriodInMiliSeconds() {
+    return TWENTY_ONE_DAYS_IN_MILISECONDS_PREMIUM;
+  }
+
+  get gracePeriodInSeconds() {
+    return THREE_MONTHS_IN_SECONDS_GRACE;
+  }
+  get premiumPeriodInSeconds() {
+    return TWENTY_ONE_DAYS_IN_SECONDS_PREMIUM;
   }
 
   get commitSingleGasCost() {

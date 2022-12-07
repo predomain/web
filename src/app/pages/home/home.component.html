@@ -131,7 +131,7 @@
           </div>
         </mat-form-field>
       </form>
-      <div
+      <!-- <div
         class="co-domain-type-selection cos-body-3 cos-disappear-on-mobile cos-padding-1 cos-pointer"
         fxLayoutAlign="start center"
         fxLayoutGap="10px"
@@ -162,7 +162,7 @@
         >
           {{ tldTitle }} <mat-icon>arrow_drop_down</mat-icon>
         </div>
-      </div>
+      </div> -->
       <div class="cos-body-2 cos-show-on-mobile cos-center-text cos-padding-3">
         <a (click)="mainHeader?.bulksearch?.toggleBulkSearch(true)">
           {{ "LABELS.ADVANCED_MODE" | translate }}
@@ -360,18 +360,19 @@
             </ng-container>
             <div
               *ngFor="let c of categoriesSorted; let i = index"
-              fxLayout="row"
+              fxLayout="column"
               class="co-category cos-border-radius-2 cos-overflow-hidden"
               (click)="openCategory(c)"
             >
               <div>
                 <div
-                  fxLayoutAlign="stretch stretch"
+                  fxLayoutAlign="start start"
                   class="cos-fluid-height cos-fluid-width cos-pointer cos-box-shadow"
                   (click)="openCategory(c)"
                 >
                   <app-preview-image
                     fxFlex
+                    fxFlexAlign="start"
                     [dontLoad]="true"
                     [errored]="true"
                     [loaded]="true"
