@@ -122,6 +122,10 @@ export default {
     FIVE_YEARS: "5 年"
   },
   LABELS: {
+    SORT_BY_EXPIRATIONS: "按过期排序",
+    SORT_BY_LATEST_REGISTRATIONS: "按最新注册排序",
+    SORT_BY_LONGEST_DURATION: "按最长注册时间排序",
+    PREMIUM: "高级版",
     ANALYTICS: "分析",
     AN_ERROR_HAS_OCCURED: "处理您的请求时出错。",
     STOREFRONT_READY_TO_DEPLOY: "您的商店前面已准备好部署。您的商店将位于：",

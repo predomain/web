@@ -122,6 +122,10 @@ export default {
     FIVE_YEARS: "5 Jahre"
   },
   LABELS: {
+    SORT_BY_EXPIRATIONS: "Nach Ablaufdatum sortieren",
+    SORT_BY_LATEST_REGISTRATIONS: "Nach neuesten Anmeldungen sortieren",
+    SORT_BY_LONGEST_DURATION: "Nach längster Reg. Dauer sortieren",
+    PREMIUM: 'Premium',
     ANALYTICS: "Analyse",
     AN_ERROR_HAS_OCCURED: "Bei der Bearbeitung Ihrer Anfrage ist ein Fehler aufgetreten.",
     STOREFRONT_READY_TO_DEPLOY: "Ihre Shop-Front ist bereit zum Aussetzen. Ihr Shop wird sich hier befinden:",

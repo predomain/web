@@ -122,6 +122,10 @@ export default {
     FIVE_YEARS: "5 años"
   },
   LABELS: {
+    SORT_BY_EXPIRATIONS: "Ordenar por vencimientos",
+    SORT_BY_LATEST_REGISTRATIONS: "Ordenar por últimos registros",
+    SORT_BY_LONGEST_DURATION: "Ordenar por duración más larga",
+    PREMIUM: "Prima",
     ANALYTICS: "Análisis",
     AN_ERROR_HAS_OCCURED: "Se ha producido un error al procesar su solicitud.",
     STOREFRONT_READY_TO_DEPLOY: "El frente de su tienda está listo para ser desplegado. Su tienda se ubicará en:",
