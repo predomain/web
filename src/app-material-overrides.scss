@@ -597,7 +597,7 @@
 }
 
 .cdk-overlay-dark-backdrop {
-  background: rgba(0, 0, 0, 0.9) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
 }
 
 .mat-tab-header-pagination {
@@ -946,6 +946,14 @@
 .mat-select {
   height: 47px !important;
   border: solid 2px var(--co-border-color) !important;
+  &.mat-select-small {
+    height: 40px !important;
+    .mat-select-trigger {
+      .mat-select-value {
+        padding: 10px !important;
+      }
+    }
+  }
 }
 .mat-select-panel-wrap {
   .mat-select-panel {

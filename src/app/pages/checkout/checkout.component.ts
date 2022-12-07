@@ -664,7 +664,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           const isDomainPastGracePeriod =
             found === undefined
               ? false
-              : now > parseInt(found.expiryDate) + 7889400;
+              : now >
+                parseInt(found.expiryDate) +
+                  this.ensService.gracePeriodInSeconds +
+                  this.ensService.premiumPeriodInSeconds;
           const fData = {
             labelName: f.toLowerCase(),
             isNotAvailable:
@@ -682,7 +685,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               parseInt(fData.expiry, 10)
             );
             fData.gracePeriodPercent =
-              gPeriod < -100 || isDomainPastGracePeriod === true
+              gPeriod > 100 || isDomainPastGracePeriod === true
                 ? 0
                 : 100 - Math.abs(gPeriod);
           }

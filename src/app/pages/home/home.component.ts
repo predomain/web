@@ -15,6 +15,7 @@ import { EnsService } from 'src/app/services/ens';
 import {
   CategoryFacadeService,
   PagesFacadeService,
+  PaymentFacadeService,
   UserFacadeService,
 } from 'src/app/store/facades';
 import { MainHeaderComponent } from 'src/app/widgets/main-header';
@@ -31,6 +32,7 @@ import {
   PageModesEnum,
   PagesEnum,
 } from 'src/app/models/states/pages-interfaces';
+import { PaymentStateModel } from 'src/app/models/states/payment-interfaces';
 
 const globalAny: any = global;
 @Component({
@@ -69,12 +71,14 @@ export class HomeComponent implements OnDestroy, OnInit {
     timestamp: number;
   }[] = [];
   blogs;
+  paymentState: PaymentStateModel;
   currentUserData: UserModel;
   mainSearchForm: FormGroup;
   donationBoxOpen = true;
   getBlogsListSubscription;
   getRootVolumeSubscription;
   userStateSubscription;
+  paymentStateSubscription;
   pagesStateSubscription;
 
   constructor(
@@ -87,6 +91,7 @@ export class HomeComponent implements OnDestroy, OnInit {
     protected categoriesDataService: CategoriesDataService,
     protected poapService: PoapService,
     protected pagesFacade: PagesFacadeService,
+    protected paymentFacade: PaymentFacadeService,
     protected detectorRef: ChangeDetectorRef,
     protected ngZone: NgZone,
     public canvasService: CanvasServicesService,
@@ -130,9 +135,19 @@ export class HomeComponent implements OnDestroy, OnInit {
         })
       )
       .subscribe();
+    this.paymentStateSubscription = this.paymentFacade.paymentState$
+      .pipe(
+        map((s) => {
+          this.paymentState = s;
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
+    if (this.paymentStateSubscription) {
+      this.paymentStateSubscription.unsubscribe();
+    }
     if (this.pagesStateSubscription) {
       this.pagesStateSubscription.unsubscribe();
     }
@@ -215,6 +230,20 @@ export class HomeComponent implements OnDestroy, OnInit {
     window.open('/#/category/' + category);
   }
 
+  ethToDollar(eth: string) {
+    if (parseFloat(eth) <= 0) {
+      return '$0.00';
+    }
+    if (this.paymentState.ethUsdPrice === undefined) {
+      return '...';
+    }
+    const ethUsdRate = parseFloat(this.paymentState.ethUsdPrice);
+    const ethToConvert = parseFloat(eth);
+    return (
+      '$' + parseFloat((ethToConvert * ethUsdRate).toFixed(2)).toLocaleString()
+    );
+  }
+
   get isCategoryPoapRequired() {
     const poapRequirement = generalConfigurations.poapRequiredTools.category;
     return poapRequirement.required;
@@ -269,6 +298,9 @@ export class HomeComponent implements OnDestroy, OnInit {
       })
       .map((c) => {
         return c.category;
+      })
+      .filter((c) => {
+        return c !== 'p100';
       });
     return sorted;
   }

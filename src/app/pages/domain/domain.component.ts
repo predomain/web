@@ -552,7 +552,7 @@ export class DomainComponent implements OnInit, OnDestroy {
   }
 
   shortenAddress(address: string) {
-    return address.substring(6);
+    return address.substring(0, 6);
   }
 
   get isDeviceMobile() {

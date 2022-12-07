@@ -2,170 +2,244 @@
 <div
   *ngIf="bulkSearchOpen === true"
   fxLayout="column"
-  class="co-bulk-search cos-pos-fixed cos-pos-top-reset cos-pos-left-reset cos-fluid-width cos-fluid-height cos-bg-transparent"
+  fxLayoutAlign="end end"
+  class="co-bulk-search cos-fluid-width cos-pos-fixed cos-pos-top-reset cos-pos-right-reset cos-bg-transparent"
 >
   <div
-    class="co-bulk-search-header-fade cos-fluid-width cos-pos-absolute cos-pos-top-reset cos-pos-left-reset"
-  ></div>
-  <ng-container *ngTemplateOutlet="bulkSearchHeader"></ng-container>
-  <ng-container *ngTemplateOutlet="bulkSearchContents"></ng-container>
-  <ng-container *ngTemplateOutlet="additionalTools"></ng-container>
+    fxflex
+    fxLayoutGap="20px"
+    fxLayout="column"
+    class="co-bulk-search-container cos-fluid-height cos-bg-faded-darker-gray cos-border-radius-2 cos-box-shadow"
+  >
+    <div
+      fxLayout="column"
+      class="co-bulk-search-header-fade cos-fluid-width cos-pos-absolute cos-pos-top-reset cos-pos-left-reset"
+    ></div>
+    <ng-container *ngTemplateOutlet="bulkSearchHeader"></ng-container>
+    <ng-container *ngTemplateOutlet="bulkSearchContents"></ng-container>
+    <ng-container *ngTemplateOutlet="additionalTools"></ng-container>
+    <div
+      *ngIf="bulkSearchBookmarksShow === false"
+      class="cos-fluid-width cos-padding-2 cos-no-padding-top"
+    >
+      <button
+        mat-button
+        (click)="goToRegistration()"
+        class="cos-fluid-width cos-body-3"
+        [disabled]="registrationCount === 0"
+      >
+        {{ "LABELS.PROCEED_TO_REGISTRATION" | translate }}
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- BULK SEARCH CONTENTS -->
 <ng-template #bulkSearchContents>
-  <div
-    fxFlex
-    fxLayout="row wrap"
-    fxLayoutGap="10px"
-    [fxLayoutAlign]="
-      bulkSearchComplete === false && bulkSearchBookmarksShow === false
-        ? 'start stretched'
-        : 'start start'
-    "
-    class="co-bulk-search-results cos-overflow-y cos-padding-3 cos-fluid-width cos-fluid-height"
-  >
+  <div class="cos-overflow-y cos-fluid-width cos-fluid-height">
     <div
-      *ngIf="bulkSearchComplete === false && bulkSearchBookmarksShow === false"
       fxFlex
-      class="co-bulk-search-loading cos-fluid-width cos-fluid-height"
-      fxLayoutAlign="center center"
-    >
-      <div fxFlex="0 0 auto">
-        <app-custom-spinner
-          [spinnerText]="'SPINNER.PERFORMING_SEARCH'"
-          [spinnerSize]="150"
-          [mode]="spinnerModes.LOADING"
-          [customIcon]="'spin'"
-        >
-        </app-custom-spinner>
-      </div>
-    </div>
-    <div
-      *ngIf="
-        (bulkSearchComplete === true &&
-          bulkSearchAvailableOnly === true &&
-          bulkSearchAvailableCount === 0 &&
-          bulkSearchBookmarksShow === false &&
-          registrationListOpen === false) ||
-        (bulkSearchBookmarksShow === true &&
-          bulkSearchComplete === true &&
-          countBookmarks() === 0) ||
-        (registrationListOpen === true &&
-          bulkSearchComplete === true &&
-          countRegistrations() === 0)
+      fxLayout="row wrap"
+      [fxLayoutAlign]="
+        bulkSearchComplete === false && bulkSearchBookmarksShow === false
+          ? 'start stretched'
+          : 'start start'
       "
-      fxFlex
-      class="co-bulk-search-loading cos-fluid-width cos-fluid-height"
-      fxLayoutAlign="center center"
+      class="co-bulk-search-results cos-padding-2 cos-no-padding-top cos-no-padding-bottom"
     >
-      <div fxFlex="0 0 auto">
-        <app-custom-spinner
-          [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
-          [spinnerSize]="150"
-          [mode]="spinnerModes.LOADING"
-          [customIcon]="'llayers'"
-        >
-        </app-custom-spinner>
-      </div>
-    </div>
-    <ng-container *ngFor="let d of bulkSearchResults">
       <div
         *ngIf="
-          (bulkSearchAvailableOnly === true && d.isNotAvailable === false) ||
-          bulkSearchAvailableOnly === false
+          bulkSearchComplete === false && bulkSearchBookmarksShow === false
         "
-        class="co-bulk-search-item-container"
-        [ngClass]="
-          d.isNotAvailable === true ? 'co-bulk-search-item-not-available' : ''
-        "
+        fxFlex
+        class="co-bulk-search-loading cos-fluid-width cos-fluid-height"
+        fxLayoutAlign="center center"
       >
-        <mat-progress-bar
-          *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
-          class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
-          mode="determinate"
-          [value]="d.gracePeriodPercent"
-        ></mat-progress-bar>
-        <div
-          class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
-          [ngClass]="
-            d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
-              ? ''
-              : bulkSearchItemLogo
-          "
-          fxLayoutGap="15px"
-          fxLayoutAlign="center center"
-        >
-          <div
-            fxFlex
-            fxLayoutAlign="start center"
-            class="cos-wallet-address-text-cut"
+        <div fxFlex="0 0 auto">
+          <app-custom-spinner
+            [spinnerText]="'SPINNER.PERFORMING_SEARCH'"
+            [spinnerSize]="150"
+            [mode]="spinnerModes.LOADING"
+            [customIcon]="'spin'"
           >
-            {{ pretty(d.labelName) }}{{ nameExtension }}
-          </div>
-          <a
-            *ngIf="
-              d.isNotAvailable === true &&
-              registrationListOpen === false &&
-              canDomainTypeBeRegistered === true
-            "
-            href="{{ getDomainLink(d.labelName + '.eth') }}"
-            target="_blank"
-            class="cos-body-3"
-          >
-            {{ "BUTTON.VIEW_DETAILS" | translate }}
-          </a>
-          <span
-            *ngIf="
-              canDomainTypeBeRegistered === false && d.isNotAvailable === true
-            "
-            class="cos-gray-text"
-          >
-            {{ "LABELS.NOT_AVAILABLE" | translate }}
-          </span>
-          <mat-icon
-            (click)="toggleBookmark(d)"
-            [color]="
-              bookmarksService.isDomainBookmarked(
-                bulkSearchBookmarks,
-                d.labelName
-              )
-                ? 'primary'
-                : ''
-            "
-            fxFlex="24px"
-            class="cos-icon-can-activate"
-            >bookmark_add</mat-icon
-          >
-          <mat-icon
-            *ngIf="
-              canDomainTypeBeRegistered === true &&
-              (d.isNotAvailable === false || registrationListOpen === true)
-            "
-            (click)="
-              registrationService.isDomainOnRegistrationList(
-                registrationDomains,
-                d.labelName
-              ) === true
-                ? removeRegistrations(d.labelName)
-                : addToRegistration(d)
-            "
-            [color]="
-              registrationService.isDomainOnRegistrationList(
-                registrationDomains,
-                d.labelName
-              ) === true && registrationListOpen === false
-                ? 'primary'
-                : ''
-            "
-            fxFlex="24px"
-            class="cos-icon-can-activate"
-          >
-            {{ registrationListOpen === true ? "clear" : "shopping_cart" }}
-          </mat-icon>
+          </app-custom-spinner>
         </div>
       </div>
-    </ng-container>
+      <div
+        *ngIf="
+          (bulkSearchComplete === true &&
+            bulkSearchAvailableOnly === true &&
+            bulkSearchAvailableCount === 0 &&
+            bulkSearchBookmarksShow === false &&
+            registrationListOpen === false) ||
+          (bulkSearchBookmarksShow === true &&
+            bulkSearchComplete === true &&
+            countBookmarks() === 0) ||
+          (registrationListOpen === true &&
+            bulkSearchComplete === true &&
+            countRegistrations() === 0)
+        "
+        fxFlex
+        class="co-bulk-search-loading cos-fluid-width cos-fluid-height"
+        fxLayoutAlign="center center"
+      >
+        <div fxFlex="0 0 auto">
+          <app-custom-spinner
+            [spinnerText]="'SPINNER.NO_DATA_TO_DISPLAY'"
+            [spinnerSize]="150"
+            [mode]="spinnerModes.LOADING"
+            [customIcon]="'llayers'"
+          >
+          </app-custom-spinner>
+        </div>
+      </div>
+      <ng-container *ngFor="let d of bulkSearchResults">
+        <div
+          *ngIf="
+            (bulkSearchAvailableOnly === true && d.isNotAvailable === false) ||
+            bulkSearchAvailableOnly === false
+          "
+          class="co-bulk-search-item-container"
+          [ngClass]="
+            d.isNotAvailable === true ? 'co-bulk-search-item-not-available' : ''
+          "
+        >
+          <mat-progress-bar
+            *ngIf="
+              d.gracePeriodPercent !== undefined &&
+              d.gracePeriodPercent > 0 &&
+              !(d.gracePeriodPercent > 99.99)
+            "
+            class="co-bulk-search-item-expiration-bar cos-hazard-progress-bar"
+            mode="determinate"
+            [value]="d.gracePeriodPercent"
+          ></mat-progress-bar>
+          <div
+            class="co-bulk-search-item cos-padding-1 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+            [ngClass]="
+              d.gracePeriodPercent !== undefined &&
+              d.gracePeriodPercent > 0 &&
+              !(d.gracePeriodPercent > 99.99)
+                ? ''
+                : bulkSearchItemLogo
+            "
+            fxLayoutGap="15px"
+            fxLayoutAlign="center center"
+          >
+            <div
+              fxFlex
+              fxLayoutAlign="start center"
+              class="cos-wallet-address-text-cut"
+            >
+              {{ pretty(d.labelName) }}{{ nameExtension }}
+            </div>
+            <a
+              *ngIf="
+                d.isNotAvailable === true && canDomainTypeBeRegistered === true
+              "
+              href="{{ getDomainLink(d.labelName + '.eth') }}"
+              target="_blank"
+              class="cos-body-3"
+              [ngClass]="
+                d.gracePeriodPercent > 99.99
+                  ? 'cos-uptrend-text'
+                  : 'cos-gray-text'
+              "
+            >
+              <ng-container *ngIf="!(d.gracePeriodPercent > 99.99)">
+                {{ "LABELS.NOT_AVAILABLE" | translate }}
+              </ng-container>
+              <ng-container *ngIf="d.gracePeriodPercent > 99.99">
+                {{ "LABELS.PREMIUM" | translate }}
+              </ng-container>
+            </a>
+            <span
+              *ngIf="
+                canDomainTypeBeRegistered === false && d.isNotAvailable === true
+              "
+              class="cos-gray-text"
+            >
+              {{ "LABELS.NOT_AVAILABLE" | translate }}
+            </span>
+            <mat-icon
+              (click)="toggleBookmark(d)"
+              [color]="
+                bookmarksService.isDomainBookmarked(
+                  bulkSearchBookmarks,
+                  d.labelName
+                )
+                  ? 'primary'
+                  : ''
+              "
+              fxFlex="24px"
+              class="cos-icon-can-activate"
+              >bookmark_add</mat-icon
+            >
+            <ng-container *ngIf="d.gracePeriodPercent > 99.99">
+              <mat-icon
+                *ngIf="
+                  canDomainTypeBeRegistered === true &&
+                  (d.isNotAvailable === false ||
+                    d.gracePeriodPercent > 99.99 ||
+                    registrationListOpen === true)
+                "
+                (click)="
+                  registrationService.isDomainOnRegistrationList(
+                    registrationDomains,
+                    d.labelName
+                  ) === true
+                    ? removeRegistrations(d.labelName)
+                    : openPremiumPage(d.labelName)
+                "
+                [color]="
+                  registrationService.isDomainOnRegistrationList(
+                    registrationDomains,
+                    d.labelName
+                  ) === true && registrationListOpen === false
+                    ? 'primary'
+                    : ''
+                "
+                fxFlex="24px"
+                class="cos-icon-can-activate"
+              >
+                open_in_new
+              </mat-icon>
+            </ng-container>
+
+            <ng-container *ngIf="!(d.gracePeriodPercent > 99.99)">
+              <mat-icon
+                *ngIf="
+                  canDomainTypeBeRegistered === true &&
+                  (d.isNotAvailable === false ||
+                    d.gracePeriodPercent > 99.99 ||
+                    registrationListOpen === true)
+                "
+                (click)="
+                  registrationService.isDomainOnRegistrationList(
+                    registrationDomains,
+                    d.labelName
+                  ) === true
+                    ? removeRegistrations(d.labelName)
+                    : addToRegistration(d)
+                "
+                [color]="
+                  registrationService.isDomainOnRegistrationList(
+                    registrationDomains,
+                    d.labelName
+                  ) === true && registrationListOpen === false
+                    ? 'primary'
+                    : ''
+                "
+                fxFlex="24px"
+                class="cos-icon-can-activate"
+              >
+                {{ registrationListOpen === true ? "clear" : "shopping_cart" }}
+              </mat-icon>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </ng-template>
 
@@ -220,17 +294,6 @@
         >
           &nbsp;&nbsp;ENS Domains Search&nbsp;&nbsp;
         </div>
-        <div
-          (click)="changeDomainType(domainTypes.LNR)"
-          [ngClass]="
-            domainTypeSelected === domainTypes.LNR
-              ? 'co-selected-domain-type'
-              : ''
-          "
-          class="co-select-domain-type cos-chip-regular cos-padding-0 cos-pointer"
-        >
-          &nbsp;&nbsp;Linagee Names Search&nbsp;&nbsp;
-        </div>
       </div>
       <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start">
         <div fxFlex>{{ "LABELS.ENTER_NAMES_TO_SEARCH" | translate }}...</div>
@@ -255,7 +318,7 @@
         <mat-form-field
           fxFlex
           fxFlexAlign="center"
-          class="cos-body-0 cos-input-field-no-label cos-input-field-large"
+          class="cos-body-0 cos-input-field-no-label"
         >
           <input
             #prefix
@@ -271,7 +334,7 @@
         <mat-form-field
           fxFlex
           fxFlexAlign="center"
-          class="cos-body-0 cos-input-field-no-label cos-input-field-large"
+          class="cos-body-0 cos-input-field-no-label"
         >
           <input
             #suffix
@@ -413,7 +476,7 @@
   <div
     fxLayout="row"
     fxLayoutAlign="stretched stretched"
-    class="co-bulk-search-header-container cos-fluid-width cos-padding-3 cos-body-0"
+    class="co-bulk-search-header-container cos-fluid-width cos-body-0 cos-padding-2 cos-no-padding-bottom"
   >
     <div
       fxLayout="column"
@@ -450,13 +513,6 @@
             {{ "BUTTON.SHOW_AVAILABLE" | translate }}
           </span>
         </mat-slide-toggle>
-        <a
-          *ngIf="
-            registrationListOpen === true && bulkSearchBookmarksShow === false
-          "
-          (click)="goToRegistration()"
-          >{{ "LABELS.PROCEED_TO_REGISTRATION" | translate }}</a
-        >
       </div>
     </div>
     <div
@@ -467,53 +523,9 @@
       class="co-bulk-search-header-bookmark"
     >
       <div fxFlex="0 0 auto" class="cos-body-2">
-        <a
-          class="cos-body-3 cos-disappear-on-mobile"
-          (click)="toggleBulkSearch()"
-          >{{ "BUTTON.CLOSE_WINDOW" | translate }}</a
-        >
-        <a class="cos-body-3 cos-show-on-mobile" (click)="toggleBulkSearch()"
+        <a class="cos-body-3" (click)="toggleBulkSearch()"
           ><mat-icon>close</mat-icon></a
         >
-      </div>
-      <div
-        fxFlex="0 0 auto"
-        fxLayout="row"
-        [fxLayoutAlign]="
-          canDomainTypeBeRegistered === true ? 'end center' : 'end end'
-        "
-        fxLayoutGap="10px"
-        class="cos-fluid-width cos-body-3"
-      >
-        <div
-          fxFlex
-          fxLayout="row"
-          [fxLayoutAlign]="
-            canDomainTypeBeRegistered === true ? 'center center' : 'end end'
-          "
-          fxLayoutGap="10px"
-          class="cos-body-0 cos-pointer"
-          (click)="showBookmarks(false)"
-        >
-          <div>
-            {{ countBookmarks() }}
-          </div>
-          <mat-icon class="cos-icon-can-activate"> bookmark </mat-icon>
-        </div>
-        <div
-          *ngIf="canDomainTypeBeRegistered"
-          fxFlex
-          fxLayout="row"
-          fxLayoutAlign="center center"
-          fxLayoutGap="10px"
-          class="cos-body-0 cos-pointer"
-          (click)="showRegistrations(false)"
-        >
-          <div>
-            {{ countRegistrations() }}
-          </div>
-          <mat-icon class="cos-icon-can-activate"> shopping_cart </mat-icon>
-        </div>
       </div>
     </div>
   </div>
@@ -522,18 +534,19 @@
 <!-- ADDITIONAL TOOLS -->
 <ng-template #additionalTools>
   <div
-    fxLayoutAlign="end start"
+    fxLayoutAlign="center center"
     fxLayoutGap="20px"
-    class="cos-fluid-width cos-box-shadow cos-pos-fixed cos-pos-bottom-reset cos-padding-3 cos-bg-darker-gray"
+    [ngClass]="bulkSearchBookmarksShow === true ? 'cos-padding-2' : ''"
   >
-    <button
-      mat-button
-      class="co-tool-button"
-      *ngIf="registrationListOpen === true || bulkSearchBookmarksShow === true"
-      [disabled]="
+    <a
+      [ngClass]="
         (registrationListOpen === true && countRegistrations() === 0) ||
         (bulkSearchBookmarksShow === true && countBookmarks() === 0)
+          ? 'cos-disabled'
+          : ''
       "
+      class="co-tool-button"
+      *ngIf="registrationListOpen === true || bulkSearchBookmarksShow === true"
       (click)="
         registrationListOpen === true
           ? removeAllRegistrations()
@@ -541,9 +554,8 @@
       "
     >
       {{ "BUTTON.REMOVE_ALL_ITEMS" | translate }}
-    </button>
-    <button
-      mat-button
+    </a>
+    <a
       class="co-tool-button"
       *ngIf="
         registrationListOpen === false &&
@@ -553,9 +565,8 @@
       (click)="addAllToRegistration()"
     >
       {{ "BUTTON.ADD_ALL_TO_CART" | translate }}
-    </button>
-    <button
-      mat-button
+    </a>
+    <a
       class="co-tool-button"
       *ngIf="
         registrationListOpen === false && bulkSearchBookmarksShow === false
@@ -563,22 +574,20 @@
       (click)="addAllToBookmark()"
     >
       {{ "BUTTON.BOOKMARK_ALL" | translate }}
-    </button>
-    <button
-      mat-button
+    </a>
+    <a
       class="co-tool-button cos-disappear-on-mobile"
       *ngIf="registrationListOpen === false && bulkSearchBookmarksShow === true"
       (click)="downloadBookmarks()"
     >
       {{ "BUTTON.DOWNLOAD_LIST" | translate }}
-    </button>
-    <button
-      mat-button
+    </a>
+    <a
       class="co-tool-button cos-show-on-mobile"
       *ngIf="registrationListOpen === false && bulkSearchBookmarksShow === true"
       (click)="shareBookmarks()"
     >
       {{ "BUTTON.SHARE_LIST" | translate }}
-    </button>
+    </a>
   </div>
 </ng-template>

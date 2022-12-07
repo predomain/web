@@ -65,4 +65,5 @@ declare var global: any;
 (window as any).global['chainId'] = undefined;
 (window as any).global['chainAccount'] = undefined;
 (window as any).global['nodeIds'] = {};
+
 (window as any).global.Buffer = require('buffer').Buffer;

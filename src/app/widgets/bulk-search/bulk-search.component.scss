@@ -3,51 +3,62 @@
 }
 
 .co-bulk-search {
-  backdrop-filter: blur(10px);
+  height: 100%;
   z-index: 10000;
-  .co-close-large {
-    width: 30px !important;
-    height: 30px !important;
-    font-size: 30px !important;
+  padding: var(--co-padding-4);
+  @media only screen and (max-width: 1000px) {
+    padding: 0;
   }
-}
 
-.co-bulk-search-header-container {
-  height: 170px;
+  .co-bulk-search-container {
+    width: 500px;
+    border-radius: var(--cos-border-radius-2);
+    @media only screen and (max-width: 1000px) {
+      width: 100%;
+      border-radius: 0;
+    }
+    -webkit-animation: slide-top 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+      forwards;
+    animation: slide-top 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    margin-right: -500px;
+    .co-close-large {
+      width: 30px !important;
+      height: 30px !important;
+      font-size: 30px !important;
+    }
+    @-webkit-keyframes slide-top {
+      0% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+      }
+      100% {
+        -webkit-transform: translateX(-500px);
+        transform: translateX(-500px);
+      }
+    }
+    @keyframes slide-top {
+      0% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+      }
+      100% {
+        -webkit-transform: translateX(-500px);
+        transform: translateX(-500px);
+      }
+    }
+  }
 }
 
 .co-bulk-search-header,
 .co-bulk-search-header-bookmark {
   z-index: 1005;
 }
-.co-bulk-search-header-fade {
-  height: 180px;
-  z-index: 999;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 1) 80%,
-    rgba(0, 0, 0, 0.4) 90%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
 
 .co-bulk-search-item-container {
-  width: calc(25% - 10px);
+  width: 100%;
   height: 70px;
-  margin-bottom: 10px;
+  margin-top: 10px;
 
-  @media only screen and (max-width: 1000px) {
-    width: 100% !important;
-    margin-right: 0 !important;
-  }
-  &.co-bulk-search-item-not-available {
-    .co-bulk-search-item-expiration-bar {
-      opacity: 0.5;
-    }
-    .co-bulk-search-item {
-      opacity: 0.5;
-    }
-  }
   &:hover {
     .co-bulk-search-item-expiration-bar {
       opacity: 1 !important;
@@ -93,15 +104,6 @@
   }
 }
 
-.co-bulk-search-loading {
-  margin-top: -100px;
-}
-
-.co-bulk-search-results {
-  margin-top: -25px;
-  padding-bottom: 120px;
-}
-
 .co-advanced-input-container {
   z-index: 1001;
 
@@ -120,12 +122,6 @@
       max-width: 100%;
       flex: 1;
     }
-  }
-}
-
-.co-tool-button {
-  @media only screen and (max-width: 1000px) {
-    width: 100%;
   }
 }
 

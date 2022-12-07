@@ -4,7 +4,10 @@
   class="co-header-container cos-body-3"
   [ngClass]="
     isDeviceMobile === true
-      ? { 'cos-padding-2': true, 'cos-no-padding-top': true }
+      ? {
+          'cos-padding-2': true,
+          'cos-no-padding-top': true
+        }
       : ''
   "
 >
@@ -15,6 +18,16 @@
     fxLayoutAlign="center center"
     class="cos-pointer cos-body-0"
     (click)="goToHome()"
+    [ngClass]="
+      isDeviceMobile === true
+        ? {
+            'cos-margin-0': true,
+            'cos-no-margin-top': true,
+            'cos-no-margin-bottom': true,
+            'cos-no-margin-right': true
+          }
+        : ''
+    "
   >
     <img src="assets/logo.png" fxFlex="28px" />
     <span class="co-logo cos-disappear-on-mobile"> Predomain </span>

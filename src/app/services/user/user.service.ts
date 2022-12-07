@@ -42,6 +42,11 @@ export class UserService {
         }
       `;
       request(url, query).then((data) => {
+        if ('response' in data && 'error' in data.response) {
+          observer.next(false);
+          observer.complete();
+          return;
+        }
         observer.next(data);
         observer.complete();
       });
