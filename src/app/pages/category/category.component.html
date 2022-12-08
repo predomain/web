@@ -987,21 +987,15 @@
   <ng-container *ngFor="let d of filterSearchDomains()">
     <div
       fxLayout="column"
-      class="co-item-with-avatar cos-pointer cos-bg-light-gray cos-border-radius-2 cos-overflow-hidden"
+      class="co-item-with-avatar cos-pointer cos-bg-gray cos-border-radius-2 cos-overflow-hidden"
     >
-      <div
-        class="cos-pos-absolute co-bookmark cos-padding-1"
-        fxLayoutAlign="end end"
-      >
+      <div class="co-bookmark cos-padding-1" fxLayoutAlign="end end">
         <mat-icon
           (click)="toggleBookmark(d)"
           [ngClass]="
             bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
               ? 'checked'
               : ''
-          "
-          [style.margin-left]="
-            guideAvatarSize - (guideAvatarSize / 8 + 42) + 'px'
           "
           >{{
             bookmarksService.isDomainBookmarked(bookmarks, d.labelName)
@@ -1013,7 +1007,6 @@
       <div
         fxLayout="column"
         class="co-avatar-frame cos-fluid-width cos-overflow-hidden"
-        [style.height]="guideAvatarSize + 'px'"
       >
         <app-preview-image
           [preview]="'assets/img-blank.png'"
@@ -1025,21 +1018,24 @@
           [enableBorderRadius]="false"
         ></app-preview-image>
       </div>
-      <mat-progress-bar
-        *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
-        class="co-bulk-search-item-expiration-bar co-bar-for-avatar cos-hazard-progress-bar cos-no-border-radius"
-        mode="determinate"
-        [value]="d.gracePeriodPercent"
-      ></mat-progress-bar>
       <div
-        class="co-avatar-item-details cos-padding-1"
-        fxLayoutAlign="start center"
+        fxLayout="column"
+        class="co-avatar-item-details"
+        fxLayoutAlign="start start"
+        [style.margin-top]="-((guideAvatarSize / 100) * 6 - 1) + 'px'"
       >
+        <mat-progress-bar
+          *ngIf="d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0"
+          class="co-bulk-search-item-expiration-bar co-bar-for-avatar cos-hazard-progress-bar cos-no-border-radius"
+          mode="determinate"
+          [value]="d.gracePeriodPercent"
+        ></mat-progress-bar>
         <div
           fxFlex
           fxLayout="column"
           fxLayoutGap="5px"
           fxLayoutAlign="center start"
+          class="cos-padding-1"
         >
           <div
             fxFlex="0 0 auto"
@@ -1058,7 +1054,7 @@
         <mat-icon
           *ngIf="domainValid(d.labelName) === false"
           color="accent"
-          class="cos-small-icon cos-pointer"
+          class="cos-small-icon cos-pointer cos-padding-1"
           >warning</mat-icon
         >
       </div>
