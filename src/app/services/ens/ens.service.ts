@@ -265,7 +265,7 @@ export class EnsService {
       isNotAvailable: false,
       domainType: domainType,
       expiry: (parseInt(n.expiryDate) * 1000).toString(),
-      gracePeriodPercent: gPeriod > 100 ? undefined : 100 - Math.abs(gPeriod),
+      gracePeriodPercent: gPeriod > 100 ? 0 : 100 - Math.abs(gPeriod),
       registrationDate: (parseInt(n.registrationDate) * 1000).toString(),
       createdAt: (parseInt(n.domain.createdAt) * 1000).toString(),
     } as DomainMetadataModel;
