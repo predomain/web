@@ -65,27 +65,30 @@ import { PaymentTypesEnum } from 'src/app/models/states/payment-interfaces';
 import { MainHeaderComponent } from 'src/app/widgets/main-header';
 import { FeaturedManagementComponent } from 'src/app/widgets/featured-management';
 import { SetupManagementComponent } from 'src/app/widgets/setup-management';
-import { GenericDialogComponent } from 'src/app/widgets/generic-dialog';
 
 const globalAny: any = global;
 const featureKey = 'predomain_featured';
 
-export enum DisplayModes {
-  CHUNK,
+enum DisplayModes {
   AVATAR,
   LINEAR,
 }
 
-export enum ManageModes {
+enum ManageModes {
   DEFAULT,
   RENEW,
   TRANSFER,
 }
 
-export enum SortTypes {
+enum SortTypes {
   EXPIRATION,
   REGISTRATION,
   DURATION,
+}
+
+enum Tabs {
+  FEATURED,
+  DOMAINS,
 }
 
 export interface ProfileTexts {
@@ -124,6 +127,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   manageModes: typeof ManageModes = ManageModes;
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   sortTypes: typeof SortTypes = SortTypes;
+  tabs: typeof Tabs = Tabs;
   domainTypeSelected: DomainTypeEnum = DomainTypeEnum.ENS;
   pageMode: PageModesEnum = PageModesEnum.DEFAULT;
   hasDomainsListLoaded = false;
@@ -148,6 +152,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     prepunk: false,
     repeating: false,
   };
+  tab = Tabs.DOMAINS;
   showEmojiPicker = false;
   hasPendingPayments = false;
   optimisedCategoryData: any = {};
@@ -157,6 +162,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   categoriesData: CategoriesRootModel;
   pendingTx;
 
+  searchEntryTimer;
   lastDomainSearchResult;
   emojiPanel;
   userDomains;
@@ -259,15 +265,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   pageReset() {
+    this.domainsFeatured = undefined;
     this.hasDomainsListLoaded = false;
     this.profileTexts = {};
     this.userDomainsList = undefined;
     this.userAddress = undefined;
     this.ethNameData = undefined;
+    this.tab = Tabs.DOMAINS;
   }
 
   getCategoriesData() {
-    this.categoriesDataSubscription = this.categoriesFacade.getCategoryState$
+    this.categoriesDataSubscription = this.categoriesFacade.categoryState$
       .pipe(
         switchMap((s) => {
           this.categoriesData = s.categoriesMetadata;
@@ -389,6 +397,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.domainsFeatured = this.processFeatuerdNames(
               this.profileTexts.predomainFeatured
             );
+            this.tab = Tabs.FEATURED;
           }
           this.loadMoreDomains();
           return;
@@ -960,6 +969,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
     );
   }
 
+  performDomainSearch() {
+    if (this.searchEntryTimer) {
+      clearTimeout(this.searchEntryTimer);
+      this.searchEntryTimer = undefined;
+    }
+    this.searchEntryTimer = setTimeout(() => {
+      this.doUpdateInterface();
+      this.resetLastDomainSearchResult();
+    }, 500);
+  }
+
   cancelManagement() {
     this.manageMode = this.manageModes.DEFAULT;
     this.domainsSelected = [];
@@ -979,12 +999,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   calculateProfileWidgetHeight() {
     const yPos = this.windowTopScroll;
-    const c = 100 * (1 / 1 - (300 - yPos) / 300);
+    const idealHeight = 150;
+    const c = idealHeight * (1 / 1 - (300 - yPos) / 300);
     if (c < 0) {
       return '0px';
     }
-    if (c > 100) {
-      return '100px';
+    if (c > idealHeight) {
+      return idealHeight + 'px';
     }
     return c + 'px';
   }

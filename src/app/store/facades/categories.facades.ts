@@ -20,10 +20,10 @@ import { getCategorys, getCategoryState, selectCategory } from '../selectors';
   providedIn: 'root',
 })
 export class CategoryFacadeService {
-  getCategoryState$: Observable<CategoriesStateModel>;
+  categoryState$: Observable<CategoriesStateModel>;
 
   constructor(public store: Store<CategoriesStateModel>) {
-    this.getCategoryState$ = this.store.pipe(select(getCategoryState));
+    this.categoryState$ = this.store.pipe(select(getCategoryState));
   }
 
   startEffects() {

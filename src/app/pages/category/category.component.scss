@@ -17,7 +17,14 @@
   box-shadow: 0 2px 4px -1px rgb(0 0 0 / 10%), 0 4px 5px 0 rgb(0 0 0 / 5%),
     0 1px 10px 0 rgb(0 0 0 / 5%) !important;
 }
-
+.co-banner {
+  height: 260px;
+  .co-category-data {
+    .co-title {
+      font-size: var(--co-font-size-30);
+    }
+  }
+}
 .co-profile-content-container {
   padding-top: 90px;
   width: 90% !important;
@@ -132,9 +139,7 @@
     }
   }
   &.co-linear-item {
-    &.cos-placeholder {
-      margin-right: 0 !important;
-    }
+    margin-right: 0 !important;
   }
 }
 
@@ -336,7 +341,6 @@
     }
   }
 }
-
 .co-bar-chart {
   top: 130px;
 }
@@ -356,10 +360,10 @@
 
 .co-category-thumbnail {
   margin-top: 0;
-  margin-left: -100%;
-  font-size: 750%;
-  width: 100%;
-  height: calc(100% - 5px);
+  margin-left: -200px;
+  font-size: 150px;
+  width: 200px;
+  height: 200px;
   align-items: center;
   justify-content: center;
   display: flex;

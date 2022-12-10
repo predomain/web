@@ -166,7 +166,7 @@ export class HomeComponent implements OnDestroy, OnInit {
   }
 
   subscribeToCategoriesRootVolume() {
-    this.getRootVolumeSubscription = this.categoryFacade.getCategoryState$
+    this.getRootVolumeSubscription = this.categoryFacade.categoryState$
       .pipe(
         map((s) => {
           this.metadata = s.categoriesMetadata;

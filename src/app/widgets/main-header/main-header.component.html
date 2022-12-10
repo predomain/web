@@ -166,13 +166,13 @@
     fxLayoutGap="10px"
     fxLayoutAlign="start start"
     class="cos-body-2 cos-disappear-on-mobile"
+    [matMenuTriggerFor]="categoryMenu"
   >
     <a
       *ngIf="
         show === undefined ||
         (show !== undefined && show.showManagement === true)
       "
-      (click)="goToHome()"
       >{{ "HEADER.CATEGORIES" | translate }}</a
     >
   </div>
@@ -486,6 +486,20 @@
     <mat-icon>logout</mat-icon>
     {{ "BUTTON.DISCONNECT" | translate }}
   </button>
+</mat-menu>
+
+<mat-menu #categoryMenu="matMenu" class="cos-menu" xPosition="after">
+  <ng-container *ngIf="categories !== undefined">
+    <button
+      *ngFor="let c of categories.categories"
+      mat-menu-item
+      (click)="openCategory(c)"
+    >
+      <mat-icon>{{ categories.categoriesThumbnails[c] }}</mat-icon>
+      {{ categories.categoriesTitle[c] }} —
+      {{ categories.categoriesDescription[c] }}
+    </button>
+  </ng-container>
 </mat-menu>
 
 <app-bulk-search #bulksearch [searchKeyword]="searchKeyword"></app-bulk-search>
