@@ -122,6 +122,7 @@ export default {
     FIVE_YEARS: "5 Ans"
   },
   LABELS: {
+    DOWNLOAD_DATA: "Télécharger les Données",
     SORT_BY_EXPIRATIONS: "Trier par expiration",
     SORT_BY_LATEST_REGISTRATIONS: "Trier par les dernières inscriptions",
     SORT_BY_LONGEST_DURATION: "Trier par référence la plus longue durée",
