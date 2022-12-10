@@ -122,6 +122,7 @@ export default {
     FIVE_YEARS: "5 年"
   },
   LABELS: {
+    DOWNLOAD_DATA: "下载数据",
     SORT_BY_EXPIRATIONS: "按过期排序",
     SORT_BY_LATEST_REGISTRATIONS: "按最新注册排序",
     SORT_BY_LONGEST_DURATION: "按最长注册时间排序",

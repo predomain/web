@@ -66,14 +66,14 @@
         #tabHeader
         fxFlex="0 0 auto"
         [ngClass]="hasDomainsListLoaded === false ? 'cos-disabled' : ''"
-        class="cos-bg-neutral cos-border cos-no-border-left cos-no-border-right cos-no-border-top cos-margin-2 cos-no-margin-top cos-no-margin-left cos-no-margin-right"
+        class="cos-bg-neutral cos-border cos-no-border-left cos-no-border-right cos-no-border-top"
       >
         <div
           fxFlex
           fxLayout="row"
           fxLayoutGap="10px"
           class="cos-body-0"
-          [style.height]="isDeviceMobile === true ? '70px' : 'auto'"
+          [style.height]="'60px'"
           [ngClass]="
             isDeviceMobile === true
               ? {
@@ -133,93 +133,88 @@
             {{ "LABELS.ANALYTICS" | translate }}
           </div>
         </div>
-        <div
-          fxFlex="30"
-          fxLayoutGap="15px"
-          fxLayoutAlign="end center"
-          [ngClass]="
-            tabDisplay === tabDisplayModes.ACTIVITY ||
-            hasDomainsListLoaded === false
-              ? 'cos-disabled'
-              : ''
-          "
-          class="cos-disappear-on-mobile cos-padding-1 cos-no-padding-left cos-no-padding-right"
-        >
-          <mat-icon
-            class="cos-icon-can-activate"
-            (click)="downloadDomainList()"
-          >
-            download
-          </mat-icon>
-          <span class="cos-gray-text"> | </span>
-          <mat-icon
-            class="cos-icon-can-activate"
-            [color]="displayMode === displayModes.AVATAR ? 'primary' : ''"
-            (click)="setDisplayMode(displayModes.AVATAR)"
-          >
-            grid_view
-          </mat-icon>
-          <mat-icon
-            class="cos-icon-can-activate"
-            [color]="displayMode === displayModes.LINEAR ? 'primary' : ''"
-            (click)="setDisplayMode(displayModes.LINEAR)"
-          >
-            table_rows
-          </mat-icon>
+      </div>
 
-          <form
-            fxFlex
-            fxLayout="column"
-            fxLayoutAlign="start stretch"
-            [formGroup]="filterForm"
-            class="cos-fluid-width cos-body-4 cos-gray-text"
+      <div
+        fxFlex="30"
+        fxLayoutGap="15px"
+        fxLayoutAlign="end center"
+        [ngClass]="
+          tabDisplay === tabDisplayModes.ACTIVITY ||
+          hasDomainsListLoaded === false
+            ? 'cos-disabled'
+            : ''
+        "
+        class="cos-disappear-on-mobile cos-padding-2 cos-no-padding-left cos-no-padding-right"
+      >
+        <form
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+          [formGroup]="filterForm"
+          class="cos-fluid-width cos-body-4 cos-gray-text"
+        >
+          <mat-form-field
+            class="co-main-search cos-body-0 cos-input-field-no-label"
           >
-            <mat-form-field
-              class="co-main-search cos-body-0 cos-input-field-no-label"
+            <input
+              class="cos-fluid-width cos-bg-darker-gray"
+              matInput
+              type="text"
+              autocomplete="off"
+              maxlength="50"
+              placeholder="{{ 'LABELS.SEARCH' | translate }}..."
+              formControlName="contains"
+              (input)="performDomainSearch()"
+            />
+            <mat-icon
+              *ngIf="
+                categoryApiData !== undefined && categoryApiData.emojis === true
+              "
+              class="cos-small-icon cos-icon-can-activate"
+              (click)="toggleEmojiPicker(); $event.stopPropagation()"
+              matSuffix
             >
-              <input
-                class="cos-fluid-width cos-bg-darker-gray"
-                matInput
-                type="text"
-                autocomplete="off"
-                maxlength="50"
-                placeholder="{{ 'LABELS.SEARCH' | translate }}..."
-                formControlName="contains"
-                (input)="performDomainSearch()"
-              />
-              <mat-icon
-                *ngIf="
-                  categoryApiData !== undefined &&
-                  categoryApiData.emojis === true
-                "
-                class="cos-small-icon cos-icon-can-activate"
-                (click)="toggleEmojiPicker(); $event.stopPropagation()"
-                matSuffix
-              >
-                sentiment_satisfied
-              </mat-icon>
-              <emoji-mart
-                id="emoji-mart"
-                *ngIf="showEmojiPicker"
-                (emojiSelect)="addEmojiToFilter($event)"
-                (click)="$event.stopPropagation()"
-                title="Select emoji..."
-                class="emoji-mart"
-              ></emoji-mart>
-            </mat-form-field>
-          </form>
-        </div>
+              sentiment_satisfied
+            </mat-icon>
+            <emoji-mart
+              id="emoji-mart"
+              *ngIf="showEmojiPicker"
+              (emojiSelect)="addEmojiToFilter($event)"
+              (click)="$event.stopPropagation()"
+              title="Select emoji..."
+              class="emoji-mart"
+            ></emoji-mart>
+          </mat-form-field>
+        </form>
+
+        <mat-button-toggle-group name="displayMode" aria-label="Font Style">
+          <mat-button-toggle [value]="displayModes.AVATAR">
+            <mat-icon
+              class="cos-icon-can-activate"
+              [color]="displayMode === displayModes.AVATAR ? 'primary' : ''"
+              (click)="setDisplayMode(displayModes.AVATAR)"
+            >
+              grid_view
+            </mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle [value]="displayModes.LINEAR">
+            <mat-icon
+              class="cos-icon-can-activate"
+              [color]="displayMode === displayModes.LINEAR ? 'primary' : ''"
+              (click)="setDisplayMode(displayModes.LINEAR)"
+            >
+              table_rows
+            </mat-icon></mat-button-toggle
+          >
+        </mat-button-toggle-group>
       </div>
       <div
         fxFlex
         fxLayout="row"
         fxLayoutGap="30px"
         class="cos-fluid-width"
-        [ngClass]="
-          isDeviceMobile === true
-            ? { 'cos-padding-1': true, 'cos-no-padding-top': true }
-            : ''
-        "
+        [ngClass]="isDeviceMobile === true ? { 'cos-padding-2': true } : ''"
       >
         <div class="co-filters">
           <div
@@ -943,7 +938,11 @@
     fxLayoutGap="30px"
     fxLayoutAlign="start end"
     class="cos-fluid-width co-banner cos-padding-2 cos-bg-faded-darker-gray cos-body-0 cos-margin-1 cos-no-margin-left cos-no-margin-right cos-no-margin-bottom"
-    [ngClass]="isDeviceMobile === false ? { 'cos-border-radius-2': true } : ''"
+    [ngClass]="
+      isDeviceMobile === false
+        ? { 'cos-border-radius-2': true }
+        : { 'cos-no-margin-top': true }
+    "
   >
     <div fxLayout="row" class="cos-disappear-on-mobile">
       <app-preview-image
@@ -991,7 +990,7 @@
         </div>
         <div>
           <div class="cos-body-0">
-            {{ monthlyVolumeTrend + "ETH" || "..." }}
+            {{ monthlyVolumeTrend + " ETH" || "..." }}
           </div>
           <div class="cos-body-3 cos-gray-text">
             {{ "LABELS.MONTHLY_VOLUME" | translate }}
@@ -1220,7 +1219,7 @@
         fxFlex
         fxLayout="row"
         fxLayoutAlign="start center"
-        class="co-bulk-search-item cos-fluid-width cos-padding-1 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
+        class="co-bulk-search-item cos-fluid-width cos-padding-1 cos-overflow-hidden cos-bg-gray"
       >
         <div
           fxFlex="25"

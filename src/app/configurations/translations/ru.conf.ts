@@ -122,6 +122,7 @@ export default {
     FIVE_YEARS: "5 года"
   },
   LABELS: {
+    DOWNLOAD_DATA: "Загрузить данные",
     SORT_BY_EXPIRATIONS: "Сортировать по окончанию",
     SORT_BY_LATEST_REGISTRATIONS: "Сортировать по последним регистрациям",
     SORT_BY_LONGEST_DURATION: "Сортировать по длинной длительности",
