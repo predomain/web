@@ -122,6 +122,7 @@ export default {
     FIVE_YEARS: "5 年"
   },
   LABELS: {
+    DOWNLOAD_DATA: "データをダウンロード",
     SORT_BY_EXPIRATIONS: "有効期限でソート",
     SORT_BY_LATEST_REGISTRATIONS: "最新の登録でソート",
     SORT_BY_LONGEST_DURATION: "期間の長さでソート",

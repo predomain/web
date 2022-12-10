@@ -988,3 +988,24 @@
     font-size: var(--co-font-size-5) !important;
   }
 }
+
+.mat-button-toggle-group-appearance-standard {
+  height: 43px !important;
+  border: solid 2px var(--co-border-color) !important;
+  border-radius: var(--cos-border-radius-2) !important;
+  &.mat-button-toggle-checked {
+    background-color: var(--co-border-color) !important;
+  }
+
+  .mat-button-toggle-appearance-standard {
+    background-color: transparent;
+    height: 43px !important;
+    .mat-button-toggle-button {
+      height: 43px !important;
+      .mat-button-toggle-label-content {
+        line-height: 43px !important;
+        height: 43px !important;
+      }
+    }
+  }
+}

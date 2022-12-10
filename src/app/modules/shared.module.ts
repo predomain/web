@@ -68,6 +68,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   imports: [
@@ -108,6 +109,7 @@ import { MatSortModule } from '@angular/material/sort';
     MatBadgeModule,
     MatPaginatorModule,
     MatSortModule,
+    MatButtonToggleModule,
     TranslationModule,
     DragDropModule,
     OverlayModule,
@@ -183,6 +185,7 @@ import { MatSortModule } from '@angular/material/sort';
     MatBadgeModule,
     MatPaginatorModule,
     MatSortModule,
+    MatButtonToggleModule,
     DragDropModule,
     OverlayModule,
     GetScrollableXyDirective,
