@@ -141,6 +141,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   categoryIpfsData: CategoryModel;
   categoryApiData: CategoryModel;
 
+  searchEntryTimer;
   profileTexts: any;
   filterForm: FormGroup;
   emojiPanel;
@@ -281,7 +282,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     let retries = 0;
     let retrieveDone = new Subject<boolean>();
     const provider = globalAny.canvasProvider;
-    this.getCategoriesSubscription = this.categoryFacade.getCategoryState$
+    this.getCategoriesSubscription = this.categoryFacade.categoryState$
       .pipe(
         switchMap((r) => {
           if (r.categoriesMetadata === undefined) {
@@ -733,6 +734,17 @@ export class CategoryComponent implements OnInit, OnDestroy {
     );
   }
 
+  performDomainSearch() {
+    if (this.searchEntryTimer) {
+      clearTimeout(this.searchEntryTimer);
+      this.searchEntryTimer = undefined;
+    }
+    this.searchEntryTimer = setTimeout(() => {
+      this.doUpdateInterface();
+      this.resetLastDomainSearchResult();
+    }, 500);
+  }
+
   doUpdateInterface() {
     this.changeDetectorRef.markForCheck();
   }
@@ -951,6 +963,33 @@ export class CategoryComponent implements OnInit, OnDestroy {
       }
       return false;
     }).length;
+  }
+
+  get monthlyVolumeTrend() {
+    if (this.categoryNormalisedMetadata === undefined) {
+      return 0;
+    }
+    const date = new Date();
+    const previousMonth =
+      new Date(date.getFullYear(), date.getMonth(), 1).getTime() -
+      86400000 * 30;
+    const startOfMonth = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      1
+    ).getTime();
+    const previousMonthSales = this.categoryNormalisedMetadata.sales.filter(
+      (s) => {
+        if (s.timestamp > previousMonth && s.timestamp < startOfMonth) {
+          return true;
+        }
+        return false;
+      }
+    );
+    const totalVolume = previousMonthSales.reduce((a, b) => {
+      return a + parseInt(b.price);
+    }, 0);
+    return totalVolume;
   }
 
   get monthlySaleTrend() {

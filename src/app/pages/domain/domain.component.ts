@@ -67,7 +67,7 @@ export enum EventTypes {
   styleUrls: ['./domain.component.scss'],
 })
 export class DomainComponent implements OnInit, OnDestroy {
-  placeholders = new Array(5).fill(0);
+  placeholders = new Array(3).fill(0);
   spinnerModes: typeof SpinnerModesEnum = SpinnerModesEnum;
   ensMetadataAPI =
     environment.networks[environment.defaultChain].ensMetadataAPI;

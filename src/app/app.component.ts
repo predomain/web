@@ -57,20 +57,9 @@ export class AppComponent implements OnInit, DoCheck, AfterViewInit {
     this.pagesFacade.setNetworkChainCode(cId, false);
     let routeArr = document.location.href.split('/');
     routeArr = routeArr.slice(4, routeArr.length);
-    let primaryDomain;
-    if (
-      document.location.href.indexOf('//localhost') <= -1 &&
-      document.location.href.indexOf(':') <= -1
-    ) {
-      primaryDomain = document.location.href.split('https://')[1].split('.')[0];
-    }
-    if (
-      primaryDomain !== undefined &&
-      primaryDomain !== generalConfigurations.appName &&
-      document.location.href.indexOf(
-        'https://' + generalConfigurations.appStagingName + '.eth'
-      ) <= -1
-    ) {
+    const url = document.location.href;
+    let primaryDomain = this.getPrimaryDomain(url);
+    if (primaryDomain !== false) {
       this.pagesFacade.setPageMode(PageModesEnum.PROFILE);
       this.pagesFacade.gotoPageRoute(
         'profile/' + primaryDomain + '.eth',
@@ -87,6 +76,23 @@ export class AppComponent implements OnInit, DoCheck, AfterViewInit {
       routeArr.join('/'),
       routeArr[0].toUpperCase() as any
     );
+  }
+
+  getPrimaryDomain(url: string) {
+    let primaryDomain;
+    const regTest = new RegExp('[0-9]:[0-9]');
+    if (url.indexOf('//localhost') <= -1 && regTest.test(url) === false) {
+      primaryDomain = url.split('https://')[1].split('.')[0];
+    }
+    if (
+      primaryDomain !== undefined &&
+      primaryDomain !== generalConfigurations.appName &&
+      url.indexOf('https://' + generalConfigurations.appStagingName + '.eth') <=
+        -1
+    ) {
+      return primaryDomain;
+    }
+    return false;
   }
 
   ngDoCheck(): void {
