@@ -32,6 +32,7 @@ import {
 import { BookmarksServiceService } from 'src/app/services/bookmarks';
 import { RegistrationServiceService } from 'src/app/services/registration';
 import {
+  CategoryFacadeService,
   PagesFacadeService,
   PaymentFacadeService,
   UserFacadeService,
@@ -44,6 +45,7 @@ import { SettingsComponent } from '../settings';
 import { BootController } from '../../../boot-control';
 import { EnsService } from 'src/app/services/ens';
 import { PaymentTypesEnum } from 'src/app/models/states/payment-interfaces';
+import { CategoriesRootModel } from 'src/app/models/category';
 
 const globalAny: any = global;
 
@@ -63,17 +65,20 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   connectTypes: typeof WalletTypesEnum = WalletTypesEnum;
   hasPendingRegistrations = false;
   goingHome = false;
+  customAddressDialogRef: MatDialogRef<CustomAddressComponent>;
+  categories: CategoriesRootModel;
   currentUserData: UserModel;
   quickSearchForm: FormGroup;
   pagesState: PagesStateModel;
   pagesStateSubscription: any;
   userServiceSubscription: any;
+  categoriesSubscription: any;
   customAddressDialogSubscription: any;
-  customAddressDialogRef: MatDialogRef<CustomAddressComponent>;
 
   constructor(
     public userService: UserService,
     public userFacadeService: UserFacadeService,
+    public categoriesFacadeService: CategoryFacadeService,
     public pagesFacadeService: PagesFacadeService,
     public walletService: WalletService,
     public paymentFacadeService: PaymentFacadeService,
@@ -100,10 +105,21 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+    this.categoriesSubscription = this.categoriesFacadeService.categoryState$
+      .pipe(
+        map((s) => {
+          this.categories = s.categoriesMetadata;
+        })
+      )
+      .subscribe();
     this.checkEthName();
   }
 
   ngOnDestroy() {
+    if (this.categoriesSubscription) {
+      this.categoriesSubscription.unsubscribe();
+      this.categoriesSubscription = undefined;
+    }
     if (this.pagesStateSubscription) {
       this.pagesStateSubscription.unsubscribe();
       this.pagesStateSubscription = undefined;
@@ -219,6 +235,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
       'profile/' + this.currentUserData.walletAddress,
       PagesEnum.PROFILE
     );
+  }
+
+  openCategory(category: string) {
+    window.open('/#/category/' + category);
   }
 
   openDocs() {

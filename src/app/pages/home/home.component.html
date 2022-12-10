@@ -11,7 +11,6 @@
       showTranslation: true,
       showManagement: true
     }"
-    [searchKeyword]="mainSearchForm.controls.search.value"
   ></app-main-header>
 </div>
 <div
@@ -131,38 +130,6 @@
           </div>
         </mat-form-field>
       </form>
-      <!-- <div
-        class="co-domain-type-selection cos-body-3 cos-disappear-on-mobile cos-padding-1 cos-pointer"
-        fxLayoutAlign="start center"
-        fxLayoutGap="10px"
-      >
-        <span fxFlex="0 0 auto" class="cos-gray-text"
-          ><b> {{ "LABELS.SEARCH_FOR" | translate }}: </b> </span
-        >&nbsp;
-        <div
-          fxFlex
-          fxLayoutAlign="start center"
-          [matMenuTriggerFor]="domainTypeMenu"
-        >
-          {{ tldTitle }} <mat-icon>arrow_drop_down</mat-icon>
-        </div>
-      </div>
-      <div
-        class="co-domain-type-selection cos-body-3 cos-show-on-mobile cos-padding-1 cos-pointer"
-        fxLayoutAlign="start center"
-        fxLayoutGap="10px"
-      >
-        <span fxFlex="0 0 auto" class="cos-gray-text"
-          ><b> {{ "LABELS.SEARCH_FOR" | translate }}: </b> </span
-        >&nbsp;
-        <div
-          fxFlex
-          fxLayoutAlign="start center"
-          [matMenuTriggerFor]="domainTypeMenu"
-        >
-          {{ tldTitle }} <mat-icon>arrow_drop_down</mat-icon>
-        </div>
-      </div> -->
       <div class="cos-body-2 cos-show-on-mobile cos-center-text cos-padding-3">
         <a (click)="mainHeader?.bulksearch?.toggleBulkSearch(true)">
           {{ "LABELS.ADVANCED_MODE" | translate }}
@@ -368,7 +335,6 @@
                 <div
                   fxLayoutAlign="start start"
                   class="cos-fluid-height cos-fluid-width cos-pointer cos-box-shadow"
-                  (click)="openCategory(c)"
                 >
                   <app-preview-image
                     fxFlex

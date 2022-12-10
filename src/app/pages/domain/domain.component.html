@@ -37,6 +37,7 @@
   class="co-content-container cos-fluid-width cos-fluid-height cos-overflow-y cos-pos-fixed"
 >
   <div
+    fxFlex
     fxLayout="row"
     fxLayoutAlign="start start"
     class="co-profile-content-container cos-fluid-width"
@@ -51,50 +52,6 @@
           : ''
       "
     >
-      <div
-        fxFlex="50px"
-        fxLayout="row"
-        fxFlexAlign="top"
-        fxLayoutAlign="start center"
-        class="cos-fluid-width cos-body-3 cos-padding-1 cos-no-padding-left cos-border cos-no-border-left cos-no-border-top cos-no-border-right"
-        [ngClass]="isDeviceMobile === true ? 'cos-no-padding-top' : ''"
-      >
-        <a href="/#/home">{{ "HEADER.HOME" | translate }}</a>
-        <span
-          fxFlex="0 0 auto"
-          fxLayoutAlign="center center"
-          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
-        >
-          <mat-icon class="cos-small-icon" color="primary"
-            >arrow_forward</mat-icon
-          >
-        </span>
-        <a
-          href="/#/profile/{{
-            userDomainOwner === undefined
-              ? 'null'
-              : getDomainHistoryRecordActor(userDomainOwner).name
-          }}"
-          class="co-owner-address cos-wallet-address-text-cut"
-          >{{
-            userDomainOwner === undefined
-              ? "..."
-              : getDomainHistoryRecordActor(userDomainOwner).name
-          }}</a
-        >
-        <span
-          fxFlex="0 0 auto"
-          fxLayoutAlign="center center"
-          class="cos-padding-0 cos-no-padding-top cos-no-padding-bottom"
-        >
-          <mat-icon class="cos-small-icon" color="primary"
-            >arrow_forward</mat-icon
-          >
-        </span>
-        <span class="cos-gray-text">
-          {{ pretty(domain) }}
-        </span>
-      </div>
       <div
         fxFlex="90"
         fxLayoutGap="30px"
@@ -371,11 +328,33 @@
             fxLayoutAlign="start start"
             class="co-placeholder-container cos-fluid-width cos-overflow-hidden"
           >
+            <ng-container *ngTemplateOutlet="linearDomainTemplateHeader">
+            </ng-container>
             <div
               *ngFor="let d of placeholders"
               fxFlex="70px"
-              class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-pointer cos-placeholder cos-border-radius-1"
-            ></div>
+              fxLayoutGap="20px"
+              class="co-bulk-search-item-container cos-fluid-width cos-no-margin-right cos-padding-1 cos-pointer cos-bg-gray cos-border-radius-1"
+            >
+              <div
+                fxFlex="50px"
+                class="cos-placeholder cos-lighter-placeholder cos-border-radius-2"
+              ></div>
+              <div
+                fxFlex
+                class="cos-placeholder cos-lighter-placeholder cos-border-radius-2"
+              ></div>
+              <div
+                fxFlex="200px"
+                class="cos-placeholder cos-lighter-placeholder cos-border-radius-2"
+              ></div>
+              <div
+                fxFlex
+                class="cos-placeholder cos-lighter-placeholder cos-border-radius-2"
+              ></div>
+            </div>
+            <ng-container *ngTemplateOutlet="linearDomainTemplateFooter">
+            </ng-container>
           </div>
           <div
             *ngIf="eventActors !== undefined"

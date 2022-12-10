@@ -394,23 +394,11 @@
           >
             &nbsp;&nbsp;ENS Domains&nbsp;&nbsp;
           </div>
-          <div
-            fxFlex
-            (click)="changeDomainType(domainTypes.LNR)"
-            [ngClass]="
-              domainTypeSelected === domainTypes.LNR
-                ? 'co-selected-domain-type'
-                : ''
-            "
-            class="co-select-domain-type cos-chip-regular cos-padding-0 cos-pointer cos-center-text"
-          >
-            &nbsp;&nbsp;Linagee Names&nbsp;&nbsp;
-          </div>
         </div>
         <mat-form-field
           fxFlex
           fxFlexAlign="center"
-          class="cos-body-0 cos-fluid-width cos-input-field-no-label cos-input-field-large"
+          class="cos-body-0 cos-fluid-width cos-input-field-no-label"
         >
           <input
             #prefixMobile
@@ -426,7 +414,7 @@
         <mat-form-field
           fxFlex
           fxFlexAlign="center"
-          class="cos-body-0 cos-fluid-width cos-input-field-no-label cos-input-field-large"
+          class="cos-body-0 cos-fluid-width cos-input-field-no-label"
         >
           <input
             #suffixMobile
