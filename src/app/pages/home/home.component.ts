@@ -244,6 +244,10 @@ export class HomeComponent implements OnDestroy, OnInit {
     );
   }
 
+  get popularCategories() {
+    return this.categoriesSorted.slice(0, 6);
+  }
+
   get isCategoryPoapRequired() {
     const poapRequirement = generalConfigurations.poapRequiredTools.category;
     return poapRequirement.required;
