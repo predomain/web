@@ -20,7 +20,7 @@ import { UserStateModel } from 'src/app/models/states/user-interfaces';
 import { NonceTypesEnum } from 'src/app/models/states/wallet-interfaces';
 import { MiscUtilsService, WalletService } from 'src/app/services';
 import { EnsService } from 'src/app/services/ens';
-import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
+import { EnsHelperService } from 'src/app/services/ens-helper';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
 
 const globalAny: any = global;
@@ -62,7 +62,7 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
     protected userFacade: UserFacadeService,
     protected walletService: WalletService,
     protected paymentFacade: PaymentFacadeService,
-    protected ensMarketplaceService: EnsMarketplaceService,
+    protected ensHelperService: EnsHelperService,
     protected snackBar: MatSnackBar,
     protected miscUtilsService: MiscUtilsService,
     protected ensService: EnsService,
@@ -162,7 +162,7 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
             throw false;
           }
           const hash = r as string;
-          return this.ensMarketplaceService.setContentHash(
+          return this.ensHelperService.setContentHash(
             nameId,
             hash,
             resolver,
@@ -219,7 +219,7 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
     this.setupNameSubscription = from(name)
       .pipe(
         switchMap((r) => {
-          return this.ensMarketplaceService.setProfileName(
+          return this.ensHelperService.setProfileName(
             name,
             userAddress,
             provider
@@ -235,7 +235,7 @@ export class SetupManagementComponent implements OnInit, OnDestroy {
           const p = {
             id: serial,
             paymentMarketAddress:
-              this.ensMarketplaceService.ensReverseRegistryContractAddress,
+              this.ensHelperService.ensReverseRegistryContractAddress,
             paymentExchangeRate: this.paymentState.ethUsdPrice,
             paymentPayer: userAddress,
             paymentCurrency: 'ETH',

@@ -378,13 +378,18 @@ export class CheckoutServicesService {
         resolver,
         registrationsList
       );
+    const nameLengths = registrationsList.map((d) => {
+      const len = this.ensService.getNameLength(d.labelName);
+      return len;
+    });
     let finalTotal;
-    return from(contract.getPriceRanges(duration)).pipe(
+    return from(contract.getPriceRanges(duration, nameLengths)).pipe(
       switchMap((r) => {
         if (r === false || r === null) {
           throw 1;
         }
         let range = 0;
+        console.log(r);
         const priceRanges = (r as string[]).map((p) => {
           const rangeP = ethers.BigNumber.from(p)
             .mul(generalConfigurations.maxTotalCostBuffer[range])
@@ -422,7 +427,6 @@ export class CheckoutServicesService {
         return this.registrationFacilityService.completeRegistration(
           compiledPacket,
           payer,
-          priceRanges,
           finalTotal.toHexString(),
           globalAny.canvasProvider
         );

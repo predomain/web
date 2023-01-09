@@ -97,7 +97,7 @@
           class="co-main-search cos-body-0 cos-input-field-no-label cos-input-field-large cos-field-width-shadow cos-gray-placeholder"
         >
           <input
-            class="cos-fluid-width cos-bg-darker-gray cos-box-shadow"
+            class="cos-fluid-width cos-box-shadow"
             matInput
             type="text"
             placeholder="{{ 'LABELS.FIND_AND_REGISTER' | translate }}"
@@ -146,12 +146,12 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
             fxLayoutAlign="center center"
-            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right"
           >
             <div
               fxFlex="0 0 auto"
@@ -168,7 +168,11 @@
               </div>
             </div>
           </div>
-          <div fxLayout="column" fxLayoutGap="5px" class="cos-body-1">
+          <div
+            fxLayout="column"
+            fxLayoutGap="5px"
+            class="cos-body-1 cos-padding-2 cos-no-padding-top co-no-padding-bottom"
+          >
             <ng-container *ngIf="topSales === undefined">
               <div
                 *ngFor="let p of placeholdersTopSection"
@@ -178,11 +182,7 @@
             </ng-container>
             <div fxFlex fxLayout="row" *ngFor="let t of topCategories">
               <div fxFlex>
-                <a
-                  href="/#/category/{{ t.category }}"
-                  target="_blank"
-                  class="cos-main-text"
-                >
+                <a href="/#/category/{{ t.category }}" class="cos-main-text">
                   {{ metadata.categoriesDescription[t.category] }}
                 </a>
               </div>
@@ -197,12 +197,12 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
             fxLayoutAlign="center center"
-            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right"
           >
             <div
               fxFlex="0 0 auto"
@@ -219,7 +219,11 @@
               </div>
             </div>
           </div>
-          <div fxLayout="column" fxLayoutGap="5px" class="cos-body-1">
+          <div
+            fxLayout="column"
+            fxLayoutGap="5px"
+            class="cos-body-1 cos-padding-2 cos-no-padding-top co-no-padding-bottom"
+          >
             <ng-container *ngIf="topSales === undefined">
               <div
                 *ngFor="let p of placeholdersTopSection"
@@ -234,11 +238,7 @@
                 fxLayoutGap="10px"
                 fxLayoutAlign="start center"
               >
-                <a
-                  href="/#/domain/{{ t.domain }}.eth"
-                  target="_blank"
-                  class="cos-main-text"
-                >
+                <a href="/#/domain/{{ t.domain }}.eth" class="cos-main-text">
                   {{ t.domain }}.eth
                 </a>
                 <div class="cos-body-4 cos-gray-text">
@@ -256,12 +256,12 @@
           fxFlex
           fxLayout="column"
           fxLayoutGap="20px"
-          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-padding-2 cos-border-radius-2"
+          class="cos-fluid-height cos-box-shadow cos-bg-gray cos-fluid-width cos-border-radius-2"
         >
           <div
             fxFlex="0 0 auto"
             fxLayoutAlign="center center"
-            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2"
+            class="cos-body-0 cos-bg-faded-darker-gray cos-padding-0 cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right"
           >
             <div
               fxFlex="0 0 auto"
@@ -272,7 +272,11 @@
               <div fxFlex>{{ "LABELS.RECENT_SALES" | translate }}</div>
             </div>
           </div>
-          <div fxLayout="column" fxLayoutGap="5px" class="cos-body-1">
+          <div
+            fxLayout="column"
+            fxLayoutGap="5px"
+            class="cos-body-1 cos-padding-2 cos-no-padding-top co-no-padding-bottom"
+          >
             <ng-container *ngIf="topSales === undefined">
               <div
                 *ngFor="let p of placeholdersTopSection"
@@ -287,11 +291,7 @@
                 fxLayoutGap="10px"
                 fxLayoutAlign="start center"
               >
-                <a
-                  href="/#/domain/{{ t.domain }}.eth"
-                  target="_blank"
-                  class="cos-main-text"
-                >
+                <a href="/#/domain/{{ t.domain }}.eth" class="cos-main-text">
                   {{ t.domain }}.eth
                 </a>
                 <div class="cos-body-4 cos-gray-text">

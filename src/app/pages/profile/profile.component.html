@@ -585,10 +585,8 @@
       fxLayoutGap="10px"
       [style.height]="calculateProfileWidgetHeight()"
     >
-      <div fxFlex="0 0 auto" class="cos-body-1">
-        <b>
-          {{ userName }}
-        </b>
+      <div fxFlex="0 0 auto" class="cos-body-1 cos-wallet-address-text-cut">
+        {{ userName }}
       </div>
       <div fxFlex>
         <div fxLayout="row" fxLayoutGap="10px" class="cos-body-3">
@@ -875,9 +873,13 @@
         ></app-preview-image>
       </ng-container>
     </div>
-    <div fxLayout="column" class="co-category-data cos-fluid-height">
+
+    <div
+      fxLayout="column"
+      class="co-category-data cos-fluid-height cos-fluid-width"
+    >
       <div fxFlex fxLayout="column" class="co-title">
-        <div class="cos-main-text">
+        <div class="cos-main-text cos-wallet-address-text-cut">
           {{ userName }}
         </div>
         <div fxFlex fxLayout="row" class="cos-body-3">
@@ -948,6 +950,18 @@
             {{ "LABELS.TOTAL_ASSETS" | translate }}
           </div>
         </div>
+      </div>
+    </div>
+
+    <div fxLayout="row" class="cos-show-on-mobile cos-fluid-height">
+      <div
+        mat-button
+        [disabled]="manageMode !== manageModes.DEFAULT"
+        [style.opacity]="manageMode !== manageModes.DEFAULT ? '0.25' : '1'"
+        [matMenuTriggerFor]="actionMenu"
+        class="cos-button-paging co-external-link cos-body-2"
+      >
+        <mat-icon class="cos-small-icon"> settings </mat-icon>
       </div>
     </div>
   </div>
@@ -1026,13 +1040,13 @@
         ></mat-progress-bar>
         <div
           fxLayout="column"
-          fxLayoutGap="10px"
+          fxLayoutGap="5px"
           fxLayoutAlign="center start"
           class="cos-padding-1 cos-fluid-width"
         >
           <div
             fxFlex="0 0 auto"
-            class="cos-body-0 cos-wallet-address-text-cut cos-fluid-width"
+            class="cos-body-4 cos-wallet-address-text-cut cos-fluid-width"
             (click)="goToDomain(d.labelName)"
           >
             <b> {{ pretty(d.labelName) }}.eth </b>
@@ -1073,7 +1087,7 @@
 
 <ng-template #linearDomainTemplateHeader>
   <div
-    class="cos-bg-gray cos-padding-2 cos-fluid-width cos-border-darker cos-no-border-top cos-no-border-left cos-no-border-right cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right cos-pointer"
+    class="cos-bg-faded-darker-gray cos-padding-2 cos-fluid-width cos-border-darker cos-no-border-top cos-no-border-left cos-no-border-right cos-border-radius-2 cos-no-border-radius-bottom-left cos-no-border-radius-bottom-right cos-pointer"
   >
     <div fxLayoutGap="15px" fxLayoutAlign="center center">
       <div
@@ -1107,7 +1121,7 @@
 </ng-template>
 <ng-template #linearDomainTemplateFooter>
   <div
-    class="cos-bg-gray cos-padding-2 cos-fluid-width cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right cos-pointer"
+    class="cos-bg-faded-darker-gray cos-padding-2 cos-fluid-width cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right cos-pointer"
   ></div>
 </ng-template>
 
@@ -1124,7 +1138,7 @@
         [value]="d.gracePeriodPercent"
       ></mat-progress-bar>
       <div
-        class="co-bulk-search-item cos-padding-1 cos-overflow-hidden cos-bg-gray"
+        class="co-bulk-search-item cos-padding-1 cos-overflow-hidden cos-bg-faded-darker-gray"
         [ngClass]="
           d.gracePeriodPercent !== undefined && d.gracePeriodPercent > 0
             ? ''
@@ -1178,7 +1192,6 @@
           fxFlex
           fxLayoutAlign="end center"
           href="{{ getDomainLink(d.labelName + '.eth') }}"
-          target="_blank"
           class="cos-body-3"
         >
           {{ "BUTTON.VIEW_DETAILS" | translate }}
@@ -1191,7 +1204,7 @@
 <ng-template #placeHolderFullTemplate>
   <ng-container *ngFor="let d of placeholders">
     <div
-      class="co-bulk-search-item-container co-linear-item cos-bg-gray cos-fluid-width"
+      class="co-bulk-search-item-container co-linear-item cos-bg-faded-darker-gray cos-fluid-width"
     >
       <div
         fxFlex
@@ -1226,22 +1239,34 @@
     *ngIf="
       hasDomainsListLoaded === false && lastDomainSearchResult !== undefined
     "
-    class="cos-bg-gray cos-padding-2 cos-fluid-width cos-border-darker cos-no-border-bottom cos-no-border-left cos-no-border-right cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right cos-pointer"
+    class="cos-bg-faded-darker-gray cos-padding-2 cos-fluid-width cos-border-darker cos-no-border-bottom cos-no-border-left cos-no-border-right cos-border-radius-2 cos-no-border-radius-top-left cos-no-border-radius-top-right cos-pointer"
   ></div>
 </ng-template>
 
 <ng-template #placeHolderAvatarTemplate>
   <ng-container *ngFor="let d of placeholders">
     <div
-      class="co-bulk-search-item-container cos-placeholder cos-bulk-sarch-item-for-avatar"
+      class="co-bulk-search-item-container cos-bg-darker-gray cos-bulk-sarch-item-for-avatar"
       [style.height]="guideAvatarSize + 125 + 'px'"
       [ngClass]="pageMode === pageModes.PROFILE ? 'co-mode-profile' : ''"
+      fxLayoutAlign="end end"
     >
       <div
-        fxLayoutGap="15px"
-        fxLayoutAlign="center center"
-        class="co-bulk-search-item cos-no-border cos-padding-2 cos-border-radius-1 cos-overflow-hidden cos-bg-gray"
-      ></div>
+        class="cos-fluid-width cos-padding-1 cos-bg-faded-darker-gray"
+        fxLayout="column"
+        fxLayoutGap="5px"
+      >
+        <div
+          class="cos-placeholder cos-fluid-width-three-fourth cos-padding-1 cos-border-radius-2"
+        ></div>
+        <div
+          class="cos-placeholder cos-fluid-width-third cos-padding-0 cos-border-radius-2"
+        ></div>
+        <div class="cos-fluid-width-third cos-margin-0"></div>
+        <div
+          class="cos-placeholder cos-fluid-width-half cos-padding-0 cos-border-radius-2"
+        ></div>
+      </div>
     </div>
   </ng-container>
 </ng-template>

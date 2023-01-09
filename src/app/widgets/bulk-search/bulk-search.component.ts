@@ -568,7 +568,7 @@ export class BulkSearchComponent implements OnInit, OnDestroy {
       '/name/' +
       domain +
       '.eth/register';
-    window.open(link, '_blank');
+    window.location.href = link;
   }
 
   getDomainLink(domain: string) {

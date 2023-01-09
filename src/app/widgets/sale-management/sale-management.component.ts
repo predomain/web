@@ -109,7 +109,7 @@ export class SaleManagementComponent implements OnInit, OnDestroy {
           this.domain[marketplace.assetLinksKey[this.domain.domainType]] +
             marketplace.assetLinksKeyExtraInfo[this.domain.domainType]
         ),
-      '_blank'
+      '_self'
     );
   }
 }
