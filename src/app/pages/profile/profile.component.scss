@@ -3,7 +3,13 @@
   height: 100%;
   width: 100%;
 }
-
+.co-list-picker {
+  width: auto !important;
+  box-sizing: border-box;
+  @media only screen and (max-width: 1000px) {
+    width: 50% !important;
+  }
+}
 .co-title-text {
   color: var(--co-main-color);
   &::first-letter {
@@ -43,7 +49,6 @@
 .co-owner-address {
   max-width: 150px;
 }
-
 .co-profile-content-container {
   padding-top: 90px;
   width: 90% !important;

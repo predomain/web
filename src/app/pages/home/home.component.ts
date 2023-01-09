@@ -227,7 +227,7 @@ export class HomeComponent implements OnDestroy, OnInit {
   }
 
   openCategory(category: string) {
-    window.open('/#/category/' + category);
+    window.location.href = '/#/category/' + category;
   }
 
   ethToDollar(eth: string) {
@@ -242,6 +242,10 @@ export class HomeComponent implements OnDestroy, OnInit {
     return (
       '$' + parseFloat((ethToConvert * ethUsdRate).toFixed(2)).toLocaleString()
     );
+  }
+
+  get popularCategories() {
+    return this.categoriesSorted.slice(0, 6);
   }
 
   get isCategoryPoapRequired() {

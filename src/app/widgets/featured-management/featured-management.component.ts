@@ -22,7 +22,7 @@ import { UserStateModel } from 'src/app/models/states/user-interfaces';
 import { NonceTypesEnum } from 'src/app/models/states/wallet-interfaces';
 import { MiscUtilsService, WalletService } from 'src/app/services';
 import { EnsService } from 'src/app/services/ens';
-import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
+import { EnsHelperService } from 'src/app/services/ens-helper';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
 
 const globalAny: any = global;
@@ -65,7 +65,7 @@ export class FeaturedManagementComponent implements OnInit, OnDestroy {
     protected userFacade: UserFacadeService,
     protected walletService: WalletService,
     protected paymentFacade: PaymentFacadeService,
-    protected ensMarketplaceService: EnsMarketplaceService,
+    protected ensHelperService: EnsHelperService,
     protected snackBar: MatSnackBar,
     protected ensService: EnsService,
     protected miscUtilsService: MiscUtilsService,
@@ -169,7 +169,7 @@ export class FeaturedManagementComponent implements OnInit, OnDestroy {
           }
           resolver = (r as any).address;
           const hash = r as string;
-          return this.ensMarketplaceService.setText(
+          return this.ensHelperService.setText(
             nameId,
             featureKey,
             JSON.stringify(this.processFeatureSnapshot()),

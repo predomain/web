@@ -79,7 +79,6 @@
           </div>
           <a
             *ngIf="d.isNotAvailable === true"
-            target="_blank"
             href="https://predomain.eth.limo/#/domain/{{ d.labelName }}.eth"
             class="cos-body-3"
             [ngClass]="
@@ -147,7 +146,7 @@
           <a (click)="openCancelationDialog()">{{
             "HEADER.CANCEL_REGISTRATION" | translate
           }}</a>
-          <a href="https://discord.gg/ECMz2VNn97" target="_blank">{{
+          <a href="https://discord.gg/ECMz2VNn97">{{
             "HEADER.HELP_SUPPORT" | translate
           }}</a>
         </div>

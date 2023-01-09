@@ -8,11 +8,10 @@ import {
   ENSReverseRegisteryABI,
   ENSTokenNFTABI,
   generalConfigurations,
-  marketplaceMainnet,
-  marketplaceTestnet,
+  predomainHelperMainnet,
+  predomainHelperTestnet,
 } from 'src/app/configurations';
-import { ENSMarketplaceMainnetABI } from 'src/app/configurations/contracts/ens-marketplace-abi-mainnet.model';
-import { ENSMarketplaceTestnetABI } from 'src/app/configurations/contracts/ens-marketplace-abi-testnet.model';
+import { ENSPredomainHelperABI } from 'src/app/configurations/contracts/ens-predomain-helper-abi.model';
 import { environment } from 'src/environments/environment';
 import { ContractService } from '../contract';
 import { EnsService } from '../ens/ens.service';
@@ -22,7 +21,7 @@ const globalAny: any = global;
 @Injectable({
   providedIn: 'root',
 })
-export class EnsMarketplaceService {
+export class EnsHelperService {
   constructor(
     protected contractService: ContractService,
     protected ensService: EnsService
@@ -35,7 +34,7 @@ export class EnsMarketplaceService {
         if (r === null) {
           throw null;
         }
-        return contract.isApprovedForAll(r, this.marketplaceContractAddress);
+        return contract.isApprovedForAll(r, this.helperContractAddress);
       }),
       switchMap((r) => {
         if (r === null) {
@@ -65,8 +64,8 @@ export class EnsMarketplaceService {
           dataMethod,
           dataParams,
           payer,
-          this.marketplaceContractAddress,
-          this.marketplaceContractABI,
+          this.helperContractAddress,
+          this.helperContractABI,
           false
         )
         .toPromise()
@@ -134,7 +133,6 @@ export class EnsMarketplaceService {
 
   renew(
     domainNames: string[],
-    priceRanges: string[],
     duration: BigNumber,
     payer: string,
     totalCost: string,
@@ -146,7 +144,7 @@ export class EnsMarketplaceService {
       namesLengths.push(this.ensService.getNameLength(c));
     }
     const dataMethod = 'renewDomains';
-    const dataParams = [domainNames, namesLengths, priceRanges, duration];
+    const dataParams = [domainNames, namesLengths, duration];
     const dataInput = contract.interface.encodeFunctionData(
       dataMethod,
       dataParams
@@ -159,8 +157,8 @@ export class EnsMarketplaceService {
           dataMethod,
           dataParams,
           payer,
-          this.marketplaceContractAddress,
-          this.marketplaceContractABI,
+          this.helperContractAddress,
+          this.helperContractABI,
           false,
           totalCost
         )
@@ -325,8 +323,8 @@ export class EnsMarketplaceService {
 
   getENSMarketplaceContract(provider) {
     const contract = new Contract(
-      this.marketplaceContractAddress,
-      this.marketplaceContractABI,
+      this.helperContractAddress,
+      this.helperContractABI,
       provider
     );
     return contract;
@@ -348,17 +346,17 @@ export class EnsMarketplaceService {
     return ENSContracts.reverseRegistry;
   }
 
-  get marketplaceContractAddress() {
+  get helperContractAddress() {
     if (environment.test === true) {
-      return marketplaceTestnet;
+      return predomainHelperTestnet;
     }
-    return marketplaceMainnet;
+    return predomainHelperMainnet;
   }
 
-  get marketplaceContractABI() {
+  get helperContractABI() {
     if (environment.test === true) {
-      return ENSMarketplaceTestnetABI;
+      return ENSPredomainHelperABI;
     }
-    return ENSMarketplaceMainnetABI;
+    return ENSPredomainHelperABI;
   }
 }

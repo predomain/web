@@ -23,7 +23,7 @@ import {
 } from '../store/facades';
 import { DownloadService } from '../services/download/download.service';
 import { ContractService } from '../services/contract';
-import { EnsMarketplaceService } from '../services/ens-marketplace';
+import { EnsHelperService } from '../services/ens-helper';
 import { LnrService } from '../services/lnr';
 import { CategoriesDataService } from '../services/categories-data';
 import { PoapService } from '../services/poap';
@@ -49,7 +49,7 @@ export const serviceProviders = [
   WalletConnectService,
   DownloadService,
   ContractService,
-  EnsMarketplaceService,
+  EnsHelperService,
   LnrService,
   CategoriesDataService,
   PoapService,

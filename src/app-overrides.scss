@@ -1353,9 +1353,9 @@ ol {
   background: rgb(47, 49, 49);
   background: linear-gradient(
       to right,
-      var(--co-faded-dark-gray-bg) 8%,
+      var(--co-darker-gray-bg) 8%,
       var(--co-bg-neutral-color) 36%,
-      var(--co-faded-dark-gray-bg) 66%
+      var(--co-darker-gray-bg) 66%
     )
     90% 0% / 1200px;
   &.cos-lighter-placeholder {

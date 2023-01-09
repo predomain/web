@@ -2,7 +2,6 @@
   overflow-y: auto;
   height: 100%;
 }
-
 .co-title-text {
   color: var(--co-main-color);
   &::first-letter {
@@ -158,7 +157,7 @@
   }
   cursor: pointer;
   padding-left: var(--co-padding-2);
-  padding-right: var(--co-padding-1);
+  padding-right: var(--co-padding-2);
   border-bottom: solid 2px var(--co-darker-border-color);
   height: 72px;
   display: flex;
@@ -388,9 +387,10 @@
 }
 
 .co-list-picker {
+  width: auto !important;
+  box-sizing: border-box;
   @media only screen and (max-width: 1000px) {
-    flex: 1;
-    max-width: 100% !important;
+    width: 50% !important;
   }
 }
 

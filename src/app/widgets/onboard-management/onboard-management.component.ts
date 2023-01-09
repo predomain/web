@@ -11,6 +11,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
+import { ethers } from 'ethers';
 import { of, Subject, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { BlockExplorersEnum, ENSContracts } from 'src/app/configurations';
@@ -26,7 +27,7 @@ import { NonceTypesEnum } from 'src/app/models/states/wallet-interfaces';
 import { CheckoutServicesService } from 'src/app/pages/checkout/checkout-services/checkout-services.service';
 import { UserService, WalletService } from 'src/app/services';
 import { EnsService } from 'src/app/services/ens';
-import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
+import { EnsHelperService } from 'src/app/services/ens-helper';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
 
@@ -71,7 +72,7 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
     protected paymentFacade: PaymentFacadeService,
     protected userService: UserService,
     protected ensService: EnsService,
-    protected ensMarketplaceService: EnsMarketplaceService,
+    protected ensHelperService: EnsHelperService,
     protected snackBar: MatSnackBar,
     protected store: Store<PaymentStateModel>,
     public checkoutService: CheckoutServicesService,
@@ -162,9 +163,9 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
     }
     this.approving = true;
     const userAddress = this.userState.user.walletAddress;
-    this.approveSubscription = this.ensMarketplaceService
+    this.approveSubscription = this.ensHelperService
       .approve(
-        this.ensMarketplaceService.marketplaceContractAddress,
+        this.ensHelperService.helperContractAddress,
         userAddress,
         true,
         globalAny.canvasProvider
@@ -183,7 +184,7 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
             paymentExchangeRate: this.paymentState.ethUsdPrice,
             paymentPayer: userAddress,
             paymentCurrency: 'ETH',
-            paymentPayee: this.ensMarketplaceService.marketplaceContractAddress,
+            paymentPayee: this.ensHelperService.helperContractAddress,
             paymentSerial: serial,
             paymentDate: new Date().getTime(),
             paymentType: PaymentTypesEnum.TX_APPROVAL,
@@ -282,7 +283,7 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
   goToEtherscan(address: string) {
     window.open(
       BlockExplorersEnum[environment.defaultChain] + '/address/' + address,
-      '_blank'
+      '_self'
     );
   }
 
@@ -295,8 +296,10 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
     }
     this.transfering = true;
     const userAddress = this.userState.user.walletAddress;
-    const domainNames = domainsToTransfer.map((d) => d.labelName);
-    this.transferSubscription = this.ensMarketplaceService
+    const domainNames = domainsToTransfer.map((d) =>
+      ethers.BigNumber.from(d.labelHash).toString()
+    );
+    this.transferSubscription = this.ensHelperService
       .transfer(domainNames, transferTo, userAddress, globalAny.canvasProvider)
       .pipe(
         switchMap((transferDataAndGas: any) => {
@@ -308,8 +311,7 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
           this.approvalSerial = serial;
           const p = {
             id: serial,
-            paymentMarketAddress:
-              this.ensMarketplaceService.marketplaceContractAddress,
+            paymentMarketAddress: this.ensHelperService.helperContractAddress,
             paymentExchangeRate: this.paymentState.ethUsdPrice,
             paymentPayer: userAddress,
             paymentCurrency: 'ETH',
@@ -440,7 +442,7 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
       BlockExplorersEnum[environment.defaultChain] +
         '/tx/' +
         this.transferToCheck.paymentHash,
-      '_blank'
+      '_self'
     );
   }
 
@@ -510,7 +512,7 @@ export class OnboardManagementComponent implements OnInit, OnDestroy {
     return this.transferForm.controls.toEthName.value;
   }
 
-  get ensMarketplaceContract() {
-    return this.ensMarketplaceService.marketplaceContractAddress;
+  get ensHelperContract() {
+    return this.ensHelperService.helperContractAddress;
   }
 }
