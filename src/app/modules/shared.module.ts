@@ -62,7 +62,6 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { QRCodeModule } from 'angularx-qrcode';
-import { NgxColorsModule } from 'ngx-colors';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -116,7 +115,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     GenericDialogModule,
     CustomAddressDialogModule,
     QRCodeModule,
-    NgxColorsModule,
   ],
   providers: [
     ...serviceProviders,
@@ -194,7 +192,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     GenericDialogModule,
     CustomAddressDialogModule,
     QRCodeModule,
-    NgxColorsModule,
   ],
   bootstrap: [],
   entryComponents: [],

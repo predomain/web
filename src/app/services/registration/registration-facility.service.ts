@@ -3,12 +3,11 @@ import { Injectable } from '@angular/core';
 import { BigNumber, Contract, ethers } from 'ethers';
 import { Observable, of } from 'rxjs';
 import {
-  bulkRegistrationMainnet,
-  bulkRegistrationTestnet,
+  predomainHelperMainnet,
+  predomainHelperTestnet,
   generalConfigurations,
 } from 'src/app/configurations';
-import { ENSBulkRegistrationContractMainnetABI } from 'src/app/configurations/contracts/ens-bulk-registration-mainnet.abi';
-import { ENSBulkRegistrationContractTestnetABI } from 'src/app/configurations/contracts/ens-bulk-registration-testnet.abi';
+import { ENSPredomainHelperABI } from 'src/app/configurations/contracts/ens-predomain-helper-abi.model';
 import { payNoMarketAddress } from 'src/app/models';
 import { DomainMetadataModel } from 'src/app/models/domains';
 import {
@@ -103,11 +102,16 @@ export class RegistrationFacilityService {
     }
     const isResolverSet = comitmentsPrepared[0].resolver !== payNoMarketAddress;
     const duration = comitmentsPrepared[0].duration;
+    const nameLengths = comitmentsPrepared.map((d) => {
+      const len = this.ensService.getNameLength(d.name);
+      return len;
+    });
     let commitmentResult, gasLimit;
     return new Observable((observer) => {
       contract
         .createCommitmentsForRegistration(
           comitmentsPrepared,
+          nameLengths,
           duration,
           isResolverSet
         )
@@ -184,7 +188,6 @@ export class RegistrationFacilityService {
   completeRegistration(
     commitments: ENSRegistrationCommitmentModel[],
     payer: string,
-    priceRanges: string[],
     totalCost: string,
     provider
   ) {
@@ -205,8 +208,8 @@ export class RegistrationFacilityService {
         : 'completeRegistrationWithConfigs';
     const dataParams =
       commitments[0].resolver === payNoMarketAddress
-        ? [names, namesLengths, priceRanges, owner, duration, secret]
-        : [names, namesLengths, priceRanges, duration, secret, resolver, owner];
+        ? [names, namesLengths, owner, duration, secret]
+        : [names, namesLengths, duration, secret, resolver, owner];
     const dataInput = contract.interface.encodeFunctionData(
       dataMethod,
       dataParams
@@ -262,15 +265,15 @@ export class RegistrationFacilityService {
 
   get BulkRegistrationContractABI() {
     if (environment.test === true) {
-      return ENSBulkRegistrationContractTestnetABI;
+      return ENSPredomainHelperABI;
     }
-    return ENSBulkRegistrationContractMainnetABI;
+    return ENSPredomainHelperABI;
   }
 
   get bulkRegistrationContractAddress() {
     if (environment.test === true) {
-      return bulkRegistrationTestnet;
+      return predomainHelperTestnet;
     }
-    return bulkRegistrationMainnet;
+    return predomainHelperMainnet;
   }
 }

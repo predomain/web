@@ -1,11 +1,4 @@
-import {
-  Component,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatAccordion } from '@angular/material/expansion';
@@ -14,10 +7,7 @@ import { Store } from '@ngrx/store';
 import { BigNumber, ethers } from 'ethers';
 import { from, of, Subject, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
-import {
-  BlockExplorersEnum,
-  generalConfigurations,
-} from 'src/app/configurations';
+import { BlockExplorersEnum } from 'src/app/configurations';
 import { DomainMetadataModel } from 'src/app/models/domains';
 import {
   RenewalDurationsEnum,
@@ -33,7 +23,7 @@ import { UserStateModel } from 'src/app/models/states/user-interfaces';
 import { NonceTypesEnum } from 'src/app/models/states/wallet-interfaces';
 import { WalletService } from 'src/app/services';
 import { EnsService } from 'src/app/services/ens';
-import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
+import { EnsHelperService } from 'src/app/services/ens-helper';
 import { PaymentFacadeService, UserFacadeService } from 'src/app/store/facades';
 import { environment } from 'src/environments/environment';
 import { OnboardManagementComponent } from '../onboard-management';
@@ -72,7 +62,7 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
     protected userFacade: UserFacadeService,
     protected walletService: WalletService,
     protected paymentFacade: PaymentFacadeService,
-    protected ensMarketplaceService: EnsMarketplaceService,
+    protected ensHelperService: EnsHelperService,
     protected snackBar: MatSnackBar,
     protected ensService: EnsService,
     protected store: Store<PaymentStateModel>,
@@ -169,12 +159,17 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
     }
     this.renewing = true;
     const provider = globalAny.canvasProvider;
-    const contract =
-      this.ensMarketplaceService.getENSMarketplaceContract(provider);
+    const contract = this.ensHelperService.getENSMarketplaceContract(provider);
     const userAddress = this.userState.user.walletAddress;
     const domainNames = domainsToRenew.map((d) => d.labelName);
+    const nameLengths = domainNames.map((d) => {
+      const len = this.ensService.getNameLength(d);
+      return len;
+    });
     let finalTotal;
-    this.renewSubscription = from(contract.getENSPriceRanges(duration))
+    this.renewSubscription = from(
+      contract.getPriceRanges(duration, nameLengths)
+    )
       .pipe(
         switchMap((r) => {
           if (r === false || r === null) {
@@ -207,9 +202,8 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
             .reduce((a, b) => {
               return a.add(b);
             });
-          return this.ensMarketplaceService.renew(
+          return this.ensHelperService.renew(
             domainNames,
-            priceRanges,
             duration,
             userAddress,
             finalTotal.toHexString(),
@@ -225,8 +219,7 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
           this.approvalSerial = serial;
           const p = {
             id: serial,
-            paymentMarketAddress:
-              this.ensMarketplaceService.marketplaceContractAddress,
+            paymentMarketAddress: this.ensHelperService.helperContractAddress,
             paymentExchangeRate: this.paymentState.ethUsdPrice,
             paymentPayer: userAddress,
             paymentCurrency: 'ETH',
@@ -404,12 +397,12 @@ export class RenewManagementComponent implements OnInit, OnDestroy {
       BlockExplorersEnum[environment.defaultChain] +
         '/tx/' +
         this.renewToCheck.paymentHash,
-      '_blank'
+      '_self'
     );
   }
 
   get ensMarketplaceContract() {
-    return this.ensMarketplaceService.marketplaceContractAddress;
+    return this.ensHelperService.helperContractAddress;
   }
 
   get namesOfDomainsToRenew() {

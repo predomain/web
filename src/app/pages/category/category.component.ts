@@ -765,17 +765,13 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   goToEtherscanTx(txHash: string) {
-    window.open(
-      BlockExplorersEnum[environment.defaultChain] + '/tx/' + txHash,
-      '_blank'
-    );
+    window.location.href =
+      BlockExplorersEnum[environment.defaultChain] + '/tx/' + txHash;
   }
 
   goToEtherscanAddress(address: string) {
-    window.open(
-      BlockExplorersEnum[environment.defaultChain] + '/address/' + address,
-      '_blank'
-    );
+    window.location.href =
+      BlockExplorersEnum[environment.defaultChain] + '/address/' + address;
   }
 
   setDisplayMode(mode: DisplayModes) {

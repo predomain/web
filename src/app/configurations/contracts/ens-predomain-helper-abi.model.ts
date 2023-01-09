@@ -1,9 +1,4 @@
-export const ENSBulkRegistrationContractMainnetABI = [
-  {
-    inputs: [],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
+export const ENSPredomainHelperABI = [
   {
     anonymous: false,
     inputs: [
@@ -18,15 +13,74 @@ export const ENSBulkRegistrationContractMainnetABI = [
     type: 'event',
   },
   {
+    inputs: [
+      {
+        internalType: 'string[]',
+        name: 'names',
+        type: 'string[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'nameLengths',
+        type: 'uint256[]',
+      },
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'duration',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'secret',
+        type: 'bytes32',
+      },
+    ],
+    name: 'completeRegistration',
+    outputs: [],
     stateMutability: 'payable',
-    type: 'receive',
-    payable: true,
+    type: 'function',
   },
   {
-    inputs: [],
-    name: 'recoverStuckETH',
+    inputs: [
+      {
+        internalType: 'string[]',
+        name: 'names',
+        type: 'string[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'nameLengths',
+        type: 'uint256[]',
+      },
+      {
+        internalType: 'uint256',
+        name: 'duration',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'secret',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'resolver',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'completeRegistrationWithConfigs',
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
     type: 'function',
   },
   {
@@ -79,9 +133,14 @@ export const ENSBulkRegistrationContractMainnetABI = [
             type: 'uint64',
           },
         ],
-        internalType: 'struct ENSCommitment.Commitment[]',
+        internalType: 'struct PredomainHelper.Commitment[]',
         name: 'commitments',
         type: 'tuple[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'nameLengths',
+        type: 'uint256[]',
       },
       {
         internalType: 'uint256',
@@ -102,14 +161,60 @@ export const ENSBulkRegistrationContractMainnetABI = [
         type: 'bytes32[]',
       },
       {
-        internalType: 'uint256[]',
+        internalType: 'uint256[3]',
         name: '',
-        type: 'uint256[]',
+        type: 'uint256[3]',
       },
     ],
     stateMutability: 'view',
     type: 'function',
-    constant: true,
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'duration',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'nameLengths',
+        type: 'uint256[]',
+      },
+    ],
+    name: 'getPriceRanges',
+    outputs: [
+      {
+        internalType: 'uint256[3]',
+        name: '',
+        type: 'uint256[3]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string[]',
+        name: 'names',
+        type: 'string[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'nameLengths',
+        type: 'uint256[]',
+      },
+      {
+        internalType: 'uint256',
+        name: 'duration',
+        type: 'uint256',
+      },
+    ],
+    name: 'renewDomains',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
     inputs: [
@@ -127,104 +232,23 @@ export const ENSBulkRegistrationContractMainnetABI = [
   {
     inputs: [
       {
-        internalType: 'string[]',
-        name: 'names',
-        type: 'string[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'nameLengths',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'priceRanges',
-        type: 'uint256[]',
-      },
-      {
         internalType: 'address',
-        name: 'owner',
+        name: 'to',
         type: 'address',
       },
       {
-        internalType: 'uint256',
-        name: 'duration',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'secret',
-        type: 'bytes32',
+        internalType: 'uint256[]',
+        name: 'domains',
+        type: 'uint256[]',
       },
     ],
-    name: 'completeRegistration',
+    name: 'transferDomains',
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'nonpayable',
     type: 'function',
-    payable: true,
   },
   {
-    inputs: [
-      {
-        internalType: 'string[]',
-        name: 'names',
-        type: 'string[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'nameLengths',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'priceRanges',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'uint256',
-        name: 'duration',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'secret',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'resolver',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address',
-      },
-    ],
-    name: 'completeRegistrationWithConfigs',
-    outputs: [],
     stateMutability: 'payable',
-    type: 'function',
-    payable: true,
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'duration',
-        type: 'uint256',
-      },
-    ],
-    name: 'getPriceRanges',
-    outputs: [
-      {
-        internalType: 'uint256[]',
-        name: '',
-        type: 'uint256[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true,
+    type: 'receive',
   },
 ];

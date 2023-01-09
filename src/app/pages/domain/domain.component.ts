@@ -480,33 +480,27 @@ export class DomainComponent implements OnInit, OnDestroy {
   }
 
   goToEtherscan(hash: string) {
-    window.open(
-      BlockExplorersEnum[environment.defaultChain] + 'tx/' + hash,
-      '_blank'
-    );
+    window.location.href =
+      BlockExplorersEnum[environment.defaultChain] + 'tx/' + hash;
   }
 
   goToEventActorProfile(address: string) {
-    window.open('/#/profile/' + address, '_blank');
+    window.location.href = '/#/profile/' + address;
   }
 
   goToEtherscanDomainProfile(domain: string) {
-    window.open(
+    window.location.href =
       BlockExplorersEnum[environment.defaultChain] +
-        '/enslookup-search?search=' +
-        domain,
-      '_blank'
-    );
+      '/enslookup-search?search=' +
+      domain;
   }
 
   goToEnsDomainProfile(domain: string) {
-    window.open(
+    window.location.href =
       environment.networks[environment.defaultChain].ensApp +
-        '/name/' +
-        domain +
-        '/details',
-      '_blank'
-    );
+      '/name/' +
+      domain +
+      '/details';
   }
 
   pretty(name: string) {

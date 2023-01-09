@@ -182,11 +182,7 @@
             </ng-container>
             <div fxFlex fxLayout="row" *ngFor="let t of topCategories">
               <div fxFlex>
-                <a
-                  href="/#/category/{{ t.category }}"
-                  target="_blank"
-                  class="cos-main-text"
-                >
+                <a href="/#/category/{{ t.category }}" class="cos-main-text">
                   {{ metadata.categoriesDescription[t.category] }}
                 </a>
               </div>
@@ -242,11 +238,7 @@
                 fxLayoutGap="10px"
                 fxLayoutAlign="start center"
               >
-                <a
-                  href="/#/domain/{{ t.domain }}.eth"
-                  target="_blank"
-                  class="cos-main-text"
-                >
+                <a href="/#/domain/{{ t.domain }}.eth" class="cos-main-text">
                   {{ t.domain }}.eth
                 </a>
                 <div class="cos-body-4 cos-gray-text">
@@ -299,11 +291,7 @@
                 fxLayoutGap="10px"
                 fxLayoutAlign="start center"
               >
-                <a
-                  href="/#/domain/{{ t.domain }}.eth"
-                  target="_blank"
-                  class="cos-main-text"
-                >
+                <a href="/#/domain/{{ t.domain }}.eth" class="cos-main-text">
                   {{ t.domain }}.eth
                 </a>
                 <div class="cos-body-4 cos-gray-text">
@@ -329,240 +317,6 @@
           fxLayout="column"
           class="co-home-categories cos-fluid-width"
         >
-          <div
-            fxFlex
-            fxLayout="row"
-            fxLayoutAlign="center center"
-            fxLayoutGap="20px"
-            class="cos-body-0 cos-margin-2"
-          >
-            <mat-icon>magic_button</mat-icon><span> Popular Categories </span>
-          </div>
-          <div fxFlex fxLayout="row wrap" fxLayoutGap="30px">
-            <ng-container *ngIf="categories === undefined">
-              <div
-                *ngFor="let p of placeholders"
-                style="height: 150px"
-                class="co-category cos-placeholder cos-border-radius-2"
-              ></div>
-            </ng-container>
-            <div
-              *ngFor="let c of popularCategories; let i = index"
-              fxLayout="column"
-              class="co-category cos-border-radius-2 cos-overflow-hidden"
-              (click)="openCategory(c)"
-            >
-              <div>
-                <div
-                  fxLayoutAlign="start start"
-                  class="cos-fluid-height cos-fluid-width cos-pointer cos-box-shadow"
-                >
-                  <app-preview-image
-                    fxFlex
-                    fxFlexAlign="start"
-                    [dontLoad]="true"
-                    [errored]="true"
-                    [loaded]="true"
-                    [preview]="'assets/category-profile-blank.svg'"
-                    [error]="'assets/category-profile-blank.svg'"
-                    [style.width]="'90px'"
-                    [style.height]="'90px'"
-                    [enableBorderRadius]="false"
-                  ></app-preview-image>
-                  <mat-icon class="co-category-thumbnail">
-                    {{ metadata.categoriesThumbnails[c] }}
-                  </mat-icon>
-                </div>
-              </div>
-              <div
-                fxLayout="row"
-                class="co-category-description cos-pointer cos-fluid-width cos-bg-gray cos-padding-1"
-              >
-                <div
-                  fxFlex="0 0 auto"
-                  fxLayout="column"
-                  fxLayoutAlign="center start"
-                >
-                  <div class="cos-body-0 cos-main-text">
-                    {{ metadata.categoriesTitle[c] }}
-                    <mat-icon class="cos-small-icon">open_in_new</mat-icon>
-                  </div>
-                  <div fxFlex="0 0 auto" class="cos-body-4">
-                    {{ metadata.categoriesDescription[c] }}
-                  </div>
-                </div>
-                <div fxFlex></div>
-                <div fxLayout="column" fxLayoutAlign="center end">
-                  <div fxFlex="0 0 auto" class="cos-body-0">
-                    <b> {{ getCategoryVolume(c) }} ETH </b>
-                  </div>
-                  <div fxFlex="0 0 auto" class="cos-gray-text cos-body-4">
-                    {{ "LABELS.MONTHLY_VOLUME" | translate }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            fxFlex
-            fxLayout="row"
-            fxLayoutAlign="center center"
-            fxLayoutGap="20px"
-            class="cos-body-0 cos-margin-2"
-          >
-            <mat-icon>insights</mat-icon>
-            <span> Trending Categories </span>
-          </div>
-          <div fxFlex fxLayout="row wrap" fxLayoutGap="30px">
-            <ng-container *ngIf="categories === undefined">
-              <div
-                *ngFor="let p of placeholders"
-                style="height: 150px"
-                class="co-category cos-placeholder cos-border-radius-2"
-              ></div>
-            </ng-container>
-            <div
-              *ngFor="let c of popularCategories; let i = index"
-              fxLayout="column"
-              class="co-category cos-border-radius-2 cos-overflow-hidden"
-              (click)="openCategory(c)"
-            >
-              <div>
-                <div
-                  fxLayoutAlign="start start"
-                  class="cos-fluid-height cos-fluid-width cos-pointer cos-box-shadow"
-                >
-                  <app-preview-image
-                    fxFlex
-                    fxFlexAlign="start"
-                    [dontLoad]="true"
-                    [errored]="true"
-                    [loaded]="true"
-                    [preview]="'assets/category-profile-blank.svg'"
-                    [error]="'assets/category-profile-blank.svg'"
-                    [style.width]="'90px'"
-                    [style.height]="'90px'"
-                    [enableBorderRadius]="false"
-                  ></app-preview-image>
-                  <mat-icon class="co-category-thumbnail">
-                    {{ metadata.categoriesThumbnails[c] }}
-                  </mat-icon>
-                </div>
-              </div>
-              <div
-                fxLayout="row"
-                class="co-category-description cos-pointer cos-fluid-width cos-bg-gray cos-padding-1"
-              >
-                <div
-                  fxFlex="0 0 auto"
-                  fxLayout="column"
-                  fxLayoutAlign="center start"
-                >
-                  <div class="cos-body-0 cos-main-text">
-                    {{ metadata.categoriesTitle[c] }}
-                    <mat-icon class="cos-small-icon">open_in_new</mat-icon>
-                  </div>
-                  <div fxFlex="0 0 auto" class="cos-body-4">
-                    {{ metadata.categoriesDescription[c] }}
-                  </div>
-                </div>
-                <div fxFlex></div>
-                <div fxLayout="column" fxLayoutAlign="center end">
-                  <div fxFlex="0 0 auto" class="cos-body-0">
-                    <b> {{ getCategoryVolume(c) }} ETH </b>
-                  </div>
-                  <div fxFlex="0 0 auto" class="cos-gray-text cos-body-4">
-                    {{ "LABELS.MONTHLY_VOLUME" | translate }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            fxFlex
-            fxLayout="row"
-            fxLayoutAlign="center center"
-            fxLayoutGap="20px"
-            class="cos-body-0 cos-margin-2"
-          >
-            <mat-icon>category</mat-icon>
-            <span> Collectibles Categories </span>
-          </div>
-          <div fxFlex fxLayout="row wrap" fxLayoutGap="30px">
-            <ng-container *ngIf="categories === undefined">
-              <div
-                *ngFor="let p of placeholders"
-                style="height: 150px"
-                class="co-category cos-placeholder cos-border-radius-2"
-              ></div>
-            </ng-container>
-            <div
-              *ngFor="let c of popularCategories; let i = index"
-              fxLayout="column"
-              class="co-category cos-border-radius-2 cos-overflow-hidden"
-              (click)="openCategory(c)"
-            >
-              <div>
-                <div
-                  fxLayoutAlign="start start"
-                  class="cos-fluid-height cos-fluid-width cos-pointer cos-box-shadow"
-                >
-                  <app-preview-image
-                    fxFlex
-                    fxFlexAlign="start"
-                    [dontLoad]="true"
-                    [errored]="true"
-                    [loaded]="true"
-                    [preview]="'assets/category-profile-blank.svg'"
-                    [error]="'assets/category-profile-blank.svg'"
-                    [style.width]="'90px'"
-                    [style.height]="'90px'"
-                    [enableBorderRadius]="false"
-                  ></app-preview-image>
-                  <mat-icon class="co-category-thumbnail">
-                    {{ metadata.categoriesThumbnails[c] }}
-                  </mat-icon>
-                </div>
-              </div>
-              <div
-                fxLayout="row"
-                class="co-category-description cos-pointer cos-fluid-width cos-bg-gray cos-padding-1"
-              >
-                <div
-                  fxFlex="0 0 auto"
-                  fxLayout="column"
-                  fxLayoutAlign="center start"
-                >
-                  <div class="cos-body-0 cos-main-text">
-                    {{ metadata.categoriesTitle[c] }}
-                    <mat-icon class="cos-small-icon">open_in_new</mat-icon>
-                  </div>
-                  <div fxFlex="0 0 auto" class="cos-body-4">
-                    {{ metadata.categoriesDescription[c] }}
-                  </div>
-                </div>
-                <div fxFlex></div>
-                <div fxLayout="column" fxLayoutAlign="center end">
-                  <div fxFlex="0 0 auto" class="cos-body-0">
-                    <b> {{ getCategoryVolume(c) }} ETH </b>
-                  </div>
-                  <div fxFlex="0 0 auto" class="cos-gray-text cos-body-4">
-                    {{ "LABELS.MONTHLY_VOLUME" | translate }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            fxFlex
-            fxLayout="row"
-            fxLayoutAlign="center center"
-            fxLayoutGap="20px"
-            class="cos-body-0 cos-margin-2"
-          >
-            Other Categories
-          </div>
           <div fxFlex fxLayout="row wrap" fxLayoutGap="30px">
             <ng-container *ngIf="categories === undefined">
               <div

@@ -58,7 +58,7 @@ import { CategoriesRootModel, CategoryModel } from 'src/app/models/category';
 import { CategoriesDataService } from 'src/app/services/categories-data';
 import { MatDialog } from '@angular/material/dialog';
 import { SaleManagementComponent } from 'src/app/widgets/sale-management/sale-management.component';
-import { EnsMarketplaceService } from 'src/app/services/ens-marketplace';
+import { EnsHelperService } from 'src/app/services/ens-helper';
 import { RenewManagementComponent } from 'src/app/widgets/renew-management';
 import { OnboardManagementComponent } from 'src/app/widgets/onboard-management';
 import { PaymentTypesEnum } from 'src/app/models/states/payment-interfaces';
@@ -186,7 +186,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     protected userService: UserService,
     protected ensService: EnsService,
     protected pagesFacade: PagesFacadeService,
-    protected ensMarketplaceService: EnsMarketplaceService,
+    protected ensHelperService: EnsHelperService,
     protected categoriesDataService: CategoriesDataService,
     protected categoriesFacade: CategoryFacadeService,
     protected registrationDataService: RegistrationDataService,
@@ -682,30 +682,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   goToBlockscan() {
-    window.open(
-      generalConfigurations.blockscanLink + this.userAddress,
-      '_blank'
-    );
+    window.location.href =
+      generalConfigurations.blockscanLink + this.userAddress;
   }
 
   goToNftyChat() {
-    window.open(
-      generalConfigurations.nftyChatLink + this.userAddress,
-      '_blank'
-    );
+    window.location.href =
+      generalConfigurations.nftyChatLink + this.userAddress;
   }
 
   goToStore() {
-    window.open('https://' + this.userName + '.limo', '_blank');
+    window.location.href = 'https://' + this.userName + '.limo';
   }
 
   goToEtherscan() {
-    window.open(
+    window.location.href =
       BlockExplorersEnum[environment.defaultChain] +
-        '/address/' +
-        this.userAddress,
-      '_blank'
-    );
+      '/address/' +
+      this.userAddress;
   }
 
   setDisplayMode(mode: DisplayModes) {
@@ -840,7 +834,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.savingChangesInitiated = false;
       return;
     }
-    this.saveChangesSubscripton = this.ensMarketplaceService
+    this.saveChangesSubscripton = this.ensHelperService
       .checkApproval(tokenId, provider)
       .pipe(
         map((r) => {
@@ -963,10 +957,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   goToPendingTx() {
-    window.open(
-      BlockExplorersEnum[environment.defaultChain] + '/tx/' + this.pendingTx,
-      '_blank'
-    );
+    window.location.href =
+      BlockExplorersEnum[environment.defaultChain] + '/tx/' + this.pendingTx;
   }
 
   performDomainSearch() {

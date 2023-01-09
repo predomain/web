@@ -242,7 +242,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   openDocs() {
-    window.open(generalConfigurations.docsLink, '_blank');
+    window.location.href = generalConfigurations.docsLink;
   }
 
   goToHome() {
@@ -250,7 +250,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   goToDiscord() {
-    window.open('https://discord.gg/ECMz2VNn97', '_blank');
+    window.location.href = 'https://discord.gg/ECMz2VNn97';
   }
 
   openConnect() {
